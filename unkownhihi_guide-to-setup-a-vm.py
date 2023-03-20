@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 sudo apt-get install gnupg-curl
@@ -16,26 +15,22 @@ sudo mkdir /usr/lib/nvidia
 sudo apt-get install --no-install-recommends nvidia-418
 
 
-# In[2]:
 
 
 sudo reboot
 
 
-# In[3]:
 
 
 nvidia-smi
 
 
-# In[4]:
 
 
 sudo apt-get install --no-install-recommends     cuda-10-0     libcudnn7=7.6.4.38-1+cuda10.1      libcudnn7-dev=7.6.4.38-1+cuda10.1
 sudo apt-get install -y --no-install-recommends libnvinfer5=6.0.1-1+cuda10.1     libnvinfer-dev=6.0.1-1+cuda10.1
 
 
-# In[5]:
 
 
 sudo apt-get install python3-pip

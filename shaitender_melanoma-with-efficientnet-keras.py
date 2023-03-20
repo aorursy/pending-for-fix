@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().system('pip install -q efficientnet')
 
 
-# In[2]:
 
 
 
@@ -28,7 +26,6 @@ from tensorflow.keras import backend as K
 import tensorflow_addons as tfa
 
 
-# In[3]:
 
 
 tpu = tf.distribute.cluster_resolver.TPUClusterResolver()
@@ -39,7 +36,6 @@ tf.tpu.experimental.initialize_tpu_system(tpu)
 strategy = tf.distribute.experimental.TPUStrategy(tpu)
 
 
-# In[4]:
 
 
 # For tf.dataset
@@ -68,7 +64,6 @@ TEST_FILENAMES = tf.io.gfile.glob(GCS_PATH + '/test*.tfrec')
 submission = pd.read_csv('/kaggle/input/siim-isic-melanoma-classification/sample_submission.csv')
 
 
-# In[5]:
 
 
 def get_mat(rotation, shear, height_zoom, width_zoom, height_shift, width_shift):
@@ -413,7 +408,6 @@ STEPS_PER_EPOCH = NUM_TRAINING_IMAGES // BATCH_SIZE
 print('Dataset: {} training images, {} validation images, {} unlabeled test images'.format(NUM_TRAINING_IMAGES, NUM_VALIDATION_IMAGES, NUM_TEST_IMAGES))
 
 
-# In[6]:
 
 
 def binary_focal_loss(gamma=2., alpha=.25):
@@ -553,14 +547,12 @@ def train_and_predict(SUB, folds = 5):
 oof_target, oof_prediction = train_and_predict(submission)
 
 
-# In[7]:
 
 
 submission pd.read_csv('submission.csv')
 submission.head()
 
 
-# In[ ]:
 
 
 

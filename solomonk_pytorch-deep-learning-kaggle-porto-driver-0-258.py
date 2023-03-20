@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().run_line_magic('reset', '-f')
@@ -55,7 +54,6 @@ def cpuStats():
 cpuStats()
 
 
-# In[2]:
 
 
 # fix seed
@@ -67,7 +65,6 @@ if use_cuda:
 # ! dir    
 
 
-# In[3]:
 
 
 import gc; gc.enable()
@@ -98,7 +95,6 @@ id_test = df_test['id'].values
 df_train.head()
 
 
-# In[4]:
 
 
 x_train = df_train.drop(['target', 'id'], axis=1)
@@ -111,7 +107,6 @@ print('Train samples: {} Validation samples: {}'.format(len(trainX), len(valX)))
 N_FEATURES=trainX.shape[1]
 
 
-# In[5]:
 
 
 use_cuda = torch.cuda.is_available()
@@ -159,7 +154,6 @@ def YnumpyToTensor(y_data_np):
     return Y_tensor
 
 
-# In[6]:
 
 
 # class ConvRes(nn.Module):
@@ -303,7 +297,6 @@ lgr.info (optimizer)
 lgr.info (loss_func)
 
 
-# In[7]:
 
 
 from __future__ import division
@@ -388,7 +381,6 @@ plt.xlabel('False Positive Rate')
 plt.show()
 
 
-# In[8]:
 
 
 net.eval()
@@ -431,13 +423,11 @@ plt.show()
 # print (pred_y)
 
 
-# In[9]:
 
 
 # Submission
 
 
-# In[10]:
 
 
 # X_df_test = pd.read_csv(BASE_FOLDER + '/test.csv')
@@ -471,7 +461,6 @@ plt.show()
 # df_pred.head(5)
 
 
-# In[11]:
 
 
 # df_pred.id=df_pred.id.astype(int)
@@ -485,19 +474,16 @@ plt.show()
 # savePred (df_pred, str(2*roc_auc_score(target_y,pred_y ) - 1))
 
 
-# In[12]:
 
 
 
 
 
-# In[12]:
 
 
 
 
 
-# In[12]:
 
 
 

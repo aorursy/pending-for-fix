@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 conda install -c conda-forge librosa
 
 
-# In[2]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -29,7 +27,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[3]:
 
 
 sample_audio = [
@@ -46,7 +43,6 @@ sample_audio = [
 ]
 
 
-# In[4]:
 
 
 BASE_PATH = '../input/birdsong-recognition'
@@ -55,7 +51,6 @@ BASE_PATH = '../input/birdsong-recognition'
 train_data_dir = f'{BASE_PATH}/train_audio'
 
 
-# In[5]:
 
 
 for audio in sample_audio:

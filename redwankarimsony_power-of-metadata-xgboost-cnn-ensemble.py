@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().system('pip install xgboost')
@@ -14,7 +13,6 @@ import xgboost as xgb
 from sklearn.metrics import accuracy_score
 
 
-# In[2]:
 
 
 train= pd.read_csv('../input/siim-isic-melanoma-classification/train.csv')
@@ -25,7 +23,6 @@ train.head()
 train.target.value_counts()
 
 
-# In[3]:
 
 
 train['sex'] = train['sex'].fillna('na')
@@ -37,7 +34,6 @@ test['age_approx'] = test['age_approx'].fillna(0)
 test['anatom_site_general_challenge'] = test['anatom_site_general_challenge'].fillna('na')
 
 
-# In[4]:
 
 
 train['sex'] = train['sex'].astype("category").cat.codes +1
@@ -45,7 +41,6 @@ train['anatom_site_general_challenge'] = train['anatom_site_general_challenge'].
 train.head()
 
 
-# In[5]:
 
 
 test['sex'] = test['sex'].astype("category").cat.codes +1
@@ -53,13 +48,11 @@ test['anatom_site_general_challenge'] = test['anatom_site_general_challenge'].as
 test.head()
 
 
-# In[ ]:
 
 
 
 
 
-# In[6]:
 
 
 x_train = train[['sex', 'age_approx','anatom_site_general_challenge']]
@@ -74,7 +67,6 @@ train_DMatrix = xgb.DMatrix(x_train, label= y_train)
 test_DMatrix = xgb.DMatrix(x_test)
 
 
-# In[7]:
 
 
 param = {
@@ -87,7 +79,6 @@ param = {
 epochs = 100
 
 
-# In[8]:
 
 
 # model = xgb.train(param, 
@@ -104,13 +95,11 @@ clf = xgb.XGBClassifier(n_estimators=2000,
                         scale_pos_weight = (32542/584))
 
 
-# In[9]:
 
 
 clf.fit(x_train, y_train)
 
 
-# In[10]:
 
 
 # predictions = model.predict(test_DMatrix)
@@ -121,45 +110,38 @@ sub.target = clf.predict_proba(x_test)[:,1]
 sub_tabular = sub.copy()
 
 
-# In[11]:
 
 
 sub_public_merge = pd.read_csv('/kaggle/input/submission-9/submission_935.csv')
 sub_mean = pd.read_csv('/kaggle/input/siim-isic-multiple-model-training-stacking-923/submission_mean.csv')
 
 
-# In[12]:
 
 
 sub.target = sub_mean.target *0.1 + sub_public_merge.target *0.7 + sub_tabular.target *0.2
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[13]:
 
 
 sub.head()
 sub.to_csv('submission.csv', index = False)
 
 
-# In[14]:
 
 
 # train_df.diagnosis.value_counts()
 
 
-# In[ ]:
 
 
 

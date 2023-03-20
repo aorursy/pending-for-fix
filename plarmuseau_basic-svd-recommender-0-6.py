@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -10,7 +9,6 @@ from subprocess import check_output
 print(check_output(["ls", "../input"]).decode("utf8"))
 
 
-# In[2]:
 
 
 from sklearn.preprocessing import LabelEncoder
@@ -44,7 +42,6 @@ data,matrix,songsd,user=read_data('../input/train.csv')
 data.head()
 
 
-# In[3]:
 
 
 from sklearn.preprocessing import normalize
@@ -107,13 +104,11 @@ user_count = data.groupby('song').size()
 to_generate = sorted(list(songsd), key=lambda x: -user_count[x])
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 from sklearn.decomposition import TruncatedSVD
@@ -123,14 +118,12 @@ print(svd.explained_variance_ratio_)
 print(svd.explained_variance_ratio_.sum())
 
 
-# In[ ]:
 
 
 from sklearn.metrics.pairwise import cosine_similarity
 Udf=pd.DataFrame(cosine_similarity(Xr[:200]))
 
 
-# In[ ]:
 
 
 booknr=156

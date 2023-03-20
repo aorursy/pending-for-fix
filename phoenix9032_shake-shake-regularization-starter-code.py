@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 ## Load Libraries 
@@ -49,14 +48,12 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
-# In[2]:
 
 
 ##Path for data 
 PATH = '../input/bengaliai-cv19/'
 
 
-# In[3]:
 
 
 ## Model configuration dictionary
@@ -72,7 +69,6 @@ PATH = '../input/bengaliai-cv19/'
   }
 
 
-# In[4]:
 
 
 ## Create Data from Parquet file mixing the methods of @hanjoonzhoe and @Iafoss
@@ -124,7 +120,6 @@ def Resize(df,size=128):
     return resized
 
 
-# In[5]:
 
 
 """%%time
@@ -138,13 +133,11 @@ for i in range(4):
 ##TO save RAM I have run this command in another kernel and kept the output for the Kernel as dataset for this Kernel .
 
 
-# In[6]:
 
 
 DATA_PATH = "../input/pytorch-efficientnet-starter-kernel/"
 
 
-# In[7]:
 
 
 ## Load Feather Data 
@@ -159,7 +152,6 @@ gc.collect()
 data_full.shape
 
 
-# In[8]:
 
 
 ## A bunch of code copied from internet . Half of them I dont understand yet . However , CutOut is used in this notebook
@@ -279,7 +271,6 @@ class RandomErasing:
         return image  
 
 
-# In[9]:
 
 
 ## Add Augmentations as suited from Albumentations library
@@ -300,7 +291,6 @@ train_aug = Compose([
 ## A lot of heavy augmentations
 
 
-# In[10]:
 
 
 ## Someone asked for normalization of images . values collected from Iafoss
@@ -331,7 +321,6 @@ class Normalize:
         return image
 
 
-# In[11]:
 
 
 ## Create dataset function
@@ -361,7 +350,6 @@ class GraphemeDataset(Dataset):
         return image,label1,label2,label3
 
 
-# In[12]:
 
 
 ## Do a train-valid split of the data to create dataset and dataloader . Specify random seed to get reproducibility 
@@ -372,7 +360,6 @@ del data_full
 gc.collect()
 
 
-# In[13]:
 
 
 ##Creating the train and valid dataset for training . Training data has the transform flag ON
@@ -382,7 +369,6 @@ torch.cuda.empty_cache()
 gc.collect()
 
 
-# In[14]:
 
 
 ##Visulization function for checking Original and augmented image
@@ -398,7 +384,6 @@ def visualize(original_image,aug_image):
     
 
 
-# In[15]:
 
 
 ## One image taken from raw dataframe another from dataset 
@@ -406,7 +391,6 @@ orig_image = data_train_df.iloc[0, 1:].values.reshape(128,128).astype(np.float)
 aug_image = train_dataset[0][0]
 
 
-# In[16]:
 
 
 ## Check the augmentations 
@@ -415,7 +399,6 @@ for i in range (20):
     visualize (orig_image,aug_image)
 
 
-# In[17]:
 
 
 del train_df,valid_df,data_train_df,data_valid_df 
@@ -423,7 +406,6 @@ torch.cuda.empty_cache()
 gc.collect()
 
 
-# In[18]:
 
 
 ## Create data loader and get ready for training .
@@ -432,7 +414,6 @@ train_loader = torch.utils.data.DataLoader(train_dataset,batch_size=batch_size,s
 valid_loader = torch.utils.data.DataLoader(valid_dataset,batch_size=batch_size,shuffle=True)
 
 
-# In[19]:
 
 
 ## Mish Activation Function Not yet Used . May be later 
@@ -447,7 +428,6 @@ class Mish(nn.Module):
         return x
 
 
-# In[20]:
 
 
 ## Over9000 Optimizer . Inspired by Iafoss . Over and Out !
@@ -662,7 +642,6 @@ def Over9000(params, alpha=0.5, k=6, *args, **kwargs):
 RangerLars = Over9000 
 
 
-# In[21]:
 
 
 ## Shake Function 
@@ -718,7 +697,6 @@ def get_alpha_beta(batch_size, shake_config, device):
     return alpha, beta
 
 
-# In[22]:
 
 
 ## shake-shake network
@@ -913,7 +891,6 @@ class Network(nn.Module):
         return x1,x2,x3
 
 
-# In[23]:
 
 
 ## Make sure we are using the GPU . Get CUDA device
@@ -921,7 +898,6 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
 
 
-# In[24]:
 
 
 ## Load model and pass desired parameters in config
@@ -934,7 +910,6 @@ model = load_model(model_config)
 model = model.to(device)
 
 
-# In[25]:
 
 
 ## A Small but useful test of the Model by using dummy input . .
@@ -944,7 +919,6 @@ with torch.no_grad():
 print(output3.shape)
 
 
-# In[26]:
 
 
 ## This is a placeholder for finetunign or inference when you want to load a previously trained model
@@ -955,7 +929,6 @@ print(output3.shape)
 ## I forgot to change the naming convension and it still reads effnetb0 . But this is actually effnetb4
 
 
-# In[27]:
 
 
 n_epochs = 1 ## 1 Epoch as sample . "I am just a poor boy  , no GPU in reality "
@@ -969,7 +942,6 @@ criterion = nn.CrossEntropyLoss()
 batch_size=32
 
 
-# In[28]:
 
 
 ##Local Metrics implementation .
@@ -1032,7 +1004,6 @@ def calc_macro_recall(solution, submission):
     return final_score
 
 
-# In[29]:
 
 
 ## This function for train is copied from @hanjoonchoe
@@ -1122,7 +1093,6 @@ def evaluate(epoch,history):
    return  total_recall
 
 
-# In[30]:
 
 
 ## A very simple loop to train for number of epochs it probably can be made more robust to save only the file with best valid loss 
@@ -1145,14 +1115,12 @@ for epoch in range(n_epochs):
     
 
 
-# In[31]:
 
 
 history.to_csv('history.csv')
 history.head()
 
 
-# In[32]:
 
 
 import numpy as np # linear algebra
@@ -1175,20 +1143,17 @@ from torchvision import transforms,models
 from tqdm import tqdm_notebook as tqdm
 
 
-# In[33]:
 
 
 ## Load model for inferernce . 
 #model.load_state_dict(torch.load('../input/pytorch-efficientnet-starter-code/effnetb0_trial_stage1.pth')) 
 
 
-# In[34]:
 
 
 test = pd.read_csv('/kaggle/input/bengaliai-cv19/test.csv')
 
 
-# In[35]:
 
 
 #check https://www.kaggle.com/iafoss/image-preprocessing-128x128
@@ -1219,7 +1184,6 @@ def crop_resize(img0, size=SIZE, pad=16):
     return cv2.resize(img,(size,size))
 
 
-# In[36]:
 
 
 class GraphemeDataset(Dataset):
@@ -1240,7 +1204,6 @@ class GraphemeDataset(Dataset):
         return img, name
 
 
-# In[37]:
 
 
 ## All test data
@@ -1248,7 +1211,6 @@ test_data = ['/kaggle/input/bengaliai-cv19/test_image_data_0.parquet','/kaggle/i
              '/kaggle/input/bengaliai-cv19/test_image_data_3.parquet']
 
 
-# In[38]:
 
 
 get_ipython().run_cell_magic('time', '', "## Inference a little faster using @Iafoss and  @peters technique\nrow_id,target = [],[]\nfor fname in test_data:\n    #data = pd.read_parquet(f'/kaggle/input/bengaliai-cv19/{fname}')\n    test_image = GraphemeDataset(fname)\n    dl = torch.utils.data.DataLoader(test_image,batch_size=128,num_workers=4,shuffle=False)\n    with torch.no_grad():\n        for x,y in tqdm(dl):\n            x = x.unsqueeze(1).float().cuda()\n            p1,p2,p3 = model(x)\n            p1 = p1.argmax(-1).view(-1).cpu()\n            p2 = p2.argmax(-1).view(-1).cpu()\n            p3 = p3.argmax(-1).view(-1).cpu()\n            for idx,name in enumerate(y):\n                row_id += [f'{name}_vowel_diacritic',f'{name}_grapheme_root',\n                           f'{name}_consonant_diacritic']\n                target += [p1[idx].item(),p2[idx].item(),p3[idx].item()]\n                \nsub_df = pd.DataFrame({'row_id': row_id, 'target': target})\nsub_df.to_csv('submission.csv', index=False)\nsub_df.head(20)")

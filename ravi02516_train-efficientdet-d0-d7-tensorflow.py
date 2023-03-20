@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,20 +22,17 @@ import os
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[2]:
 
 
 import matplotlib.pyplot as plt
 
 
-# In[3]:
 
 
 train_data_df=pd.read_csv("../input/global-wheat-detection/train.csv")
 train_data_df.head()
 
 
-# In[4]:
 
 
 image_id=[f"{i}.jpg" for i in train_data_df.image_id]
@@ -60,7 +56,6 @@ for bbox in train_data_df.bbox:
     ymins.append(d)
 
 
-# In[5]:
 
 
 data=pd.DataFrame()
@@ -77,25 +72,21 @@ data["xmax"]=xmaxs
 data["ymax"]=ymaxs
 
 
-# In[6]:
 
 
 data.head()
 
 
-# In[7]:
 
 
 data.to_csv("train_labels.csv",index=False)
 
 
-# In[8]:
 
 
 pd.read_csv("/kaggle/working/train_labels.csv")
 
 
-# In[9]:
 
 
 def int64_feature(value):
@@ -118,7 +109,6 @@ def float_list_feature(value):
   return tf.train.Feature(float_list=tf.train.FloatList(value=value))
 
 
-# In[10]:
 
 
 from __future__ import division
@@ -211,25 +201,21 @@ if __name__ == '__main__':
     main(csv_input, output_path, image_dir)
 
 
-# In[11]:
 
 
 cd "/kaggle/input/kerasversionefficientdet"
 
 
-# In[12]:
 
 
 os.mkdir("/kaggle/working/model")
 
 
-# In[13]:
 
 
 get_ipython().system('pip install pycocotools')
 
 
-# In[14]:
 
 
 # uncomment for training

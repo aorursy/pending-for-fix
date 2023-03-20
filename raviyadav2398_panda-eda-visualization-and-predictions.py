@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np # linear algebra
@@ -37,7 +36,6 @@ N = 12
 nworkers = 2
 
 
-# In[2]:
 
 
 
@@ -46,7 +44,6 @@ MODELS = [f'../input/panda-starter-models/RNXT50_{i}.pth' for i in range(4)]
 sz = 128
 
 
-# In[3]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -66,7 +63,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[4]:
 
 
 BASE_PATH='../input/prostate-cancer-grade-assessment/'
@@ -76,14 +72,12 @@ TRAIN=BASE_PATH+'train.csv'
 TEST = BASE_PATH+'test.csv'
 
 
-# In[5]:
 
 
 sys.path.insert( 0,'../input/semisupervised-imagenet-models/semi-supervised-ImageNet1K-models-master/')
 from hubconf import *
 
 
-# In[6]:
 
 
 # image and mask directories
@@ -91,7 +85,6 @@ data_dir = f'{BASE_PATH}/train_images'
 mask_dir = f'{BASE_PATH}/train_label_masks'
 
 
-# In[7]:
 
 
 # Location of training labels
@@ -100,7 +93,6 @@ test = pd.read_csv(f'{BASE_PATH}/test.csv')
 submission = pd.read_csv(f'{BASE_PATH}/sample_submission.csv')
 
 
-# In[8]:
 
 
 
@@ -108,25 +100,21 @@ display(train.head())
 display(train.shape)
 
 
-# In[9]:
 
 
 train.info()
 
 
-# In[10]:
 
 
 train.data_provider.unique()
 
 
-# In[11]:
 
 
 display(len(train.data_provider.unique()))
 
 
-# In[12]:
 
 
 
@@ -135,32 +123,27 @@ display(test.shape)
                  
 
 
-# In[13]:
 
 
 test.info()
 
 
-# In[14]:
 
 
 train_image_list=os.listdir(os.path.join(BASE_PATH,'train_images'))
 train_label_masks_list=os.listdir(os.path.join(BASE_PATH,'train_label_masks'))
 
 
-# In[15]:
 
 
 train_image_list
 
 
-# In[16]:
 
 
 print(f"train image_id list:{train.image_id.nunique()}")
 
 
-# In[17]:
 
 
 
@@ -168,7 +151,6 @@ print(f"train image list:{len(train_image_list)}")
 print(f"train label masks list:{len(train_label_masks_list)}")
 
 
-# In[18]:
 
 
 print(f"sample of image_id list:{train.image_id.values[0:3]}")
@@ -176,7 +158,6 @@ print(f"sample of image list:{train_image_list[0:3]}")
 print(f"sample of label masks list:{train_label_masks_list[0:3]}")
 
 
-# In[19]:
 
 
 trimmed_image_list=[]
@@ -184,7 +165,6 @@ for img in train_image_list:
     trimmed_image_list.append(img.split('.tiff')[0])
 
 
-# In[20]:
 
 
 trimmed_label_masks_list=[]
@@ -192,7 +172,6 @@ for img in train_label_masks_list:
     trimmed_label_masks_list.append(img.split('_mask.tiff')[0])
 
 
-# In[21]:
 
 
 intersect_i_m=(set(trimmed_image_list) & set(trimmed_label_masks_list))
@@ -203,27 +182,23 @@ print(f"image_id(train) & label masks:{len(intersect_id_m)}")
 print(f"image_id(train) & image(tiff):{len(intersect_id_i)}")
 
 
-# In[22]:
 
 
 missing_masks=np.setdiff1d(trimmed_image_list,trimmed_label_masks_list)
 print(f'missing masks:{len(missing_masks)} images(press output button to see the list)')
 
 
-# In[23]:
 
 
 print(list(missing_masks))
 
 
-# In[24]:
 
 
 sub=pd.read_csv(SAMPLE)
 sub.head()
 
 
-# In[25]:
 
 
 masks=os.listdir(BASE_PATH+'train_label_masks/')
@@ -235,7 +210,6 @@ df_train=pd.merge(train,df_masks,on='image_id',how='outer')
 del df_masks
 
 
-# In[26]:
 
 
 import seaborn as sns
@@ -250,25 +224,21 @@ def plot_count(df,feature,title='',size=2):
     plt.show()
 
 
-# In[27]:
 
 
 plot_count(train,'data_provider','Data provider-data count and percent')
 
 
-# In[28]:
 
 
 plot_count(train,'isup_grade','ISUP grade - data count and percent',size=3)
 
 
-# In[29]:
 
 
 plot_count(train,'gleason_score','Gleason score -data count and percent',size=3)
 
 
-# In[30]:
 
 
 fig,ax=plt.subplots(nrows=1,figsize=(12,6))
@@ -279,7 +249,6 @@ plt.title("Number of examinations grouped on ISUP grade and Gleason Score")
 plt.show()
 
 
-# In[31]:
 
 
 fig,ax=plt.subplots(nrows=1,figsize=(8,8))
@@ -289,7 +258,6 @@ plt.title('Number of examination grouped on ISUP grade and gleason score')
 plt.show()
 
 
-# In[32]:
 
 
 from IPython.display import HTML, display
@@ -309,7 +277,6 @@ display(HTML(
 ))
 
 
-# In[33]:
 
 
 fig, ax = plt.subplots(nrows=1,figsize=(12,6)) 
@@ -320,13 +287,11 @@ plt.title("Number of examinations grouped on Data provider and Gleason score")
 plt.show()
 
 
-# In[34]:
 
 
 df_train[(df_train.isup_grade==2)&(df_train.gleason_score !='3+4')]
 
 
-# In[35]:
 
 
 data_providers=df_train.data_provider.unique()
@@ -338,7 +303,6 @@ plt.ylabel("Count",Fontsize=14)
 plt.show()
 
 
-# In[36]:
 
 
 data_providers=df_train.gleason_score.unique()
@@ -350,7 +314,6 @@ plt.ylabel("Count",Fontsize=14)
 plt.show()
 
 
-# In[37]:
 
 
 def plot_relative_distribution(df, feature, hue, title='', size=2):
@@ -367,25 +330,21 @@ def plot_relative_distribution(df, feature, hue, title='', size=2):
     plt.show()
 
 
-# In[38]:
 
 
 plot_relative_distribution(df=train, feature='isup_grade', hue='data_provider', title = 'relative count plot of isup_grade with data_provider', size=2)
 
 
-# In[39]:
 
 
 plot_relative_distribution(df=train, feature='gleason_score', hue='data_provider', title = 'relative count plot of gleason_score with data_provider', size=3)
 
 
-# In[40]:
 
 
 plot_relative_distribution(df=train, feature='isup_grade', hue='gleason_score', title = 'relative count plot of isup_grade with gleason_score', size=3)
 
 
-# In[41]:
 
 
 def display_images(slides): 
@@ -407,7 +366,6 @@ def display_images(slides):
     plt.show() 
 
 
-# In[42]:
 
 
 images = ['07a7ef0ba3bb0d6564a73f4f3e1c2293','037504061b9fba71ef6e24c48c6df44d','035b1edd3d1aeeffc77ce5d248a01a53','059cbf902c5e42972587c8d17d49efed','06a0cbd8fd6320ef1aa6f19342af2e68','06eda4a6faca84e84a781fee2d5f47e1','0a4b7a7499ed55c71033cefb0765e93d','0838c82917cd9af681df249264d2769c','046b35ae95374bfb48cdca8d7c83233f','074c3e01525681a275a42282cd21cbde',
@@ -415,13 +373,11 @@ images = ['07a7ef0ba3bb0d6564a73f4f3e1c2293','037504061b9fba71ef6e24c48c6df44d',
 ]
 
 
-# In[43]:
 
 
 display_images(images)
 
 
-# In[44]:
 
 
 def display_masks(slides): 
@@ -446,13 +402,11 @@ def display_masks(slides):
     plt.show()
 
 
-# In[45]:
 
 
 display_masks(data_sample)
 
 
-# In[46]:
 
 
 data_providers = ['karolinska', 'radboud']
@@ -469,13 +423,11 @@ print(f"There are {len(train_df[train_df.mask_file_name.isna()])} images without
 train_df = train_df[~train_df.mask_file_name.isna()]
 
 
-# In[47]:
 
 
 display_masks(data_sample)
 
 
-# In[48]:
 
 
 sample_images = list(train.loc[train.gleason_score=="5+5", "image_id"])
@@ -486,7 +438,6 @@ data_sample = train.loc[train.image_id.isin(sample_images)]
 show_images(data_sample)
 
 
-# In[49]:
 
 
 def load_and_resize_image(img_id):
@@ -504,7 +455,6 @@ def load_and_resize_mask(img_id):
     return cv2.resize(biopsy[-1], (512, 512))[:,:,0]
 
 
-# In[50]:
 
 
 
@@ -543,7 +493,6 @@ for grade in range(train.isup_grade.nunique()):
     plt.show()
 
 Note : In the example below you can also observe a few pen marking slide (dark green smudges).These markings are not part of the tissue but were made by the pathologists who originally checked this case.These pen markings are available on some slides in the training set.
-# In[51]:
 
 
 def overlay_mask_on_slide(images, center='radboud', alpha=0.8, max_size=(800, 800)):
@@ -593,19 +542,16 @@ def overlay_mask_on_slide(images, center='radboud', alpha=0.8, max_size=(800, 80
         ax[i//3, i%3].set_title(f"ID: {image_id}\nSource: {data_provider} ISUP: {isup_grade} Gleason: {gleason_score}")
 
 
-# In[52]:
 
 
 overlay_mask_on_slide(images)
 
 
-# In[53]:
 
 
 overlay_mask_on_slide(images)
 
 
-# In[54]:
 
 
 pen_marked_images = [
@@ -627,13 +573,11 @@ pen_marked_images = [
 ]
 
 
-# In[55]:
 
 
 overlay_mask_on_slide(pen_marked_images)
 
 
-# In[56]:
 
 
 import time
@@ -660,7 +604,6 @@ end_time = time.time()
 print(f"Total processing time: {round(end_time - start_time,2)} sec.")
 
 
-# In[57]:
 
 
 
@@ -690,7 +633,6 @@ def to_Mish(model):
             to_Mish(child)
 
 
-# In[58]:
 
 
 def _resnext(url,block,layers,pretrained,progress,**kwargs):
@@ -717,7 +659,6 @@ class Model(nn.Module):
 models = []
 
 
-# In[59]:
 
 
 models = []
@@ -731,13 +672,11 @@ for path in MODELS:
     models.append(model)
 
 
-# In[60]:
 
 
 del state_dict
 
 
-# In[61]:
 
 
 def tile(img):
@@ -772,7 +711,6 @@ class PandaDataset(Dataset):
         return tiles.permute(0,3,1,2), name
 
 
-# In[62]:
 
 
 sub_df = pd.read_csv(SAMPLE)
@@ -801,14 +739,12 @@ if os.path.exists(DATA):
     
 
 
-# In[63]:
 
 
 sub_df.to_csv("submission.csv", index=False)
 sub_df.head(5)
 
 
-# In[ ]:
 
 
 

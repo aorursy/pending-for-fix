@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # data manipulation
@@ -30,7 +29,6 @@ import os
 print(os.listdir("../input"))
 
 
-# In[2]:
 
 
 train = pd.read_csv("../input/train.csv")
@@ -38,13 +36,11 @@ test = pd.read_csv("../input/test.csv")
 submission = pd.read_csv("../input/sample_submission.csv")
 
 
-# In[3]:
 
 
 train.shape
 
 
-# In[4]:
 
 
 X = train.drop(['ID_code','target'],axis=1)
@@ -53,20 +49,17 @@ y = train['target']
 X_test = test.drop('ID_code',axis=1)
 
 
-# In[5]:
 
 
 X['i_am_train'] = 1
 X_test['i_am_train'] = 0
 
 
-# In[6]:
 
 
 full = pd.concat([X,X_test],axis=0)
 
 
-# In[7]:
 
 
 your_feature='var_68'
@@ -76,19 +69,16 @@ plt.hist(full.loc[:, your_feature].values, bins=500);
 ax.axvline(your_threshold, c="red")
 
 
-# In[8]:
 
 
 full['var68_bin_index'] = np.digitize(full['var_68'],plt.hist(full.loc[:, your_feature].values, bins=500)[1])
 
 
-# In[9]:
 
 
 # [242,259,226,275,210,194,291,178,307,162,146,130,113,81,97,323,339,355,371,388,404]
 
 
-# In[10]:
 
 
 full['var_0' + "_bin"] = np.where(full.loc[:, 'var_0'] <= 12.1, 1, 0)
@@ -165,13 +155,11 @@ full['var_195' + "_bin"] = np.where(full.loc[:, 'var_195'] <= 3, 1, 0)
 full['var_196' + "_bin"] = np.where(full.loc[:, 'var_196'] <= 13.5, 1, 0)
 
 
-# In[11]:
 
 
 full.head()
 
 
-# In[12]:
 
 
 # Split back into train and test
@@ -181,32 +169,27 @@ X_test = full.loc[full['i_am_train']==0]
 del full
 
 
-# In[13]:
 
 
 del X['i_am_train'], del X_test['i_am_train']
 
 
-# In[14]:
 
 
 X.shape
 
 
-# In[15]:
 
 
 X_test.shape
 
 
-# In[16]:
 
 
 import lightgbm as lgb
 import time
 
 
-# In[17]:
 
 
 params = {'num_leaves': 13,
@@ -231,7 +214,6 @@ params = {'num_leaves': 13,
          'num_threads': 4}
 
 
-# In[18]:
 
 
 folds = StratifiedKFold(n_splits=5, random_state=42, shuffle=True)
@@ -253,7 +235,6 @@ for fold_n, (train_index, valid_index) in enumerate(folds.split(X,y)):
     prediction += model.predict(X_test, num_iteration=model.best_iteration)/5
 
 
-# In[19]:
 
 
 sub = pd.DataFrame({"ID_code": test.ID_code.values})
@@ -261,7 +242,6 @@ sub["target"] = prediction
 sub.to_csv('submission_original_bin.csv', index=False)
 
 
-# In[20]:
 
 
 oof = pd.DataFrame({"ID_code": train.ID_code.values})

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,33 +22,28 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[2]:
 
 
 sub=pd.read_csv('/kaggle/input/global-wheat-detection/sample_submission.csv')
 train_df=pd.read_csv('/kaggle/input/global-wheat-detection/train.csv')
 
 
-# In[3]:
 
 
 sub.head
 
 
-# In[ ]:
 
 
 
 
 
-# In[4]:
 
 
 from tqdm import tqdm
 import ast
 
 
-# In[5]:
 
 
 
@@ -57,7 +51,6 @@ import ast
 len(train_df["image_id"].unique())
 
 
-# In[6]:
 
 
 # Separating out the coordinates
@@ -71,7 +64,6 @@ for i in tqdm(train_df["bbox"]):
     height.append(cooridinates_list[3])
 
 
-# In[7]:
 
 
 train_df["xmin"] = xmin
@@ -81,7 +73,6 @@ train_df["height"] = height
 train_df.head()
 
 
-# In[13]:
 
 
 # Visualizing some samples from the training set
@@ -102,7 +93,6 @@ for row in ax:
 plt.show()
 
 
-# In[14]:
 
 
 import matplotlib.patches as patches
@@ -124,7 +114,6 @@ def get_bbox(image_id, df, col, color='white'):
         col.add_patch(rect)
 
 
-# In[15]:
 
 
 fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(20, 10))
@@ -141,7 +130,6 @@ for row in ax:
 plt.show()
 
 
-# In[16]:
 
 
 # Images without bounding box
@@ -151,25 +139,21 @@ images_w_bbox = ["/kaggle/input/global-wheat-detection/train/" + image_id + ".jp
 all_images = list(paths.list_images("/kaggle/input/global-wheat-detection/train/"))
 
 
-# In[17]:
 
 
 images_w_bbox[:5]
 
 
-# In[18]:
 
 
 all_images[:5]
 
 
-# In[19]:
 
 
 ax
 
 
-# In[20]:
 
 
 # Visualizing some images without any wheat heads
@@ -188,20 +172,17 @@ for row in ax:
 plt.show()'''
 
 
-# In[21]:
 
 
 images_wo_bbox = list(set(all_images) - set(images_w_bbox))
 images_wo_bbox[:5]
 
 
-# In[ ]:
 
 
 
 
 
-# In[12]:
 
 
 import matplotlib.patches as patches
@@ -213,13 +194,11 @@ import cv2
 import os
 
 
-# In[10]:
 
 
 pip install imutils
 
 
-# In[22]:
 
 
 def showbbox(image_path, xy, width, height):
@@ -239,19 +218,16 @@ def showbbox(image_path, xy, width, height):
     plt.show()
 
 
-# In[23]:
 
 
 train_df
 
 
-# In[24]:
 
 
 showbbox('/kaggle/input/global-wheat-detection/train/b6ab77fd7.jpg', (226.0, 548.0), 1024, 1024)
 
 
-# In[29]:
 
 
 p=[]
@@ -261,13 +237,11 @@ for i in (train_df['bbox']):
                
 
 
-# In[26]:
 
 
 p
 
 
-# In[27]:
 
 
 d=[]
@@ -277,7 +251,6 @@ for i in range(0,len(p)):
     d.append(s)
 
 
-# In[28]:
 
 
 dd=[]
@@ -287,33 +260,28 @@ for i in range(0,len(p)):
     dd.append(s1)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 #train['xmin']=pd.Series(d)
 #train['ymin']=pd.Series(dd)
 
 
-# In[30]:
 
 
 train_df
 
 
-# In[ ]:
 
 
 #train['xmin']=train['xmin'].astype('float')
 #train['ymin']=train['ymin'].astype('float')
 
 
-# In[31]:
 
 
 train_df["xmax"] = train_df["xmin"] + train_df["width"]
@@ -321,7 +289,6 @@ train_df["ymax"] = train_df["ymin"] + train_df["height"]
 train_df.head()
 
 
-# In[33]:
 
 
 # Rename the image_id column to filename & add full paths
@@ -335,7 +302,6 @@ train_df["filename"] = images_w_bbox
 train_df.head()
 
 
-# In[34]:
 
 
 # Drop the unnecessary columns, we will return to this step in a moment
@@ -343,14 +309,12 @@ train_df.drop(["source", "bbox"], axis=1, inplace=True)
 train_df.head()
 
 
-# In[35]:
 
 
 import math
 math.floor(2.3)
 
 
-# In[36]:
 
 
 # Add a class column 
@@ -358,7 +322,6 @@ train_df["class"] = "wheat_head"
 train_df.head()
 
 
-# In[37]:
 
 
 # Prepare the splits
@@ -369,7 +332,6 @@ print("Training samples:", train1.shape[0])
 print("Validation samples:", valid.shape[0])
 
 
-# In[38]:
 
 
 
@@ -377,7 +339,6 @@ train1 = train1.reset_index(drop=True)
 train1.head()
 
 
-# In[39]:
 
 
 
@@ -385,7 +346,6 @@ valid = valid.reset_index(drop=True)
 valid.head()
 
 
-# In[40]:
 
 
 # Serialize the dataframes
@@ -393,7 +353,6 @@ train1.to_csv("new_train_df.csv")
 valid.to_csv("valid_df.csv")
 
 
-# In[41]:
 
 
 
@@ -416,19 +375,16 @@ for (k, v) in LABEL_ENCODINGS.items():
 f.close()
 
 
-# In[42]:
 
 
 get_ipython().system('cat label_map.pbtxt')
 
 
-# In[ ]:
 
 
 
 
 
-# In[43]:
 
 
 '''from __future__ import division
@@ -519,13 +475,11 @@ if __name__ == '__main__':
     tf.app.run()'''
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 

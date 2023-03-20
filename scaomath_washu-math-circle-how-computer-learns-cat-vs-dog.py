@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 print("This is a code cell.")
@@ -9,7 +8,6 @@ print("Hello world")
 print(f"Hello world, time is {3} o'clock")
 
 
-# In[ ]:
 
 
 # Simple variable assignment
@@ -18,14 +16,12 @@ print(f"Hello world, time is {3} o'clock")
 x = 5/3
 
 
-# In[ ]:
 
 
 y = x*3
 print(y)
 
 
-# In[ ]:
 
 
 # simple calculations
@@ -35,104 +31,88 @@ print(2**3*3) # computer 2**3 first, 8 is multiplied with 3
 print(1/2+1) # 1/2 first, +1 computed secondly
 
 
-# In[ ]:
 
 
 print(2***5) # unfortunately tetration is not built-in Python
 
 
-# In[ ]:
 
 
 # browse the Cats vs dog competition
 
 
-# In[ ]:
 
 
 # == vs =
 a = 2 # we let a be 2
 
 
-# In[ ]:
 
 
 type(a)
 
 
-# In[ ]:
 
 
 dir(a)
 
 
-# In[ ]:
 
 
 # == is checking whether a variable is equal to whatever on the right side of ==
 a == 3
 
 
-# In[ ]:
 
 
 s = 'David'
 print(type(s))
 
 
-# In[ ]:
 
 
 False is not True
 
 
-# In[ ]:
 
 
 a = 5.
 type(a)
 
 
-# In[ ]:
 
 
 a = 7
 type(a)
 
 
-# In[ ]:
 
 
 s1 = [a, s]
 print(s1)
 
 
-# In[ ]:
 
 
 type({2,3})
 
 
-# In[ ]:
 
 
 dict1 = {'Shuhao': 'instructor'}
 
 
-# In[ ]:
 
 
 # simple logical checking == or using "is"
 dict1['Shuhao'] == 'student'
 
 
-# In[ ]:
 
 
 1 is 0
 
 
-# In[ ]:
 
 
 # simple if-then condition
@@ -145,7 +125,6 @@ if 1 is 0:
     print("1 is 0")
 
 
-# In[ ]:
 
 
 # range(a,b) the integer greater than or equal to a but less than b
@@ -154,7 +133,6 @@ for i in range(0,5):
         print(i)
 
 
-# In[ ]:
 
 
 import os
@@ -166,52 +144,44 @@ import seaborn as sns
 import random
 
 
-# In[ ]:
 
 
 dir(pandas)
 
 
-# In[ ]:
 
 
 dir(pd)
 
 
-# In[ ]:
 
 
 import site
 site.getsitepackages()
 
 
-# In[ ]:
 
 
 help(pd)
 
 
-# In[ ]:
 
 
 print(os.listdir("../input/dogs-vs-cats/"))
 
 
-# In[ ]:
 
 
 get_ipython().system("unzip -q '../input/dogs-vs-cats/train.zip'")
 get_ipython().system("unzip -q '../input/dogs-vs-cats/test1.zip'")
 
 
-# In[49]:
 
 
 filenames = os.listdir("./train")
 print(filenames[:10])
 
 
-# In[50]:
 
 
 categories = []
@@ -229,19 +199,16 @@ df = pd.DataFrame({
 print(df.head(20))
 
 
-# In[51]:
 
 
 len(filenames)
 
 
-# In[53]:
 
 
 from keras.preprocessing.image import load_img
 
 
-# In[74]:
 
 
 sample = random.choice(filenames)
@@ -251,7 +218,6 @@ fig.set_size_inches(6,6)
 plt.imshow(image);
 
 
-# In[67]:
 
 
 from keras import layers, applications, optimizers, callbacks
@@ -297,19 +263,16 @@ model.compile(loss='binary_crossentropy',
 model.summary()
 
 
-# In[68]:
 
 
 plot_model(model, to_file='/model_vgg16.png', show_shapes=True)
 
 
-# In[69]:
 
 
 df['category'] = df['category'].astype('str')
 
 
-# In[70]:
 
 
 train_df, validate_df = train_test_split(df, test_size=0.1)
@@ -323,7 +286,6 @@ total_train = train_df.shape[0]
 total_validate = validate_df.shape[0]
 
 
-# In[71]:
 
 
 train_datagen = ImageDataGenerator(
@@ -359,7 +321,6 @@ validation_generator = validation_datagen.flow_from_dataframe(
 )
 
 
-# In[75]:
 
 
 example_df = train_df.sample(n=1).reset_index(drop=True)
@@ -381,7 +342,6 @@ plt.tight_layout()
 plt.show()
 
 
-# In[76]:
 
 
 test_filenames = os.listdir("./test1/")
@@ -403,7 +363,6 @@ test_generator = test_gen.flow_from_dataframe(
 )
 
 
-# In[77]:
 
 
 # this may take a while
@@ -412,7 +371,6 @@ threshold = 0.5
 test_df['category'] = np.where(predict > threshold, 1,0)
 
 
-# In[78]:
 
 
 sample_test = test_df.sample(n=9).reset_index()
@@ -429,14 +387,12 @@ plt.tight_layout()
 plt.show()
 
 
-# In[79]:
 
 
 model = load_model('../input/vgg16catsvsdogs/model_0_vgg16.h5')
 model.summary()
 
 
-# In[80]:
 
 
 # this may take a while
@@ -445,7 +401,6 @@ threshold = 0.5
 test_df['category'] = np.where(predict > threshold, 1,0)
 
 
-# In[87]:
 
 
 sample_test = test_df.sample(n=9).reset_index()
@@ -462,28 +417,24 @@ plt.tight_layout()
 plt.show()
 
 
-# In[88]:
 
 
 # example of scalar, vector, matrix
 s = 1.34992
 
 
-# In[89]:
 
 
 v = [1, 3, 5.2]
 print(v)
 
 
-# In[90]:
 
 
 m = [[1,3], [8,9]]
 print(m)
 
 
-# In[91]:
 
 
 m = np.array(m)
@@ -491,7 +442,6 @@ print(type(m))
 print(m)
 
 
-# In[94]:
 
 
 # example of imshow
@@ -499,13 +449,11 @@ a = np.array([[0,4], [2,10]])
 plt.imshow(a);
 
 
-# In[95]:
 
 
 pokemon_filename = os.listdir("../input/pokemon-images-dataset/pokemon_jpg/pokemon_jpg/")
 
 
-# In[96]:
 
 
 random_pokemon = random.choice(pokemon_filename)
@@ -513,75 +461,63 @@ G = plt.imread("../input/pokemon-images-dataset/pokemon_jpg/pokemon_jpg/"+random
 plt.imshow(G)
 
 
-# In[97]:
 
 
 G
 
 
-# In[99]:
 
 
 m.shape
 
 
-# In[98]:
 
 
 G.shape # 3 represents the Red, Green, Blue color 
 
 
-# In[100]:
 
 
 # indexing
 G1 = G[:,:,0] # take the red channel
 
 
-# In[103]:
 
 
 G1.shape
 
 
-# In[102]:
 
 
 # show only 1 color channel
 plt.imshow(G1)
 
 
-# In[104]:
 
 
 pkmn = pd.read_csv('../input/pokemon/Pokemon.csv')
 
 
-# In[105]:
 
 
 pkmn.sample(20)
 
 
-# In[106]:
 
 
 sns.countplot(pkmn['Generation']) # sns means seaborn
 
 
-# In[107]:
 
 
 pkmn = pkmn.drop(['Generation', 'Legendary'],1)
 
 
-# In[113]:
 
 
 sns.jointplot(x="HP", y="Speed", data=pkmn);
 
 
-# In[ ]:
 
 
 sns.jointplot(x="Attack", y="Defense", data=pkmn, kind='hex');

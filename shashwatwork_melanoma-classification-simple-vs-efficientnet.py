@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import pandas as pd
@@ -47,7 +46,6 @@ get_ipython().system('pip install -q efficientnet')
 import efficientnet.tfkeras as efn
 
 
-# In[2]:
 
 
 IMAGE_PATH = "../input/siim-isic-melanoma-classification/"
@@ -67,27 +65,23 @@ display('**TEST DATA**')
 display(test_df.info())
 
 
-# In[3]:
 
 
 train_df.sample(20)
 
 
-# In[4]:
 
 
 fig = px.scatter_matrix(train_df,dimensions=["age_approx", "sex", "target",'anatom_site_general_challenge','diagnosis'], color="benign_malignant")
 fig.show()
 
 
-# In[5]:
 
 
 print(train_df.benign_malignant.value_counts())
 sns.countplot(x = 'benign_malignant',data=train_df)
 
 
-# In[6]:
 
 
 df_sub = train_df.anatom_site_general_challenge.value_counts().reset_index()
@@ -97,7 +91,6 @@ fig = px.bar(df_sub, x="anatom_site_general_challenge", y="Counts", color='anato
 fig.show()
 
 
-# In[7]:
 
 
 df_sub = train_df.diagnosis.value_counts().reset_index()
@@ -107,7 +100,6 @@ fig = px.bar(df_sub, x="diagnosis", y="Counts", color='diagnosis', barmode='grou
 fig.show()
 
 
-# In[8]:
 
 
 fig = plt.figure(figsize=(15,8),)
@@ -118,38 +110,32 @@ plt.ylabel("Frequency of Age", fontsize = 15, labelpad = 20)
 plt.xlabel("Age", fontsize = 15, labelpad = 20);
 
 
-# In[9]:
 
 
 fig = px.histogram(train_df, x="age_approx", y="benign_malignant", color="benign_malignant", marginal="rug")
 fig.show()
 
 
-# In[10]:
 
 
 df = train_df.copy()
 
 
-# In[11]:
 
 
 get_ipython().run_cell_magic('time', '', 'def get_df():\n    base_image_dir = \'../input/siim-isic-melanoma-classification/jpeg/\'\n    train_dir = os.path.join(base_image_dir,\'train/\')\n    train = pd.read_csv(\'../input/siim-isic-melanoma-classification/train.csv\')\n    df_0=train[train[\'target\']==0].sample(2000)\n    df_1=train[train[\'target\']==1]\n    df=pd.concat([df_0,df_1])\n    df[\'path\'] = df[\'image_name\'].map(lambda x: os.path.join(train_dir,\'{}.jpg\'.format(x)))\n    df["image_name"]=train_df["image_name"].apply(lambda x:x+".jpg")\n    df[\'image\'] = df[\'path\'].map(lambda x: np.asarray(Image.open(x).resize((100,75))))\n    df[\'target\'] = df[\'target\'].astype(str)\n    return df\n\ndf = get_df()')
 
 
-# In[12]:
 
 
 df.head()
 
 
-# In[13]:
 
 
 df['image'].map(lambda x: x.shape).value_counts()
 
 
-# In[14]:
 
 
 def display_samples(df, columns=4, rows=3):
@@ -170,7 +156,6 @@ def display_samples(df, columns=4, rows=3):
 display_samples(train_df)
 
 
-# In[15]:
 
 
 y = df.target
@@ -192,7 +177,6 @@ x_train = (x_train - x_train_mean)/x_train_std
 x_test = (x_test - x_test_mean)/x_test_std
 
 
-# In[16]:
 
 
 print('Shape of X_train : ',x_train.shape)
@@ -202,7 +186,6 @@ print('Shape of X_val : ',x_test.shape)
 print('Shape of y_val : ',y_test.shape)
 
 
-# In[17]:
 
 
 input_shape = (75, 100, 3)
@@ -221,7 +204,6 @@ model.add(Dense(1, activation='sigmoid'))
 model.summary()
 
 
-# In[18]:
 
 
 model.compile(loss=keras.losses.binary_crossentropy,
@@ -229,14 +211,12 @@ model.compile(loss=keras.losses.binary_crossentropy,
               metrics=['accuracy'])
 
 
-# In[19]:
 
 
 checkpoint = ModelCheckpoint("model1.h5", monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=1)
 early = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=1, mode='auto')
 
 
-# In[20]:
 
 
 batch_size = 32 # Todo: experiment with this variable more
@@ -254,7 +234,6 @@ print('Test loss:', score[0])
 print('Test accuracy:', score[1])
 
 
-# In[21]:
 
 
 fig, ax = plt.subplots(2,1)
@@ -267,13 +246,11 @@ ax[1].plot(history.history['val_accuracy'], color='r',label="Validation accuracy
 legend = ax[1].legend(loc='best', shadow=True)
 
 
-# In[22]:
 
 
 submission=pd.read_csv('/kaggle/input/siim-isic-melanoma-classification/sample_submission.csv')
 
 
-# In[23]:
 
 
 test_dir = IMAGE_PATH + 'jpeg/test/'
@@ -284,7 +261,6 @@ df_test=pd.DataFrame(test_data)
 df_test.columns=['images']
 
 
-# In[24]:
 
 
 target=[]
@@ -300,21 +276,18 @@ for path in df_test['images']:
 submission['target']=target
 
 
-# In[25]:
 
 
 submission.to_csv('submission.csv', index=False)
 submission.head()
 
 
-# In[26]:
 
 
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential
 
 
-# In[27]:
 
 
 X = df.path.values
@@ -324,7 +297,6 @@ X_train, X_test, y_train, y_test =train_test_split(X, y, test_size=0.1, random_s
 print('done!')
 
 
-# In[28]:
 
 
 AUTO = tf.data.experimental.AUTOTUNE
@@ -344,14 +316,12 @@ else:
 print("REPLICAS: ", strategy.num_replicas_in_sync)
 
 
-# In[29]:
 
 
 BATCH_SIZE = 4 * strategy.num_replicas_in_sync
 STEPS_PER_EPOCH = y_train.shape[0] // BATCH_SIZE
 
 
-# In[30]:
 
 
 def decode_image(filename, label=None, image_size=(100,75)):
@@ -377,7 +347,6 @@ def data_augment(image, label=None):
         return image, label
 
 
-# In[31]:
 
 
 train_dataset = (
@@ -400,7 +369,6 @@ valid_dataset = (
 )
 
 
-# In[32]:
 
 
 def build_lrfn(lr_start=0.00001, lr_max=0.00005,lr_min=0.00001, lr_rampup_epochs=5,lr_sustain_epochs=0, lr_exp_decay=.8):
@@ -417,7 +385,6 @@ def build_lrfn(lr_start=0.00001, lr_max=0.00005,lr_min=0.00001, lr_rampup_epochs
     return lrfn
 
 
-# In[33]:
 
 
 lrfn = build_lrfn()
@@ -425,7 +392,6 @@ lr_schedule = tf.keras.callbacks.LearningRateScheduler(lrfn, verbose=1)
 EarlyStopping=tf.keras.callbacks.EarlyStopping(monitor="val_loss",patience=10,verbose=True, mode="min")
 
 
-# In[34]:
 
 
 def Eff_B7_NS():
@@ -440,7 +406,6 @@ def Eff_B7_NS():
     return model_EfficientNetB7_NS
 
 
-# In[35]:
 
 
 with strategy.scope():
@@ -450,7 +415,6 @@ model_Eff_B7_NS.summary()
 #del model_Eff_B7_NS
 
 
-# In[36]:
 
 
 EfficientNetB7_NS = model_Eff_B7_NS.fit(train_dataset,
@@ -460,7 +424,6 @@ EfficientNetB7_NS = model_Eff_B7_NS.fit(train_dataset,
                     validation_data=valid_dataset)
 
 
-# In[37]:
 
 
 plt.figure()

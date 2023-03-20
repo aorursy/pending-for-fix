@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 
@@ -16,13 +15,11 @@ import tensorflow as tf
 
 
 
-# In[ ]:
 
 
 img_size=384
 
 
-# In[ ]:
 
 
 def binary_focal_loss(gamma=2., alpha=.75):
@@ -54,7 +51,6 @@ def binary_focal_loss(gamma=2., alpha=.75):
     return binary_focal_loss_fixed
 
 
-# In[ ]:
 
 
 
@@ -76,7 +72,6 @@ def basic_model():
     
 
 
-# In[ ]:
 
 
 def dense_added_model():
@@ -98,7 +93,6 @@ def dense_added_model():
     return model
 
 
-# In[ ]:
 
 
 def residual_block(y,nb_channels_in,nb_channels_out,strides=(1,1)):
@@ -152,7 +146,6 @@ def eff_res():
     
 
 
-# In[ ]:
 
 
 

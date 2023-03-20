@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,31 +19,26 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 df = pd.read_csv('../input/train.csv')
 
 
-# In[ ]:
 
 
 df.info()
 
 
-# In[ ]:
 
 
 df.head()
 
 
-# In[ ]:
 
 
 df['channelGrouping'].unique()
 
 
-# In[ ]:
 
 
 def DeviceSplitter(inputString):
@@ -59,44 +53,37 @@ def DeviceSplitter(inputString):
     #print(isMobile)
 
 
-# In[ ]:
 
 
 DeviceSplitter(df['device'].iloc[0])
 
 
-# In[ ]:
 
 
 get_ipython().run_cell_magic('time', '', "random_row = df['device'].apply(DeviceSplitter)")
 
 
-# In[ ]:
 
 
 from sklearn.feature_extraction import FeatureHasher
 random_row
 
 
-# In[ ]:
 
 
 h = FeatureHasher(n_features=5)
 
 
-# In[ ]:
 
 
 f1 = h.fit_transform(random_row)
 
 
-# In[ ]:
 
 
 pd.concat([pd.DataFrame(f1.toarray()), random_row], axis = 1)
 
 
-# In[ ]:
 
 
 def 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().run_line_magic('reset', '-f')
@@ -101,7 +100,6 @@ X_df_train_SINGLE=X_df_train_SINGLE.apply(lambda x: pandas.to_numeric(x, errors=
 X_df_train_SINGLE.head(5)
 
 
-# In[2]:
 
 
 from scipy.optimize import fmin_powell
@@ -134,7 +132,6 @@ with pm.Model() as logistic_model:
     likelihood = pm.Bernoulli('likelihood', p, observed=y)
 
 
-# In[3]:
 
 
 ax = pm.traceplot(trace_logistic_model[-1000:], figsize=(12,len(trace_logistic_model.varnames)*1.5),  
@@ -150,7 +147,6 @@ w_theta = df_trace_logistic_model[last_cols].mean(0)
 # pm.summary(trace_logistic_model[-1000:])
 
 
-# In[4]:
 
 
 # --------------------------------------------------------
@@ -231,31 +227,26 @@ In [ ]:
 
 
 
-# In[5]:
 
 
 
 
 
-# In[5]:
 
 
 
 
 
-# In[5]:
 
 
 
 
 
-# In[5]:
 
 
 
 
 
-# In[5]:
 
 
 

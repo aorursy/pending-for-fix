@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -25,7 +24,6 @@ from tqdm import tqdm
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 # read csv
@@ -33,7 +31,6 @@ cities = pd.read_csv("../input/cities.csv")
 smpsb_df = pd.read_csv("../input/sample_submission.csv")
 
 
-# In[ ]:
 
 
 # red point is start and goal
@@ -41,7 +38,6 @@ cities.plot.scatter(x="X", y="Y", s=1, alpha=.1)
 plt.scatter(cities.iloc[0: 1, 1], cities.iloc[0: 1, 2], s=10, c="red")
 
 
-# In[ ]:
 
 
 X = cities.X.values.astype(np.float64)
@@ -51,7 +47,6 @@ print("Y: [{:.2}, {:.5}]".format(cities.Y.min(), cities.Y.max()))
 cities = cities.iloc[1:, :]
 
 
-# In[ ]:
 
 
 # initialize path
@@ -74,7 +69,6 @@ path.append(0)
 assert len(path) == 197770
 
 
-# In[ ]:
 
 
 # calculate pathlength
@@ -96,14 +90,12 @@ for i in tqdm(range(197770 - 1)):
 before_length
 
 
-# In[ ]:
 
 
 
 for i in range()
 
 
-# In[ ]:
 
 
 from datetime import datetime as dt
@@ -133,7 +125,6 @@ print("{} sec".format((toc-tic).seconds))
 print("swapping rate is:", swap / 1000000)
 
 
-# In[ ]:
 
 
 after_length = 0
@@ -142,7 +133,6 @@ for i in tqdm(range(197770 - 1)):
 after_length
 
 
-# In[ ]:
 
 
 # submit file

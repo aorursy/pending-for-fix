@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 RUNNING_ON_KAGGLE = True
@@ -14,7 +13,6 @@ else:
 spell('horse')
 
 
-# In[ ]:
 
 
 from multiprocessing import Pool, cpu_count
@@ -81,7 +79,6 @@ for set_name in [] #['train', 'test']:
         result.to_csv('sp_check_'+set_name+'.csv')
 
 
-# In[ ]:
 
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 a simple SVD with 10 axis used as similarity (actually i couldn't see much difference with 3 axis already')
@@ -109,7 +107,6 @@ Column40	28.3%	64	Quercus_Variabilis
   [1]: http://www.gaverapotheek.be/SVD/SVD10d.htm
 
 
-# In[3]:
 
 
 Try a second leaf nr 9

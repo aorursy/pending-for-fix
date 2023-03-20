@@ -1,26 +1,22 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().system('pip install facenet-pytorch > /dev/null 2>&1')
 get_ipython().system('apt install zip > /dev/null 2>&1')
 
 
-# In[2]:
 
 
 ls ../input/dfdc-full-data-csv
 
 
-# In[3]:
 
 
 mkdir /kaggle/working/tmp
 
 
-# In[4]:
 
 
 ##################################
@@ -881,19 +877,16 @@ log_finish(TMP_DIR_PART)
 ###########################################################
 
 
-# In[5]:
 
 
 ls /kaggle/working/candidate_all/bgpoldvzrh
 
 
-# In[6]:
 
 
 ls /kaggle/working/tmp/bgpoldvzrh/
 
 
-# In[7]:
 
 
 def draw_png(png):
@@ -962,7 +955,6 @@ def draw_png2_2(png1, png2, png3, png4):
     return
 
 
-# In[8]:
 
 
 draw_png2_2('/kaggle/working/tmp/bgpoldvzrh/bgpoldvzrh0000.png',
@@ -971,25 +963,21 @@ draw_png2_2('/kaggle/working/tmp/bgpoldvzrh/bgpoldvzrh0000.png',
           '/kaggle/working/tmp/bgpoldvzrh/graph-frame-yc.png')
 
 
-# In[9]:
 
 
 ls /kaggle/working/tmp/bgpoldvzrh/FAKES/txdcmspaaa
 
 
-# In[10]:
 
 
 draw_png('/kaggle/working/tmp/bgpoldvzrh/FAKES/txdcmspaaa/graph-frame-std.png')
 
 
-# In[11]:
 
 
 ls /kaggle/working/tmp/bgpoldvzrh/FAKES/txdcmspaaa/candidate
 
 
-# In[12]:
 
 
 draw_png1_4(
@@ -999,13 +987,11 @@ draw_png1_4(
     '/kaggle/working/tmp/bgpoldvzrh/FAKES/txdcmspaaa/candidate/bgpoldvzrh-txdcmspaaa_f_0113_0562_0515_006.0.png')
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 

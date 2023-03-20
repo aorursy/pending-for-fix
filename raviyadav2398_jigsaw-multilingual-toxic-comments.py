@@ -1,49 +1,41 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().system('pip install --upgrade pyicu')
 
 
-# In[2]:
 
 
 get_ipython().system('pip install -q polyglot')
 
 
-# In[3]:
 
 
 get_ipython().system('pip install --upgrade Word2Vec')
 
 
-# In[4]:
 
 
 get_ipython().system('pip install  --upgrade smart-open')
 
 
-# In[5]:
 
 
 get_ipython().system('pip install --upgrade utils')
 
 
-# In[6]:
 
 
 get_ipython().system('pip install --upgrade googletrans')
 
 
-# In[7]:
 
 
 get_ipython().system('pip install --upgrade pycld2')
 
 
-# In[8]:
 
 
 import warnings
@@ -160,7 +152,6 @@ tokenizer=TweetTokenizer()
 np.random.seed(0)
 
 
-# In[9]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -181,21 +172,18 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[10]:
 
 
 valid1=pd.read_csv('/kaggle/input/jigsaw-multilingual-toxic-test-translated/jigsaw_miltilingual_valid_translated.csv')
 valid1.head()
 
 
-# In[11]:
 
 
 validate=pd.read_csv('/kaggle/input/jigsaw-multilingual-toxic-comment-classification/validation-processed-seqlen128.csv')
 validate.head()
 
 
-# In[12]:
 
 
 comment=pd.read_csv("/kaggle/input/jigsaw-multilingual-toxic-comment-classification/jigsaw-toxic-comment-train-processed-seqlen128.csv")
@@ -203,7 +191,6 @@ display(comment.head())
 print("Shape:",comment.shape)
 
 
-# In[13]:
 
 
 validation=pd.read_csv("/kaggle/input/jigsaw-multilingual-toxic-comment-classification/validation.csv")
@@ -211,7 +198,6 @@ display(validation.head())
 print('shape:',validation.shape)
 
 
-# In[14]:
 
 
 test_processed=pd.read_csv("/kaggle/input/jigsaw-multilingual-toxic-comment-classification/test-processed-seqlen128.csv")
@@ -219,7 +205,6 @@ display(test_processed.head())
 print('shape:',test_processed.shape)
 
 
-# In[15]:
 
 
 train=pd.read_csv("/kaggle/input/jigsaw-multilingual-toxic-comment-classification/jigsaw-toxic-comment-train.csv")
@@ -227,7 +212,6 @@ display(train.head())
 print("Shape:",train.shape)
 
 
-# In[16]:
 
 
 test=pd.read_csv('/kaggle/input/jigsaw-multilingual-toxic-comment-classification/test.csv')
@@ -235,19 +219,16 @@ display(test.head())
 print("shape:",test.shape)
 
 
-# In[17]:
 
 
 test['lang'].unique()
 
 
-# In[18]:
 
 
 sns.countplot(test['lang'])
 
 
-# In[19]:
 
 
 train_bias=pd.read_csv("/kaggle/input/jigsaw-multilingual-toxic-comment-classification/jigsaw-unintended-bias-train-processed-seqlen128.csv")
@@ -255,20 +236,17 @@ display(train_bias.head())
 print("shape:",train_bias.shape)
 
 
-# In[20]:
 
 
 train_bias.columns
 
 
-# In[21]:
 
 
 submission=pd.read_csv("/kaggle/input/jigsaw-multilingual-toxic-comment-classification/sample_submission.csv")
 submission.head()
 
 
-# In[22]:
 
 
 nrow_train=train.shape[0]
@@ -279,7 +257,6 @@ print("rows   :",nrow_train,":",nrow_test)
 print("perc   :",round(nrow_train*100/sum),"   :",round(nrow_test*100/sum))
 
 
-# In[23]:
 
 
 x=train.iloc[:,2:].sum()
@@ -293,7 +270,6 @@ print("Total clean comments = ",train['clean'].sum())
 print("Total tags =",x.sum())
 
 
-# In[24]:
 
 
 print("Check for missing values in Train dataset")
@@ -304,7 +280,6 @@ print("filling NA with \"unknown\"")
 train["comment_text"].fillna("unknown", inplace=True)
 
 
-# In[25]:
 
 
 print("Check for missing values in Test dataset")
@@ -313,7 +288,6 @@ print(null_check)
 print("filling NA with \"unknown\"")
 
 
-# In[26]:
 
 
 label_cols = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
@@ -321,7 +295,6 @@ train['none'] = 1-train[label_cols].max(axis=1)
 train.describe()
 
 
-# In[27]:
 
 
 print("toxic:")
@@ -329,7 +302,6 @@ print(train[train.severe_toxic==1].iloc[3,1])
 #print(train[train.severe_toxic==1].iloc[5,1])
 
 
-# In[28]:
 
 
 print("severe_toxic:")
@@ -337,28 +309,24 @@ print(train[train.severe_toxic==1].iloc[4,1])
 #print(train[train.severe_toxic==1].iloc[4,1])
 
 
-# In[29]:
 
 
 print("Threat:")
 print(train[train.threat==1].iloc[1,1])
 
 
-# In[30]:
 
 
 print("Obscene:")
 print(train[train.obscene==1].iloc[1,1])
 
 
-# In[31]:
 
 
 print("identity_hate:")
 print(train[train.identity_hate==1].iloc[4,1])
 
 
-# In[32]:
 
 
 x=train.iloc[:,2:].sum()
@@ -378,7 +346,6 @@ for rect, label in zip(rects, labels):
 plt.show()
 
 
-# In[33]:
 
 
 x=rowsums.value_counts()
@@ -398,7 +365,6 @@ for rect, label in zip(rects, labels):
     ax.text(rect.get_x() + rect.get_width()/2, height + 5, label, ha='center', va='bottom')
 
 
-# In[34]:
 
 
 fig = go.Figure(data=[
@@ -410,7 +376,6 @@ fig.update_layout(title_text="Pie chart of labels")
 fig.show()
 
 
-# In[35]:
 
 
 temp_df=train.iloc[:,2:-1]
@@ -424,7 +389,6 @@ sns.heatmap(corr,
             yticklabels=corr.columns.values, annot=True)
 
 
-# In[36]:
 
 
 # https://pandas.pydata.org/pandas-docs/stable/style.html
@@ -441,7 +405,6 @@ def highlight_min(data, color='orange'):
         return pd.DataFrame(np.where(is_min, attr, ''),index=data.index, columns=data.columns)
 
 
-# In[37]:
 
 
 #Crosstab
@@ -459,7 +422,6 @@ out = out.style.apply(highlight_min,axis=0)
 out
 
 
-# In[38]:
 
 
 def nonan(x):
@@ -473,20 +435,17 @@ fig=px.imshow(wordcloud)
 fig.update_layout(title="Common words in comments")
 
 
-# In[39]:
 
 
 get_ipython().system('du -l ../input/*')
 
 
-# In[40]:
 
 
 get_ipython().system('ls ../input/imagesforkernal/')
 stopword=set(STOPWORDS)
 
 
-# In[41]:
 
 
 #clean comments
@@ -504,7 +463,6 @@ plt.imshow(wc.recolor(colormap= 'viridis' , random_state=17), alpha=0.98)
 plt.show()
 
 
-# In[42]:
 
 
 toxic_mask=np.array(Image.open("../input/imagesforkernal/toxic-sign.png"))
@@ -561,7 +519,6 @@ plt.imshow(wc.recolor(colormap= 'Paired_r' , random_state=244), alpha=0.98)
 plt.show()
 
 
-# In[43]:
 
 
 #identity_hate
@@ -584,7 +541,6 @@ plt.imshow(wc.recolor(colormap= 'Paired_r' , random_state=244), alpha=0.98)
 
 
 
-# In[44]:
 
 
 #obsence
@@ -600,7 +556,6 @@ plt.title("Words frequented in obscene Comments", fontsize=20)
 plt.imshow(wc.recolor(colormap= 'Paired_r' , random_state=244), alpha=0.98)
 
 
-# In[45]:
 
 
 def get_language(text):
@@ -609,7 +564,6 @@ def get_language(text):
 train["lang"] = train["comment_text"].progress_apply(get_language)
 
 
-# In[46]:
 
 
 lang_list=sorted(list(set(train["lang"])))
@@ -625,13 +579,11 @@ fig=px.bar(df,x="Language",y="Count",title="Language of comments",color='Languag
 display(fig)
 
 
-# In[47]:
 
 
 df["Count"].sum()
 
 
-# In[48]:
 
 
 fig = px.bar(df.query(" Language!='un' & Language != 'en'").query("Count >= 50"),y="Language", x="Count", title="Language of non-English comments",template="plotly_white", color="Language", text="Count", orientation="h")
@@ -640,7 +592,6 @@ fig.update_layout(showlegend=False)
 fig
 
 
-# In[49]:
 
 
 fig = go.Figure([go.Pie(labels=df.query("Language!='un' & Language != 'en'").query("Count >= 50")["Language"],
@@ -652,7 +603,6 @@ fig.data[0].textposition = "outside"
 fig.show()
 
 
-# In[50]:
 
 
 def get_country(Language):
@@ -705,7 +655,6 @@ def get_country(Language):
 df["country"]=df["Language"].progress_apply(get_country)
 
 
-# In[51]:
 
 
 
@@ -715,7 +664,6 @@ fig = px.choropleth(df.query("Language != 'en'& Language != 'un' & country != 'N
 fig.show()
 
 
-# In[52]:
 
 
 fig = px.choropleth(df.query("Language != 'en' & Language != 'un' & country != 'None'"), locations="country", hover_name="country", projection="natural earth", locationmode="country names", title="Non-English European countries", color="Count",template="plotly", color_continuous_scale="aggrnyl", scope="europe")
@@ -724,7 +672,6 @@ fig = px.choropleth(df.query("Language != 'en' & Language != 'un' & country != '
 fig.show()
 
 
-# In[53]:
 
 
 fig = px.choropleth(df.query("Language != 'en' & Language != 'un' "), locations="country", hover_name="country",
@@ -735,7 +682,6 @@ fig = px.choropleth(df.query("Language != 'en' & Language != 'un' "), locations=
 fig.show()
 
 
-# In[54]:
 
 
 fig = px.choropleth(df.query("Language != 'English' & Language != 'un' & country != 'None'").query("Count >= 5"), locations="country", hover_name="country",
@@ -746,14 +692,12 @@ fig = px.choropleth(df.query("Language != 'English' & Language != 'un' & country
 fig.show()
 
 
-# In[55]:
 
 
 merge=pd.concat([train.iloc[:,0:2],test.iloc[:,0:2]])
 df=merge.reset_index(drop=True)
 
 
-# In[56]:
 
 
 ## Indirect features
@@ -769,7 +713,6 @@ df['count_letters']=df["comment_text"].apply(lambda x:len(str(x)))
 #punctuation count
 
 
-# In[57]:
 
 
 #upper case words count
@@ -783,7 +726,6 @@ df["count_stopwords"]=df["comment_text"].apply(lambda x:len([w for w in str(x).l
 df["mean_word_len"]=df["comment_text"].apply(lambda x: np.mean([len(w) for w in str(x).split()]))
 
 
-# In[58]:
 
 
 #derived features
@@ -792,7 +734,6 @@ df['word_unique_percent']=df['count_unique_word']*100/df['count_word']
 #derived features
 
 
-# In[59]:
 
 
 #serperate train and test features
@@ -803,7 +744,6 @@ train_tags=train.iloc[:,2:]
 train_feats=pd.concat([train_feats,train_tags],axis=1)
 
 
-# In[60]:
 
 
 train_feats['count_sent'].loc[train_feats['count_sent']>10] = 10 
@@ -826,7 +766,6 @@ plt.title("Number of words in each comment", fontsize=15)
 plt.show()
 
 
-# In[61]:
 
 
 train_feats['count_unique_word'].loc[train_feats['count_unique_word']>200] = 200
@@ -837,7 +776,6 @@ temp_df = pd.melt(train_feats, value_vars=['count_word', 'count_unique_word'], i
 spammers=train_feats[train_feats['word_unique_percent']<30]
 
 
-# In[62]:
 
 
 import matplotlib.gridspec as gridspec 
@@ -861,13 +799,11 @@ plt.xlabel('Percent unique words', fontsize=12)
 
 
 
-# In[63]:
 
 
 corpus=merge.comment_text
 
 
-# In[64]:
 
 
 #https://drive.google.com/file/d/0B1yuv8YaUVlZZ1RzMFJmc1ZsQmM/view
@@ -935,7 +871,6 @@ APPO = {
 }
 
 
-# In[65]:
 
 
 def clean(comment):
@@ -967,19 +902,16 @@ def clean(comment):
     return(clean_sent)
 
 
-# In[66]:
 
 
 corpus.iloc[12235]
 
 
-# In[67]:
 
 
 clean(corpus.iloc[12235])
 
 
-# In[68]:
 
 
 def fast_encode(texts, tokenizer, chunk_size=256, maxlen=512):
@@ -995,7 +927,6 @@ def fast_encode(texts, tokenizer, chunk_size=256, maxlen=512):
     return np.array(all_ids)
 
 
-# In[69]:
 
 
 def regular_encode(texts,tokenizer,maxlen=512):
@@ -1003,7 +934,6 @@ def regular_encode(texts,tokenizer,maxlen=512):
     return np.array(enc_di['input_ids'])
 
 
-# In[70]:
 
 
 def build_model(transformer, loss='binary_crossentropy', max_len=512):
@@ -1019,7 +949,6 @@ def build_model(transformer, loss='binary_crossentropy', max_len=512):
     return model
 
 
-# In[71]:
 
 
 # Detect hardware, return appropriate distribution strategy
@@ -1042,7 +971,6 @@ else:
 print("REPLICAS: ", strategy.num_replicas_in_sync)
 
 
-# In[72]:
 
 
 
@@ -1052,7 +980,6 @@ from tqdm.notebook import tqdm
 from tokenizers import Tokenizer, models, pre_tokenizers, decoders, processors
 
 
-# In[73]:
 
 
 AUTO = tf.data.experimental.AUTOTUNE
@@ -1067,14 +994,12 @@ MODEL = 'jplu/tf-xlm-roberta-large'
 #GCS_DS_PATH = KaggleDatasets().get_gcs_path('kaggle/input/')
 
 
-# In[74]:
 
 
 # First load the real tokenizer
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 
 
-# In[75]:
 
 
 train = pd.read_csv("/kaggle/input/jigsaw-multilingual-toxic-comment-classification/jigsaw-toxic-comment-train.csv")
@@ -1085,7 +1010,6 @@ test = pd.read_csv('/kaggle/input/jigsaw-multilingual-toxic-comment-classificati
 sub = pd.read_csv('/kaggle/input/jigsaw-multilingual-toxic-comment-classification/sample_submission.csv')
 
 
-# In[76]:
 
 
 # Combine train1 with a subset of train2
@@ -1096,13 +1020,11 @@ train = pd.concat([
 ])
 
 
-# In[77]:
 
 
 get_ipython().run_cell_magic('time', '', '\nx_train = regular_encode(train.comment_text.values, tokenizer, maxlen=MAX_LEN)\nx_valid = regular_encode(valid.comment_text.values, tokenizer, maxlen=MAX_LEN)\nx_test = regular_encode(test.content.values, tokenizer, maxlen=MAX_LEN)\n\ny_train = train.toxic.values\ny_valid = valid.toxic.values')
 
 
-# In[78]:
 
 
 train_dataset = (
@@ -1128,13 +1050,11 @@ test_dataset = [(
 )
 
 
-# In[79]:
 
 
 get_ipython().run_cell_magic('time', '', "with strategy.scope():\n    transformer_layer = transformers.TFBertModel.from_pretrained('bert-base-uncased')\n    model = build_model(transformer_layer, loss=focal_loss(gamma=1.5), max_len=512)\nmodel.summary()")
 
 
-# In[80]:
 
 
 n_steps = x_train.shape[0] // BATCH_SIZE
@@ -1146,7 +1066,6 @@ train_history = model.fit(
 )
 
 
-# In[81]:
 
 
 n_steps = x_valid.shape[0] // BATCH_SIZE
@@ -1157,20 +1076,17 @@ train_history_2 = model.fit(
 )
 
 
-# In[82]:
 
 
 sub['toxic'] = model.predict(test_dataset, verbose=1)
 sub.to_csv('submission.csv', index=False)
 
 
-# In[83]:
 
 
 sub.head()
 
 
-# In[ ]:
 
 
 

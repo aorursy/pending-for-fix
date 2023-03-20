@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 
@@ -41,7 +40,6 @@ print(data.head())
 data=data.sample(3000)
 
 
-# In[2]:
 
 
 uri_re = r'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))'
@@ -80,7 +78,6 @@ data["content"] = data["content"].map(removePunctuation)
 #data = clean_dataframe(data)
 
 
-# In[3]:
 
 
 from gensim.parsing import PorterStemmer
@@ -132,7 +129,6 @@ class StemmingHelper(object):
 data.head(5)# Summary about tags
 
 
-# In[4]:
 
 
 from sklearn.pipeline import Pipeline
@@ -152,7 +148,6 @@ clf.fit(data['tot'], data['tags'])
 
 
 
-# In[5]:
 
 
 test = pd.read_csv("../input/test.csv")

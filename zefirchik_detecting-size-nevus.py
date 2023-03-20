@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
 
 
 pip install imutils
 
 
-# In[43]:
 
 
 from imutils import perspective
@@ -21,14 +19,12 @@ import math
 import numpy as np
 
 
-# In[46]:
 
 
 train = pd.read_csv("../input/jpeg-melanoma-256x256/train.csv")
 image_name_arr = train["image_name"].values
 
 
-# In[55]:
 
 
 fig, ax = plt.subplots(nrows=1, ncols=6, figsize=(15,15), gridspec_kw={'wspace':0.1, 'hspace':0})
@@ -45,7 +41,6 @@ for i in range(ran+6):
     j+=1
 
 
-# In[48]:
 
 
 def HAIR_SORRY_REMOVE(image, clip_hist_percent=1):
@@ -57,7 +52,6 @@ def HAIR_SORRY_REMOVE(image, clip_hist_percent=1):
     return (final_image)
 
 
-# In[49]:
 
 
 def midpoint(ptA, ptB):

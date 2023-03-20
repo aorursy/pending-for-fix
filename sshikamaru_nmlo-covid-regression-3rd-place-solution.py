@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np 
@@ -17,7 +16,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
         print(os.path.join(dirname, filename))
 
 
-# In[2]:
 
 
 train_data = pd.read_csv('/kaggle/input/nmlo-contest-3/train.csv')
@@ -26,31 +24,26 @@ train = train_data.copy()
 test = test_data.copy()
 
 
-# In[3]:
 
 
 train.head()
 
 
-# In[4]:
 
 
 train.info()
 
 
-# In[5]:
 
 
 train.shape
 
 
-# In[6]:
 
 
 train.isnull().sum()
 
 
-# In[7]:
 
 
 plt.figure(figsize=(15,5))
@@ -59,7 +52,6 @@ plt.title('Distribution Plot for Covid Cases')
 plt.ylabel('# of people');
 
 
-# In[8]:
 
 
 plt.figure(figsize=(15,5))
@@ -68,25 +60,21 @@ plt.title('Distribution Plot for Covid Cases')
 plt.ylabel('# of people');
 
 
-# In[9]:
 
 
 sns.distplot(train['cases']);
 
 
-# In[10]:
 
 
 train['cases'].max()
 
 
-# In[11]:
 
 
 train.info()
 
 
-# In[12]:
 
 
 var = 'ed'
@@ -94,7 +82,6 @@ data = pd.concat([train['cases'], train[var]], axis=1)
 data.plot.scatter(x=var, y='cases', ylim=(0,125000));
 
 
-# In[13]:
 
 
 var = 'inc'
@@ -102,7 +89,6 @@ data = pd.concat([train['cases'], train[var]], axis=1)
 data.plot.scatter(x=var, y='cases', ylim=(0,125000));
 
 
-# In[14]:
 
 
 #scatter plot grlivarea/saleprice
@@ -111,7 +97,6 @@ data = pd.concat([train['cases'], train[var]], axis=1)
 data.plot.scatter(x=var, y='cases', ylim=(0,125000));
 
 
-# In[15]:
 
 
 #correlation matrix
@@ -120,7 +105,6 @@ f, ax = plt.subplots(figsize=(10, 9))
 sns.heatmap(corrmat, vmax=.8, square=True);
 
 
-# In[16]:
 
 
 #saleprice correlation matrix
@@ -132,13 +116,11 @@ hm = sns.heatmap(cm, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'
 plt.show()
 
 
-# In[17]:
 
 
 from sklearn.preprocessing import StandardScaler
 
 
-# In[18]:
 
 
 cases_scaled = StandardScaler().fit_transform(train['cases'][:,np.newaxis]);
@@ -150,7 +132,6 @@ print('\nouter range (high) of the distribution:')
 print(high_range)
 
 
-# In[19]:
 
 
 #bivariate analysis saleprice/grlivarea
@@ -159,7 +140,6 @@ data = pd.concat([train['cases'], train[var]], axis=1)
 data.plot.scatter(x=var, y='cases', ylim=(0,250000));
 
 
-# In[20]:
 
 
 var = 'pop'
@@ -167,7 +147,6 @@ data = pd.concat([train['cases'], train[var]], axis=1)
 data.plot.scatter(x=var, y='cases', ylim=(0,125000));
 
 
-# In[21]:
 
 
 from scipy.stats import norm, skew
@@ -177,13 +156,11 @@ sns.distplot(train['cases'], fit=norm);
 fig = plt.figure()
 res = stats.probplot(train['cases'], plot=plt)
 
-# In[22]:
 
 
 test.head()
 
 
-# In[23]:
 
 
 train['cases'].replace([0], 1, inplace = True)
@@ -198,7 +175,6 @@ test['inc'].replace([0], 1, inplace = True)
 test['pop'].replace([0], 1, inplace = True)
 
 
-# In[24]:
 
 
 
@@ -206,19 +182,16 @@ test['pop'].replace([0], 1, inplace = True)
 train['cases'] = np.log(train['cases'])
 
 
-# In[25]:
 
 
 train['cases'].max()
 
 
-# In[26]:
 
 
 res = stats.probplot(train['cases'], plot=plt)
 
 
-# In[27]:
 
 
 sns.distplot(train['ed'], fit=norm);
@@ -226,7 +199,6 @@ fig = plt.figure()
 res = stats.probplot(train['ed'], plot=plt)
 
 
-# In[28]:
 
 
 #transformed histogram and normal probability plot
@@ -238,7 +210,6 @@ test['ed'] = np.log(test['ed'])
 res = stats.probplot(train['ed'], plot=plt)
 
 
-# In[29]:
 
 
 res = stats.probplot(train['inc'], plot=plt)
@@ -246,7 +217,6 @@ train['inc'] = np.log(train['inc'])
 test['inc'] = np.log(test['inc'])
 
 
-# In[30]:
 
 
 sns.distplot(train['inc'], fit=norm);
@@ -254,7 +224,6 @@ fig = plt.figure()
 res = stats.probplot(train['inc'], plot=plt)
 
 
-# In[31]:
 
 
 res = stats.probplot(train['pop'], plot=plt)
@@ -263,7 +232,6 @@ train['pop'] = np.log(train['pop'])
 test['pop'] = np.log(test['pop'])
 
 
-# In[32]:
 
 
 sns.distplot(train['pop'], fit=norm);
@@ -271,25 +239,21 @@ fig = plt.figure()
 res = stats.probplot(train['pop'], plot=plt)
 
 
-# In[33]:
 
 
 plt.scatter(train['ed'], train['cases']);
 
 
-# In[34]:
 
 
 plt.scatter(train['inc'], train['cases']);
 
 
-# In[35]:
 
 
 plt.scatter(train['pop'], train['cases']);
 
 
-# In[36]:
 
 
 numeric_feats = train.dtypes[train.dtypes != "object"].index
@@ -301,7 +265,6 @@ skewness = pd.DataFrame({'Skew' :skewed_feats})
 skewness.head(10)
 
 
-# In[37]:
 
 
 #skewness = skewness[abs(skewness) > 0.75]
@@ -315,26 +278,22 @@ skewness.head(10)
 #    train[feat] = boxcox1p(train[feat], lam)
 
 
-# In[38]:
 
 
 train = pd.get_dummies(train)
 print(train.shape)
 
 
-# In[39]:
 
 
 train.head()
 
 
-# In[40]:
 
 
 from sklearn.model_selection import train_test_split      
 
 
-# In[41]:
 
 
 train_y = train['cases']
@@ -342,13 +301,11 @@ train.drop('id', axis = 1, inplace = True)
 train.drop('cases', axis = 1, inplace = True)
 
 
-# In[42]:
 
 
 X_train, X_test, y_train, y_test = train_test_split(train, train_y, test_size=0.2, shuffle=True)
 
 
-# In[43]:
 
 
 from sklearn.linear_model import ElasticNet, Lasso,  BayesianRidge, LassoLarsIC
@@ -363,7 +320,6 @@ import xgboost as xgb
 import lightgbm as lgb
 
 
-# In[44]:
 
 
 n_folds = 5
@@ -373,25 +329,21 @@ def rmsle_cv(model):
     return(rmse)
 
 
-# In[45]:
 
 
 lasso = make_pipeline(RobustScaler(), Lasso(alpha =0.0005, random_state=1))
 
 
-# In[46]:
 
 
 ENet = make_pipeline(RobustScaler(), ElasticNet(alpha=0.0005, l1_ratio=.9, random_state=3))
 
 
-# In[47]:
 
 
 KRR = KernelRidge(alpha=0.6, kernel='polynomial', degree=2, coef0=2.5)
 
 
-# In[48]:
 
 
 GBoost = GradientBoostingRegressor(n_estimators=500, learning_rate=0.05,
@@ -400,7 +352,6 @@ GBoost = GradientBoostingRegressor(n_estimators=500, learning_rate=0.05,
                                    loss='huber', random_state =5)
 
 
-# In[49]:
 
 
 model_xgb = xgb.XGBRegressor(colsample_bytree=0.4603, gamma=0.0468, 
@@ -411,7 +362,6 @@ model_xgb = xgb.XGBRegressor(colsample_bytree=0.4603, gamma=0.0468,
                              random_state =7, nthread = -1)
 
 
-# In[50]:
 
 
 model_lgb = lgb.LGBMRegressor(objective='regression',num_leaves=5,
@@ -422,13 +372,11 @@ model_lgb = lgb.LGBMRegressor(objective='regression',num_leaves=5,
                               min_data_in_leaf =6, min_sum_hessian_in_leaf = 11)
 
 
-# In[51]:
 
 
 model_xgb.fit(X_train, y_train)
 
 
-# In[52]:
 
 
 xg = xgb.XGBRegressor(base_score=0.5, booster='gbtree', colsample_bylevel=1,
@@ -443,7 +391,6 @@ xg = xgb.XGBRegressor(base_score=0.5, booster='gbtree', colsample_bylevel=1,
 
 
 
-# In[53]:
 
 
 score_lasso = rmsle_cv(lasso)
@@ -451,35 +398,30 @@ score_lasso.mean()
 #print("\nLasso score: {:.4f} ({:.4f})\n".format(score.mean(), score.std()))
 
 
-# In[54]:
 
 
 score = rmsle_cv(model_xgb)
 print("ElasticNet score: {:.4f} ({:.4f})\n".format(score.mean(), score.std()))
 
 
-# In[55]:
 
 
 score = rmsle_cv(ENet)
 print("ElasticNet score: {:.4f} ({:.4f})\n".format(score.mean(), score.std()))
 
 
-# In[56]:
 
 
 score = rmsle_cv(model_lgb)
 print(" score: {:.4f} ({:.4f})\n".format(score.mean(), score.std()))
 
 
-# In[57]:
 
 
 score = rmsle_cv(lasso)
 print(" score: {:.4f} ({:.4f})\n".format(score.mean(), score.std()))
 
 
-# In[58]:
 
 
 score = rmsle_cv(GBoost)
@@ -489,7 +431,6 @@ sample = np.exp(sample)
 print(" score: {:.4f} ({:.4f})\n".format(score.mean(), score.std()))
 
 
-# In[59]:
 
 
 class AveragingModels(BaseEstimator, RegressorMixin, TransformerMixin):
@@ -514,7 +455,6 @@ class AveragingModels(BaseEstimator, RegressorMixin, TransformerMixin):
         return np.mean(predictions, axis=1)   
 
 
-# In[60]:
 
 
 averaged_models = AveragingModels(models = (ENet, GBoost, KRR, lasso))
@@ -530,7 +470,6 @@ submission = np.exp(submission)
 #print(rmsle(y_train, xgb_train_pred))
 
 
-# In[61]:
 
 
 class StackingAveragedModels(BaseEstimator, RegressorMixin, TransformerMixin):
@@ -561,7 +500,6 @@ class StackingAveragedModels(BaseEstimator, RegressorMixin, TransformerMixin):
         return self
 
 
-# In[62]:
 
 
 
@@ -573,14 +511,12 @@ score = rmsle_cv(stacked_averaged_models)
 print("Stacking Averaged models score: {:.4f} ({:.4f})".format(score.mean(), score.std()))
 
 
-# In[63]:
 
 
 def rmsle(y, y_pred):
     return np.sqrt(mean_squared_error(y, y_pred))
 
 
-# In[64]:
 
 
 #stacked_averaged_models.fit(X_train, y_train)
@@ -589,20 +525,17 @@ def rmsle(y, y_pred):
 #print(rmsle(y_train, stacked_train_pred))
 
 
-# In[65]:
 
 
 test.shape
 test.head()
 
 
-# In[66]:
 
 
 I decided to use the stock lasso regression. Xgboost and Lgb were both banned for this competition.
 
 
-# In[67]:
 
 
 sub = pd.DataFrame()

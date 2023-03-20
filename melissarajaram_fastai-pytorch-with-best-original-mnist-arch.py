@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 from fastai import *
@@ -14,7 +13,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
         print(os.path.join(dirname, filename))
 
 
-# In[2]:
 
 
 def get_images_and_labels(csv,label):
@@ -26,7 +24,6 @@ def get_images_and_labels(csv,label):
     return data, labels
 
 
-# In[3]:
 
 
 train_data, train_labels = get_images_and_labels(DATAPATH/'train.csv','label')
@@ -36,14 +33,12 @@ other_data, other_labels = get_images_and_labels(DATAPATH/'Dig-MNIST.csv','label
 print(f' Train:\tdata shape {train_data.shape}\tlabel shape {train_labels.shape}\n Test:\tdata shape {test_data.shape}\tlabel shape {test_labels.shape}\n Other:\tdata shape {other_data.shape}\tlabel shape {other_labels.shape}')
 
 The resulting data arrays look reasonable, and the size of the labels is the same. Let's display a labelled image:
-# In[4]:
 
 
 plt.title(f'Training Label: {train_labels[4]}')
 plt.imshow(train_data[4,0],cmap='gray');
 
 
-# In[5]:
 
 
 np.random.seed(42)
@@ -56,7 +51,6 @@ valid_10_labels = train_labels[ran_10_pct_idx]
 valid_10_data = train_data[ran_10_pct_idx]
 
 
-# In[6]:
 
 
 class ArrayDataset(Dataset):
@@ -72,7 +66,6 @@ class ArrayDataset(Dataset):
         return self.x[i], self.y[i]
 
 
-# In[7]:
 
 
 train_ds = ArrayDataset(train_90_data,train_90_labels)
@@ -81,14 +74,12 @@ other_ds = ArrayDataset(other_data, other_labels)
 test_ds = ArrayDataset(test_data, test_labels)
 
 
-# In[8]:
 
 
 bs = 128
 databunch = DataBunch.create(train_ds, valid_ds, test_ds=test_ds, bs=bs)
 
 
-# In[9]:
 
 
 leak = 0.15
@@ -114,26 +105,22 @@ best_architecture = nn.Sequential(
 )
 
 
-# In[10]:
 
 
 learn = Learner(databunch, best_architecture, loss_func = nn.CrossEntropyLoss(), metrics=[accuracy] )
 
 
-# In[11]:
 
 
 learn.fit_one_cycle(20)
 
 
-# In[12]:
 
 
 preds, ids = learn.get_preds(DatasetType.Test)
 y = torch.argmax(preds, dim=1)
 
 
-# In[13]:
 
 
 submission = pd.DataFrame({ 'id': ids,'label': y })

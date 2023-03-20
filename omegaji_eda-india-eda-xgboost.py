@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,26 +21,22 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 train_df=pd.read_csv("/kaggle/input/covid19-global-forecasting-week-5/train.csv")
 test=pd.read_csv("/kaggle/input/covid19-global-forecasting-week-5/test.csv")
 
 
-# In[ ]:
 
 
 
 
 
-# In[3]:
 
 
 train_df[train_df["Country_Region"]=="India"]
 
 
-# In[4]:
 
 
 def removenegative(x):
@@ -53,7 +48,6 @@ def removenegative(x):
 train_df["TargetValue"]=train_df["TargetValue"].apply(removenegative)
 
 
-# In[5]:
 
 
 
@@ -64,7 +58,6 @@ india_df=train_df[train_df["Country_Region"]=="India"]
 india_df["TargetValue"]=india_df["TargetValue"].apply(lambda x: int(x))
 
 
-# In[6]:
 
 
 from datetime import datetime
@@ -74,14 +67,12 @@ india_df["Date"]=india_df['Date'].apply(lambda x:datetime.strptime(x, '%Y-%m-%d'
     
 
 
-# In[7]:
 
 
 
 india_df[india_df["Target"]=="ConfirmedCases"]["TargetValue"].sum()
 
 
-# In[8]:
 
 
 
@@ -89,19 +80,16 @@ india_df[india_df["Target"]=="ConfirmedCases"]["TargetValue"].sum()
 india_df["week"]="week_"+ str(india_df["Date"].dt.week)
 
 
-# In[9]:
 
 
 india_df["week"]=india_df["Date"].dt.week.apply(lambda x: x)
 
 
-# In[ ]:
 
 
 
 
 
-# In[10]:
 
 
 
@@ -119,7 +107,6 @@ ax[1].title.set_fontsize(24)
 india_df.head()
 
 
-# In[11]:
 
 
 #train_df["day"]=train_df["Date"].apply(lambda x:int(x[-2:]) )
@@ -127,13 +114,11 @@ india_df.head()
 #train_df["ConfirmedCases"]=train_df["ConfirmedCases"].apply(lambda x: int(x))
 
 
-# In[12]:
 
 
 train_df[train_df["Country_Region"]=="India"]
 
 
-# In[13]:
 
 
 train_df=train_df.drop("Province_State",axis=1)
@@ -147,19 +132,16 @@ train_df["day"]=train_df["Date"].dt.day.apply(lambda x: x)
 train_df["month"]=train_df["Date"].dt.month.apply(lambda x: int(x))
 
 
-# In[14]:
 
 
 train_df=train_df.drop("Date",axis=1)
 
 
-# In[ ]:
 
 
 
 
 
-# In[15]:
 
 
 country_df=train_df[train_df["Target"]=="ConfirmedCases"].groupby(['Country_Region']).sum().reset_index().sort_values('week', ascending=False).drop(["Population"],axis=1)
@@ -170,7 +152,6 @@ country_df.head()
 #train_df.head()
 
 
-# In[16]:
 
 
 
@@ -201,7 +182,6 @@ choromap = go.Figure(data = [data], layout = layout)
 iplot(choromap, validate=False)
 
 
-# In[17]:
 
 
 df_countrydate = train_df[train_df['Target']=="ConfirmedCases"]
@@ -209,7 +189,6 @@ df_countrydate = df_countrydate.groupby(['week','Country_Region']).sum().drop(["
 df_countrydate[df_countrydate["Country_Region"]=="India"]
 
 
-# In[18]:
 
 
 
@@ -239,13 +218,11 @@ fig.update_layout(
 fig.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[19]:
 
 
 df_india=pd.read_csv("/kaggle/input/covid19-in-india/covid_19_india.csv")
@@ -259,7 +236,6 @@ df_india_grouped=df_india.groupby(["State/UnionTerritory","week"]).max().reset_i
 df_india_grouped=df_india_grouped.drop_duplicates(subset=["State/UnionTerritory"])
 
 
-# In[20]:
 
 
 df_india_grouped
@@ -276,13 +252,11 @@ fig.update_layout(uniformtext_minsize=8, uniformtext_mode='show')
 fig.show()
 
 
-# In[21]:
 
 
 df_india_grouped["pending"]=df_india_grouped["Confirmed"]-df_india_grouped["Deaths"]-df_india_grouped["Cured"]
 
 
-# In[22]:
 
 
 '''df_india_grouped
@@ -332,25 +306,21 @@ fig.show()
 #iplot(fig)   
 
 
-# In[23]:
 
 
 testing_df=pd.read_csv("/kaggle/input/covid19-in-india/StatewiseTestingDetails.csv")
 
 
-# In[24]:
 
 
 testing_df.dropna(inplace=True)
 
 
-# In[25]:
 
 
 testing_df_grouped[testing_df_grouped["State"]=="Gujarat"]
 
 
-# In[26]:
 
 
 testing_df["Date"]=testing_df['Date'].apply(lambda x:datetime.strptime(x, '%Y-%m-%d'))
@@ -361,13 +331,11 @@ testing_df.head()
 testing_df_grouped=testing_df.groupby(["State","week"]).max().reset_index().sort_values("week",ascending=False)
 
 
-# In[27]:
 
 
 testing_df_grouped=testing_df_grouped.drop_duplicates(subset=["State"])
 
 
-# In[28]:
 
 
 states=list(testing_df_grouped["State"])
@@ -382,7 +350,6 @@ fig = go.Figure(data=[
 fig.show()
 
 
-# In[29]:
 
 
 import geopandas as gpd
@@ -397,13 +364,11 @@ gdf.loc[25,"states"]="Odisha"
 #gdf[gdf["states"]=="Orissa"]
 
 
-# In[30]:
 
 
 df_india_grouped
 
 
-# In[31]:
 
 
 merged_grouped = gdf.merge(df_india_grouped, left_on = 'states', right_on = 'State/UnionTerritory').drop(["Date"],axis=1)
@@ -412,13 +377,11 @@ merged_json_grouped = json.loads(merged_grouped.to_json())
 json_data_grouped = json.dumps(merged_json_grouped)
 
 
-# In[ ]:
 
 
 
 
 
-# In[32]:
 
 
 from bokeh.io import output_notebook, show, output_file
@@ -452,14 +415,12 @@ output_notebook()
 show(p)
 
 
-# In[33]:
 
 
 country_df=df_india.groupby(["week","State/UnionTerritory"]).max().reset_index()
 country_df.drop(["Date","ConfirmedIndianNational","ConfirmedForeignNational","Deaths","Cured","Time"],axis=1,inplace=True)
 
 
-# In[34]:
 
 
 
@@ -479,7 +440,6 @@ for i in merged_json_grouped["features"]:
     i["id"]=i["properties"]["states"]
 
 
-# In[35]:
 
 
 country_df=df_india.groupby(["State/UnionTerritory","week"]).max().reset_index().sort_values("week",ascending=True)
@@ -489,13 +449,11 @@ country_df=country_df.drop(['Sno', 'Date', 'Time',
        'Deaths',],axis=1)
 
 
-# In[36]:
 
 
 merged_json_grouped
 
 
-# In[37]:
 
 
 fig = px.choropleth(country_df, geojson=merged_json_grouped,
@@ -524,19 +482,16 @@ fig.show()
 
 
 
-# In[38]:
 
 
 train_df.head()
 
 
-# In[39]:
 
 
 train_df.columns
 
 
-# In[40]:
 
 
 from sklearn.preprocessing import LabelEncoder,StandardScaler,MinMaxScaler
@@ -556,7 +511,6 @@ scaler = MinMaxScaler()
 X_train = scaler.fit_transform(train_df.drop(['County', 'day', 'month'],axis=1).values)
 
 
-# In[41]:
 
 
 from xgboost import XGBRegressor
@@ -564,19 +518,16 @@ model = XGBRegressor(n_estimators = 500 , random_state = 0 , max_depth = 27)
 model.fit(X_train,cases)
 
 
-# In[42]:
 
 
 model.score(X_train,cases)
 
 
-# In[ ]:
 
 
 
 
 
-# In[43]:
 
 
 newtestdf=pd.read_csv("/kaggle/input/covid19-global-forecasting-week-5/test.csv")
@@ -601,26 +552,22 @@ newtestdf=newtestdf.drop(["Province_State","Date","month","day","County"],axis=1
 newtestdf
 
 
-# In[44]:
 
 
 newtestdf.ForecastId.rename("Id",inplace=True)
 
 
-# In[45]:
 
 
 X_test = scaler.fit_transform(newtestdf.values)
 cases_pred = model.predict(X_test)
 
 
-# In[46]:
 
 
 cases_pred = np.around(cases_pred,decimals = 0)
 
 
-# In[47]:
 
 
 
@@ -630,31 +577,26 @@ submission['TargetValue'] = cases_pred
 submission.to_csv("submission.csv" , index = False)
 
 
-# In[48]:
 
 
 submission
 
 
-# In[49]:
 
 
 THANK YOU!!!!
 
 
-# In[ ]:
 
 
 
 
 
-# In[50]:
 
 
 newtestdf
 
 
-# In[ ]:
 
 
 

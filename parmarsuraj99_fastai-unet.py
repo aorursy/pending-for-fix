@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,14 +21,12 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import torch
 import warnings
 
 
-# In[3]:
 
 
 import fastai
@@ -40,13 +37,11 @@ from fastai.imports import *
 from fastai.callbacks.hooks import *
 
 
-# In[4]:
 
 
 from tqdm import tqdm
 
 
-# In[5]:
 
 
 from datetime import datetime
@@ -54,39 +49,33 @@ from datetime import datetime
 warnings.filterwarnings("ignore")
 
 
-# In[6]:
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print('Using devic', device)
 
 
-# In[7]:
 
 
 ROOT_DIR = '/kaggle/input/understanding_cloud_organization/'
 
 
-# In[8]:
 
 
 os.listdir(ROOT_DIR)
 
 
-# In[9]:
 
 
 TRAIN_CSV_PATH = os.path.join(ROOT_DIR, 'train.csv')
 train_df = pd.read_csv(TRAIN_CSV_PATH)
 
 
-# In[10]:
 
 
 train_df.head()
 
 
-# In[11]:
 
 
 train_df['ImageId'] = train_df['Image_Label'].apply(lambda x: x.split('_')[0])
@@ -94,19 +83,16 @@ train_df['ClassId'] = train_df['Image_Label'].apply(lambda x: x.split('_')[1])
 train_df['hasMask'] = ~ train_df['EncodedPixels'].isna()
 
 
-# In[12]:
 
 
 train_df.head(20)
 
 
-# In[13]:
 
 
 train = train_df.pivot(index='ImageId', columns='ClassId', values='EncodedPixels')
 
 
-# In[14]:
 
 
 # TODO remove use_partial_data()
@@ -116,13 +102,11 @@ item_list = (SegmentationItemList.
              .split_by_rand_pct(0.2))
 
 
-# In[15]:
 
 
 item_list
 
 
-# In[16]:
 
 
 class MultiLabelImageSegment(ImageSegment): 
@@ -131,14 +115,12 @@ class MultiLabelImageSegment(ImageSegment):
         return MultiClassImageSegment(t)
 
 
-# In[17]:
 
 
 def bce_logits_floatify(input, target, reduction='mean'):
     return F.binary_cross_entropy_with_logits(input, target.float(), reduction=reduction)
 
 
-# In[18]:
 
 
 def rle_to_mask(rle, shape):
@@ -173,7 +155,6 @@ class MultiLabelSegmentationLabelList(SegmentationLabelList):
         return MultiLabelImageSegment(t)
 
 
-# In[19]:
 
 
 def get_masks_rle(img):
@@ -182,21 +163,18 @@ def get_masks_rle(img):
     return train.loc[img, class_names].to_list()
 
 
-# In[20]:
 
 
 img_size = (84*2, 132*2)
 img_size
 
 
-# In[21]:
 
 
 train_img_dims = (1400, 2100)
 class_names = ["Fish", "Flower", "Gravel", "Sugar"]
 
 
-# In[22]:
 
 
 classes = [0, 1, 2, 3] # no need for a "void" class: if a pixel isn't in any mask, it is not labelled
@@ -204,13 +182,11 @@ item_list = item_list.label_from_func(func=get_masks_rle, label_cls=MultiLabelSe
                                       classes=classes, src_img_size=train_img_dims)
 
 
-# In[23]:
 
 
 item_list = item_list.add_test_folder(os.path.join(ROOT_DIR, 'test_images'), label="")
 
 
-# In[24]:
 
 
 batch_size = 16
@@ -222,7 +198,6 @@ tfms = ([], [])
 item_list = item_list.transform(tfms, tfm_y=True, size=img_size)
 
 
-# In[25]:
 
 
 data = (item_list
@@ -232,7 +207,6 @@ data = (item_list
 assert data.test_ds is not None
 
 
-# In[26]:
 
 
 def dice_metric(pred, targs, threshold=0):
@@ -241,7 +215,6 @@ def dice_metric(pred, targs, threshold=0):
     return 2.0 * (pred*targs).sum() / ((pred+targs).sum() + 1.0)
 
 
-# In[27]:
 
 
 def fmt_now():
@@ -249,34 +222,29 @@ def fmt_now():
 from time import time
 
 
-# In[28]:
 
 
 metrics = [dice_metric]
 
 
-# In[29]:
 
 
 learn = unet_learner(data, models.resnet34, metrics=metrics, wd=1e-2)
 learn.model_dir = "/kaggle/working/"  # point to writable directory
 
 
-# In[30]:
 
 
 critation = BCEWithLogitsFlat()
 learn.loss = critation
 
 
-# In[31]:
 
 
 lr=1e-4
 print("training_started")
 
 
-# In[32]:
 
 
 import gc
@@ -285,56 +253,47 @@ free = gpu_mem_get_free_no_cache()
 torch.cuda.empty_cache()
 
 
-# In[33]:
 
 
 learn.fit_one_cycle(10, max_lr=lr)
 
 
-# In[34]:
 
 
 learn.save(f"_unet_resnet34_stage1", return_path=True)
 
 
-# In[35]:
 
 
 learn.unfreeze()
 
 
-# In[36]:
 
 
 free = gpu_mem_get_free_no_cache()
 free
 
 
-# In[37]:
 
 
 learn.fit_one_cycle(10, slice(1e-5, 1e-4))
 
 
-# In[38]:
 
 
 learn.save(f"_unet_resnet34_stage2", return_path=True)
 
 
-# In[39]:
 
 
 os.listdir('../working')
 
 
-# In[40]:
 
 
 preds, _ = learn.get_preds(ds_type=DatasetType.Test, with_loss=False)
 
 
-# In[41]:
 
 
 def resize_pred_masks(preds, shape=(4, 350, 525)):
@@ -344,20 +303,17 @@ def resize_pred_masks(preds, shape=(4, 350, 525)):
         yield mask.resize(shape)
 
 
-# In[42]:
 
 
 pred_masks = resize_pred_masks(preds)
 
 
-# In[43]:
 
 
 test_fnames = [p.name for p in data.test_dl.items]
 len(test_fnames)
 
 
-# In[44]:
 
 
 def write_submission_file(filename, test_fnames, preds, threshold=0):
@@ -374,75 +330,63 @@ def write_submission_file(filename, test_fnames, preds, threshold=0):
     print(f"Wrote '{f.name}'.")
 
 
-# In[45]:
 
 
 submission_file = f"{fmt_now()}_submission.csv"
 
 
-# In[46]:
 
 
 write_submission_file(submission_file, test_fnames, preds)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[47]:
 
 
 import gc
 gc.collect()
 
 
-# In[48]:
 
 
 free = gpu_mem_get_free_no_cache()
 free
 
 
-# In[49]:
 
 
 torch.cuda.empty_cache()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
