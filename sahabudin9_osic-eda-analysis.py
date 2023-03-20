@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -28,19 +27,16 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[2]:
 
 
 path = "/kaggle/input/osic-pulmonary-fibrosis-progression/"
 
 
-# In[3]:
 
 
 ls /kaggle/input/osic-pulmonary-fibrosis-progression/
 
 
-# In[4]:
 
 
 train_df  = pd.read_csv(path + "train.csv")
@@ -48,37 +44,31 @@ test_df = pd.read_csv(path + "test.csv")
 subm = pd.read_csv(path + "sample_submission.csv")
 
 
-# In[5]:
 
 
 train_df=pd.read_csv("/kaggle/input/osic-pulmonary-fibrosis-progression/train.csv")
 
 
-# In[6]:
 
 
 train_df.dtypes
 
 
-# In[7]:
 
 
 train_df.head(1)
 
 
-# In[8]:
 
 
 train_df['Sex']=="Female"
 
 
-# In[9]:
 
 
 train_df.describe()
 
 
-# In[10]:
 
 
 print("Total Number of data Points are \n",str(len(train_df)))
@@ -91,7 +81,6 @@ for col in train_df.columns:
                                                           str(train_df[col].isna().sum())))
 
 
-# In[11]:
 
 
 unique_patient_df = train_df.drop(['Weeks', 'FVC', 'Percent'],
@@ -109,7 +98,6 @@ for col in unique_patient_df.columns:
 unique_patient_df.head()
 
 
-# In[12]:
 
 
 
@@ -117,21 +105,18 @@ plt.figure(figsize=(10,10))
 sns.countplot('Age',data=unique_patient_df)
 
 
-# In[13]:
 
 
 sns.countplot(x='Sex',data=unique_patient_df)
 plt.figure(figsize=(5,2))
 
 
-# In[14]:
 
 
 sns.countplot(x='SmokingStatus',data=unique_patient_df)
 plt.figure(figsize=(5,2))
 
 
-# In[15]:
 
 
 plt.figure(figsize=(20,8))
@@ -142,28 +127,24 @@ plt.figure(figsize=(8,3))
 sns.countplot(x='Times_Visits',data=unique_patient_df)
 
 
-# In[16]:
 
 
 plt.figure(figsize=(10,2))
 sns.countplot('FVC',data=train_df)
 
 
-# In[17]:
 
 
 plt.figure(figsize=(10,5))
 sns.distplot(train_df['FVC'])
 
 
-# In[18]:
 
 
 plt.figure(figsize=(10,5))
 sns.distplot(train_df['Percent'])
 
 
-# In[19]:
 
 
 train_df['Expected_FVC']=train_df['FVC']+(train_df['Percent']/100)*train_df['FVC']
@@ -171,26 +152,22 @@ plt.figure(figsize=(10,5))
 sns.distplot(train_df['Expected_FVC'])
 
 
-# In[20]:
 
 
 train_df['diff_FVC']=train_df['Expected_FVC']-train_df["FVC"]
 sns.distplot(train_df['diff_FVC'])
 
 
-# In[21]:
 
 
 pd.crosstab(train_df.Sex,train_df.SmokingStatus,margins=True)
 
 
-# In[22]:
 
 
 unique_patient_df.head()
 
 
-# In[23]:
 
 
 corr=unique_patient_df.corr()
@@ -199,7 +176,6 @@ plt.figure(figsize=(10,5))
 sns.heatmap(unique_patient_df[features].corr(),annot=True)
 
 
-# In[24]:
 
 
 corr=train_df.corr()
@@ -208,25 +184,21 @@ plt.figure(figsize=(10,5))
 sns.heatmap(train_df[features].corr(),annot=True)
 
 
-# In[25]:
 
 
 # CT Scan Images
 
 
-# In[26]:
 
 
 ls/kaggle/input/osic-pulmonary-fibrosis-progression/train/ID00422637202311677017371/
 
 
-# In[27]:
 
 
 ls /kaggle/input/osic-pulmonary-fibrosis-progression/train/ID00007637202177411956430/
 
 
-# In[28]:
 
 
 fig, axs = plt.subplots(5, 6,figsize=(20,20))
@@ -235,25 +207,21 @@ for n in range(0,30):
     axs[int(n/6),np.mod(n,6)].imshow(image.pixel_array);
 
 
-# In[29]:
 
 
 ls /kaggle/input/osic-pulmonary-fibrosis-progression/test/ID00419637202311204720264/
 
 
-# In[30]:
 
 
 ls /kaggle/input/osic-pulmonary-fibrosis-progression/train/ID00026637202179561894768/
 
 
-# In[31]:
 
 
 test_df.head()
 
 
-# In[ ]:
 
 
 

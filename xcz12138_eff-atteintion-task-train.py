@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import os 
 print(os.listdir('../input/xczdatasets'))
 
 
-# In[2]:
 
 
 # -*- coding: utf-8 -*-
@@ -213,7 +211,6 @@ print(pred_label.head())
 pred_label.to_csv('train.csv', index=False)
 
 
-# In[3]:
 
 
 train_params = {
@@ -232,19 +229,16 @@ train_params = {
 }
 
 
-# In[4]:
 
 
 # ! pip install torch==1.1.0
 
 
-# In[5]:
 
 
 # ! pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ../input/nvidiaapex/repository/NVIDIA-apex-39e153a
 
 
-# In[6]:
 
 
 import os
@@ -260,13 +254,11 @@ os.listdir('../input/efficientnet-pytorch/')
  'efficientnet-b4-e116e8b3.pth']
 
 
-# In[7]:
 
 
 os.listdir('../input/efficientnet-my/')
 
 
-# In[8]:
 
 
 import sys
@@ -276,7 +268,6 @@ import sys
 sys.path.append('../input/efficientnet-my/')
 
 
-# In[9]:
 
 
 import gc
@@ -315,14 +306,12 @@ from apex import amp
 from fastai.layers import Flatten, AdaptiveConcatPool2d
 
 
-# In[ ]:
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 device
 
 
-# In[10]:
 
 
 @contextmanager
@@ -333,7 +322,6 @@ def timer(name):
     LOGGER.info(f'[{name}] done in {time.time() - t0:.0f} s.')
 
 
-# In[11]:
 
 
 def init_logger(log_file='train.log'):
@@ -359,7 +347,6 @@ LOG_FILE = 'aptos-train.log'
 LOGGER = init_logger(LOG_FILE)
 
 
-# In[12]:
 
 
 def seed_torch(seed=777):
@@ -374,14 +361,12 @@ SEED = 777
 seed_torch(SEED)
 
 
-# In[13]:
 
 
 def quadratic_weighted_kappa(y_hat, y):
     return cohen_kappa_score(y_hat, y, weights='quadratic')
 
 
-# In[14]:
 
 
 class OptimizedRounder():
@@ -429,7 +414,6 @@ class OptimizedRounder():
         return self.coef_['x']
 
 
-# In[15]:
 
 
 # NOTE: official CyclicLR implementation doesn't work now
@@ -463,7 +447,6 @@ class CyclicLR(_LRScheduler):
         return new_lr
 
 
-# In[16]:
 
 
 # new_train = pd.read_csv('../input/aptos2019-blindness-detection/train.csv')
@@ -472,7 +455,6 @@ class CyclicLR(_LRScheduler):
 # print(old_train.shape)
 
 
-# In[17]:
 
 
 
@@ -491,7 +473,6 @@ print(train_df.shape)
 print(val_df.shape)
 
 
-# In[ ]:
 
 
 import cv2
@@ -503,14 +484,12 @@ import matplotlib
 import os
 
 
-# In[18]:
 
 
 root = '/kaggle/input/aptos2019-blindness-detection/'
 train_df = pd.read_csv(os.path.join(root, 'train.csv'))
 
 
-# In[19]:
 
 
 import cv2
@@ -537,7 +516,6 @@ for class_id in [0, 1, 2, 3, 4]:
         ax.set_title('Grade: %d' % (class_id) )
 
 
-# In[20]:
 
 
 # train_df = train_df.sample(frac=1).reset_index(drop=True)
@@ -546,7 +524,6 @@ for class_id in [0, 1, 2, 3, 4]:
 # print(val_df.shape)
 
 
-# In[21]:
 
 
 def crop_image1(img,tol=7):
@@ -594,7 +571,6 @@ def preprocess_image_old(image_path, desired_size=train_params['train_image_size
     return img
 
 
-# In[22]:
 
 
 class MyDataset(Dataset): 
@@ -625,7 +601,6 @@ class MyDataset(Dataset):
         return image, label
 
 
-# In[23]:
 
 
 from torchvision import transforms
@@ -641,7 +616,6 @@ train_transform = transforms.Compose([
 # val_loader   = torch.utils.data.DataLoader(valset, batch_size=32, shuffle=False, num_workers=4)
 
 
-# In[24]:
 
 
 # APTOS_DIR = Path('../input/aptos2019-blindness-detection')
@@ -660,7 +634,6 @@ train_transform = transforms.Compose([
 # TARGET_COLUMN = 'diagnosis'
 
 
-# In[25]:
 
 
 PRETRAINED_DIR = Path('../input/pytorch-pretrained-models')
@@ -742,7 +715,6 @@ PRETRAINED_MAPPING = {
 }
 
 
-# In[26]:
 
 
 # class APTOSTrainDataset(Dataset):
@@ -769,7 +741,6 @@ PRETRAINED_MAPPING = {
 #         return image, label
 
 
-# In[27]:
 
 
 # from albumentations import ImageOnlyTransform
@@ -846,7 +817,6 @@ PRETRAINED_MAPPING = {
 #         return img 
 
 
-# In[28]:
 
 
 # def get_transforms(*, data):
@@ -893,7 +863,6 @@ PRETRAINED_MAPPING = {
 #         ])
 
 
-# In[29]:
 
 
 def basic_conv(in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=0, bn_momentum=0.1):
@@ -966,7 +935,6 @@ class ClassfierDense(nn.Sequential):
         )
 
 
-# In[30]:
 
 
 class CustomEfficientNet_Att(nn.Module):
@@ -1003,7 +971,6 @@ class CustomEfficientNet_Att(nn.Module):
         return pred_1,pred_2
 
 
-# In[31]:
 
 
 class CustomResnet_Att(nn.Module): 
@@ -1039,7 +1006,6 @@ class CustomResnet_Att(nn.Module):
         return pred_1,pred_2
 
 
-# In[32]:
 
 
 class ClassifierModule(nn.Sequential):
@@ -1055,7 +1021,6 @@ class ClassifierModule(nn.Sequential):
         )
 
 
-# In[33]:
 
 
 class CustomResNet(nn.Module):
@@ -1076,7 +1041,6 @@ class CustomResNet(nn.Module):
         return self.net(x)
 
 
-# In[34]:
 
 
 class CustomResNeXt(nn.Module):
@@ -1097,7 +1061,6 @@ class CustomResNeXt(nn.Module):
         return self.net(x)
 
 
-# In[35]:
 
 
 class CustomSENet(nn.Module):
@@ -1118,7 +1081,6 @@ class CustomSENet(nn.Module):
         return self.net(x)
 
 
-# In[36]:
 
 
 class CustomEfficientNet(nn.Module):
@@ -1137,14 +1099,12 @@ class CustomEfficientNet(nn.Module):
         return self.net(x)
 
 
-# In[37]:
 
 
 # model = CustomEfficientNet_Att(model_name=MODEL, weights_path=PRETRAINED_MAPPING[MODEL])
 # model.to(device)
 
 
-# In[38]:
 
 
 LOGGER.debug(f'Fold: {FOLD}')
@@ -1152,7 +1112,6 @@ LOGGER.debug(f'Model: {MODEL}')
 LOGGER.debug(f'Train params: {train_params}')
 
 
-# In[39]:
 
 
 with timer('Prepare train and valid sets'):
@@ -1191,7 +1150,6 @@ with timer('Prepare train and valid sets'):
 LOGGER.debug(f'train size: {len(train_dataset)}, valid size: {len(valid_dataset)}')
 
 
-# In[40]:
 
 
 def multi_loss(pred_reg,pred_classfier,y_true,multi_method='mse_ce',alpha = 1,beta =1):
@@ -1208,7 +1166,6 @@ def multi_loss(pred_reg,pred_classfier,y_true,multi_method='mse_ce',alpha = 1,be
     return loss
 
 
-# In[41]:
 
 
 # with timer('Train model'):
@@ -1300,7 +1257,6 @@ def multi_loss(pred_reg,pred_classfier,y_true,multi_method='mse_ce',alpha = 1,be
 #         torch.save(model.state_dict(), f'{MODEL}_fold{FOLD}_epoch{epoch+1}.pth')
 
 
-# In[42]:
 
 
 .softmax(input, self.dim, _stacklevel=5)
@@ -1331,7 +1287,6 @@ def multi_loss(pred_reg,pred_classfier,y_true,multi_method='mse_ce',alpha = 1,be
 2020-07-02 02:46:15,646 INFO [Train model] done in 1247 s.
 
 
-# In[ ]:
 
 
 

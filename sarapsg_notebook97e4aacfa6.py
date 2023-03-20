@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -39,7 +38,6 @@ all_cervix_images['filetype'] = all_cervix_images.apply(lambda row: row.imagepat
 all_cervix_images['type'] = all_cervix_images.apply(lambda row: row.imagepath.split("/")[-2], axis=1)
 
 
-# In[2]:
 
 
 image_name = all_cervix_images['imagepath'].values[0]
@@ -47,27 +45,23 @@ img = np.flipud(plt.imread(image_name))
 plt.imshow(img,cmap=plt.cm.gray,interpolation='nearest')
 
 
-# In[3]:
 
 
 img_clean = img[1000:2400, :]
 plt.imshow(img_clean,cmap=plt.cm.gray,interpolation='nearest')
 
 
-# In[4]:
 
 
 img_med = ndi.median_filter(img_clean, size=5)
 plt.imshow(img_med,cmap=plt.cm.gray,interpolation='nearest')
 
 
-# In[5]:
 
 
 plt.hist(img_med.flat,bins=40,range=(0,250));
 
 
-# In[6]:
 
 
 bubbles = (img_med <= 45)
@@ -90,7 +84,6 @@ def plot_images(cmap=plt.cm.gray):
 plot_images()
 
 
-# In[ ]:
 
 
 for img in (sand, bubbles, glass, whiter):
@@ -100,7 +93,6 @@ for img in (sand, bubbles, glass, whiter):
 plot_images()
 
 
-# In[ ]:
 
 
 image_name = all_cervix_images['imagepath'].values[2]
@@ -108,7 +100,6 @@ img = np.flipud(plt.imread(image_name))
 plt.imshow(img,cmap=plt.cm.gray,interpolation='nearest')
 
 
-# In[ ]:
 
 
 img_clean = img[1000:2000, :]
@@ -120,7 +111,6 @@ plt.imshow(img_med,cmap=plt.cm.gray,interpolation='nearest')
 plt.hist(img_med.flat,bins=100,range=(0,150));
 
 
-# In[ ]:
 
 
 def w2d(img, mode='haar', level=1):
@@ -147,7 +137,6 @@ def w2d(img, mode='haar', level=1):
     return imArray_H
 
 
-# In[ ]:
 
 
 
@@ -157,7 +146,6 @@ image_name = all_cervix_images['imagepath'].values[2]
 w2d(image_name,'db1',8)
 
 
-# In[ ]:
 
 
 train_data = []
@@ -207,7 +195,6 @@ print(random_forest_predicted)
 print(random_forest_probability)
 
 
-# In[ ]:
 
 
 def gabfn(image_name):
@@ -223,7 +210,6 @@ def gabfn(image_name):
  return g_kernal
 
 
-# In[ ]:
 
 
 fig = plt.figure()

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # Ulrich - B0, B2, B4
@@ -10,7 +9,6 @@
 # Ming - metadata
 
 
-# In[2]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -36,7 +34,6 @@ print("Tensorflow version " + tf.__version__)
 AUTO = tf.data.experimental.AUTOTUNE
 
 
-# In[3]:
 
 
 # Detect hardware, return appropriate distribution strategy
@@ -61,20 +58,17 @@ REPLICAS = strategy.num_replicas_in_sync
 print("REPLICAS: ", REPLICAS)
 
 
-# In[4]:
 
 
 pip install -U efficientnet
 
 
-# In[5]:
 
 
 train_folder = '../input/melanoma-foldered-collection/kaggle/working/224x224-dataset-melanoma'
 test_folder = '../input/melanoma-test/kaggle/working/224x224-test'
 
 
-# In[6]:
 
 
 nb_mel = len(os.listdir(os.path.join(train_folder,'melanoma')))
@@ -83,7 +77,6 @@ print(f'{nb_mel} melanoma training samples')
 print(f'{nb_other} other training samples')
 
 
-# In[7]:
 
 
 import random
@@ -105,7 +98,6 @@ values, counts = np.unique(random_sequence,return_counts=True)
 assert(len(values)==nb_mel) # nb_mel unique indices
 
 
-# In[8]:
 
 
 custom_train_folder = '/kaggle/working/training_subset'
@@ -119,7 +111,6 @@ if not os.path.exists(other_subset_folder):
     os.makedirs(other_subset_folder)
 
 
-# In[9]:
 
 
 from shutil import copyfile
@@ -141,14 +132,12 @@ for idx, file in tqdm(enumerate(os.listdir(other_src))):
         copyfile(src,dest)
 
 
-# In[11]:
 
 
 assert(len(os.listdir(os.path.join(melanoma_folder)))==nb_mel)
 assert(len(os.listdir(os.path.join(other_subset_folder)))==nb_mel)
 
 
-# In[12]:
 
 
 import efficientnet.tfkeras as efn 
@@ -164,14 +153,12 @@ with strategy.scope():
     eff_model = efn.EfficientNetB0(include_top=False, weights='imagenet', input_shape=input_shape, pooling=None) # TODO: try pooling = 'avg' and pooling = 'max'
 
 
-# In[13]:
 
 
 print(eff_model.summary())
 # There is no average or max global pooling at the end, probably not ideal but this is only a demo.
 
 
-# In[14]:
 
 
 # TODO: find first layer from last block
@@ -189,7 +176,6 @@ with strategy.scope():
         #print(layer.trainable)
 
 
-# In[15]:
 
 
 from tensorflow.keras.models import Model
@@ -213,20 +199,17 @@ with strategy.scope():
     eff_finetuning.compile(optimizer=opt,loss='categorical_crossentropy',metrics=[acc,pre,rec,auc])
 
 
-# In[ ]:
 
 
 # TODO: inspect amount of trainable parameters in your model
 # 1.254.834 trainable parameters in EfficientNetB0
 
 
-# In[16]:
 
 
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 
-# In[17]:
 
 
 # Augmentation arguments will be added in the future. We first start exploring non-augmented models (runs faster).
@@ -234,7 +217,6 @@ train_generator = ImageDataGenerator(rescale=1./255,validation_split=0.0)
 #test_generator = ImageDataGenerator(rescale=1./255)
 
 
-# In[18]:
 
 
 batch_size = 128*REPLICAS
@@ -242,7 +224,6 @@ train_flow = train_generator.flow_from_directory(custom_train_folder,target_size
 #test_flow = test_generator.flow_from_directory(test_folder,target_size=(WIDTH,HEIGHT),batch_size=batch_size,class_mode='categorical')
 
 
-# In[19]:
 
 
 # TODO: change epochs
@@ -253,7 +234,6 @@ epochs = 50
 eff_finetuning.fit(train_flow,epochs=epochs,verbose=1)
 
 
-# In[20]:
 
 
 # TODO
@@ -262,7 +242,6 @@ model_name = 'effnet_b0_nopool.hdf5'
 eff_finetuning.save_weights(model_name)
 
 
-# In[21]:
 
 
 test_csv = '../input/siim-isic-melanoma-classification/test.csv'
@@ -281,7 +260,6 @@ with open(test_csv,'r') as test_file:
     test_file.close()
 
 
-# In[ ]:
 
 
 # TODO
@@ -300,7 +278,6 @@ with open(test_csv,'r') as test_file:
 # Now take a coffee
 
 
-# In[ ]:
 
 
 with open('submission.csv', 'w') as subm_file:
@@ -314,7 +291,6 @@ with open('submission.csv', 'w') as subm_file:
         subm_file.close()
 
 
-# In[ ]:
 
 
 # Output labels are mainly [0,1], so 'other' class has index 1 and 'melanoma' class index 0

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
@@ -15,7 +14,6 @@ from sklearn.ensemble import RandomForestRegressor
 sns.set_style('whitegrid')
 
 
-# In[ ]:
 
 
 train_db = pd.read_csv('../input/train.csv', parse_dates=['date'])
@@ -27,7 +25,6 @@ items_db = pd.read_csv('../input/items.csv')
 stores_db = pd.read_csv('../input/stores.csv')
 
 
-# In[ ]:
 
 
 print("Training Data")
@@ -39,7 +36,6 @@ for col in test_db.columns:
     print (col, test_db[col].isnull().any())
 
 
-# In[ ]:
 
 
 supData = [transactions_db, oilprice_db, holiday_db, items_db, stores_db]
@@ -51,7 +47,6 @@ for sup in supData:
 del supData, sup # deleting them to make sure I have enough memory
 
 
-# In[ ]:
 
 
 # Data Cleaning
@@ -65,7 +60,6 @@ test_db['dow'] = test_db['date'].dt.dayofweek # adding day of week as a feature
 test_db['doy'] = test_db['date'].dt.dayofyear # adding day of year as a feature
 
 
-# In[ ]:
 
 
 train_db.loc[:,'onpromotion'].fillna(2, inplace=True) # Replace NaNs with 2
@@ -78,7 +72,6 @@ test_db.loc[:,'onpromotion'].replace(True, 1, inplace=True) # Replace Trues with
 test_db.loc[:,'onpromotion'].replace(False, 0, inplace=True) # Replace Falses with 0
 
 
-# In[ ]:
 
 
 # Grouping columns unit sales by
@@ -92,7 +85,6 @@ ma_wk = ma_dw[['item_nbr', 'store_nbr','madw']]        .groupby(['item_nbr', 'st
 ma_wk.reset_index(inplace=True)
 
 
-# In[ ]:
 
 
 # Oilprice dataset has many missing date values
@@ -131,13 +123,11 @@ interp = new_oilprice_db.dcoilwtico.shift(1) +
 new_oilprice_db['dcoilwtico'] = new_oilprice_db['dcoilwtico'].fillna(interp)
 
 
-# In[ ]:
 
 
 new_oilprice_db[new_oilprice_db['dcoilwtico'].isnull()]
 
 
-# In[ ]:
 
 
 train = pd.merge(train_db, stores_db, on='store_nbr', how='left')
@@ -150,14 +140,12 @@ train = pd.merge(train, holiday_db, on='date', how='left')
 train.head()
 
 
-# In[ ]:
 
 
 for i in train.columns:
     print i, train[i].isnull().any()
 
 
-# In[ ]:
 
 
 test = pd.merge(test_db, stores_db, on='store_nbr', how='left')
@@ -170,13 +158,11 @@ test = pd.merge(test, oilprice_db, on='date', how='left')
 test.head()
 
 
-# In[ ]:
 
 
 del ma_dw, ma_wk, holiday_db, oilprice_db, stores_db, test_db, items_db
 
 
-# In[ ]:
 
 
 train['month'] = train['date'].dt.month
@@ -184,7 +170,6 @@ train['year'] = train['date'].dt.year
 train['day'] = train['date'].dt.day
 
 
-# In[ ]:
 
 
 test['month'] = test['date'].dt.month
@@ -192,7 +177,6 @@ test['year'] = test['date'].dt.year
 test['day'] = test['date'].dt.day
 
 
-# In[ ]:
 
 
 #train.dropna(inplace=True)
@@ -203,14 +187,12 @@ y_train = train['unit_sales']
 del train
 
 
-# In[ ]:
 
 
 joblib.dump(x_train, 'x_train/x_train.pkl')
 joblib.dump(y_train, 'y_train/y_train.pkl')
 
 
-# In[ ]:
 
 
 # Splitting x_train into 

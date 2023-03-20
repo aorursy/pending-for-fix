@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 
 
 
-# In[1]:
 
 
 import numpy as np
@@ -19,46 +17,39 @@ import matplotlib.pyplot as plt
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[2]:
 
 
 ls ../input
 
 
-# In[3]:
 
 
 df_train = pd.read_csv('../input/cat-in-the-dat-ii/train.csv')
 df_train.shape
 
 
-# In[4]:
 
 
 df_train.target.mean()
 
 
-# In[5]:
 
 
 df_test = pd.read_csv('../input/cat-in-the-dat-ii/test.csv')
 df_test.shape
 
 
-# In[6]:
 
 
 df_train.head()
 
 
-# In[7]:
 
 
 for c in df_train.columns[1:-1]:
     print(c,len(df_train[c].unique()),len(df_test[c].unique()))
 
 
-# In[8]:
 
 
 for c in df_train.columns[1:-1]:
@@ -67,7 +58,6 @@ for c in df_train.columns[1:-1]:
           df_test.loc[~df_test[c].isin(df_train[c]),c].shape[0])
 
 
-# In[9]:
 
 
 for c in df_train.columns[1:-1]:
@@ -79,7 +69,6 @@ for c in df_train.columns[1:-1]:
     
 
 
-# In[10]:
 
 
 for c in df_train.columns[1:-1]:
@@ -91,7 +80,6 @@ for c in df_train.columns[1:-1]:
     del df_test[c]
 
 
-# In[11]:
 
 
 targets = df_train.target.values
@@ -99,7 +87,6 @@ del df_train['target']
 df_train['target'] = targets
 
 
-# In[12]:
 
 
 df_train[df_train.columns[1:-1]] = df_train[df_train.columns[1:-1]].astype(complex)
@@ -108,19 +95,16 @@ df_train = df_train.fillna(complex(0,1))
 df_test = df_test.fillna(complex(0,1))
 
 
-# In[13]:
 
 
 df_train.head()
 
 
-# In[14]:
 
 
 df_test.head()
 
 
-# In[15]:
 
 
 def Output(p):
@@ -259,19 +243,16 @@ def GPComplex(data):
     return (GPComplexI(data)+GPComplexII(data))/2
 
 
-# In[16]:
 
 
 roc_auc_score(np.real(df_train.target),Output(GPReal(df_train)))
 
 
-# In[17]:
 
 
 log_loss(np.real(df_train.target),Output(GPReal(df_train)))
 
 
-# In[18]:
 
 
 colors = ['r','b']
@@ -279,13 +260,11 @@ plt.figure(figsize=(15,15))
 plt.scatter(GPReal(df_train),GPComplex(df_train),s=1,color=[colors[int(i)] for i in df_train.target])
 
 
-# In[19]:
 
 
 submission = pd.DataFrame({'id':df_test.id.values,'target':Output(GPReal(df_test))})
 
 
-# In[20]:
 
 
 submission.to_csv('gpsubmission.csv',index=False)

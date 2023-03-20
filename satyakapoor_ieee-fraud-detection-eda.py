@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import pandas as pd
@@ -18,7 +17,6 @@ from imblearn.under_sampling import NearMiss
 from imblearn.combine import SMOTEENN
 
 
-# In[ ]:
 
 
 train_transaction = pd.read_csv('../input/ieee-fraud-detection/train_transaction.csv',index_col='TransactionID')
@@ -28,93 +26,78 @@ test_identity = pd.read_csv('../input/ieee-fraud-detection/test_identity.csv',in
 sample_submission = pd.read_csv('../input/ieee-fraud-detection/sample_submission.csv')
 
 
-# In[ ]:
 
 
 train = pd.merge(train_transaction, train_identity, on='TransactionID', how='left')
 test = pd.merge(test_transaction,test_identity,on='TransactionID', how='left')
 
 
-# In[ ]:
 
 
 del (test_identity,test_transaction,train_identity,train_transaction)
 
 
-# In[ ]:
 
 
 train.memory_usage(deep=True).sum()
 
 
-# In[ ]:
 
 
 train.isFraud.value_counts(normalize=True).plot(kind='bar')
 
 
-# In[ ]:
 
 
 train.describe(include='all')
 
 
-# In[ ]:
 
 
 train.columns
 
 
-# In[ ]:
 
 
 train.dtypes.value_counts()
 
 
-# In[ ]:
 
 
 features_object=train.select_dtypes(include=['object']).columns
 print(features_object)
 
 
-# In[ ]:
 
 
 pd.crosstab(index=train['isFraud'], columns=train['ProductCD'], normalize = True, margins=True, margins_name='Total')
 
 ProductCD has 5 types, among which type "C" and "W" has most fraud cases.
-# In[ ]:
 
 
 sns.countplot(x="ProductCD", hue = "isFraud", data=train,  palette="Set1")
 
 
-# In[ ]:
 
 
 pd.crosstab(index=train['isFraud'], columns=train['card4'], normalize = True, margins=True, margins_name="total").round(3)*100
 
 
-# In[ ]:
 
 
 sns.countplot(x="card4", hue = "isFraud", data=train,  palette="Set2")
 
 
-# In[ ]:
 
 
 pd.crosstab(index=train['isFraud'], columns=train['card6'], normalize = True, margins=True, margins_name="total").round(2)*100
 
 
-# In[ ]:
 
 
 sns.countplot(x="card6", hue = "isFraud", data=train,  palette="Set2")
 
 
-# In[ ]:
 
 
 
@@ -123,7 +106,6 @@ pd.crosstab([train.ProductCD, train.card6,train.card4],[train.isFraud],
     colnames=[ 'isFraud'], normalize=True).round(4)*100
 
 
-# In[ ]:
 
 
 f, ax = plt.subplots(figsize=(11, 9))
@@ -132,7 +114,6 @@ sns.heatmap(pd.crosstab([train.ProductCD, train.card6],[train.card4,train.isFrau
     colnames=['card4', 'isFraud'], normalize=True).round(4)*100,cmap="YlGnBu",linewidth=0.5 ,square=False,center=0, annot=True, cbar_kws={"shrink": .5})
 
 
-# In[ ]:
 
 
 fig, ax = plt.subplots(1, 2, figsize=(20,20))
@@ -142,33 +123,28 @@ sns.countplot(y="R_emaildomain",hue="isFraud", ax=ax[1], data=train)
 ax[1].set_title('R_emaildomain')
 
 
-# In[ ]:
 
 
 id_features = train[['id_12','id_15','id_16', 'id_23', 'id_27', 'id_28', 'id_29', 'id_30', 'id_31', 'id_33',
        'id_34', 'id_35', 'id_36', 'id_37', 'id_38']]
 
 
-# In[ ]:
 
 
 id_features.describe()
 
 
-# In[ ]:
 
 
 id_features.isnull().sum()*100/len(id_features)
 
 
-# In[ ]:
 
 
 m_features = [c for c in train if c[0] == 'M']
 train[m_features].describe()
 
 
-# In[ ]:
 
 
 def bar_plot(col, data, hue=None):
@@ -177,7 +153,6 @@ def bar_plot(col, data, hue=None):
     
 
 
-# In[ ]:
 
 
 m_features= train.loc[:,'M1':'M9']   
@@ -186,19 +161,16 @@ for col in m_features:
         
 
 
-# In[ ]:
 
 
 pd.crosstab(train.isFraud,train.DeviceType).plot(kind='bar')
 
 
-# In[ ]:
 
 
 train.DeviceInfo.value_counts()
 
 
-# In[ ]:
 
 
 float_dtypes = train.select_dtypes(include='bool')
@@ -206,14 +178,12 @@ features_float=train.select_dtypes(include=['float']).columns
 print(features_float)
 
 
-# In[ ]:
 
 
 D_features = train.loc[:,'D1':'D14']
 D_features.describe()
 
 
-# In[ ]:
 
 
 colormap = plt.cm.Spectral
@@ -223,19 +193,16 @@ sns.heatmap(D_features.corr(),linewidths=0.1,vmax=1.0,
            square=True, cmap=colormap, linecolor='white', annot=True)
 
 
-# In[ ]:
 
 
 [c for c in train if c[0] == 'C']
 
 
-# In[ ]:
 
 
 C_features = train.loc[:,'C1':'C14']
 
 
-# In[ ]:
 
 
 colormap = plt.cm.seismic
@@ -245,13 +212,11 @@ sns.heatmap(C_features.corr(),linewidths=0.1,vmax=1.0,
            square=True, cmap=colormap, linecolor='white', annot=True)
 
 
-# In[ ]:
 
 
 id_ = train.loc[:,'id_01':'id_32']
 
 
-# In[ ]:
 
 
 colormap = plt.cm.RdYlBu
@@ -261,20 +226,17 @@ sns.heatmap(id_.corr(),linewidths=0.1,vmax=1.0,
            square=True, cmap=colormap, linecolor='white', annot=True)
 
 
-# In[ ]:
 
 
 v_feature = [v for v in train if v[0] == 'V']
 print(train[v_feature].shape)
 
 
-# In[ ]:
 
 
 train[v_feature].describe()
 
 
-# In[ ]:
 
 
 def missing_val(train):
@@ -291,7 +253,6 @@ def missing_val(train):
 missing_val(train).head(10)
 
 
-# In[ ]:
 
 
 y_train = train['isFraud'].copy()
@@ -299,7 +260,6 @@ X_train = train.drop('isFraud', axis=1)
 X_test = test.copy()
 
 
-# In[ ]:
 
 
 for f in X_train.columns:
@@ -310,14 +270,12 @@ for f in X_train.columns:
         X_test[f] = lbl.transform(list(X_test[f].values))
 
 
-# In[ ]:
 
 
 X_train.fillna(-999, inplace = True)
 X_test.fillna(-999, inplace = True)
 
 
-# In[ ]:
 
 
 from sklearn.model_selection import TimeSeriesSplit,KFold
@@ -327,7 +285,6 @@ folds = KFold(n_splits=n_fold,shuffle=True)
 print(folds)
 
 
-# In[ ]:
 
 
 for fold_n, (train_index, valid_index) in enumerate(folds.split(X_train)):
@@ -344,26 +301,22 @@ for fold_n, (train_index, valid_index) in enumerate(folds.split(X_train)):
     )
 
 
-# In[ ]:
 
 
 X_train_, X_valid = X_train.iloc[train_index], X_train.iloc[valid_index]
 
 
-# In[ ]:
 
 
 y_train_, y_valid = y_train.iloc[train_index], y_train.iloc[valid_index]
 
 
-# In[ ]:
 
 
 xgbclf.fit(X_train_,y_train_)
     
 
 
-# In[ ]:
 
 
 del X_train_,y_train_
@@ -377,7 +330,6 @@ del X_train_,y_train_
     gc.collect()
 
 
-# In[ ]:
 
 
 

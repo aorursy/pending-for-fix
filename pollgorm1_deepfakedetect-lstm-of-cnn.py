@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -75,7 +74,6 @@ import os
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 
@@ -102,7 +100,6 @@ class Video:
         return self.length
 
 
-# In[3]:
 
 
 ## ML Model , Inception(LSTM) - i.e a spatio - temporal model. see -  https://engineering.purdue.edu/~dgueraco/content/deepfake.pdf
@@ -152,7 +149,6 @@ def predict_fakes(Xtest):
     return te_pr
 
 
-# In[5]:
 
 
 import os
@@ -504,7 +500,6 @@ print(res)
 res.to_csv('submission.csv', index=False)                
 
 
-# In[ ]:
 
 
 

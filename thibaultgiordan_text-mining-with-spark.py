@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import nltk
@@ -14,14 +13,12 @@ import string
 sc
 
 
-# In[2]:
 
 
 df=spark.read.csv("train.csv",header=True)
 df.show()
 
 
-# In[3]:
 
 
 def normalize_token(x) :
@@ -35,7 +32,6 @@ rdd_normalize_token=df.rdd.map(lambda x : normalize_token(x))
 rdd_normalize_token.first()
 
 
-# In[4]:
 
 
 def remove_stop_word_and_changer_number(x,seuil,stop_words,list_punct) :
@@ -59,7 +55,6 @@ rdd_stop_word=rdd_normalize_token.map(lambda x : remove_stop_word_and_changer_nu
 rdd_stop_word.first()
 
 
-# In[5]:
 
 
 def lemmatisation(x,dict_cor) :
@@ -85,7 +80,6 @@ rdd_lemma=rdd_stop_word.map(lambda x : lemmatisation(x,dict_cor))
 rdd_lemma.first()
 
 
-# In[6]:
 
 
 def size_word(x) :
@@ -96,7 +90,6 @@ rdd_size=rdd_lemma.map(lambda x :size_word(x))
 rdd_size.first()
 
 
-# In[7]:
 
 
 df_final=rdd_size.toDF(["id","phrase","Author","nb_carac","nb_punct","words","size"])
@@ -104,13 +97,11 @@ print df_final.count()
 df_final.show()
 
 
-# In[8]:
 
 
 df_final.write.parquet("tokenize_03_12_v3",mode="overwrite")
 
 
-# In[9]:
 
 
 df_test=spark.read.csv("test.csv",header=True)
@@ -126,7 +117,6 @@ print df_final_test.show()
 df_final_test.write.parquet("tokenize_test_03_12_v3",mode="overwrite")
 
 
-# In[10]:
 
 
 import nltk
@@ -152,7 +142,6 @@ from pyspark.ml.tuning import CrossValidator, ParamGridBuilder
 from pyspark.ml.linalg import Vectors, VectorUDT
 
 
-# In[11]:
 
 
 df = spark.read.parquet("tokenize_03_12_v3")
@@ -160,7 +149,6 @@ df_test = spark.read.parquet("tokenize_test_03_12_v3")
 df.show()
 
 
-# In[12]:
 
 
 def add_label(x) :
@@ -187,7 +175,6 @@ df_add_label=rdd_label.toDF(["id","phrase","Author","nb_carac","nb_punct","words
 df_add_label.show()
 
 
-# In[13]:
 
 
 method="both"
@@ -224,7 +211,6 @@ elif method=="both" :
 rescaledData.show()
 
 
-# In[14]:
 
 
 if method=="both" :
@@ -234,7 +220,6 @@ else :
 df_ML.first()
 
 
-# In[15]:
 
 
 trainingData=rescaledData
@@ -252,7 +237,6 @@ crossval = CrossValidator(estimator=nb_eap,
 model_eap=crossval.fit(trainingData)
 
 
-# In[16]:
 
 
 trainingData=rescaledData
@@ -270,7 +254,6 @@ crossval = CrossValidator(estimator=nb_hpl,
 model_hpl=crossval.fit(trainingData)
 
 
-# In[17]:
 
 
 trainingData=rescaledData
@@ -288,7 +271,6 @@ crossval = CrossValidator(estimator=nb_mws,
 model_mws=crossval.fit(trainingData)
 
 
-# In[18]:
 
 
 print model_eap.bestModel 
@@ -296,7 +278,6 @@ print model_hpl.bestModel
 print model_mws.bestModel 
 
 
-# In[19]:
 
 
 df_test.show()
@@ -330,7 +311,6 @@ df_test_3 = model_mws.transform(df_test_2).drop('phrase').drop('words').drop('ra
 print df_test_3.show()
 
 
-# In[20]:
 
 
 def change_val(x) :
@@ -354,7 +334,6 @@ def change_val(x) :
 df_save=df_test_3.rdd.map(lambda x : change_val(x)).toDF(['id','EAP','HPL','MWS'])
 
 
-# In[21]:
 
 
 df_save=df_test_3.coalesce(1)
@@ -362,13 +341,11 @@ print df_save.count()
 print df_save.first()
 
 
-# In[22]:
 
 
 df_save.select(['id','EAP','HPL','MWS']).write.csv("result_test_03_12_v4",sep=",",header=True,mode="overwrite")
 
 
-# In[23]:
 
 
 

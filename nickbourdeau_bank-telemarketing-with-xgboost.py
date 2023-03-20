@@ -1,21 +1,18 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 from google.colab import files
 uploaded = files.upload()
 
 
-# In[ ]:
 
 
 import pandas as pd
 df = pd.read_csv('bank-train.csv.zip')
 
 
-# In[ ]:
 
 
 data = df
@@ -23,14 +20,12 @@ df = df.drop(['duration', 'id'], 1)
 df.head()
 
 
-# In[ ]:
 
 
 # Total Yes and Nos
 df.y.value_counts()
 
 
-# In[ ]:
 
 
 # Transforming categorical data to labels
@@ -49,7 +44,6 @@ df['day_of_week'] = lbl_enc.fit_transform(df.day_of_week.values)
 df['poutcome'] = lbl_enc.fit_transform(df.poutcome.values)
 
 
-# In[ ]:
 
 
 # Scaling numerical data to enhance machine learning algorithms
@@ -60,13 +54,11 @@ df[['pdays', 'emp.var.rate', 'cons.price.idx', 'cons.conf.idx', 'euribor3m', 'nr
 df
 
 
-# In[ ]:
 
 
 df.isnull().any(axis=1).sum()
 
 
-# In[ ]:
 
 
 # Subsetting training and testing data
@@ -77,7 +69,6 @@ y = df['y']
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1)
 
 
-# In[ ]:
 
 
 # Random Forest Classifier Model
@@ -90,7 +81,6 @@ forest_predictions = forest.predict(x_test)
 forest.score(x_test, y_test)  
 
 
-# In[ ]:
 
 
 # Random Forest Feature Importance
@@ -98,7 +88,6 @@ importance = pd.DataFrame({'Importance': forest.feature_importances_}, index = X
 importance
 
 
-# In[ ]:
 
 
 # XGBoost Model
@@ -108,13 +97,11 @@ clf = xgb.XGBClassifier(max_depth=7, n_estimators=200, colsample_bytree=0.8,
 clf.fit(x_train, y_train)
 
 
-# In[ ]:
 
 
 clf.score(x_test, y_test)
 
 
-# In[ ]:
 
 
 # Recursive Feature Elimination on XGBooost model
@@ -125,7 +112,6 @@ rfe1.fit(x_train, y_train)
 rfe1.score(x_test, y_test)
 
 
-# In[ ]:
 
 
 # XGBoost Feature Importance
@@ -133,7 +119,6 @@ important = pd.DataFrame({'Importance': clf.feature_importances_}, index = x_tra
 important
 
 
-# In[ ]:
 
 
 # Feature Selection with XGBoost
@@ -148,14 +133,12 @@ sfs = SFS(clf,
 sfs.fit(x_train, y_train)
 
 
-# In[ ]:
 
 
 sfs.k_feature_names_
 sffs.score(x_test, y_test)
 
 
-# In[ ]:
 
 
 # Grid Search for XBG Classifier
@@ -183,7 +166,6 @@ xgb_rscv = RandomizedSearchCV(xgb_clf, param_distributions = parameters, scoring
 model_xgboost = xgb_rscv.fit(x_train, y_train)
 
 
-# In[ ]:
 
 
 # Best XGBoost Model
@@ -191,7 +173,6 @@ grid_clf = model_xgboost.best_estimator_
 model_xgboost.best_estimator_
 
 
-# In[ ]:
 
 
 import xgboost as xgb
@@ -207,7 +188,6 @@ idea.fit(x_train, y_train)
 idea.score(x_test, y_test)
 
 
-# In[ ]:
 
 
 # Best XGBoost Score
@@ -215,14 +195,12 @@ grid_clf.fit(x_train, y_train)
 grid_clf.score(x_test, y_test)
 
 
-# In[ ]:
 
 
 from xgboost import plot_importance
 grid_clf.feature_importances_
 
 
-# In[ ]:
 
 
 # Visualizing Feature Importance for XGBoost
@@ -247,7 +225,6 @@ for thresh in thresholds:
   print(select_X_train.)
 
 
-# In[ ]:
 
 
 #Recusive Feature Elimination on Best XGBoost Model
@@ -258,13 +235,11 @@ rfe.fit(x_train, y_train)
 rfe.score(x_test, y_test)
 
 
-# In[ ]:
 
 
 train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.1)
 
 
-# In[ ]:
 
 
 # Create a Keras Learning Model
@@ -280,19 +255,16 @@ deep_model.add(Dense(1, activation='sigmoid'))
 deep_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 
-# In[ ]:
 
 
 deep_model.fit(train_x, train_y, epochs=150, batch_size=10)
 
 
-# In[ ]:
 
 
 deep_model.evaluate(train_x, train_y, verbose=0)
 
 
-# In[ ]:
 
 
 import pandas
@@ -307,7 +279,6 @@ from sklearn.pipeline import Pipeline
 train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.1)
 
 
-# In[ ]:
 
 
 # Create New Keras Model with more Layers
@@ -323,7 +294,6 @@ def create_baseline():
 	return dmodel
 
 
-# In[ ]:
 
 
 estimator = KerasClassifier(build_fn=create_baseline, epochs=100, batch_size=5, verbose=0)
@@ -332,21 +302,18 @@ results = cross_val_score(estimator, train_x, train_y, cv=kfold)
 print("Baseline: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
 
 
-# In[ ]:
 
 
 from google.colab import files
 uploaded = files.upload()
 
 
-# In[ ]:
 
 
 test = pd.read_csv('bank-test.csv')
 test
 
 
-# In[ ]:
 
 
 lbl_enc = preprocessing.LabelEncoder()
@@ -362,7 +329,6 @@ test['day_of_week'] = lbl_enc.fit_transform(test.day_of_week.values)
 test['poutcome'] = lbl_enc.fit_transform(test.poutcome.values)
 
 
-# In[ ]:
 
 
 min_max_scaler = MinMaxScaler()
@@ -370,14 +336,12 @@ test[['pdays', 'emp.var.rate', 'cons.price.idx', 'cons.conf.idx', 'euribor3m', '
 test
 
 
-# In[ ]:
 
 
 bank_test = test[['euribor3m', 'pdays', 'nr.employed', 'month', 'emp.var.rate', 'contact', 'cons.price.idx', 'poutcome', 'cons.conf.idx', 'default', 'day_of_week', 'campaign']]
 bank_test
 
 
-# In[ ]:
 
 
 test1 = pd.read_csv('bank-test.csv')
@@ -386,14 +350,12 @@ dataframe1 = pd.DataFrame(ID, columns=['id'])
 dataframe1
 
 
-# In[ ]:
 
 
 btest = test.drop(['id', 'duration'], 1)
 predictions1 = rfe1.predict(btest)
 
 
-# In[ ]:
 
 
 dataframe=pd.DataFrame(predictions1, columns=['Predicted'])

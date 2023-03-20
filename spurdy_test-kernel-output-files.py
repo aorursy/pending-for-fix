@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,45 +21,38 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 ls ../input
 
 
-# In[3]:
 
 
 pwd
 
 
-# In[4]:
 
 
 df = pd.read_csv('../input/quickdraw-doodle-recognition/sample_submission.csv')
 df.head()
 
 
-# In[5]:
 
 
 sub = df.to_csv('/kaggle/working/sub_test.csv', index=False)
 
 
-# In[6]:
 
 
 ls
 
 
-# In[7]:
 
 
 df_submission = pd.read_csv('sub_test.csv')
 df_submission.head()
 
 
-# In[8]:
 
 
 ls

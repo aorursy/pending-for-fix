@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -33,45 +32,38 @@ from keras import backend as K
 from keras.preprocessing.image import load_img
 
 
-# In[2]:
 
 
 print(os.listdir("../input"))
 
 
-# In[3]:
 
 
 train_seg = pd.read_csv('../input/train_ship_segmentations_v2.csv')
 #test_seg = pd.read_csv('../input/test_ship_segmentations_v2.csv')
 
 
-# In[4]:
 
 
 train = os.path.join('../input','train_v2')
 #test = os.listdir('../input/test')
 
 
-# In[5]:
 
 
 #train = pd.read_csv(os.path.join('../input','train_v2'))
 
 
-# In[6]:
 
 
 train_seg.loc[0]
 
 
-# In[7]:
 
 
 train
 
 
-# In[8]:
 
 
 def run_len_decode(mask,shape=(768,768)):
@@ -85,7 +77,6 @@ def run_len_decode(mask,shape=(768,768)):
     return img.reshape(shape).T
 
 
-# In[9]:
 
 
 def make_mask(img_mask):
@@ -97,7 +88,6 @@ def make_mask(img_mask):
     return(tot_mask)
 
 
-# In[10]:
 
 
 def show(num,imgage=False):
@@ -122,31 +112,26 @@ def show(num,imgage=False):
         return tot_mask
 
 
-# In[11]:
 
 
 import random
 
 
-# In[12]:
 
 
 random.randint(1,100)
 
 
-# In[13]:
 
 
 k = show(random.randint(1,100),True)
 
 
-# In[14]:
 
 
 
 
 
-# In[14]:
 
 
 def run_len_ecoding(img):
@@ -157,13 +142,11 @@ def run_len_ecoding(img):
     return ' '.join(str(x) for x in px)
 
 
-# In[15]:
 
 
 imshow(run_len_decode(run_len_ecoding(k)))
 
 
-# In[16]:
 
 
 idx = train_seg.loc[30]['ImageId']
@@ -171,20 +154,17 @@ img = imread('../input/train_v2/'+idx)
 print(img.shape)
 
 
-# In[17]:
 
 
 img = load_img('../input/train/'+idx,grayscale=False)
 
 
-# In[18]:
 
 
 imshow(img)
 print(img.size)
 
 
-# In[19]:
 
 
 def unet(pretrained_weights=None,input_size=(768,768,3)):
@@ -250,37 +230,31 @@ def unet(pretrained_weights=None,input_size=(768,768,3)):
     
 
 
-# In[20]:
 
 
 k = unet()
 
 
-# In[21]:
 
 
 k.summary()
 
 
-# In[22]:
 
 
 os.listdir('../input')
 
 
-# In[23]:
 
 
 path = os.path.join('../input','train')
 
 
-# In[24]:
 
 
 imshow(imread(os.path.join(path,train_seg.loc[0]['ImageId'])))
 
 
-# In[25]:
 
 
 def givexy():
@@ -295,31 +269,26 @@ def givexy():
     return X,Y
 
 
-# In[26]:
 
 
 resize
 
 
-# In[27]:
 
 
 x,y = givexy()
 
 
-# In[28]:
 
 
 x.shape
 
 
-# In[29]:
 
 
 y.shape
 
 
-# In[30]:
 
 
 callbacks = [
@@ -332,31 +301,26 @@ callbacks = [
 #                     validation_data=({'img': X_valid, 'feat': X_feat_valid}, y_valid))
 
 
-# In[31]:
 
 
 k.fit(x,y,batch_size=10,epochs=1)
 
 
-# In[32]:
 
 
 k.predict()
 
 
-# In[33]:
 
 
 img = 
 
 
-# In[34]:
 
 
 os.listdir('../input')
 
 
-# In[35]:
 
 
 os.path.join('../train','train')

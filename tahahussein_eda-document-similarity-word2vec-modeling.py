@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 pip install distance
 
 
-# In[2]:
 
 
 import numpy as np
@@ -56,13 +54,11 @@ from tqdm import tqdm
 import spacy
 
 
-# In[3]:
 
 
 print(check_output(["ls", "../input/quora-question-pairs"]).decode("utf8"))
 
 
-# In[4]:
 
 
 df = pd.read_csv("../input/quora-question-pairs/train.csv.zip")
@@ -70,32 +66,27 @@ df = pd.read_csv("../input/quora-question-pairs/train.csv.zip")
 print("Number of data points:",df.shape[0])
 
 
-# In[5]:
 
 
 df.info()
 
 
-# In[6]:
 
 
 df.groupby("is_duplicate")['id'].count().plot.bar()
 
 
-# In[7]:
 
 
 print('~> Total number of question pairs for training:\n   {}'.format(len(df)))
 
 
-# In[8]:
 
 
 print('~> Question pairs are not Similar (is_duplicate = 0):\n   {}%'.format(100 - round(df['is_duplicate'].mean()*100, 2)))
 print('\n~> Question pairs are Similar (is_duplicate = 1):\n   {}%'.format(round(df['is_duplicate'].mean()*100, 2)))
 
 
-# In[9]:
 
 
 qids = pd.Series(df['qid1'].tolist() + df['qid2'].tolist())
@@ -113,7 +104,6 @@ q_vals=qids.value_counts()
 q_vals=q_vals.values
 
 
-# In[10]:
 
 
 
@@ -126,7 +116,6 @@ sns.barplot(x,y)
 plt.show()
 
 
-# In[11]:
 
 
 #checking whether there are any repeated pair of questions
@@ -136,7 +125,6 @@ pair_duplicates = df[['qid1','qid2','is_duplicate']].groupby(['qid1','qid2']).co
 print ("Number of duplicate questions",(pair_duplicates).shape[0] - df.shape[0])
 
 
-# In[12]:
 
 
 plt.figure(figsize=(20, 10))
@@ -154,7 +142,6 @@ plt.ylabel('Number of questions')
 print ('Maximum number of times a single question is repeated: {}\n'.format(max(qids.value_counts()))) 
 
 
-# In[13]:
 
 
 #Checking whether there are any rows with null values
@@ -162,7 +149,6 @@ nan_rows = df[df.isnull().any(1)]
 print (nan_rows)
 
 
-# In[14]:
 
 
 # Filling the null values with ' '
@@ -171,7 +157,6 @@ nan_rows = df[df.isnull().any(1)]
 print (nan_rows)
 
 
-# In[15]:
 
 
 
@@ -207,14 +192,12 @@ df['freq_q1-q2'] = abs(df['freq_qid1']-df['freq_qid2'])
 df.head()
 
 
-# In[16]:
 
 
 df_fe_without_preprocessing_train = df.copy()
 df_fe_without_preprocessing_train.to_csv("df_fe_without_preprocessing_train.csv", index=False)
 
 
-# In[17]:
 
 
 print ("Minimum length of the questions in question1 : " , min(df['q1_n_words']))
@@ -225,7 +208,6 @@ print ("Number of Questions with minimum length [question1] :", df[df['q1_n_word
 print ("Number of Questions with minimum length [question2] :", df[df['q2_n_words']== 1].shape[0])
 
 
-# In[18]:
 
 
 plt.figure(figsize=(12, 8))
@@ -239,7 +221,6 @@ sns.distplot(df[df['is_duplicate'] == 0.0]['word_share'][0:] , label = "0" , col
 plt.show()
 
 
-# In[19]:
 
 
 plt.figure(figsize=(12, 8))
@@ -253,7 +234,6 @@ sns.distplot(df[df['is_duplicate'] == 0.0]['word_Common'][0:] , label = "0" , co
 plt.show()
 
 
-# In[20]:
 
 
 # To get the results in 4 decemal points
@@ -286,7 +266,6 @@ def preprocess(x):
     
 
 
-# In[21]:
 
 
 def get_token_features(q1, q2):
@@ -383,7 +362,6 @@ def extract_features(df):
     return df
 
 
-# In[22]:
 
 
 if os.path.isfile('nlp_features_train.csv'):
@@ -397,14 +375,12 @@ else:
 df.head(2)
 
 
-# In[23]:
 
 
 df_duplicate = df[df['is_duplicate'] == 1]
 dfp_nonduplicate = df[df['is_duplicate'] == 0]
 
 
-# In[24]:
 
 
 # Converting 2d array of q1 and q2 and flatten the array: like {{1,2},{3,4}} to {1,2,3,4}
@@ -412,14 +388,12 @@ p = np.dstack([df_duplicate["question1"], df_duplicate["question2"]]).flatten()
 n = np.dstack([dfp_nonduplicate["question1"], dfp_nonduplicate["question2"]]).flatten()
 
 
-# In[25]:
 
 
 print ("Number of data points in class 1 (duplicate pairs) :",len(p))
 print ("Number of data points in class 0 (non duplicate pairs) :",len(n))
 
 
-# In[26]:
 
 
 # Require to avoid Unicode issue
@@ -435,14 +409,12 @@ np.lib.npyio.asstr = asstr
 np.lib.npyio.asunicode = asstr
 
 
-# In[27]:
 
 
 np.savetxt('train_p.txt', p, delimiter=' ', fmt='%s')
 np.savetxt('train_n.txt', n, delimiter=' ', fmt='%s')
 
 
-# In[28]:
 
 
 # reading the text files and removing the Stop Words:
@@ -466,7 +438,6 @@ print ("Total number of words in duplicate pair questions :",len(textp_w))
 print ("Total number of words in non duplicate pair questions :",len(textn_w))
 
 
-# In[29]:
 
 
 wc = WordCloud(background_color="white", max_words=len(textp_w), stopwords=stopwords)
@@ -477,7 +448,6 @@ plt.axis("off")
 plt.show()
 
 
-# In[30]:
 
 
 wc = WordCloud(background_color="white", max_words=len(textn_w),stopwords=stopwords)
@@ -489,7 +459,6 @@ plt.axis("off")
 plt.show()
 
 
-# In[31]:
 
 
 n = df.shape[0]
@@ -497,7 +466,6 @@ sns.pairplot(df[['ctc_min', 'cwc_min', 'csc_min', 'token_sort_ratio', 'is_duplic
 plt.show()
 
 
-# In[32]:
 
 
 # Distribution of the token_sort_ratio
@@ -512,7 +480,6 @@ sns.distplot(df[df['is_duplicate'] == 0.0]['token_sort_ratio'][0:] , label = "0"
 plt.show()
 
 
-# In[33]:
 
 
 plt.figure(figsize=(10, 8))
@@ -526,7 +493,6 @@ sns.distplot(df[df['is_duplicate'] == 0.0]['fuzz_ratio'][0:] , label = "0" , col
 plt.show()
 
 
-# In[34]:
 
 
 # Using TSNE for Dimentionality reduction for 15 Features(Generated after cleaning the data) to 3 dimention
@@ -538,7 +504,6 @@ X = MinMaxScaler().fit_transform(dfp_subsampled[['cwc_min', 'cwc_max', 'csc_min'
 y = dfp_subsampled['is_duplicate'].values
 
 
-# In[35]:
 
 
 tsne2d = TSNE(
@@ -552,7 +517,6 @@ tsne2d = TSNE(
 ).fit_transform(X)
 
 
-# In[36]:
 
 
 df = pd.DataFrame({'x':tsne2d[:,0], 'y':tsne2d[:,1] ,'label':y})
@@ -563,7 +527,6 @@ plt.title("perplexity : {} and max_iter : {}".format(30, 1000))
 plt.show()
 
 
-# In[37]:
 
 
 from sklearn.manifold import TSNE
@@ -578,7 +541,6 @@ tsne3d = TSNE(
 ).fit_transform(X)
 
 
-# In[38]:
 
 
 trace1 = go.Scatter3d(
@@ -602,7 +564,6 @@ fig=dict(data=data, layout=layout)
 py.iplot(fig, filename='3DBubble')
 
 
-# In[39]:
 
 
 # avoid decoding problems
@@ -618,7 +579,6 @@ df['question1'] = df['question1'].apply(lambda x: str(x))
 df['question2'] = df['question2'].apply(lambda x: str(x))
 
 
-# In[40]:
 
 
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -633,7 +593,6 @@ tfidf.fit_transform(questions)
 word2tfidf = dict(zip(tfidf.get_feature_names(), tfidf.idf_))
 
 
-# In[41]:
 
 
 # en_vectors_web_lg, which includes over 1 million unique vectors.
@@ -661,7 +620,6 @@ for qu1 in tqdm(list(df['question1'])):
 df['q1_feats_m'] = list(vecs1)
 
 
-# In[42]:
 
 
 vecs2 = []
@@ -684,7 +642,6 @@ for qu2 in tqdm(list(df['question2'])):
 df['q2_feats_m'] = list(vecs2)
 
 
-# In[43]:
 
 
 #prepro_features_train.csv (Simple Preprocessing Feartures)
@@ -700,7 +657,6 @@ else:
     print("download df_fe_without_preprocessing_train.csv from drive or run previous Cell")
 
 
-# In[44]:
 
 
 df1 = dfnlp.drop(['qid1','qid2','question1','question2'],axis=1)
@@ -710,7 +666,6 @@ df3_q1 = pd.DataFrame(df3.q1_feats_m.values.tolist(), index= df3.index)
 df3_q2 = pd.DataFrame(df3.q2_feats_m.values.tolist(), index= df3.index)
 
 
-# In[45]:
 
 
 print("Number of features in nlp dataframe :", df1.shape[1])
@@ -720,7 +675,6 @@ print("Number of features in question2 w2v  dataframe :", df3_q2.shape[1])
 print("Number of features in final dataframe  :", df1.shape[1]+df2.shape[1]+df3_q1.shape[1]+df3_q2.shape[1])
 
 
-# In[46]:
 
 
 # storing the final features to csv file
@@ -733,7 +687,6 @@ if not os.path.isfile('final_features.csv'):
     result.to_csv('final_features.csv')
 
 
-# In[47]:
 
 
 import datetime as dt
@@ -774,7 +727,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import precision_recall_curve, auc, roc_curve
 
 
-# In[48]:
 
 
 data = result.copy()
@@ -785,13 +737,11 @@ y_true = data['is_duplicate']
 data.drop(['id','is_duplicate'], axis=1, inplace=True)
 
 
-# In[49]:
 
 
 data.head()
 
 
-# In[50]:
 
 
 # after we read from sql table each entry was read it as a string
@@ -802,26 +752,22 @@ for i in cols:
     print(i)
 
 
-# In[51]:
 
 
 y_true = list(map(int, y_true.values))
 
 
-# In[52]:
 
 
 X_train,X_test, y_train, y_test = train_test_split(data, y_true, stratify=y_true, test_size=0.3)
 
 
-# In[53]:
 
 
 print("Number of data points in train data :",X_train.shape)
 print("Number of data points in test data :",X_test.shape)
 
 
-# In[54]:
 
 
 print("-"*10, "Distribution of output variable in train data", "-"*10)
@@ -834,7 +780,6 @@ test_len = len(y_test)
 print("Class 0: ",int(test_distr[1])/test_len, "Class 1: ",int(test_distr[1])/test_len)
 
 
-# In[55]:
 
 
 # This function plots the confusion matrices given y_i, y_i_hat.
@@ -893,7 +838,6 @@ def plot_confusion_matrix(test_y, predict_y):
     plt.show()
 
 
-# In[56]:
 
 
 # we need to generate 9 numbers and the sum of numbers should be 1
@@ -910,7 +854,6 @@ predicted_y =np.argmax(predicted_y, axis=1)
 plot_confusion_matrix(y_test, predicted_y)
 
 
-# In[57]:
 
 
 # alpha = [10 ** x for x in range(-5, 2)] # hyperparam for SGD classifier.
@@ -964,7 +907,6 @@ plot_confusion_matrix(y_test, predicted_y)
 # plot_confusion_matrix(y_test, predicted_y)
 
 
-# In[58]:
 
 
 # alpha = [10 ** x for x in range(-5, 2)] # hyperparam for SGD classifier.
@@ -1019,7 +961,6 @@ print("Total number of data points :", len(predicted_y))
 plot_confusion_matrix(y_test, predicted_y)
 
 
-# In[59]:
 
 
 import xgboost as xgb
@@ -1041,7 +982,6 @@ predict_y = bst.predict(d_test)
 print("The test log loss is:",log_loss(y_test, predict_y, labels=clf.classes_, eps=1e-15))
 
 
-# In[60]:
 
 
 predicted_y =np.array(predict_y>0.5,dtype=int)
@@ -1049,7 +989,6 @@ print("Total number of data points :", len(predicted_y))
 plot_confusion_matrix(y_test, predicted_y)
 
 
-# In[61]:
 
 
 mySub = pd.DataFrame()

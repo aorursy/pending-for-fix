@@ -1,20 +1,17 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 pip install --upgrade scikit-learn
 
 
-# In[2]:
 
 
 import sklearn
 print(sklearn.__version__)
 
 
-# In[3]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -35,7 +32,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[4]:
 
 
 from sklearn.experimental import enable_hist_gradient_boosting  # noqa
@@ -74,7 +70,6 @@ def timer(name):
     print('\n[{}] done in {} Minutes'.format(name, round((time.time() - t0)/60,2)))
 
 
-# In[5]:
 
 
 seed = 50
@@ -88,7 +83,6 @@ else:
     max_trees = 5 # 5
 
 
-# In[6]:
 
 
 with timer("Load"):
@@ -108,7 +102,6 @@ with timer("Load"):
     del train, test, submission_df
 
 
-# In[7]:
 
 
 with timer("Categorical Processing"):
@@ -125,7 +118,6 @@ with timer("Categorical Processing"):
         df[col] = lbl.fit_transform(df[col].values).astype(int)
 
 
-# In[8]:
 
 
 # Define Data
@@ -136,13 +128,11 @@ print(X.shape)
 print(test.shape)
 
 
-# In[9]:
 
 
 HistGradientBoostingClassifier().get_params()
 
 
-# In[10]:
 
 
 scoring = "roc_auc"
@@ -239,7 +229,6 @@ plt.tight_layout(pad=3)
 plt.show()
 
 
-# In[11]:
 
 
 results_pd = pd.DataFrame(results).T.reset_index()
@@ -253,7 +242,6 @@ results_pd = pd.concat(
 display(results_pd)
 
 
-# In[12]:
 
 
 with timer("Submission"):
@@ -262,7 +250,6 @@ with timer("Submission"):
     pd.DataFrame({'id': testdex, 'target': fold_preds[:,2]}).to_csv(estimators[1][0] + '_oof_submission.csv', index=False)
 
 
-# In[13]:
 
 
 stacker_preds_test = np.zeros([test.shape[0],2])
@@ -303,7 +290,6 @@ stacker_preds_test[:,0] = Linear_regression_model.predict(fold_preds[:,1:])
 stacker_preds_test[:,1] = Logistic_regression_model.predict_proba(fold_preds[:,1:])[:,1]
 
 
-# In[14]:
 
 
 with timer("Submission"):
@@ -311,7 +297,6 @@ with timer("Submission"):
     pd.DataFrame({'id': testdex, 'target': stacker_preds_test[:,1] }).to_csv('Logistic_OOF_stack_submission.csv', index=False)
 
 
-# In[15]:
 
 
 HistGBM_param_shallow_final = HistGBM_param_shallow.copy()
@@ -334,7 +319,6 @@ with timer("Fit Model"):
     full_clf.fit(X, y)
 
 
-# In[16]:
 
 
 with timer("Feature Permutation on Stack"):
@@ -350,20 +334,17 @@ with timer("Feature Permutation on Stack"):
     plt.show()
 
 
-# In[17]:
 
 
 with timer("Submission"):
     pd.DataFrame({'id': testdex, 'target': clf.predict_proba(test)[:,1]}).to_csv('full_train_stacker_submission.csv', index=False)
 
 
-# In[18]:
 
 
 print("Notebook Runtime: %0.2f Hours"%((time.time() - notebookstart)/60/60))
 
 
-# In[ ]:
 
 
 

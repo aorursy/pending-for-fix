@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -42,7 +41,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 base_train_title_dir='../input/train_images/train_images/'
@@ -51,14 +49,12 @@ df['image_id']=df.path.map(lambda x: x.split('/')[4])
 df.head()
 
 
-# In[3]:
 
 
 labels =pd.read_csv( '../input/traininglabels.csv')
 labels.head()
 
 
-# In[4]:
 
 
 
@@ -68,19 +64,16 @@ df_data.head(3)
 #df.drop(df[df.score < 0.75].index,inplace=True)
 
 
-# In[5]:
 
 
 ax = sns.countplot(x="has_oilpalm", data=df_data)
 
 
-# In[6]:
 
 
 df_data.has_oilpalm.value_counts()
 
 
-# In[7]:
 
 
 SAMPLE_SIZE=942
@@ -104,7 +97,6 @@ for fold in [train_path, valid_path]:
         os.makedirs(os.path.join(fold, subf))
 
 
-# In[8]:
 
 
 # Set the id as the index in df_data
@@ -112,13 +104,11 @@ df_data.set_index('image_id', inplace=True)
 df_data.head()
 
 
-# In[9]:
 
 
 df_train.head()
 
 
-# In[10]:
 
 
 for image in df_train['image_id'].values:
@@ -130,7 +120,6 @@ for image in df_train['image_id'].values:
     shutil.copyfile(src, dst)
 
 
-# In[11]:
 
 
 for image in df_val['image_id'].values:
@@ -141,7 +130,6 @@ for image in df_val['image_id'].values:
     shutil.copyfile(src, dst)
 
 
-# In[12]:
 
 
 from keras.preprocessing.image import ImageDataGenerator
@@ -177,7 +165,6 @@ test_gen = datagen.flow_from_directory(valid_path,
                                         shuffle=False)
 
 
-# In[13]:
 
 
 from keras.models import Sequential
@@ -232,7 +219,6 @@ model.add(Dense(1, activation = "sigmoid"))
 model.compile(Adam(0.01), loss = "binary_crossentropy", metrics=["accuracy"])
 
 
-# In[14]:
 
 
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau
@@ -245,7 +231,6 @@ history = model.fit_generator(train_gen, steps_per_epoch=train_steps,
                    callbacks=[reducel, earlystopper])
 
 
-# In[15]:
 
 
 from sklearn.metrics import roc_curve, auc, roc_auc_score
@@ -258,7 +243,6 @@ auc_keras = auc(fpr_keras, tpr_keras)
 auc_keras
 
 
-# In[16]:
 
 
 plt.figure(1)
@@ -271,7 +255,6 @@ plt.legend(loc='best')
 plt.show()
 
 
-# In[17]:
 
 
 base_test_dir = '../input/leaderboard_test_data/leaderboard_test_data'
@@ -284,14 +267,12 @@ file_batch = 5000
 max_idx = len(test_files)
 
 
-# In[18]:
 
 
 for idx in range(0, max_idx, file_batch):
     print("Indexes: %i - %i"%(idx, idx+file_batch))
 
 
-# In[19]:
 
 
 for idx in range(0, max_idx, file_batch):
@@ -308,37 +289,31 @@ for idx in range(0, max_idx, file_batch):
 submission.head()
 
 
-# In[20]:
 
 
 test_df
 
 
-# In[21]:
 
 
 
 
 
-# In[21]:
 
 
 
 
 
-# In[21]:
 
 
 
 
 
-# In[21]:
 
 
 
 
 
-# In[21]:
 
 
 

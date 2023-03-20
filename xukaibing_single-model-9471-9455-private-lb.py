@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,7 +22,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[2]:
 
 
 import transformers
@@ -48,7 +46,6 @@ from tqdm.notebook import tqdm
 from tokenizers import Tokenizer, models, pre_tokenizers, decoders, processors
 
 
-# In[3]:
 
 
 def align_data():
@@ -74,7 +71,6 @@ def align_data():
     toxic.to_csv('/kaggle/working/train1_es_align.csv'%(LANG,LANG),index=False)
 
 
-# In[4]:
 
 
 def mix_data():
@@ -133,7 +129,6 @@ def mix_data():
     np.save('/kaggle/working/train1_mix.npy')
 
 
-# In[5]:
 
 
 def build_model(transformer, max_len=512,learnig_rate=1e-5):
@@ -152,7 +147,6 @@ def build_model(transformer, max_len=512,learnig_rate=1e-5):
     return model
 
 
-# In[6]:
 
 
 AUTO = tf.data.experimental.AUTOTUNE
@@ -167,7 +161,6 @@ MAX_LEN = 192
 MODEL = 'jplu/tf-xlm-roberta-large'
 
 
-# In[7]:
 
 
 valid = pd.read_csv('/kaggle/input/jigsaw-multilingual-toxic-comment-classification/validation.csv')
@@ -176,7 +169,6 @@ test = pd.read_csv('/kaggle/input/jigsaw-multilingual-toxic-comment-classificati
 sub = pd.read_csv('/kaggle/input/jigsaw-multilingual-toxic-comment-classification/sample_submission.csv')
 
 
-# In[8]:
 
 
 x_valid=np.load('/kaggle/input/toxic-npy/x_valid_encode192.npy')
@@ -188,7 +180,6 @@ print(y_valid)
 print(y_valid.shape)
 
 
-# In[9]:
 
 
 x_test=np.load('/kaggle/input/toxic-npy/x_test_encode192.npy')
@@ -198,7 +189,6 @@ print(x_test.shape)
 print("finish x_test_encode")
 
 
-# In[10]:
 
 
 valid_dataset = (
@@ -216,7 +206,6 @@ test_dataset = (
 )
 
 
-# In[11]:
 
 
 def train_train2max():
@@ -278,7 +267,6 @@ def train_train2max():
     model.save_weights('/kaggle/working/model_mix_1.h5')
 
 
-# In[12]:
 
 
 def train_train1():
@@ -339,7 +327,6 @@ def train_train1():
     model.save_weights('/kaggle/working/model_mix_1.h5')
 
 
-# In[13]:
 
 
 def train_valid():
@@ -375,7 +362,6 @@ def train_valid():
     )
 
 
-# In[14]:
 
 
 def predict():
@@ -384,7 +370,6 @@ def predict():
     sub.to_csv('submission.csv', index=False)
 
 
-# In[15]:
 
 
 #train_train2max()
@@ -393,7 +378,6 @@ def predict():
 #predict()
 
 
-# In[16]:
 
 
 submission_train2mix1 = pd.read_csv('/kaggle/input/haveatry/submission9450.csv')
@@ -419,7 +403,6 @@ submission_train2mix20 = pd.read_csv('/kaggle/input/haveatry/submission_train2mi
 submission_train2mix21 = pd.read_csv('/kaggle/input/haveatry/submission_train2mix_21.csv')
 
 
-# In[17]:
 
 
 for i in range(len(submission_train2mix1['toxic'])):
@@ -436,7 +419,6 @@ for i in range(len(submission_train2mix1['toxic'])):
                     +submission_train2mix21['toxic'][i])/21
 
 
-# In[18]:
 
 
 sub.to_csv('submission.csv', index=False)#~.9471(Public LB)

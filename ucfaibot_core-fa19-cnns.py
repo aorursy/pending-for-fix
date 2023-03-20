@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 from pathlib import Path
@@ -19,7 +18,6 @@ else:
     DATA_DIR = Path("data")
 
 
-# In[2]:
 
 
 # standard imports (Numpy, Pandas, Matplotlib)
@@ -49,7 +47,6 @@ import os
 import glob
 
 
-# In[3]:
 
 
 get_ipython().run_line_magic('reload_ext', 'autoreload')
@@ -59,7 +56,6 @@ get_ipython().run_line_magic('pylab', 'inline')
 random.seed(42)
 
 
-# In[4]:
 
 
 input_size = (224,224)
@@ -67,7 +63,6 @@ batch_size = 32
 num_workers = 4
 
 
-# In[5]:
 
 
 data_transforms = {
@@ -89,7 +84,6 @@ data_transforms = {
 }
 
 
-# In[6]:
 
 
 image_datasets = {
@@ -130,7 +124,6 @@ image_datasets['Test'] = ImageLoader(
 )
 
 
-# In[7]:
 
 
 dataloaders = {
@@ -150,14 +143,12 @@ test_loader = DataLoader(
 )
 
 
-# In[8]:
 
 
 dog_breeds = image_datasets['Train'].classes
 print(dog_breeds)
 
 
-# In[9]:
 
 
 # Just printing the number of images in each dataset we created
@@ -171,7 +162,6 @@ print('Train Length: {} | Valid Length: {} | Test Length: {}'.format(
 ))
 
 
-# In[10]:
 
 
 # Here we're defining what component we'll use to train this model
@@ -180,7 +170,6 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 device
 
 
-# In[11]:
 
 
 # Plots a given number of images from a PyTorch Data
@@ -224,13 +213,11 @@ def show_batch(batch):
     plt.pause(0.001)
 
 
-# In[12]:
 
 
 show_random_imgs(3)
 
 
-# In[13]:
 
 
 # Get a batch of training data (32 random images)
@@ -242,7 +229,6 @@ batch = torchvision.utils.make_grid(imgs)
 show_batch(batch)
 
 
-# In[14]:
 
 
 # It is good practice to maintain input dimensions as the image is passed
@@ -266,7 +252,6 @@ def get_padding(input_dim, output_dim, kernel_size, stride):
         return padding
 
 
-# In[15]:
 
 
 # Make sure you calculate the padding amount needed to maintain the spatial
@@ -362,7 +347,6 @@ class CNN(nn.Module):
         return x
 
 
-# In[16]:
 
 
 model = CNN()
@@ -374,7 +358,6 @@ model.to(device)
 summary(model, (3, 224, 224))
 
 
-# In[17]:
 
 
 def run_epoch(epoch, model, optimizer, dataloaders, device, phase):
@@ -425,7 +408,6 @@ def run_epoch(epoch, model, optimizer, dataloaders, device, phase):
     return epoch_loss, epoch_acc
 
 
-# In[18]:
 
 
 def train(model, criterion, optimizer, num_epochs, dataloaders, device):
@@ -470,7 +452,6 @@ def train(model, criterion, optimizer, num_epochs, dataloaders, device):
     return model
 
 
-# In[19]:
 
 
 def test_model(model, num_images):
@@ -507,7 +488,6 @@ def test_model(model, num_images):
         model.train(mode=was_training)
 
 
-# In[20]:
 
 
 # Make sure to comment this out when you go to "Commit" the kaggle notebook!
@@ -515,7 +495,6 @@ def test_model(model, num_images):
 model = train(model, criterion, optimizer, epochs, dataloaders, device)
 
 
-# In[21]:
 
 
 torch.save({
@@ -529,7 +508,6 @@ torch.save({
 }, 'base_model.pt')
 
 
-# In[22]:
 
 
 def load_checkpoint(filepath):
@@ -546,19 +524,16 @@ def load_checkpoint(filepath):
     return model, optimizer, criterion, epoch
 
 
-# In[23]:
 
 
 model, optimizer, criterion, epoch = load_checkpoint('base_model.pt')
 
 
-# In[24]:
 
 
 test_model(model, 6)
 
 
-# In[25]:
 
 
 class PreTrained_Resnet(nn.Module):
@@ -592,7 +567,6 @@ class PreTrained_Resnet(nn.Module):
         raise NotImplementedError()
 
 
-# In[26]:
 
 
 # Instantiate a pretrained network using the class we've just defined (call it
@@ -614,7 +588,6 @@ raise NotImplementedError()
 summary(pretrained, (3,224,224))
 
 
-# In[27]:
 
 
 pretrained = train(
@@ -627,7 +600,6 @@ pretrained = train(
 )
 
 
-# In[28]:
 
 
 torch.save({
@@ -641,19 +613,16 @@ torch.save({
 }, 'pretrained.pt')
 
 
-# In[29]:
 
 
 pretrained, optimizer2, criterion2, epoch2 = load_checkpoint('pretrained.pt')
 
 
-# In[30]:
 
 
 test_model(pretrained, 6)
 
 
-# In[31]:
 
 
 # Run this to generate the submission file for the competition!

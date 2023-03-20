@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,7 +22,6 @@ print(os.listdir("../input"))
 import matplotlib.pyplot as plt
 
 
-# In[ ]:
 
 
 # Training data
@@ -32,7 +30,6 @@ print('Training data shape: ', app_train.shape)
 app_train.head()
 
 
-# In[ ]:
 
 
 # Testing data
@@ -41,7 +38,6 @@ print('Testing data shape: ', app_test.shape)
 app_test.head()
 
 
-# In[ ]:
 
 
 # one-hot encoding of categorical variables
@@ -52,7 +48,6 @@ print('Training Features shape: ', app_train.shape)
 print('Testing Features shape: ', app_test.shape)
 
 
-# In[ ]:
 
 
 train_labels = app_train['TARGET']
@@ -67,20 +62,17 @@ print('Training Features shape: ', app_train.shape)
 print('Testing Features shape: ', app_test.shape)
 
 
-# In[ ]:
 
 
 app_train['DAYS_EMPLOYED'].describe()
 
 
-# In[ ]:
 
 
 app_train['DAYS_EMPLOYED'].plot.hist(title='Days Employment Histogram')
 plt.xlabel('Days Empployment')
 
 
-# In[ ]:
 
 
 # Replace the anomalous values with nan
@@ -88,7 +80,6 @@ app_train['DAYS_EMPLOYED'].replace({365243: np.nan}, inplace=True)
 app_test['DAYS_EMPLOYED'].replace({356243: np.nan}, inplace=True)
 
 
-# In[ ]:
 
 
 from sklearn.preprocessing import MinMaxScaler
@@ -116,7 +107,6 @@ print('Training data shape: ', train.shape)
 print('Testing data shape: ', test.shape)
 
 
-# In[ ]:
 
 
 from sklearn.model_selection import train_test_split
@@ -125,7 +115,6 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(train, train_labels, test_size=0.15, random_state=1)
 
 
-# In[ ]:
 
 
 from sklearn.linear_model import LogisticRegression
@@ -137,7 +126,6 @@ log_reg = LogisticRegression()
 log_reg.fit(X_train, y_train)
 
 
-# In[ ]:
 
 
 test_log_reg_pred = log_reg.predict_proba(X_test)[:, 1]
@@ -146,7 +134,6 @@ from sklearn.metrics import roc_auc_score
 roc_auc_score(y_test, test_log_reg_pred)
 
 
-# In[ ]:
 
 
 from sklearn.linear_model import LogisticRegression
@@ -158,14 +145,12 @@ log_reg = LogisticRegression(C=1)
 log_reg.fit(train, train_labels)
 
 
-# In[ ]:
 
 
 # Make predictions. Select 2nd column only for the probabiliy of not paying a loan
 log_reg_pred = log_reg.predict_proba(test)[:, 1]
 
 
-# In[ ]:
 
 
 # Submission dataframe
@@ -175,14 +160,12 @@ submit['TARGET'] = log_reg_pred
 submit.head()
 
 
-# In[ ]:
 
 
 # Save the submission to a csv file
 submit.to_csv('log_reg_baseline.csv', index=False)
 
 
-# In[ ]:
 
 
 from sklearn.ensemble import RandomForestClassifier
@@ -192,19 +175,16 @@ random_forest.fit(X_train, y_train)
 test_random_forest_pred = random_forest.predict_proba(X_test)[:, 1]
 
 
-# In[ ]:
 
 
 roc_auc_score(y_test, test_random_forest_pred)
 
 
-# In[ ]:
 
 
 predictions = random_forest.predict_proba(test)[:, 1]
 
 
-# In[ ]:
 
 
 # Make a submission dataframe
@@ -215,7 +195,6 @@ submit['TARGET'] = predictions
 submit.to_csv('random_forest_baseline.csv', index=False)
 
 
-# In[ ]:
 
 
 from sklearn import tree.DecisionTreeClassifier
@@ -223,13 +202,11 @@ clf = DecisionTreeClassifier()
 clf.fit(X_train, y_train)
 
 
-# In[ ]:
 
 
 predictions = clf.predict_proba(test)[:, 1]
 
 
-# In[ ]:
 
 
 # Make a submission dataframe

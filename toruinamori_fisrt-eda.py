@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,13 +19,11 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 from logging import getLogger
 
 
-# In[ ]:
 
 
 TRAIN_DATA = "../input/train.csv"
@@ -54,14 +51,12 @@ def load_test_data():
     return df
 
 
-# In[ ]:
 
 
 print(load_train_data().head())
 print(load_test_data().head())
 
 
-# In[ ]:
 
 
 from sklearn.linear_model import LogisticRegression
@@ -115,7 +110,6 @@ if __name__ == "__main__":
     df_submit.to_csv(DIR + "submit.csv", index=False)
 
 
-# In[ ]:
 
 
 less ./submit.csv

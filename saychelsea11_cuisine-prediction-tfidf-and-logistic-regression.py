@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 '''
@@ -36,7 +34,6 @@ train_data_copy = train_data
 train_data
 
 
-# In[ ]:
 
 
 #Exporting train and test datasets as dataframes
@@ -44,7 +41,6 @@ train_data.to_csv("train.csv",index=False)
 test_data.to_csv("test.csv",index=False)
 
 
-# In[ ]:
 
 
 '''
@@ -103,7 +99,6 @@ plt.xticks(rotation=90,size=12)
 plt.show()
 
 
-# In[ ]:
 
 
 '''
@@ -116,7 +111,6 @@ print (len(num_ingredients_train))
 #Will add this feature to the modeling dataset later following vectorizing 
 
 
-# In[ ]:
 
 
 '''
@@ -155,7 +149,6 @@ print ("")
 print (test_data.head(10))
 
 
-# In[ ]:
 
 
 '''
@@ -170,7 +163,6 @@ def add_feature(X, feature_to_add):
     return hstack([X, csr_matrix(feature_to_add).T], 'csr')
 
 
-# In[ ]:
 
 
 '''
@@ -193,7 +185,6 @@ print (train_data_vect_new.shape)
 '''
 
 
-# In[ ]:
 
 
 '''
@@ -213,7 +204,6 @@ print (X_train)
 '''
 
 
-# In[ ]:
 
 
 '''
@@ -256,7 +246,6 @@ Scores with features represented as entire terms as opposed to single words
 #0.7863 with C=10
 
 
-# In[ ]:
 
 
 '''
@@ -280,7 +269,6 @@ Train Test Split
 X_train,X_test,y_train,y_test = train_test_split(train_data_vect_new,train_data["cuisine"],random_state=0,train_size=0.9)
 
 
-# In[ ]:
 
 
 '''
@@ -335,7 +323,6 @@ Scores with stemming
 #0.7998 with C=5 and min_df=4
 
 
-# In[ ]:
 
 
 '''
@@ -388,7 +375,6 @@ print ((results_incorrect.groupby("test").apply(len)))
 #The case is similar for correctly predicted cuisines with French being the exception
 
 
-# In[ ]:
 
 
 '''
@@ -403,7 +389,6 @@ cv_score
 '''
 
 
-# In[ ]:
 
 
 '''
@@ -423,7 +408,6 @@ print (feature_names[sorted_coef_index[-10:]])
 #detection, hence binary classification. 
 
 
-# In[ ]:
 
 
 '''
@@ -452,7 +436,6 @@ Representing features represented as entire terms as opposed to single words
 '''
 
 
-# In[ ]:
 
 
 '''
@@ -477,7 +460,6 @@ model.get_params()
 '''
 
 
-# In[ ]:
 
 
 '''
@@ -505,7 +487,6 @@ Score using CountVectorizer
 '''
 
 
-# In[ ]:
 
 
 '''
@@ -518,7 +499,6 @@ y_predict = model.predict(test_data_vect_new)
 print (y_predict)
 
 
-# In[ ]:
 
 
 '''

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # data preprocessing origins from https://www.kaggle.com/ulrich07/osic-multiple-quantile-regression-starter
@@ -18,7 +17,6 @@ from sklearn.model_selection import KFold
 from lightgbm import LGBMRegressor
 
 
-# In[2]:
 
 
 def seed_everything(seed=2020):
@@ -29,13 +27,11 @@ def seed_everything(seed=2020):
 seed_everything(42)
 
 
-# In[3]:
 
 
 ROOT = "../input/osic-pulmonary-fibrosis-progression"
 
 
-# In[4]:
 
 
 tr = pd.read_csv(f"{ROOT}/train.csv")
@@ -50,7 +46,6 @@ sub =  sub[['Patient','Weeks','Confidence','Patient_Week']]
 sub = sub.merge(chunk.drop('Weeks', axis=1), on="Patient")
 
 
-# In[5]:
 
 
 tr['WHERE'] = 'train'
@@ -59,7 +54,6 @@ sub['WHERE'] = 'test'
 data = tr.append([chunk, sub])
 
 
-# In[6]:
 
 
 data['min_week'] = data['Weeks']
@@ -67,7 +61,6 @@ data.loc[data.WHERE=='test','min_week'] = np.nan
 data['min_week'] = data.groupby('Patient')['min_week'].transform('min')
 
 
-# In[7]:
 
 
 base = data.loc[data.Weeks == data.min_week]
@@ -79,7 +72,6 @@ base = base[base.nb==1]
 base.drop('nb', axis=1, inplace=True)
 
 
-# In[8]:
 
 
 data = data.merge(base, on='Patient', how='left')
@@ -87,21 +79,18 @@ data['base_week'] = data['Weeks'] - data['min_week']
 del base
 
 
-# In[9]:
 
 
 for col in ['Sex', 'SmokingStatus']:
     data[col] = data[col].astype('category').cat.codes
 
 
-# In[10]:
 
 
 feature_list = ['Age', 'Sex', 'SmokingStatus', 'Percent', 'base_week', 'min_FVC']
 cat_feat = ['Sex', 'SmokingStatus']
 
 
-# In[11]:
 
 
 tr = data.loc[data.WHERE=='train']
@@ -112,7 +101,6 @@ del data
 tr.shape, chunk.shape, sub.shape
 
 
-# In[12]:
 
 
 lgb_params = {
@@ -128,7 +116,6 @@ lgb_params = {
 }
 
 
-# In[13]:
 
 
 y = tr['FVC']#.values
@@ -136,14 +123,12 @@ z = tr[feature_list]#.values
 ze = sub[feature_list]#.values
 
 
-# In[14]:
 
 
 NFOLD = 5
 kf = KFold(n_splits=NFOLD)
 
 
-# In[15]:
 
 
 pred = np.zeros((z.shape[0], 3))
@@ -164,7 +149,6 @@ for tr_idx, val_idx in kf.split(z):
         pe[:, i] += lgb.predict(ze)/NFOLD
 
 
-# In[16]:
 
 
 err = mean_absolute_error(y, pred[:, 1])
@@ -172,7 +156,6 @@ unc = np.mean(pred[:, 2] - pred[:, 0])
 print(err, unc)a
 
 
-# In[17]:
 
 
 def get_submission(sub, pe):
@@ -192,13 +175,11 @@ def get_submission(sub, pe):
     print("sub file saved")
 
 
-# In[18]:
 
 
 get_submission(sub, pe)
 
 
-# In[ ]:
 
 
 

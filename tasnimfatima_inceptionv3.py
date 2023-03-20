@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().system(' pip uninstall protobuf -y')
@@ -10,13 +9,11 @@ get_ipython().system(' pip install tensorflow==1.14 ')
 get_ipython().system(' pip install keras==2.3.0')
 
 
-# In[2]:
 
 
 get_ipython().system(' pip freeze')
 
 
-# In[3]:
 
 
 import numpy as np
@@ -50,7 +47,6 @@ test_images_dir = path + 'stage_2_test/'
 train_images_dir = path +  'stage_2_train/'
 
 
-# In[4]:
 
 
 def correct_dcm(dcm):
@@ -100,7 +96,6 @@ dicom = pydicom.dcmread(train_images_dir + 'ID_000039fa0' + '.dcm')
 plt.imshow(bsb_window(dicom), cmap=plt.cm.bone);
 
 
-# In[5]:
 
 
 def window_with_correction(dcm, window_center, window_width):
@@ -142,7 +137,6 @@ ax[1].imshow(window_testing(dicom, window_with_correction), cmap=plt.cm.bone);
 ax[1].set_title("corrected");
 
 
-# In[6]:
 
 
 def _read(path, desired_size):
@@ -166,7 +160,6 @@ plt.imshow(
 );
 
 
-# In[7]:
 
 
 class DataGenerator(keras.utils.Sequence):
@@ -226,7 +219,6 @@ class DataGenerator(keras.utils.Sequence):
             return X
 
 
-# In[8]:
 
 
 from keras import backend as K
@@ -306,7 +298,6 @@ def weighted_log_loss_metric(trues, preds):
     return - loss_samples.mean()
 
 
-# In[9]:
 
 
 session = keras.backend.get_session()
@@ -314,7 +305,6 @@ init = tf.global_variables_initializer()
 session.run(tf.global_variables_initializer())
 
 
-# In[10]:
 
 
 class PredictionCheckpoint(keras.callbacks.Callback):
@@ -420,7 +410,6 @@ class MyDeepModel:
     
 
 
-# In[11]:
 
 
 def read_testset(filename=path + "stage_2_sample_submission.csv"):
@@ -465,14 +454,12 @@ test_df = read_testset()
 df = read_trainset()
 
 
-# In[12]:
 
 
 df = df.head(100)
 test_df = test_df.head(100)
 
 
-# In[13]:
 
 
 # train set (00%) and validation set (10%)
@@ -494,25 +481,21 @@ model = MyDeepModel(engine=InceptionV3, input_dims=(256, 256, 3), batch_size=10,
 #history = model.fit_and_predict(df.iloc[train_idx], df.iloc[valid_idx], test_df)
 
 
-# In[14]:
 
 
 print(model.summary)
 
 
-# In[15]:
 
 
 history = model.fit_and_predict(df.iloc[train_idx], df.iloc[valid_idx], test_df)
 
 
-# In[16]:
 
 
 model.
 
 
-# In[ ]:
 
 
 

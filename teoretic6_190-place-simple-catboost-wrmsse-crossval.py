@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import os
@@ -24,7 +23,6 @@ from scipy.sparse import csr_matrix
 from catboost import Pool, CatBoostRegressor
 
 
-# In[ ]:
 
 
 def add_lag_feature(data: pd.DataFrame, feature_name: str, shift: int, lag: int
@@ -68,7 +66,6 @@ def load_data(input_dir: str) -> tuple:
     return cal, stv, ss, sellp
 
 
-# In[ ]:
 
 
 def reduce_mem_usage(df: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
@@ -100,13 +97,11 @@ def reduce_mem_usage(df: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
     return df
 
 
-# In[ ]:
 
 
 get_ipython().run_cell_magic('time', '', "INPUT_DIR = '/kaggle/input/m5-forecasting-accuracy'\ncal, stv, ss, sellp = load_data(INPUT_DIR)")
 
 
-# In[ ]:
 
 
 d_cols = [c for c in stv.columns if 'd_' in c] # sales data columns
@@ -114,40 +109,34 @@ small_cal = cal[['date', 'd', 'event_name_1', 'event_type_1', 'event_name_2', 'e
                  'snap_CA', 'snap_TX', 'snap_WI', 'wm_yr_wk']]
 
 
-# In[ ]:
 
 
 # How many history days to leave in dataframe
 HISTORY_DAYS_TO_LEAVE = 500
 
 
-# In[ ]:
 
 
 get_ipython().run_cell_magic('time', '', '\n# Leave only train data\ndf = stv[stv[\'id\'].str.endswith(\'_evaluation\')]\n\n# Fill with days to predict\nlast_day = int(df.columns[-1].replace(\'d_\', \'\'))\n\n# Drop days that are earlier than out CUT_DATE date\ncols_to_remove = [f\'d_{i}\' for i in range(1, last_day - HISTORY_DAYS_TO_LEAVE+1)]\ndf = df.drop(cols_to_remove, axis=1)\n\nfor day in range(last_day + 1, last_day + 28 + 1):\n    df[f\'d_{day}\'] = np.nan\n\ndf = df.melt(id_vars=[\'id\', \'item_id\', \'dept_id\', \'cat_id\', \'store_id\', \'state_id\'],\n             var_name="d",\n             value_name="value")\n# Join with calendar\ndf = df.join(small_cal.set_index(\'d\'), how=\'left\', on=\'d\')\n# Join with prices, inner for deleting the days where there was no price for item\ndf = df.merge(sellp, on = [\'store_id\', \'item_id\', \'wm_yr_wk\'], how = \'inner\')')
 
 
-# In[ ]:
 
 
 del cal, stv, sellp, small_cal
 gc.collect()
 
 
-# In[ ]:
 
 
 SHIFT_DAYS = 28
 
 
-# In[ ]:
 
 
 LAGS = [0, 7, 14]
 WINDOWS = [7, 14, 21]
 
 
-# In[ ]:
 
 
 categorical_cols = ['id', 'item_id', 'dept_id', 'cat_id', 'store_id', 'state_id',
@@ -165,13 +154,11 @@ for i in categorical_cols:
 df = df.rename(columns={i: f'f_{i}' for i in categorical_cols})
 
 
-# In[ ]:
 
 
 get_ipython().run_cell_magic('time', '', "\nlag_features = []\nfor lag in tqdm(LAGS):\n    df, lag_f = add_lag_feature(df, 'value', SHIFT_DAYS, lag)\n    \n    lag_features.append(lag_f)")
 
 
-# In[ ]:
 
 
 for lag_f in tqdm(lag_features):
@@ -179,25 +166,21 @@ for lag_f in tqdm(lag_features):
         df, _ = add_rolling_window_mean_feature(df, 0, lag_f, window)
 
 
-# In[ ]:
 
 
 df['date'] = pd.to_datetime(df['date'])
 
 
-# In[ ]:
 
 
 get_ipython().run_cell_magic('time', '', "\ndf = add_date_features(df, 'date')")
 
 
-# In[ ]:
 
 
 df = df.rename(columns={'sell_price': 'f_sell_price'})
 
 
-# In[ ]:
 
 
 feature_cols = [i for i in df.columns if i.startswith('f_')]
@@ -205,31 +188,26 @@ feature_cols = [i for i in df.columns if i.startswith('f_')]
 df = df[['date', 'value'] + feature_cols]
 
 
-# In[ ]:
 
 
 feature_cols
 
 
-# In[ ]:
 
 
 gc.collect()
 
 
-# In[ ]:
 
 
 get_ipython().run_cell_magic('time', '', "\n# joblib.dump(df, 'df_for_training.joblib', protocol=4)")
 
 
-# In[ ]:
 
 
 get_ipython().run_cell_magic('time', '', "\n# df = joblib.load('df_for_training.joblib')")
 
 
-# In[ ]:
 
 
 feature_cols = [i for i in df.columns if i.startswith('f_')]
@@ -245,13 +223,11 @@ for feature in categorical_cols:
     df[feature] = encoder.fit_transform(df[feature])
 
 
-# In[ ]:
 
 
 df['value'] = df['value'].astype(np.float32)
 
 
-# In[ ]:
 
 
 def train_model(model, train_data, features):
@@ -281,7 +257,6 @@ def form_submission(data, submission, filename):
     final.to_csv(filename, index = False)
 
 
-# In[ ]:
 
 
 model = CatBoostRegressor(
@@ -295,13 +270,11 @@ model = CatBoostRegressor(
 )
 
 
-# In[ ]:
 
 
 train_model(model, df, feature_cols)
 
 
-# In[ ]:
 
 
 # predict and insert oredictions to df
@@ -311,7 +284,6 @@ df['value'] = df['value'].astype(pred.dtype)
 df.loc[df['date'] > '2016-05-22', 'value'] = pred
 
 
-# In[ ]:
 
 
 # Read in the data
@@ -319,13 +291,11 @@ INPUT_DIR = '../m5-forecasting-accuracy'
 ss = pd.read_csv(f'{INPUT_DIR}/sample_submission.csv')
 
 
-# In[ ]:
 
 
 form_submission(df.rename({'f_id': 'id'}, axis=1), ss, 'submission_final_catboost_500days.csv')
 
 
-# In[ ]:
 
 
 def wrmsse(x, y_true, y_pred, feature_cols, forecast_horizon=28):
@@ -434,7 +404,6 @@ def wrmsse(x, y_true, y_pred, feature_cols, forecast_horizon=28):
                             ,axis=1)) * SW)/12
 
 
-# In[ ]:
 
 
 def validate_model(
@@ -491,13 +460,11 @@ def validate_model(
     return scores
 
 
-# In[ ]:
 
 
 df = joblib.load('df_for_training.joblib')
 
 
-# In[ ]:
 
 
 df['f_sale_usd'] = df['value'] * df['f_sell_price']
@@ -517,20 +484,17 @@ for feature in categorical_cols:
 df['value'] = df['value'].astype(np.float32)
 
 
-# In[ ]:
 
 
 df_to_train = df[df['date'] <= '2016-04-24']
 df_to_train = df_to_train.dropna(subset=num_cols)
 
 
-# In[ ]:
 
 
 regr_trans = LinearRegression()
 
 
-# In[ ]:
 
 
 scores = validate_model(regr_trans, 
@@ -539,7 +503,6 @@ scores = validate_model(regr_trans,
                         categorical_cols)
 
 
-# In[ ]:
 
 
 scores

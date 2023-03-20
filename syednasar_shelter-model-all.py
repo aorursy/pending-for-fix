@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 # read the data
@@ -34,14 +32,12 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 matplotlib.rcParams.update({'font.size': 12})
 
 
-# In[3]:
 
 
 from sklearn import preprocessing
 import brewer2mpl
 
 
-# In[4]:
 
 
 in_file_train = '../input/train.csv'
@@ -52,19 +48,16 @@ data = pd.read_csv(in_file_train)
 pd_kaggle_test = pd.read_csv(in_file_test)
 
 
-# In[5]:
 
 
 data.head()
 
 
-# In[6]:
 
 
 The dataset used here is from a Kaggle competition - [Shelter Animal Outcome](https://www.kaggle.com/c/shelter-animal-outcomes/kernels)
 
 
-# In[7]:
 
 
 #TO DELETE
@@ -74,14 +67,12 @@ len(data['Color'].unique())
 col_df = data['Color']
 
 
-# In[8]:
 
 
 #Do we have clean data?
 data.count()
 
 
-# In[9]:
 
 
 def data_cleanup(data, train=True):
@@ -157,7 +148,6 @@ def data_cleanup(data, train=True):
     return data
 
 
-# In[10]:
 
 
 data = data_cleanup(data)
@@ -165,25 +155,21 @@ data = data_cleanup(data)
 data.head()
 
 
-# In[11]:
 
 
 data.count()
 
 
-# In[12]:
 
 
 
 
 
-# In[12]:
 
 
 
 
 
-# In[12]:
 
 
 print (data.OutcomeType.unique())
@@ -199,7 +185,6 @@ ret2own = sum(data.loc[:, 'OutcomeType'] == 4)
 print(adoption, died, euth, ret2own)
 
 
-# In[13]:
 
 
 set2 = brewer2mpl.get_map('Set2', 'qualitative', 8).mpl_colors
@@ -228,7 +213,6 @@ fig_size[1] = 6
 plt.rcParams["figure.figsize"] = fig_size
 
 
-# In[14]:
 
 
 from matplotlib import rcParams
@@ -252,7 +236,6 @@ plt.tight_layout()
 plt.savefig('TWP-Status-Groups-train.png', bbox_inches='tight')
 
 
-# In[15]:
 
 
 

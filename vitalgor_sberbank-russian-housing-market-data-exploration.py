@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,14 +21,12 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 data = pd.read_csv("/kaggle/input/sberbank-russian-housing-market/train.csv")
 data.head()
 
 
-# In[3]:
 
 
 cleaned_data = data[((data.build_year <= 2010) & (data.build_year >= 1900)) | (data.build_year.isna())]
@@ -38,19 +35,16 @@ cleaned_data = cleaned_data[cleaned_data.floor <]
 cleaned_data.head()
 
 
-# In[4]:
 
 
 list(data.columns)
 
 
-# In[5]:
 
 
 cleaned_data['floor'].describe()
 
 
-# In[6]:
 
 
 column_slices = {};
@@ -58,19 +52,16 @@ column_slices[("full_sq", "price_doc")] = cleaned_data[["full_sq", "price_doc"]]
 column_slices[("full_sq", "build_year")] = cleaned_data[["full_sq", "build_year"]]
 
 
-# In[7]:
 
 
 sum(cleaned_data.build_year.isna())
 
 
-# In[ ]:
 
 
 
 
 
-# In[8]:
 
 
 import matplotlib.pyplot as plt
@@ -85,7 +76,6 @@ plt.ylabel("full_sq")
 plt.show()
 
 
-# In[9]:
 
 
 figure(num=None, figsize=(10, 10), dpi=80, facecolor='w', edgecolor='k')
@@ -97,7 +87,6 @@ plt.ylabel("life_sq")
 plt.show()
 
 
-# In[10]:
 
 
 figure(num=None, figsize=(10, 10), dpi=80, facecolor='w', edgecolor='k')
@@ -114,7 +103,6 @@ for i in range(4):
 plt.show()
 
 
-# In[11]:
 
 
 mean_ratio_sq_per_year = cleaned_data[["build_year", "life_sq", "full_sq"]]
@@ -130,13 +118,11 @@ plt.ylabel("rate_sq")
 plt.show()
 
 
-# In[12]:
 
 
 mean_ratio_sq_per_year.groupby(["build_year"]).mean().rate_sq.ewm(alpha=0.1).mean()
 
 
-# In[13]:
 
 
 years

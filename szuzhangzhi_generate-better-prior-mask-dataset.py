@@ -1,19 +1,16 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 pip install 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
 
 
-# In[2]:
 
 
 pip install 'git+https://github.com/facebookresearch/detectron2.git'
 
 
-# In[3]:
 
 
 import torch
@@ -39,7 +36,6 @@ cfg.MODEL.WEIGHTS = "../input/parameters/model_final_f10217.pkl"
 model = DefaultPredictor(cfg)
 
 
-# In[4]:
 
 
 import PIL.Image as Image
@@ -53,13 +49,11 @@ def load_image(path, transform=default_transform):
     return transform(image)
 
 
-# In[5]:
 
 
 image_path = '../input/pku-autonomous-driving/train_images/ID_7f6f07350.jpg'
 
 
-# In[6]:
 
 
 import cv2
@@ -68,7 +62,6 @@ image = cv2.imread(image_path)
 outputs = model(image)
 
 
-# In[7]:
 
 
 from detectron2.data import MetadataCatalog
@@ -85,13 +78,11 @@ plt.imshow(v)
 plt.show()
 
 
-# In[8]:
 
 
 mask = outputs["instances"].pred_masks.sum(0) > 0
 
 
-# In[9]:
 
 
 import numpy as np
@@ -104,7 +95,6 @@ plt.imshow(instances)
 plt.show()
 
 
-# In[10]:
 
 
 import os
@@ -116,7 +106,6 @@ import argparse
 import numpy as np
 
 
-# In[11]:
 
 
 def make_multi_channel_masks(source_dir='../input/pku-autonomous-driving/train_images',
@@ -153,7 +142,6 @@ def make_multi_channel_masks(source_dir='../input/pku-autonomous-driving/train_i
     print('-> Done!')
 
 
-# In[12]:
 
 
 def make_single_channel_masks(source_dir='../input/pku-autonomous-driving/train_images',
@@ -192,7 +180,6 @@ def make_single_channel_masks(source_dir='../input/pku-autonomous-driving/train_
     print('-> Done!')
 
 
-# In[13]:
 
 
 def make_instances(source_dir='../input/pku-autonomous-driving/train_images',
@@ -233,7 +220,6 @@ def make_instances(source_dir='../input/pku-autonomous-driving/train_images',
     print('-> Done!')
 
 
-# In[14]:
 
 
 # make_multi_channel_masks()

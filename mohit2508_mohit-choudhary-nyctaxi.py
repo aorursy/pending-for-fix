@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 
@@ -20,13 +19,11 @@ df = pd.read_csv('../input/new-york-city-taxi-fare-prediction/train.csv',nrows=1
 df.to_feather('nycTaxi.feather')
 
 
-# In[ ]:
 
 
 df = pd.read_feather('nycTaxi.feather')
 
 
-# In[ ]:
 
 
 #Passenger Count >0
@@ -57,14 +54,12 @@ df['year'] = df.year.str[:4]
 df=df.dropna()
 
 
-# In[ ]:
 
 
 df[['year','hour']] = df[['year','hour']].apply(pd.to_numeric)
 print(df.head())
 
 
-# In[ ]:
 
 
 def select_within_newYork(df, loc):
@@ -74,7 +69,6 @@ NYC = (-74.5, -72.8, 40.5, 41.8)
 df = df[select_within_newYork(df, NYC)]
 
 
-# In[ ]:
 
 
 # Eculeadean Distance Of the Journey
@@ -92,7 +86,6 @@ df['distance'] = haversine_np(df.pickup_longitude, df.pickup_latitude,df.dropoff
 print(df.head())
 
 
-# In[ ]:
 
 
 print('Co-relation b/w Fare and Distance')
@@ -100,7 +93,6 @@ print(st.pearsonr(df.distance, df.fare_amount))
 df=df[df.distance<=30]
 
 
-# In[ ]:
 
 
 # Visualisation
@@ -112,7 +104,6 @@ axs[0].set_ylabel('Distance')
 axs[0].set_title('Distance vs Fare')
 
 
-# In[ ]:
 
 
 # The below code is referenced from discusison forums
@@ -126,14 +117,12 @@ plt.ylabel('Avg. Distance');
 plt.xlabel('Fare Range');
 
 
-# In[ ]:
 
 
 print('corelation b/w Distance and Time of Day')
 print(st.pearsonr(df.distance, df.hour))
 
 
-# In[ ]:
 
 
 fig, axs = plt.subplots(1, 2, figsize=(16,6))
@@ -144,7 +133,6 @@ axs[0].set_ylabel('Distance')
 axs[0].set_title('Time of Day vs Distance')
 
 
-# In[ ]:
 
 
 df.groupby('hour')['distance'].mean().sort_index().plot.bar(color = 'b');
@@ -152,14 +140,12 @@ plt.title('Average Distance vs Time of Day');
 plt.ylabel('Mean Distance');
 
 
-# In[ ]:
 
 
 print('corelation b/w Fare and Time of Day')
 print(st.pearsonr(df.fare_amount, df.hour))
 
 
-# In[ ]:
 
 
 df.groupby('hour')['fare_amount'].mean().sort_index().plot.bar(color = 'r');
@@ -167,7 +153,6 @@ plt.title('Average Fare amount vs Time of Day');
 plt.ylabel('Mean Fare');
 
 
-# In[ ]:
 
 
 times_sq = (-73.985130,40.758896)
@@ -188,20 +173,17 @@ def loc_time(loc, name, dist=0.5):
 loc_time(times_sq, 'Times Square - Manhattan')
 
 
-# In[ ]:
 
 
 df.hist(column='hour',bins=100)
 
 
-# In[ ]:
 
 
 df['diff_long'] = (df.dropoff_longitude - df.pickup_longitude).abs()
 df['diff_lat'] = (df.dropoff_latitude - df.pickup_latitude).abs()
 
 
-# In[ ]:
 
 
 test = pd.read_csv('../input/new-york-city-taxi-fare-prediction/test.csv',low_memory=True)
@@ -216,7 +198,6 @@ test[['year','hour']] = test[['year','hour']].apply(pd.to_numeric)
 test_id = list(test.pop('key'))
 
 
-# In[ ]:
 
 
 from sklearn.linear_model import LinearRegression
@@ -233,7 +214,6 @@ print('Lat diff coef: ', round(lr.coef_[0], 4),
       '\tDistance coef:', round(lr.coef_[6], 4))
 
 
-# In[ ]:
 
 
 preds_lr = lr.predict(test[['diff_lat', 'diff_long','pickup_latitude','pickup_longitude','dropoff_latitude','dropoff_longitude','distance','passenger_count']])
@@ -241,13 +221,11 @@ sub = pd.DataFrame({'key': test_id, 'fare_amount': preds_lr})
 sub.to_csv('output_lr.csv', index = False)
 
 
-# In[ ]:
 
 
 Finidng RMSE
 
 
-# In[ ]:
 
 
 df.info()
@@ -262,14 +240,12 @@ lrmse = np.sqrt(metrics.mean_squared_error(y_pred, df['fare_amount']))
 print (lrmse)
 
 
-# In[ ]:
 
 
 random_forest = rf(n_estimators = 10, max_depth = 10, max_features = None, oob_score = True, bootstrap = True, verbose = 1, n_jobs = -1)
 random_forest.fit(df[['pickup_latitude','pickup_longitude','dropoff_latitude','dropoff_longitude','distance', 'diff_lat', 'diff_long', 'passenger_count']],df['fare_amount'])
 
 
-# In[ ]:
 
 
 predictedFare = random_forest.predict(test[['pickup_latitude','pickup_longitude','dropoff_latitude','dropoff_longitude','distance', 'diff_lat', 'diff_long', 'passenger_count']])

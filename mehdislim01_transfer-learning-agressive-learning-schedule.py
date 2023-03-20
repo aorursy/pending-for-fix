@@ -1,20 +1,17 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np, seaborn as sns, pandas as pd, matplotlib.pyplot as plt, os, cv2, tensorflow as tf, keras, math
 
 
-# In[2]:
 
 
 train = pd.read_csv('/kaggle/input/plant-pathology-2020-fgvc7/train.csv')
 test = pd.read_csv('/kaggle/input/plant-pathology-2020-fgvc7/test.csv')
 
 
-# In[3]:
 
 
 size, n_channels = 227, 3
@@ -24,7 +21,6 @@ for i, image_name in enumerate(train.image_id.values): #this will take sometime 
     X[i] = cv2.resize(plt.imread(image_name+'.jpg'), (size, size)).astype(np.int16)
 
 
-# In[4]:
 
 
 fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(15, 13))
@@ -33,7 +29,6 @@ for i, axis in enumerate(ax.flatten()): #these images are from the real training
     axis.title.set_text(train.columns[1:][np.argmax(train.iloc[i, 1:].values)])
 
 
-# In[5]:
 
 
 images={ 'healthy': [], 'multiple_diseases': [], 'rust': [], 'scab': [] }
@@ -53,7 +48,6 @@ for folder in ['color']:#you can add 'segmented' in the list to add more images
                 images['scab'].append(cv2.resize(plt.imread(image_name), (size, size)).astype(np.int16))
 
 
-# In[6]:
 
 
 y = train.iloc[:, 1:].values
@@ -76,7 +70,6 @@ for key in ['healthy', 'multiple_diseases', 'rust', 'scab']:
         data_y[i] = target_to_one_hot_vec[key]
 
 
-# In[7]:
 
 
 fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(15, 13))
@@ -85,19 +78,16 @@ for i, axis in enumerate(ax.flatten()): #these images are from the external data
     axis.title.set_text(list(images.keys())[i])
 
 
-# In[8]:
 
 
 reset_selective images #write yes and hit enter when the input box shows up this will remove the variable images from the RAM
 
 
-# In[9]:
 
 
 reset_selective X #write yes and hit enter when the input box shows up this will remove the variable X from the RAM
 
 
-# In[10]:
 
 
 plt.subplots(figsize=(12, 7))
@@ -111,7 +101,6 @@ for epoch in range(1, 61):
 sns.lineplot(x=list(range(1, 61)), y=lrs)
 
 
-# In[11]:
 
 
 import math
@@ -126,7 +115,6 @@ def aggressive_lrs(epoch, _):
 lr = keras.callbacks.LearningRateScheduler(aggressive_lrs)
 
 
-# In[12]:
 
 
 indices = pd.Series(np.round(np.linspace(0, data_x.shape[0]-1, data_x.shape[0])))
@@ -135,7 +123,6 @@ test_indices = np.array([i for i in indices if i not in train_indices]).astype(n
 #3200 training images, about 400 validation_indices
 
 
-# In[13]:
 
 
 os.chdir('/kaggle/working/')
@@ -144,7 +131,6 @@ import efficientnet.efficientnet.keras as efn
 md  = efn.EfficientNetB6(weights='imagenet', include_top=False, input_shape=(size, size, 3), pooling='avg')
 
 
-# In[14]:
 
 
 model = keras.models.Sequential([md,
@@ -155,7 +141,6 @@ model = keras.models.Sequential([md,
 model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(), metrics=['accuracy'])
 
 
-# In[15]:
 
 
 model.fit_generator(gen.flow(data_x[train_indices], data_y[train_indices], batch_size=8), epochs=60, 
@@ -163,13 +148,11 @@ model.fit_generator(gen.flow(data_x[train_indices], data_y[train_indices], batch
                     callbacks=[mc, lr])
 
 
-# In[16]:
 
 
 reset_selective data_x #write yes and hit enter when the input box shows up this will remove the variable data_x from the RAM
 
 
-# In[17]:
 
 
 os.chdir('/kaggle/input/plant-pathology-2020-fgvc7/images/')
@@ -178,7 +161,6 @@ for i, image_name in enumerate(test.image_id.values): #this will take sometime t
     X_test[i] = cv2.resize(plt.imread(image_name+'.jpg'), (size, size)).astype(np.int16)
 
 
-# In[18]:
 
 
 os.chdir('/kaggle/working/')
@@ -186,7 +168,6 @@ mdl = keras.models.load_model('model.h5')
 y_preds = mdl.predict(X_test)
 
 
-# In[19]:
 
 
 os.chdir('/kaggle/input/plant-pathology-2020-fgvc7/')
@@ -194,7 +175,6 @@ sb = pd.read_csv('sample_submission.csv')
 sb.iloc[:, 1:] = y_preds
 
 
-# In[20]:
 
 
 from IPython.display import HTML
@@ -221,7 +201,6 @@ create_download_link(sb)
 # ↓ ↓ ↓  Yay, download link! ↓ ↓ ↓ 
 
 
-# In[ ]:
 
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,7 +21,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 from __future__ import print_function
@@ -172,13 +170,11 @@ optimizerG = optim.Adam(netG.parameters(), lr = 0.0002, betas = (0.5, 0.999))
 train(dataloader,netD,netG,optimizerD,optimizerG,criterion,total_epochs)
 
 
-# In[ ]:
 
 
 
 
 
-# In[3]:
 
 
 import os
@@ -200,103 +196,86 @@ import shutil
 shutil.make_archive('images', 'zip', '../output_images')
 
 
-# In[4]:
 
 
 mkdir results
 
 
-# In[5]:
 
 
 ls
 
 
-# In[6]:
 
 
 cd ..
 
 
-# In[7]:
 
 
 ls
 
 
-# In[8]:
 
 
 cd input/
 
 
-# In[9]:
 
 
 ls
 
 
-# In[10]:
 
 
 mkdir sample
 
 
-# In[11]:
 
 
 ls
 
 
-# In[12]:
 
 
 cd ..
 
 
-# In[13]:
 
 
 cd ..
 
 
-# In[14]:
 
 
 cd kaggle/
 
 
-# In[15]:
 
 
 cd input/
 
 
-# In[16]:
 
 
 cd all-dogs/
 
 
-# In[17]:
 
 
 ls
 
 
-# In[18]:
 
 
 cd all-dogs/
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 

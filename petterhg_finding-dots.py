@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,14 +19,12 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 x = check_output(["ls", "../input/TrainDotted"]).decode("utf8").split("\n")
 np.shape(x)[0]
 
 
-# In[3]:
 
 
 import numpy as np
@@ -38,14 +35,12 @@ img = cv2.cvtColor(cv2.imread("../input/TrainDotted/10.jpg"), cv2.COLOR_BGR2RGB)
 plt.imshow(img)
 
 
-# In[4]:
 
 
 img2 = cv2.resize(img, (300, 400))
 plt.imshow(img2)
 
 
-# In[5]:
 
 
 # Create search color masks for given circle colors
@@ -58,7 +53,6 @@ green = cv2.inRange(img, np.array([0, 128, 0]), np.array([50, 255, 50]))
 colors = [red, magenta, brown, blue, green]
 
 
-# In[6]:
 
 
 coord = np.zeros((2, np.shape(circles)[1])) # Array containing seal boundaries for image cropping
@@ -111,7 +105,6 @@ for k in range(0, np.shape(imgList)[0]):
     
 
 
-# In[7]:
 
 
 cropCoordinates = img[int(round(np.min(coord[1,:]))) - margin:
@@ -120,7 +113,6 @@ cropCoordinates = img[int(round(np.min(coord[1,:]))) - margin:
            int(round(np.max(coord[0,:]))) + margin]
 
 
-# In[8]:
 
 
 plt.imshow(crop)

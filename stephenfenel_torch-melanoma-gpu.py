@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np # linear algebra
@@ -10,7 +9,6 @@ import os
 import matplotlib.pyplot as plt 
 
 
-# In[2]:
 
 
 test_ohe = pd.read_csv('../input/combined-train/test.csv')
@@ -18,38 +16,32 @@ test = pd.read_csv('../input/siim-isic-melanoma-classification/test.csv')
 train_ohe = pd.read_csv('../input/combined-train/train0.csv')
 
 
-# In[3]:
 
 
 test.head()
 
 
-# In[4]:
 
 
 test_ohe.head()
 
 
-# In[5]:
 
 
 train_ohe.drop(['target', 'strat'], axis = 1).head()
 
 
-# In[6]:
 
 
 train = pd.read_csv('../input/siim-isic-melanoma-classification/train.csv')
 train.head()
 
 
-# In[7]:
 
 
 pip install efficientnet_pytorch
 
 
-# In[8]:
 
 
 import torch
@@ -74,7 +66,6 @@ import albumentations
 import gc 
 
 
-# In[9]:
 
 
 '''if mask:
@@ -94,7 +85,6 @@ MODELS_PATH = '../input/melanoma-models/'
 #MODELS2 = '../input/practice-models/'
 
 
-# In[10]:
 
 
 DIR0 = '../input/jpeg-melanoma-384x384/train'
@@ -104,14 +94,12 @@ TEST_FOLDER = '../input/jpeg-melanoma-384x384/test'
 TEST_CSV = '../input/combined-train/test.csv'
 
 
-# In[11]:
 
 
 FOLD_CSVS ={0:'../input/combined-train/train0.csv',1:'../input/combined-train/train1.csv',2:'../input/combined-train/train2.csv',
             3:'../input/combined-train/train3.csv',4:'../input/combined-train/train4.csv'}
 
 
-# In[12]:
 
 
 mean=[0.485, 0.456, 0.406]
@@ -146,7 +134,6 @@ transform_test = albumentations.Compose([
 ])
 
 
-# In[13]:
 
 
 class melanoma_dataset(Dataset):
@@ -218,7 +205,6 @@ class melanoma_dataset(Dataset):
     
 
 
-# In[14]:
 
 
 #train = melanoma_dataset(pd.DataFrame(), TRAIN_CSV, TRAIN_FOLDER, transform_train)
@@ -229,7 +215,6 @@ class melanoma_dataset(Dataset):
 #dataset_sizes = {x:len(x) for x in [train1, valid1]}
 
 
-# In[15]:
 
 
 def seed_everything(seed):
@@ -244,7 +229,6 @@ def seed_everything(seed):
 seed_everything(47)
 
 
-# In[16]:
 
 
 from efficientnet_pytorch import EfficientNet 
@@ -256,7 +240,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 
-# In[17]:
 
 
 class Net(nn.Module):
@@ -285,7 +268,6 @@ class Net(nn.Module):
         return output
 
 
-# In[18]:
 
 
 def kfold_train(folds=3, num_epochs = 3,train = True):
@@ -432,25 +414,21 @@ def kfold_train(folds=3, num_epochs = 3,train = True):
                 
 
 
-# In[19]:
 
 
 CSV = pd.read_csv(FOLD_CSVS[0])
 
 
-# In[20]:
 
 
 train_df
 
 
-# In[21]:
 
 
 kfold_train(folds = 1, num_epochs = 15)
 
 
-# In[22]:
 
 
 #kfold_train(folds = 1, num_epochs = 5, train = False)

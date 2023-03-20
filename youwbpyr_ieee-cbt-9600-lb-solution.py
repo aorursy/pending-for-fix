@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 print(wrong)
@@ -923,7 +922,6 @@ del sub['old']
 sub.to_csv('../submission/cat_submit_549_1001_2seed.csv',index=False
 
 
-# In[ ]:
 
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[54]:
 
 
 import re
@@ -16,7 +15,6 @@ from PIL  import  Image
 import matplotlib.pyplot as plt
 
 
-# In[55]:
 
 
 train=pd.read_csv('../input/global-wheat-detection/train.csv')
@@ -25,13 +23,11 @@ train_dir = '../input/global-wheat-detection/train/'
 test_dir ='../input/global-wheat-detection/test/'
 
 
-# In[56]:
 
 
 train.head()
 
 
-# In[57]:
 
 
 df = pd.read_csv('../input/global-wheat-detection/train.csv')
@@ -50,21 +46,18 @@ df = df[['image_id','xmin', 'ymin','xmax', 'ymax', 'w', 'h','classes']]
 df.head()
 
 
-# In[58]:
 
 
 # exporting cleaned dataframe
 df.to_csv("data.csv")
 
 
-# In[59]:
 
 
 index = list(set(df.image_id))
 # print(index)
 
 
-# In[67]:
 
 
 import shutil
@@ -74,14 +67,12 @@ except:
   print("error or maybe file Already exsist")
 
 
-# In[68]:
 
 
 from pathlib import Path
 Path("./annots").mkdir(parents=True, exist_ok=True)
 
 
-# In[69]:
 
 
 f = open('./data.csv')
@@ -94,7 +85,6 @@ f.close()
 print(data[:4])
 
 
-# In[70]:
 
 
 import xml.etree.ElementTree as gfg 
@@ -153,13 +143,11 @@ def GenerateXML(annots_dir,img_dir,image_id) :
         tree.write(files)
 
 
-# In[73]:
 
 
 # os.listdir('./images')
 
 
-# In[72]:
 
 
 #wait for a long time
@@ -167,7 +155,6 @@ for image_id in index:
     GenerateXML("./annots/","./images/", image_id) 
 
 
-# In[74]:
 
 
 ## count xml files
@@ -179,7 +166,6 @@ for j in (os.listdir('./annots')):
 print(i)
 
 
-# In[75]:
 
 
 from PIL  import  Image
@@ -187,25 +173,21 @@ img = Image.open('./images/7f01525b1.jpg')
 plt.imshow(img)
 
 
-# In[76]:
 
 
 get_ipython().system('git clone https://github.com/mmaithani/Mask_RCNN.git')
 
 
-# In[ ]:
 
 
 cd Mask_RCNN
 
 
-# In[ ]:
 
 
 get_ipython().system('python setup.py install')
 
 
-# In[77]:
 
 
 get_ipython().system('pip install imutils')
@@ -233,7 +215,6 @@ from os import listdir
 from xml.etree import ElementTree
 
 
-# In[78]:
 
 
 class myMaskRCNNConfig(Config):
@@ -262,19 +243,16 @@ class myMaskRCNNConfig(Config):
     MAX_GT_INSTANCES=10
 
 
-# In[79]:
 
 
 config = myMaskRCNNConfig()
 
 
-# In[80]:
 
 
 config.display()
 
 
-# In[ ]:
 
 
 class WheatData(Dataset):
@@ -368,25 +346,21 @@ class WheatData(Dataset):
         return info['path']
 
 
-# In[ ]:
 
 
 cd ..
 
 
-# In[ ]:
 
 
 os.getcwd()
 
 
-# In[ ]:
 
 
 os.listdir(train_dir)
 
 
-# In[ ]:
 
 
 # prepare train set
@@ -402,20 +376,17 @@ test_set.prepare()
 print('Test: %d' % len(test_set.image_id))
 
 
-# In[ ]:
 
 
 print("Loading Mask R-CNN model...")
 model = modellib.MaskRCNN(mode="training", config=config, model_dir='./')
 
 
-# In[ ]:
 
 
 os.listdir('./Mask_RCNN')
 
 
-# In[ ]:
 
 
 #load the weights for COCO
@@ -424,7 +395,6 @@ model.load_weights('.\\Mask_RCNN\\mask_rcnn_coco.h5',
                    exclude=["mrcnn_class_logits", "mrcnn_bbox_fc",  "mrcnn_bbox", "mrcnn_mask"])
 
 
-# In[ ]:
 
 
 ## train heads with higher lr to speedup the learning

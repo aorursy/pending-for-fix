@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[34]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -46,7 +45,6 @@ df_tr = pd.read_csv("/kaggle/input/widsdatathon2020/training_v2.csv")
 df_ts = pd.read_csv("/kaggle/input/widsdatathon2020/unlabeled.csv")
 
 
-# In[35]:
 
 
 feature_importance_dfs = {}
@@ -59,13 +57,11 @@ for key, value in feature_importance_dfs.items():
          )
 
 
-# In[36]:
 
 
 feature_importance_dfs = {}
 
 
-# In[37]:
 
 
 train_columns = [x for x in df_tr.columns if x not in ['encounter_id','patient_id','hospital_death','readmission_status']]
@@ -77,7 +73,6 @@ for m in train_columns:
         
 
 
-# In[38]:
 
 
 df_tr_ts = pd.concat([df_tr[categorical_features],df_ts[categorical_features]])
@@ -91,7 +86,6 @@ for df in [df_tr, df_ts]:
         df[m] = df[m].astype(float)
 
 
-# In[39]:
 
 
 categorical_index = [train_columns.index(x) for x in categorical_features]
@@ -114,7 +108,6 @@ param = {'task': 'train',
         }
 
 
-# In[44]:
 
 
 folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=256)
@@ -162,13 +155,11 @@ df_sub.to_csv("sub1.csv",index=False)
 
 
 
-# In[49]:
 
 
 len(evals_result['valid_0']['auc'])
 
 
-# In[53]:
 
 
 df = pd.DataFrame({ 'iteration': [i for i in range(len(evals_result['valid_0']['auc']))],'auc': evals_result['valid_0']['auc']})
@@ -177,20 +168,17 @@ fig = px.line(df, x="iteration", y="auc", title='LGBM Validation AUC')
 fig.show()
 
 
-# In[9]:
 
 
 feature_importance_df.head(5).sort_values(by=['importance'], ascending=False)
 
 
-# In[12]:
 
 
 feature_importance_df.groupby(['Feature'])[['importance']].mean().sort_values(
         "importance", ascending=False).head(10)
 
 
-# In[31]:
 
 
 import plotly.express as px
@@ -200,13 +188,11 @@ fig = px.bar(df, x="importance", y="Feature", orientation='h')
 fig.show()
 
 
-# In[33]:
 
 
 clf.
 
 
-# In[15]:
 
 
 # for key, value in feature_importance_dfs.items():
@@ -217,7 +203,6 @@ clf.
 #          )
 
 
-# In[16]:
 
 
 grouped = df_tr.groupby(['apache_3j_diagnosis'])[
@@ -264,7 +249,6 @@ grouped = df_tr.groupby(['apache_3j_diagnosis'])[
 'creatinine_apache','pre_icu_los_days'].mean()
 
 
-# In[17]:
 
 
 df_tr = pd.merge(df_tr, grouped, how='left', on=['apache_3j_diagnosis'])
@@ -273,7 +257,6 @@ df_ts = pd.merge(df_ts, grouped, how='left', on=['apache_3j_diagnosis'])
 grouped
 
 
-# In[21]:
 
 
 l = label_var(df_tr_ts, categorical_features)
@@ -348,19 +331,16 @@ df_sub.to_csv("sub1.csv",index=False)
 
 
 
-# In[24]:
 
 
 np.mean(r), np.std(r)
 
 
-# In[ ]:
 
 
 SHAP Feature Importance
 
 
-# In[25]:
 
 
 def plot_importances(importances_):
@@ -374,7 +354,6 @@ def plot_importances(importances_):
     plt.show()
 
 
-# In[ ]:
 
 
 

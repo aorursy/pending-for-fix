@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -32,7 +31,6 @@ warnings.filterwarnings('ignore')
 # Any results you write to the current directory are saved as output.p
 
 
-# In[ ]:
 
 
 #let's look at all available files:
@@ -40,7 +38,6 @@ import os
 print(os.listdir("../input"))
 
 
-# In[ ]:
 
 
 train_df = pd.read_csv('../input/train.csv')
@@ -49,7 +46,6 @@ print ("Train Dataset: Rows, Columns: ", train_df.shape)
 print ("Test Dataset: Rows, Columns: ", test_df.shape)
 
 
-# In[ ]:
 
 
 #the prediction will be based on the head of the household
@@ -57,27 +53,23 @@ submit = test_df[['Id','idhogar']]
 #https://www.geeksforgeeks.org/different-ways-to-create-pandas-dataframe/
 
 
-# In[ ]:
 
 
 # a glimpse at train_df
 train_df.head(5)
 
 
-# In[ ]:
 
 
 train_df.info()
 
 
-# In[ ]:
 
 
 #First, let's deal with non-numeric columns
 train_df.select_dtypes(['object']).head(15)
 
 
-# In[ ]:
 
 
 #Id and idhogar won't be used for training so we'll take care of them later
@@ -85,7 +77,6 @@ train_df.select_dtypes(['object']).head(15)
 train_df['dependency'].value_counts(ascending=False)
 
 
-# In[ ]:
 
 
 #Notice there is a column containing squared values for dependency, 'SQBdependency'. 
@@ -94,7 +85,6 @@ print (train_df.loc[train_df['dependency']=='no',['SQBdependency']]['SQBdependen
 print (train_df.loc[train_df['dependency']=='yes',['SQBdependency']]['SQBdependency'].value_counts())
 
 
-# In[ ]:
 
 
 #Convert 'yes' to 1 and 'no' to 0
@@ -104,7 +94,6 @@ train_df['dependency']=train_df['dependency'].astype(float)
 test_df['dependency']=test_df['dependency'].astype(float)
 
 
-# In[ ]:
 
 
 #2 and #3 'edjefe'/'edjefa'
@@ -113,7 +102,6 @@ train_df['edjefe'].value_counts()
 #based on the interaction of escolari (years of education), head of household and gender, yes=1 and no=0
 
 
-# In[ ]:
 
 
 train_df['edjefa'].value_counts()
@@ -121,7 +109,6 @@ train_df['edjefa'].value_counts()
 #based on the interaction of escolari (years of education), head of household and gender, yes=1 and no=0
 
 
-# In[ ]:
 
 
 #Again, correlate 'edjefe' with 'SQBedjefe'(squared value)
@@ -129,7 +116,6 @@ print (train_df.loc[train_df['edjefe']=='no',['SQBedjefe']]['SQBedjefe'].value_c
 print (train_df.loc[train_df['edjefe']=='yes',['SQBedjefe']]['SQBedjefe'].value_counts())
 
 
-# In[ ]:
 
 
 #Based on 'SQBedjefe' column, convert 'no' to 0 and 'yes' to 1 to make the rows of 'edjefa'/'edjefe' numeric
@@ -139,7 +125,6 @@ test_df['edjefa'] = test_df['edjefa'].replace(('yes', 'no'), (1, 0))
 test_df['edjefe'] = test_df['edjefe'].replace(('yes', 'no'), (1, 0))
 
 
-# In[ ]:
 
 
 #converting these object type columns to floats
@@ -149,7 +134,6 @@ test_df['edjefa']=test_df['edjefa'].astype(float)
 test_df['edjefe']=test_df['edjefe'].astype(float)
 
 
-# In[ ]:
 
 
 #double checking that all columns are now numeric - except for Id and idhogar
@@ -157,7 +141,6 @@ print (train_df.select_dtypes(['object']).describe(), '\n')
 print (test_df.select_dtypes(['object']).describe())
 
 
-# In[ ]:
 
 
 #Now let's take care of the missing columns
@@ -167,7 +150,6 @@ missing_df = missing_df.sort_values(0, ascending = False)
 missing_df.head()
 
 
-# In[ ]:
 
 
 print ("Top Testing Columns having missing values:")
@@ -176,14 +158,12 @@ missing_df = missing_df.sort_values(0, ascending = False)
 missing_df.head()
 
 
-# In[ ]:
 
 
 #1 'v18q1' - number of tablets household owns
 train_df.groupby('v18q')['v18q1'].apply(lambda x: x.isnull().sum())
 
 
-# In[ ]:
 
 
 #Every family that has nan for v18q1 does not own a tablet. 
@@ -192,7 +172,6 @@ train_df['v18q1'] = train_df['v18q1'].fillna(0)
 test_df['v18q1'] = test_df['v18q1'].fillna(0)
 
 
-# In[ ]:
 
 
 #2 'rez_esc' - Years behind in school 
@@ -202,14 +181,12 @@ print (train_df.loc[train_df['rez_esc'].isnull()]['instlevel1'].value_counts())
 print (train_df.loc[train_df['rez_esc'].isnull()]['instlevel2'].value_counts())
 
 
-# In[ ]:
 
 
 #another theory is that those 'na' are for individuals outside of school age
 print (train_df.loc[train_df['rez_esc'].notnull()]['age'].describe())
 
 
-# In[ ]:
 
 
 #which is actually true: min age - 7, max age - 17. Assigning '0' to those people
@@ -219,14 +196,12 @@ train_df.loc[train_df['rez_esc'] > 5, 'rez_esc'] = 5
 test_df.loc[test_df['rez_esc'] > 5, 'rez_esc'] = 5 #5 is a maximum value per competition's discussion, so here we're accounting for the outliers
 
 
-# In[ ]:
 
 
 #3 v2a1, Monthly rent payment
 print(train_df['v2a1'].isnull().sum())
 
 
-# In[ ]:
 
 
 #Let's correlate it with tipovivi1, =1 own and fully paid house
@@ -234,7 +209,6 @@ print (train_df.loc[train_df['v2a1'].isnull()]['tipovivi1'].value_counts())
 print(train_df['tipovivi1'].value_counts())
 
 
-# In[ ]:
 
 
 #Replacing with '0' na for fully paid house 
@@ -242,13 +216,11 @@ train_df.loc[(train_df['v2a1'].isnull() & train_df['tipovivi1'] == 1), 'v2a1'] =
 test_df.loc[(test_df['v2a1'].isnull() & test_df['tipovivi1'] == 1), 'v2a1'] = 0
 
 
-# In[ ]:
 
 
 print (train_df.loc[train_df['v2a1'].isnull()]['tipovivi1'].value_counts())
 
 
-# In[ ]:
 
 
 #tipovivi2, "=1 own,  paying in installments"
@@ -261,7 +233,6 @@ print (train_df.loc[train_df['v2a1'].isnull()]['tipovivi4'].value_counts())
 print (train_df.loc[train_df['v2a1'].isnull()]['tipovivi5'].value_counts())
 
 
-# In[ ]:
 
 
 #Let's replace na for precarious with '0' as well
@@ -269,13 +240,11 @@ train_df.loc[(train_df['v2a1'].isnull() & train_df['tipovivi4'] == 1), 'v2a1'] =
 test_df.loc[(test_df['v2a1'].isnull() & test_df['tipovivi4'] == 1), 'v2a1'] = 0
 
 
-# In[ ]:
 
 
 print (train_df.loc[train_df['v2a1'].isnull()]['Target'].value_counts())
 
 
-# In[ ]:
 
 
 #see if we can find a feature to correlate with those remaining missing values
@@ -285,7 +254,6 @@ v2a1_na_corr['v2a1'].fillna(0, inplace = True)
 print (v2a1_na_corr.corr()['v2a1'].sort_values())
 
 
-# In[ ]:
 
 
 #No luck. But since the property is 'assigned, borrowed', let's assume there's no monthly rent associated with it
@@ -293,7 +261,6 @@ train_df['v2a1'].fillna(train_df['v2a1'].mean(), inplace = True)
 test_df['v2a1'].fillna(test_df['v2a1'].mean(), inplace = True)
 
 
-# In[ ]:
 
 
 print ("Top Training Columns having missing values:")
@@ -306,7 +273,6 @@ missing_df = missing_df.sort_values(0, ascending = False)
 print (missing_df.head())
 
 
-# In[ ]:
 
 
 #the rest of the missing values can be replaced with mean as their percentage towards total number of entries is insignificant
@@ -314,7 +280,6 @@ train_df.fillna (train_df.mean(), inplace = True)
 test_df.fillna(test_df.mean(), inplace = True)
 
 
-# In[ ]:
 
 
 print ('Columns having missing values:')
@@ -322,7 +287,6 @@ print (train_df.columns[train_df.isnull().any()])
 print (test_df.columns[test_df.isnull().any()])
 
 
-# In[ ]:
 
 
 #top 30 features with best correlation to 'Target'
@@ -331,14 +295,12 @@ type(best_correlations)
 best_correlations
 
 
-# In[ ]:
 
 
 best_correlation = best_correlations.index
 best_correlation
 
 
-# In[ ]:
 
 
 d = {'dependency':'dependency, Dependency rate', 'v18q1':'v18q1, number of tablets household owns', 'epared1':'epared1, if walls are bad', 'qmobilephone':'qmobilephone, # of mobile phones', 
@@ -354,7 +316,6 @@ d = {'dependency':'dependency, Dependency rate', 'v18q1':'v18q1, number of table
        'meaneduc':'meaneduc,average years of education for adults (18+)', 'Target':'Target', 'elimbasu5':'elimbasu5, "=1 if rubbish disposal mainly by throwing in river,  creek or sea"'}
 
 
-# In[ ]:
 
 
 for i in best_correlation:
@@ -367,7 +328,6 @@ for i in best_correlation:
         plt.show()
 
 
-# In[ ]:
 
 
 #we'll drop only the ones with less than 100 outliers
@@ -375,7 +335,6 @@ print(len(train_df.loc[(train_df['SQBmeaned']>900)]))
 print(train_df['SQBmeaned'].value_counts(sort = True))
 
 
-# In[ ]:
 
 
 to_drop = train_df.loc[(train_df['rooms']>9)|(train_df['r4m1']>3)|
@@ -387,31 +346,26 @@ to_drop = train_df.loc[(train_df['rooms']>9)|(train_df['r4m1']>3)|
                        (train_df['SQBmeaned']>900)].index
 
 
-# In[ ]:
 
 
 len(to_drop)
 
 
-# In[ ]:
 
 
 train_df.drop(to_drop, inplace=True)
 
 
-# In[ ]:
 
 
 train_df.groupby('Target').mean()
 
 
-# In[ ]:
 
 
 train_df['Target'].hist()
 
 
-# In[ ]:
 
 
 #features with <5 possible values
@@ -425,7 +379,6 @@ for j in best_correlation:
         plt.show()
 
 
-# In[ ]:
 
 
 #if target distribution in each feature cathegory is similar to overall target distribution, 
@@ -438,7 +391,6 @@ print (train_df.corr()['Target']['v18q+etecho3'])
 test_df['v18q+etecho3'] = test_df['v18q']+test_df['etecho3']
 
 
-# In[ ]:
 
 
 train_df['v18q+paredblolad'] = train_df['v18q']+train_df['paredblolad']
@@ -448,7 +400,6 @@ print (train_df.corr()['Target']['v18q+paredblolad'])
 test_df['v18q+paredblolad'] = test_df['v18q']+test_df['paredblolad']
 
 
-# In[ ]:
 
 
 train_df['v18q+pisomoscer'] = train_df['v18q']+train_df['pisomoscer']
@@ -458,7 +409,6 @@ print (train_df.corr()['Target']['v18q+pisomoscer'])
 test_df['v18q+pisomoscer'] = test_df['v18q']+test_df['pisomoscer']
 
 
-# In[ ]:
 
 
 train_df['pisomoscer+instlevel8'] = train_df['pisomoscer']+train_df['instlevel8']
@@ -468,7 +418,6 @@ print (train_df.corr()['Target']['pisomoscer+instlevel8'])
 test_df['pisomoscer+instlevel8'] = test_df['pisomoscer']+test_df['instlevel8']
 
 
-# In[ ]:
 
 
 def plot_distribution(df, var, target, **kwargs):
@@ -482,7 +431,6 @@ def plot_distribution(df, var, target, **kwargs):
     plt.show()
 
 
-# In[ ]:
 
 
 #features with >=5 possible values
@@ -493,7 +441,6 @@ for j in best_correlation:
 #In the first graph instead of 0's should be nulls(we changed these before). So there is no info about monthly rate payment for non vulnerable households 
 
 
-# In[ ]:
 
 
 #following the same logic, let's try to combine features to get a better distribution
@@ -504,7 +451,6 @@ print (train_df.corr()['Target']['edjefe+escolari'])
 test_df['edjefe+escolari'] = test_df['edjefe']+test_df['escolari']
 
 
-# In[ ]:
 
 
 #we can also do some pairwise feature comparison for various target cathegories with jointplots:
@@ -516,7 +462,6 @@ for i in range(1, 5):
 plt.show()
 
 
-# In[ ]:
 
 
 #finally, let's have some interactive plots as well - using plotly
@@ -532,7 +477,6 @@ cufflinks.go_offline(connected=True)
 init_notebook_mode(connected=True)
 
 
-# In[ ]:
 
 
 train_df['Target1'] = train_df.Target
@@ -548,7 +492,6 @@ train_df.iplot(
 train_df = train_df.drop(['Target1'], axis =1)
 
 
-# In[ ]:
 
 
 train_df.pivot(columns='Target', values='meaneduc').iplot(
@@ -558,7 +501,6 @@ train_df.pivot(columns='Target', values='meaneduc').iplot(
         title='Education level per different poverty groups')
 
 
-# In[ ]:
 
 
 trace1 = go.Bar(
@@ -593,7 +535,6 @@ fig = go.Figure(data=data, layout=layout)
 iplot(fig)
 
 
-# In[ ]:
 
 
 best_correlation_df = train_df[['Target']]
@@ -605,20 +546,17 @@ corrs = best_correlation_df.corr()
 corrs.style.background_gradient(cmap='coolwarm').set_precision(2)
 
 
-# In[ ]:
 
 
 sea.clustermap(corrs)
 
 
-# In[ ]:
 
 
 c1 = corrs.abs().unstack().drop_duplicates()
 c1.sort_values(ascending = True)
 
 
-# In[ ]:
 
 
 train_df_sample = train_df.sample(500) #sampling for better graph
@@ -631,7 +569,6 @@ plt.figure()
 plt.show()
 
 
-# In[ ]:
 
 
 #some of it has already been done in visualization part above
@@ -642,7 +579,6 @@ print ('Pearson correlation coefficients:')
 print ('Poor Materials (training set): ',train_df['Poor_materials'].corr( train_df['Target']))
 
 
-# In[ ]:
 
 
 #rich materials used
@@ -652,7 +588,6 @@ print ('Pearson correlation coefficients:')
 print ('Materials (training set): ',train_df['Rich_Materials'].corr( train_df['Target']))
 
 
-# In[ ]:
 
 
 train_df["Poor_Infrastructure"]=train_df['abastaguano']+train_df['noelec']+train_df['epared1']+train_df['etecho1']+train_df['eviv1']+train_df['lugar3']+train_df['sanitario1']+train_df['energcocinar1']+train_df['elimbasu3']
@@ -661,7 +596,6 @@ print ('Pearson correlation coefficients:')
 print ('Materials (training set): ',train_df['Poor_Infrastructure'].corr( train_df['Target']))
 
 
-# In[ ]:
 
 
 train_df["Good_Infrastructure"]=train_df['sanitario2']+train_df['energcocinar2']+train_df['elimbasu1']+train_df['abastaguadentro']+train_df['planpri']+train_df['epared3']+train_df['etecho3']*(3)+train_df['eviv3']+train_df['lugar1']+train_df['lugar2']+train_df['lugar6']
@@ -670,7 +604,6 @@ print ('Pearson correlation coefficients:')
 print ('Infrastructure (training set): ',train_df['Good_Infrastructure'].corr( train_df['Target']))
 
 
-# In[ ]:
 
 
 #overcrowding + total of persons younger than 12 years of age + no level of education + zona rural
@@ -679,7 +612,6 @@ test_df["overcrowding_total"] = test_df["hacdor"]+ test_df["r4t1"] + test_df["in
 print ('overcrowding_total: ',train_df['overcrowding_total'].corr( train_df['Target']))
 
 
-# In[ ]:
 
 
 #years of schooling + overcdrowding
@@ -688,19 +620,16 @@ test_df["escolari+hacapo"] = test_df["escolari"]+test_df["hacapo"]
 print (train_df['escolari+hacapo'].corr( train_df['Target']))
 
 
-# In[ ]:
 
 
 print(train_df.columns[-30:])
 
 
-# In[ ]:
 
 
 pip install --upgrade https://github.com/featuretools/featuretools/zipball/master
 
 
-# In[ ]:
 
 
 #credits to Will Koehrsen for his excellent kernel: https://www.kaggle.com/willkoehrsen/featuretools-for-good#Deep-Feature-Synthesis
@@ -715,7 +644,6 @@ hh_cont = list()
 print(train_df.drop(['age', 'SQBescolari','SQBage', 'agesq'], axis = 1).columns.get_loc('Target'))
 
 
-# In[ ]:
 
 
 train_list_hh = list(train_df.drop(['escolari', 'rez_esc'], axis = 1).loc[:,'v2a1':'eviv3'].columns)+list(train_df.loc[:,'idhogar':'meaneduc'].columns)+list(train_df.drop(['age', 'SQBescolari','SQBage', 'agesq','Target'], axis = 1).loc[:,'bedrooms':].columns)
@@ -738,7 +666,6 @@ for i in train_list_ind:
         ind_cont.append(i) 
 
 
-# In[ ]:
 
 
 test_df['Target'] = np.nan
@@ -755,7 +682,6 @@ for variable in (hh_ordered + ind_ordered):
         print(f'Could not convert {variable} because of missing values.')
 
 
-# In[ ]:
 
 
 import featuretools as ft
@@ -779,7 +705,6 @@ es.normalize_entity(base_entity_id='data',
                    additional_variables = hh_bool + hh_ordered + hh_cont+["Target"])
 
 
-# In[ ]:
 
 
 feature_matrix, feature_names = ft.dfs(entityset=es, 
@@ -790,20 +715,17 @@ feature_matrix, feature_names = ft.dfs(entityset=es,
                                        chunk_size = 100)
 
 
-# In[ ]:
 
 
 all_features = [str(x.get_name()) for x in feature_names]
 feature_matrix.head()
 
 
-# In[ ]:
 
 
 feature_matrix.shape
 
 
-# In[ ]:
 
 
 drop_cols = []
@@ -819,7 +741,6 @@ feature_matrix = feature_matrix[[x for x in feature_matrix if x not in drop_cols
 feature_matrix.head()
 
 
-# In[ ]:
 
 
 train_df = feature_matrix[feature_matrix['Target'].notnull()].reset_index()
@@ -827,13 +748,11 @@ test_df = feature_matrix[feature_matrix['Target'].isnull()].reset_index()
 test_df.head(5)
 
 
-# In[ ]:
 
 
 print(train_df.shape, test_df.shape)
 
 
-# In[ ]:
 
 
 idhogar = test_df['idhogar']
@@ -843,13 +762,11 @@ train_df = train_df.dropna(axis='columns')
 test_df = test_df.dropna(axis='columns')
 
 
-# In[ ]:
 
 
 print(train_df.shape, test_df.shape)
 
 
-# In[ ]:
 
 
 #Removing columns with greater than 99% correlation as redundant
@@ -868,20 +785,17 @@ print(to_drop)
 train_df = train_df.drop(columns = to_drop)
 
 
-# In[ ]:
 
 
 print(train_df.shape, test_df.shape)
 
 
-# In[ ]:
 
 
 #let's compare all the correlation coefficients now
 print (train_df.corr()['Target'].abs().sort_values().tail(30))
 
 
-# In[ ]:
 
 
 #realligning two datasets based on the features selected in training
@@ -891,7 +805,6 @@ train_df, test_df = train_df.align(test_df, join = 'inner', axis = 1)
 print(f"Training set shape:{train_df.shape}, testing set shape:{test_df.shape}")
 
 
-# In[ ]:
 
 
 #converting to numpy array
@@ -902,7 +815,6 @@ test_np = test_df.values
 X.shape
 
 
-# In[ ]:
 
 
 from sklearn.model_selection import train_test_split
@@ -910,7 +822,6 @@ X_train, X_test, y_train, y_test = train_test_split (X, y,test_size = 0.1, rando
 X_train.shape
 
 
-# In[ ]:
 
 
 #Scaling
@@ -924,7 +835,6 @@ test_np = sc.transform (test_np)
 print (test_np)
 
 
-# In[ ]:
 
 
 '''#First, we'll try some autoML tool to generate a model
@@ -946,7 +856,6 @@ lb = aml.leaderboard
 print (lb)'''
 
 
-# In[ ]:
 
 
 '''print("Generate predictions…")
@@ -954,7 +863,6 @@ test_y = aml.leader.predict(htest)
 test_y = test_y.as_data_frame()'''
 
 
-# In[ ]:
 
 
 #AutoML can make a decent prediction, but not as good as the manually tuned model yet. For now we'll use LGBoost with early stopping for our final prediction
@@ -966,7 +874,6 @@ classifier = lgb.LGBMClassifier(max_depth=-1, learning_rate=0.1, objective='mult
                              colsample_bytree =  0.93, min_child_samples = 95, num_leaves = 14, subsample = 0.96)
 
 
-# In[ ]:
 
 
 eval_set = [(X_train, y_train), (X_test, y_test)]
@@ -975,7 +882,6 @@ y_pred = classifier.predict(X_test)
 y_pred = y_pred.reshape(-1, 1)
 
 
-# In[ ]:
 
 
 # Confusion Matrix
@@ -984,7 +890,6 @@ cm1 = confusion_matrix(y_test, y_pred)
 print (cm1)
 
 
-# In[ ]:
 
 
 from sklearn.metrics import f1_score
@@ -992,7 +897,6 @@ f1 = f1_score(y_test, y_pred, average ='macro')
 print ('f1 score for LGBoost model:',f1)
 
 
-# In[ ]:
 
 
 y_pred = classifier.predict(test_np)
@@ -1001,7 +905,6 @@ y_pred = y_pred.astype(int)
 print(plt.hist(y_pred))
 
 
-# In[ ]:
 
 
 # Visualise with a barplot
@@ -1018,7 +921,6 @@ g.tick_params(labelsize=40)
 g.set_title("Feature importance", fontsize=40)
 
 
-# In[ ]:
 
 
 #Submitting the prediction
@@ -1028,39 +930,33 @@ submit = submit.merge(test_df[['idhogar', 'Target']], on = 'idhogar', how = 'lef
 #submit['TARGET'] = test_y['predict'].values - for autoML  
 
 
-# In[ ]:
 
 
 submit['Target'] = submit['Target'].fillna(4) #there is no head of the household, assigning '4' to those
 submit['Target'] = submit['Target'].astype(int)
 
 
-# In[ ]:
 
 
 submit['Target'].hist()
 
 
-# In[ ]:
 
 
 submit
 
 
-# In[ ]:
 
 
 # Save the submission to a csv file
 submit.to_csv('LGBClassification.csv', index = False)
 
 
-# In[ ]:
 
 
 print ('The prediction was based on LGBoost model with early stopping, trained on ', train_df.shape[1],' features. F1 score for the the training dataset was ',f1,'.')
 
 
-# In[ ]:
 
 
 

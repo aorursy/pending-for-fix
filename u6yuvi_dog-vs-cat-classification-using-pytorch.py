@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 from os import walk
@@ -30,7 +28,6 @@ for (dirpath, dirnames, filenames) in walk("../input/dogs-vs-cats"):
     print("File name: ", filenames)
 
 
-# In[3]:
 
 
 from os import walk
@@ -40,7 +37,6 @@ for (dirpath, dirnames, filenames) in walk("../input/dogs-vs-cats-for-pytorch"):
     print("File name: ", filenames)
 
 
-# In[4]:
 
 
 import torch
@@ -53,7 +49,6 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 
-# In[5]:
 
 
 # check if CUDA is available
@@ -65,14 +60,12 @@ else:
     print('CUDA is available!  Training on GPU ...')
 
 
-# In[6]:
 
 
 PATH=Path('../input/dogs-vs-cats-for-pytorch/cat_dog_data/Cat_Dog_data')
 PATH1=Path('../input/dogs-vs-cats/test1')
 
 
-# In[7]:
 
 
 TRAIN =Path(PATH/'train')
@@ -83,37 +76,31 @@ print(VALID)
 print(TEST)
 
 
-# In[8]:
 
 
 ls ../input/dogs-vs-cats-for-pytorch/cat_dog_data/Cat_Dog_data/train/dog -1 | wc -l
 
 
-# In[9]:
 
 
 ls ../input/dogs-vs-cats-for-pytorch/cat_dog_data/Cat_Dog_data/train/cat -1 | wc -l
 
 
-# In[10]:
 
 
 ls ../input/dogs-vs-cats-for-pytorch/cat_dog_data/Cat_Dog_data/test/dog -1 | wc -l
 
 
-# In[11]:
 
 
 ls ../input/dogs-vs-cats-for-pytorch/cat_dog_data/Cat_Dog_data/test/cat -1 | wc -l
 
 
-# In[12]:
 
 
 ls ../input/dogs-vs-cats/test1/test1 -1 | wc -l
 
 
-# In[13]:
 
 
 # number of subprocesses to use for data loading
@@ -152,14 +139,12 @@ test_data = datasets.ImageFolder(PATH1, transform=test_transforms)
 # define samplers for obtaining training and validation batches
 
 
-# In[14]:
 
 
 print(train_data.class_to_idx)
 print(valid_data.class_to_idx)
 
 
-# In[15]:
 
 
 # prepare data loaders (combine dataset and sampler)
@@ -168,19 +153,16 @@ valid_loader = torch.utils.data.DataLoader(valid_data, batch_size=batch_size,  n
 test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size,  num_workers=num_workers)
 
 
-# In[16]:
 
 
 images,labels=next(iter(train_loader))
 
 
-# In[17]:
 
 
 images.shape,labels.shape
 
 
-# In[18]:
 
 
 import matplotlib.pyplot as plt
@@ -201,7 +183,6 @@ def imshow(img):
     plt.imshow(img)
 
 
-# In[19]:
 
 
 # obtain one batch of training images
@@ -218,14 +199,12 @@ for idx in np.arange(20):
     ax.set_title("{} ".format( classes[labels[idx]]))
 
 
-# In[20]:
 
 
 vgg_19=models.vgg19_bn(pretrained=True)
 vgg_19
 
 
-# In[21]:
 
 
 # Freeze parameters so we don't backprop through them
@@ -247,20 +226,17 @@ classifier = nn.Sequential(OrderedDict([
 vgg_19.classifier = classifier
 
 
-# In[22]:
 
 
 vgg_19
 
 
-# In[23]:
 
 
 criterion = nn.NLLLoss()
 optimizer=torch.optim.Adam(vgg_19.parameters(),lr=0.01)
 
 
-# In[24]:
 
 
 # prepare data loaders (combine dataset and sampler)
@@ -269,7 +245,6 @@ valid_loader = torch.utils.data.DataLoader(valid_data, batch_size=batch_size,  n
 test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size,  num_workers=num_workers)
 
 
-# In[25]:
 
 
 if train_on_gpu:
@@ -342,7 +317,6 @@ for epoch in range(1, n_epochs+1):
         valid_loss_min = valid_loss
 
 
-# In[26]:
 
 
 valid_loader = torch.utils.data.DataLoader(valid_data, batch_size=batch_size,  num_workers=num_workers,shuffle=True)
@@ -392,7 +366,6 @@ print('\nTest Accuracy (Overall): %2d%% (%2d/%2d)' % (
     np.sum(class_correct), np.sum(class_total)))
 
 
-# In[27]:
 
 
 batch_size=32
@@ -421,19 +394,16 @@ for idx in np.arange(20):
                  color=("green" if preds[idx]==labels[idx].item() else "red"))
 
 
-# In[28]:
 
 
 print("The state dict keys: \n\n", vgg_19.state_dict().keys())
 
 
-# In[29]:
 
 
 torch.save(vgg_19.state_dict(), 'checkpoint_97.pth')
 
 
-# In[30]:
 
 
 # Criteria NLLLoss which is recommended with Softmax final layer
@@ -445,7 +415,6 @@ scheduler = lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
 # Number of epochs
 
 
-# In[31]:
 
 
 if train_on_gpu:
@@ -516,7 +485,6 @@ for epoch in range(1, n_epochs+1):
         valid_loss_min = valid_loss
 
 
-# In[32]:
 
 
 batch_size=4

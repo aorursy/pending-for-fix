@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 
@@ -28,7 +27,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import h2o
@@ -65,7 +63,6 @@ from sklearn import preprocessing
 pd.set_option('display.max_columns', None)
 
 
-# In[3]:
 
 
 # loading dataset 
@@ -73,13 +70,11 @@ df= pd.read_csv("../input/widsdatathon2020/training_v2.csv")
 test=pd.read_csv("..//input/widsdatathon2020/unlabeled.csv")
 
 
-# In[4]:
 
 
 df.sample(5)
 
 
-# In[5]:
 
 
 #By using the above code, maybe I can check how missing values vary by thresholds?
@@ -88,7 +83,6 @@ for x in range(30):
     print(x," variables = ",df_check.shape)
 
 
-# In[6]:
 
 
 
@@ -101,7 +95,6 @@ df_thresh=df.dropna(axis=1, thresh=threshold)
 df_thresh.shape
 
 
-# In[7]:
 
 
 # Drop columns based on threshold limit
@@ -113,21 +106,18 @@ test=test.dropna(axis=1, thresh=threshold)
 test.shape
 
 
-# In[8]:
 
 
 #Getting the numerical data from the dataset
 df_thresh._get_numeric_data()
 
 
-# In[9]:
 
 
 #Checking for missing values in IDs
 df_thresh[['encounter_id','hospital_id','patient_id','icu_id']].isnull().sum()
 
 
-# In[10]:
 
 
 #Applying skelarn imputer for numerical values 
@@ -144,7 +134,6 @@ imputer_skdf.isna().sum()
 imputer_skdf.info()
 
 
-# In[11]:
 
 
 #Applying skelarn imputer for numerical values 
@@ -161,7 +150,6 @@ imputer_sktest.isna().sum()
 imputer_sktest.info()
 
 
-# In[12]:
 
 
 #categorical values
@@ -170,7 +158,6 @@ column_names=categ_df.columns
 column_names
 
 
-# In[13]:
 
 
 #categorical values for test
@@ -179,7 +166,6 @@ column_names1=categ_df1.columns
 column_names1
 
 
-# In[14]:
 
 
 # Replacing null values in categorical data with most frequent value for test set
@@ -188,7 +174,6 @@ categ_df1 = pd.DataFrame(imputer2.fit_transform(categ_df1))
 categ_df1.columns =column_names1;
 
 
-# In[15]:
 
 
 # Replacing null values in categorical data with most frequent value
@@ -197,7 +182,6 @@ categ_df = pd.DataFrame(imputer.fit_transform(categ_df))
 categ_df.columns =column_names;
 
 
-# In[16]:
 
 
 #merging Categorical and numerical data to a single dataset for test set
@@ -207,7 +191,6 @@ test=pd.merge(imputer_sktest,categ_df1,on='encounter_id')
 test.shape
 
 
-# In[17]:
 
 
 #merging Categorical and numerical data to a single dataset 
@@ -217,7 +200,6 @@ df1=pd.merge(imputer_skdf,categ_df,on='encounter_id')
 df1.shape
 
 
-# In[18]:
 
 
 #Exploratory data anlaysis and feature engineering 
@@ -237,7 +219,6 @@ fig = {'data' : [{'type' : 'pie',
 pyo.iplot(fig)
 
 
-# In[19]:
 
 
 #Visualizing the ICU admit source Distribution 
@@ -255,7 +236,6 @@ fig = {'data' : [{'type' : 'pie',
 pyo.iplot(fig)
 
 
-# In[20]:
 
 
 #Visualizing the Hospital admit source Distribution 
@@ -273,7 +253,6 @@ fig = {'data' : [{'type' : 'pie',
 pyo.iplot(fig)
 
 
-# In[21]:
 
 
 #Visualizing the Hospital admit source Distribution 
@@ -291,7 +270,6 @@ fig = {'data' : [{'type' : 'pie',
 pyo.iplot(fig)
 
 
-# In[22]:
 
 
 #taking a subset of the data to understand the effect of features on dataset
@@ -299,21 +277,18 @@ df1['hospital_death'].value_counts(normalize=True)
 
 
 
-# In[23]:
 
 
 #Checking the distribution of the icu admit source
 df1['icu_admit_source'].value_counts()
 
 
-# In[24]:
 
 
 #Checking the distribution of icu_type
 df1['icu_type'].value_counts()
 
 
-# In[25]:
 
 
 #Visualizing the age 
@@ -330,7 +305,6 @@ plt.ylabel('Patient')
 plt.show()
 
 
-# In[26]:
 
 
 #gender and #age distrubution
@@ -339,7 +313,6 @@ sns.violinplot(df1['age'], df1['gender']) #Variable Plot
 sns.despine()
 
 
-# In[27]:
 
 
 var = df1.groupby('gender').hospital_death.sum() #grouped sum of sales at Gender level
@@ -351,7 +324,6 @@ ax1.set_title("Gender wise Sum of deaths")
 var.plot(kind='bar')
 
 
-# In[28]:
 
 
 #Visualizing ethnicity
@@ -364,7 +336,6 @@ ax1.set_title("Ethnicity wise Sum of deaths")
 var.plot(kind='bar')
 
 
-# In[29]:
 
 
 var = df1.groupby('bmi').hospital_death.sum()
@@ -376,19 +347,16 @@ ax1.set_title("BMI wise Sum of deaths")
 var.plot(kind='line')
 
 
-# In[30]:
 
 
 df1['apache_3j_diagnosis'].value_counts()
 
 
-# In[31]:
 
 
 df1['apache_2_bodysystem'].value_counts()
 
 
-# In[32]:
 
 
 
@@ -403,13 +371,11 @@ ax1.set_title("apache bodysystem wise Sum of deaths")
 var.plot(kind='bar')
 
 
-# In[33]:
 
 
 test.columns=df1.columns
 
 
-# In[34]:
 
 
 df_encoded=pd.get_dummies(df1, columns=['ethnicity', 'gender', 'hospital_admit_source', 'icu_admit_source',
@@ -418,7 +384,6 @@ df_encoded=pd.get_dummies(df1, columns=['ethnicity', 'gender', 'hospital_admit_s
 df_encoded.columns
 
 
-# In[35]:
 
 
 # creating independent features X and dependent feature Y
@@ -430,28 +395,24 @@ test=pd.get_dummies(test, columns=['ethnicity', 'gender', 'hospital_admit_source
        'apache_2_bodysystem'])
 
 
-# In[36]:
 
 
 # Split into training and validation set
 X_train, valid_features, Y_train, valid_y = train_test_split(X, y, test_size = 0.25, random_state = 1)
 
 
-# In[37]:
 
 
 # Gradient Boosting Classifier
 GBC = GradientBoostingClassifier(random_state=1)
 
 
-# In[38]:
 
 
 # Random Forest Classifier
 RFC = RandomForestClassifier(n_estimators=100)
 
 
-# In[39]:
 
 
 # Voting Classifier with soft voting 
@@ -459,13 +420,11 @@ votingC = VotingClassifier(estimators=[('rfc', RFC),('gbc',GBC)], voting='soft')
 votingC = votingC.fit(X_train, Y_train)
 
 
-# In[40]:
 
 
 predict_y = votingC.predict(valid_features)
 
 
-# In[41]:
 
 
 def plot_roc_curve(fpr, tpr):
@@ -478,7 +437,6 @@ def plot_roc_curve(fpr, tpr):
     plt.show()
 
 
-# In[42]:
 
 
 probs = votingC.predict_proba(valid_features)
@@ -489,7 +447,6 @@ plot_roc_curve(fpr, tpr)
 print("AUC-ROC :",auc)
 
 
-# In[43]:
 
 
 test1 = test.copy()
@@ -503,145 +460,121 @@ from IPython.display import FileLink
 FileLink(r'submission5.csv')
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 

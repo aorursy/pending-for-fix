@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np # linear algebra
@@ -32,7 +31,6 @@ dftrain = pd.read_csv("../input/train.csv")
 dftest = pd.read_csv("../input/test.csv")
 
 
-# In[2]:
 
 
 punct = "/-'?!.,#$%\'()*+-/:;<=>@[\\]^_`{|}~" + '""“”’' + '∞θ÷α•à−β∅³π‘₹´°£€\×™√²—–&'
@@ -42,7 +40,6 @@ spell=dict(mispell_dict)
 spell.update(contraction_mapping)
 
 
-# In[3]:
 
 
 train_ques=dftrain["question_text"].fillna("_##_").values
@@ -50,7 +47,6 @@ test_ques=dftest["question_text"].fillna("_##_").values
 ids=dftest["qid"].fillna("_##_").values
 
 
-# In[4]:
 
 
 features_nb=75000
@@ -59,7 +55,6 @@ tkn=Tokenizer(lower = True, filters='', num_words=features_nb)
 tkn.fit_on_texts(train_ques)
 
 
-# In[5]:
 
 
 def preproc(words):
@@ -96,7 +91,6 @@ train_data=vectorize(train_ques)
 test_data=vectorize(test_ques)
 
 
-# In[6]:
 
 
 def folds(k):
@@ -115,21 +109,18 @@ def folds(k):
     return test,y_test,train,y_train
 
 
-# In[7]:
 
 
 train_labels=dftrain['target'].fillna("_##_").values
 test_samples,test_labels,train_samples,train_labels=folds(1)
 
 
-# In[8]:
 
 
 file='../input/embeddings/GoogleNews-vectors-negative300/GoogleNews-vectors-negative300.bin'
 word2vec_index=KeyedVectors.load_word2vec_format(file, binary=True,limit=75000)
 
 
-# In[9]:
 
 
 index=tkn.word_index
@@ -153,14 +144,12 @@ f.close()
 print(k)
 
 
-# In[10]:
 
 
 del dftrain,train_data
 gc.collect()
 
 
-# In[11]:
 
 
 length=features_nb+1
@@ -173,14 +162,12 @@ for word, i in index.items():
             pass
 
 
-# In[12]:
 
 
 del glove_index,word2vec_index
 gc.collect()
 
 
-# In[13]:
 
 
 x_array=np.vstack(train_samples)
@@ -206,7 +193,6 @@ for i in range (len(test_labels)):
         y_validate[i]=np.array([0,1])
 
 
-# In[14]:
 
 
 #https://www.kaggle.com/artgor/eda-and-lstm-cnn/notebook
@@ -307,7 +293,6 @@ class Attention(Layer):
         return input_shape[0],  self.features_dim
 
 
-# In[15]:
 
 
 inp = Input(shape=(seq_len,))
@@ -331,13 +316,11 @@ cnn.compile(loss='binary_crossentropy',
               metrics=['accuracy'])
 
 
-# In[16]:
 
 
 cnn.fit(x_array,y_array,epochs=3,batch_size=256,validation_data=(x_validate,y_validate))
 
 
-# In[17]:
 
 
 def find_best_threshold(model):
@@ -355,13 +338,11 @@ def find_best_threshold(model):
     return best_thresh
 
 
-# In[18]:
 
 
 find_best_threshold(cnn)
 
 
-# In[19]:
 
 
 from keras.layers import SpatialDropout1D , Bidirectional,CuDNNGRU,BatchNormalization
@@ -379,14 +360,12 @@ gru.compile(loss='binary_crossentropy',
               metrics=['accuracy'])
 
 
-# In[20]:
 
 
 gru.fit(x_array,y_array,epochs=3,batch_size=256,validation_data=(x_validate,y_validate))
 find_best_threshold(gru)
 
 
-# In[21]:
 
 
 from keras.layers import AveragePooling1D
@@ -404,14 +383,12 @@ grupool.compile(loss='binary_crossentropy',
               metrics=['accuracy'])
 
 
-# In[22]:
 
 
 grupool.fit(x_array,y_array,epochs=3,batch_size=256,validation_data=(x_validate,y_validate))
 find_best_threshold(grupool)
 
 
-# In[23]:
 
 
 from keras.layers import CuDNNLSTM
@@ -432,14 +409,12 @@ gru_lstm.compile(loss='binary_crossentropy',
               metrics=['accuracy'])
 
 
-# In[24]:
 
 
 gru_lstm.fit(x_array,y_array,epochs=3,batch_size=256,validation_data=(x_validate,y_validate))
 find_best_threshold(gru_lstm)
 
 
-# In[25]:
 
 
 gru2=Bidirectional(CuDNNGRU(64,return_sequences=True))(cgru)
@@ -454,21 +429,18 @@ grux2.compile(loss='binary_crossentropy',
               metrics=['accuracy'])
 
 
-# In[26]:
 
 
 grux2.fit(x_array,y_array,epochs=3,batch_size=256,validation_data=(x_validate,y_validate))
 find_best_threshold(grux2)
 
 
-# In[27]:
 
 
 del x_array,y_array,index, train_ques
 gc.collect()
 
 
-# In[28]:
 
 
 def results(test_samples,ques_id):
@@ -516,7 +488,6 @@ def results(test_samples,ques_id):
 results_dict=results(test_data,ids)
 
 
-# In[29]:
 
 
 def writeOutput(results):
@@ -546,7 +517,6 @@ def writeOutput(results):
 writeOutput(results_dict)
 
 
-# In[30]:
 
 
 i=0

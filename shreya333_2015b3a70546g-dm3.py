@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import pandas as pd
@@ -10,51 +9,43 @@ from sklearn.ensemble import ExtraTreesClassifier
 import numpy as np
 
 
-# In[2]:
 
 
 df = read_csv("../input/opcode_frequency_benign.csv")
 
 
-# In[3]:
 
 
 # df.head()
 
 
-# In[4]:
 
 
 df_mal = read_csv("../input/opcode_frequency_malware.csv")
 
 
-# In[5]:
 
 
 # df_mal.head()
 
 
-# In[6]:
 
 
 # df.drop('FileName', axis=1)
 # df_mal.drop('FileName', axis=1)
 
 
-# In[7]:
 
 
 # df
 
 
-# In[8]:
 
 
 # import pandas as pd
 dff = pd.concat([df, df_mal])
 
 
-# In[9]:
 
 
 # df.shape[0]
@@ -62,57 +53,48 @@ dff = pd.concat([df, df_mal])
 # # dff.shape[0]
 
 
-# In[10]:
 
 
 # dff['2'][0]
 
 
-# In[11]:
 
 
 # df_final = dff
 
 
-# In[12]:
 
 
 dff = dff.reset_index()
 
 
-# In[13]:
 
 
 Y = [0]*1400
 Y = Y + [1]*1999
 
 
-# In[14]:
 
 
 len(Y)
 
 
-# In[15]:
 
 
 dff = dff.drop('FileName', axis=1)
 
 
-# In[16]:
 
 
 dff = dff.drop('index', axis=1)
 
 
-# In[17]:
 
 
 # dff
 X = dff.values
 
 
-# In[18]:
 
 
 model = ExtraTreesClassifier()
@@ -120,7 +102,6 @@ model.fit(X,Y)
 print(model.feature_importances_)
 
 
-# In[19]:
 
 
 arr = np.array(model.feature_importances_)
@@ -129,39 +110,33 @@ ar = arr
 np.sort(ar)
 
 
-# In[20]:
 
 
 # arr[0]
 
 
-# In[21]:
 
 
 from sklearn.model_selection import cross_val_score
 # from sklearn.neighbors import KNeighborsClassifier
 
 
-# In[22]:
 
 
 # knn_cv = KNeighborsClassifier(n_neighbors=3)
 # cv_scores = cross_val_score(knn_cv, X, Y, cv=5)
 
 
-# In[23]:
 
 
 # arr[926]
 
 
-# In[24]:
 
 
 # inds[-404:]
 
 
-# In[25]:
 
 
 # dff = df_final
@@ -169,19 +144,16 @@ inds_int = inds[-404:]
 # inds_int
 
 
-# In[26]:
 
 
 # dff_copy = dff
 
 
-# In[27]:
 
 
 # dff
 
 
-# In[28]:
 
 
 # dff = dff_copy
@@ -190,34 +162,29 @@ for x in range(1,1809):
         dff = dff.drop(str(x), axis=1)
 
 
-# In[29]:
 
 
 # dff
 
 
-# In[30]:
 
 
 X = dff.values
 # len(X[0])
 
 
-# In[31]:
 
 
 # knn_cv = KNeighborsClassifier(n_neighbors=3)
 # cv_scores = cross_val_score(knn_cv, X, Y, cv=5)
 
 
-# In[32]:
 
 
 # print(cv_scores)
 # print(np.mean(cv_scores))
 
 
-# In[33]:
 
 
 # from sklearn.model_selection import GridSearchCV
@@ -231,13 +198,11 @@ X = dff.values
 # knn_gscv.fit(X, Y)
 
 
-# In[34]:
 
 
 # knn_gscv.best_params_
 
 
-# In[35]:
 
 
 test_df = read_csv('../input/Test_data.csv')
@@ -245,25 +210,21 @@ test_df = read_csv('../input/Test_data.csv')
 # file = df['FileName']
 
 
-# In[36]:
 
 
 test_df = test_df.drop('Unnamed: 1809', axis=1)
 
 
-# In[37]:
 
 
 test_df = test_df.drop('FileName', axis=1)
 
 
-# In[38]:
 
 
 # test_df
 
 
-# In[39]:
 
 
 # %matplotlib inline
@@ -275,14 +236,12 @@ test_df = test_df.drop('FileName', axis=1)
 # plt.ylabel('cumulative explained variance');
 
 
-# In[40]:
 
 
 from sklearn.ensemble import RandomForestClassifier
 ranfor = RandomForestClassifier()
 
 
-# In[41]:
 
 
 # len(X[0])
@@ -290,7 +249,6 @@ ranfor = RandomForestClassifier()
 ranfor.fit(X, Y)
 
 
-# In[42]:
 
 
 for x in range(1,1809):
@@ -298,26 +256,22 @@ for x in range(1,1809):
         test_df = test_df.drop(str(x), axis=1)
 
 
-# In[43]:
 
 
 # test_df
 
 
-# In[44]:
 
 
 X_val = test_df.values
 predicted = ranfor.predict(X_val)
 
 
-# In[45]:
 
 
 # predicted[0:18]
 
 
-# In[46]:
 
 
 sample = read_csv('../input/sample_submission.csv')
@@ -325,51 +279,43 @@ sample['Class'] = predicted
 # sample
 
 
-# In[47]:
 
 
 sample = sample.set_index('FileName')
 
 
-# In[48]:
 
 
 sample.to_csv('submission.csv')
 
 
-# In[49]:
 
 
 
 
 
-# In[49]:
 
 
 # from sklearn.linear_model import LogisticRegression
 
 
-# In[50]:
 
 
 # logreg = LogisticRegression()
 # cv_scores = cross_val_score(logreg, X, Y, cv=5)
 
 
-# In[51]:
 
 
 # print(cv_scores)
 # print(np.mean(cv_scores))
 
 
-# In[52]:
 
 
 # X = dff_404.values
 
 
-# In[53]:
 
 
 # from sklearn.ensemble import RandomForestClassifier
@@ -377,7 +323,6 @@ sample.to_csv('submission.csv')
 # cv_scores = cross_val_score(ranfor, X, Y, cv=5)
 
 
-# In[54]:
 
 
 from IPython.display import HTML

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,7 +21,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import numpy as np
@@ -37,7 +35,6 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
-# In[3]:
 
 
 
@@ -49,32 +46,27 @@ df_Test = pd.read_csv('../input/forest-cover-type-prediction/test.csv')
 df_test = df_Test
 
 
-# In[4]:
 
 
 df_train.head()
 
 
-# In[5]:
 
 
 df_test.head()
 
 
-# In[6]:
 
 
 df_train.dtypes
 
 
-# In[7]:
 
 
 pd.set_option('display.max_columns', None) # we need to see all the columns
 df_train.describe()
 
 
-# In[8]:
 
 
 # frequency count of column A 
@@ -82,7 +74,6 @@ count_train = df_train['Cover_Type'].value_counts()
 print(count_train)
 
 
-# In[9]:
 
 
 plt.figure(figsize=(12,5))
@@ -90,7 +81,6 @@ plt.title("Distribution of forest categories(Target Variable)")
 ax = sns.distplot(df_train["Cover_Type"])
 
 
-# In[10]:
 
 
 # Drop 'Id'
@@ -98,7 +88,6 @@ df_train = df_train.iloc[:,1:]
 df_test = df_test.iloc[:,1:]
 
 
-# In[11]:
 
 
 # Drop Soil_Type7 and Soil_Type15
@@ -106,7 +95,6 @@ df_train =df_train.drop(['Soil_Type7','Soil_Type15'], axis = 1)
 df_test =df_test.drop(['Soil_Type7','Soil_Type15'], axis = 1)
 
 
-# In[12]:
 
 
 no_of_continuous_attributes = 10
@@ -115,7 +103,6 @@ f, ax = plt.subplots(figsize = (10,8))
 sns.heatmap(correlation_matrix,vmax=0.8,square=True);
 
 
-# In[13]:
 
 
 #Correlation values
@@ -126,7 +113,6 @@ data = df_train.iloc[:,:no_of_continuous_attributes]
 
 
 
-# In[14]:
 
 
 # Get name of the continuous attributes
@@ -134,7 +120,6 @@ cols = data.columns
 print(cols)
 
 
-# In[15]:
 
 
 # Calculate the pearson correlation coefficients for all combinations
@@ -145,14 +130,12 @@ threshold = 0.5
 corr_list = []
 
 
-# In[16]:
 
 
 # Get correlation matrix
 data_corr
 
 
-# In[17]:
 
 
 #Bubble sorting of correlation array
@@ -164,7 +147,6 @@ data_corr
                     corr_list.append([data_corr.iloc[i,j],i,j])
 
 
-# In[18]:
 
 
 #sort the correlation values
@@ -176,13 +158,11 @@ for v,i,j in s_corr_list:
     print("%s and %s = %.2f" % (cols[i], cols[j], v))
 
 
-# In[19]:
 
 
 df_train.iloc[:,:10].skew()
 
 
-# In[20]:
 
 
 for v,i,j in s_corr_list:
@@ -190,13 +170,11 @@ for v,i,j in s_corr_list:
     plt.show()
 
 
-# In[21]:
 
 
 print(df_train.columns)
 
 
-# In[22]:
 
 
 columns = df_train.columns
@@ -212,37 +190,31 @@ for i in range(0, size):
     plt.show()
 
 
-# In[23]:
 
 
 print(df_train.columns)
 
 
-# In[24]:
 
 
 df_train.Wilderness_Area1.value_counts()
 
 
-# In[25]:
 
 
 df_train.Wilderness_Area2.value_counts()
 
 
-# In[26]:
 
 
 df_train.Wilderness_Area3.value_counts()
 
 
-# In[27]:
 
 
 df_train.Wilderness_Area4.value_counts()
 
 
-# In[28]:
 
 
 #grouping of one-hot encoded variables into a single variable
@@ -250,14 +222,12 @@ cols = df_train.columns
 r,c = df_train.shape
 
 
-# In[29]:
 
 
 # Create a new dataframe with r rows, one column for each encoded category[Wilderness_Area(1-4),Soil_type[1-40], and target in the end
 new_data = pd.DataFrame(index= np.arange(0,r), columns=['Wilderness_Area', 'Soil_Type', 'Cover_Type'])
 
 
-# In[30]:
 
 
 
@@ -279,7 +249,6 @@ for i in range(0,r):
     new_data.iloc[i] = [p,q,df_train.iloc[i, c-1]]
 
 
-# In[31]:
 
 
 # plot for category1
@@ -287,7 +256,6 @@ sns.countplot(x = 'Wilderness_Area', hue = 'Cover_Type', data = new_data)
 plt.show()
 
 
-# In[32]:
 
 
 # Plot for category2
@@ -296,7 +264,6 @@ sns.countplot(x='Soil_Type', hue = 'Cover_Type', data= new_data)
 plt.show()
 
 
-# In[33]:
 
 
 # calculating the count of soil_type[1-40] as well as  Wilderness_Area[1-4] 
@@ -306,7 +273,6 @@ for i in range(10,df_train.shape[1]-1):
 
 
 
-# In[34]:
 
 
 # Let's drop them
@@ -316,13 +282,11 @@ df_train1 = df_train # To be used for algos like SVM where we need normalization
 df_test1 = df_test # To be used under normalization and StandardScaler
 
 
-# In[35]:
 
 
 df_train.iloc[:,:10].skew()
 
 
-# In[36]:
 
 
 #Horizontal_Distance_To_Hydrology
@@ -331,26 +295,22 @@ plt.figure(figsize=(8,6))
 sns.distplot(df_train1['Horizontal_Distance_To_Hydrology'], fit = stats.norm)
 
 
-# In[37]:
 
 
 fig = plt.figure(figsize=(8,6))
 res = stats.probplot(df_train1['Horizontal_Distance_To_Hydrology'], plot=plt)
 
 
-# In[38]:
 
 
 df_train2=df_train1
 
 
-# In[39]:
 
 
 df_train1['Horizontal_Distance_To_Hydrology'] = np.sqrt(df_train1['Horizontal_Distance_To_Hydrology'])
 
 
-# In[40]:
 
 
 # Plot again after sqrt transformation
@@ -360,19 +320,16 @@ fig = plt.figure(figsize=(8,6))
 res = stats.probplot(df_train1['Horizontal_Distance_To_Hydrology'], plot=plt)
 
 
-# In[41]:
 
 
 df_train1.head()
 
 Both the transformations are working properly for this data but squared one gives better result 
-# In[ ]:
 
 
 
 
 
-# In[42]:
 
 
 plt.figure(figsize=(8,6))
@@ -381,13 +338,11 @@ fig = plt.figure(figsize=(8,6))
 res = stats.probplot(df_train1['Horizontal_Distance_To_Roadways'], plot=plt)
 
 
-# In[43]:
 
 
 df_train1['Horizontal_Distance_To_Roadways'] = np.sqrt(df_train1['Horizontal_Distance_To_Roadways'])
 
 
-# In[44]:
 
 
 # Plot again after sqrt transformation
@@ -397,7 +352,6 @@ fig = plt.figure(figsize=(8,6))
 res = stats.probplot(df_train1['Horizontal_Distance_To_Roadways'], plot=plt)
 
 
-# In[45]:
 
 
 # Plot again after sqrt transformation
@@ -407,7 +361,6 @@ fig = plt.figure(figsize=(8,6))
 res = stats.probplot(df_train2['Horizontal_Distance_To_Roadways'], plot=plt)
 
 
-# In[46]:
 
 
 #Hillshade_9am
@@ -417,13 +370,11 @@ fig = plt.figure(figsize=(8,6))
 res = stats.probplot(df_train1['Hillshade_9am'],plot=plt)
 
 
-# In[47]:
 
 
 df_train1['Hillshade_9am'] = np.square(df_train1['Hillshade_9am'])
 
 
-# In[48]:
 
 
 # Plot again after square transformation
@@ -433,7 +384,6 @@ fig = plt.figure(figsize=(8,6))
 res = stats.probplot(df_train1['Hillshade_9am'], plot=plt)
 
 
-# In[49]:
 
 
 # Hillshade_Noon
@@ -443,19 +393,16 @@ fig = plt.figure(figsize=(8,6))
 res = stats.probplot(df_train1['Hillshade_Noon'],plot=plt)
 
 
-# In[50]:
 
 
 df_train1.head()
 
 
-# In[51]:
 
 
 df_train1['Hillshade_Noon'] = np.square(df_train1['Hillshade_Noon'])
 
 
-# In[52]:
 
 
 # Hillshade_Noon
@@ -465,7 +412,6 @@ fig = plt.figure(figsize=(8,6))
 res = stats.probplot(df_train1['Hillshade_Noon'],plot=plt)
 
 
-# In[53]:
 
 
 plt.figure(figsize=(8,6))
@@ -474,13 +420,11 @@ plt.figure(figsize=(8,6))
 res = stats.probplot(df_train1['Horizontal_Distance_To_Fire_Points'],plot=plt)
 
 
-# In[54]:
 
 
 df_train1['Horizontal_Distance_To_Fire_Points'] = np.sqrt(df_train1['Horizontal_Distance_To_Fire_Points'])
 
 
-# In[55]:
 
 
 # Plot again after sqrt transformation
@@ -490,7 +434,6 @@ plt.figure(figsize=(8,6))
 res = stats.probplot(df_train1['Horizontal_Distance_To_Fire_Points'],plot=plt)
 
 
-# In[56]:
 
 
 #Vertical_Distance_To_Hydrology
@@ -500,7 +443,6 @@ fig = plt.figure(figsize=(8,6))
 res = stats.probplot(df_train1['Vertical_Distance_To_Hydrology'], plot=plt)
 
 
-# In[57]:
 
 
 plt.figure(figsize=(8,6))
@@ -509,26 +451,22 @@ plt.figure(figsize=(8,6))
 res = stats.probplot(df_train1['Vertical_Distance_To_Hydrology'],plot=plt)
 
 
-# In[58]:
 
 
 # performing same transformation in test dataset 
 df_test1[['Horizontal_Distance_To_Hydrology','Horizontal_Distance_To_Fire_Points'        ,'Horizontal_Distance_To_Roadways']] = np.sqrt(df_test1[['Horizontal_Distance_To_Hydrology',        'Horizontal_Distance_To_Fire_Points','Horizontal_Distance_To_Roadways']])
 
 
-# In[59]:
 
 
 df_test1[['Hillshade_9am','Hillshade_Noon']] = np.square(df_test1[['Hillshade_9am','Hillshade_Noon']])
 
 
-# In[60]:
 
 
 from sklearn.preprocessing import StandardScaler
 
 
-# In[61]:
 
 
 # Taking only non-categorical values
@@ -544,14 +482,12 @@ X_temp1 = StandardScaler().fit_transform(X_temp1)
 X_test_temp1 = StandardScaler().fit_transform(X_test_temp1)
 
 
-# In[62]:
 
 
 r,c = df_train.shape
 print(df_train.shape)
 
 
-# In[63]:
 
 
 r,c = df_train.shape
@@ -560,7 +496,6 @@ X_train1 = np.concatenate((X_temp1, df_train1.iloc[:,Size:c-1]), axis=1) # to be
 y_train = df_train.Cover_Type.values
 
 
-# In[64]:
 
 
 from sklearn import svm as svm
@@ -569,7 +504,6 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 
 
-# In[65]:
 
 
 # Setting parameters
@@ -577,7 +511,6 @@ x_data, x_test_data, y_data, y_test_data = train_test_split(X_train1,y_train,tes
 svm_para = [{'kernel':['rbf'],'C': [1,10,100,100]}]
 
 
-# In[66]:
 
 
 # Parameters optimized using the code in above cell
@@ -586,26 +519,22 @@ clf = svm.SVC(C=C_opt,kernel='rbf')
 clf.fit(X_train1,y_train)
 
 
-# In[67]:
 
 
 clf.score(X_train1,y_train)
 
 
-# In[68]:
 
 
 #y_pred = clf.predict(X_test1)
 
 
-# In[69]:
 
 
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.metrics import classification_report
 
 
-# In[70]:
 
 
 # setting parameters
@@ -613,7 +542,6 @@ x_data, x_test_data, y_data, y_test_data = train_test_split(X_train,y_train,test
 etc_para = [{'n_estimators':[20,30,100], 'max_depth':[5,10,15], 'max_features':[0.1,0.2,0.3]}] 
 
 
-# In[71]:
 
 
 #ETC = GridSearchCV(ExtraTreesClassifier(),param_grid=etc_para, cv=3, n_jobs=-1)
@@ -622,7 +550,6 @@ etc_para = [{'n_estimators':[20,30,100], 'max_depth':[5,10,15], 'max_features':[
 #ETC.grid_scores_
 
 
-# In[72]:
 
 
 # setting parameters
@@ -632,7 +559,6 @@ etc_para = [{'n_estimators':100, 'max_depth':15, 'max_features':0.3}]
 # Default number of min_samples_leaf is 1
 
 
-# In[73]:
 
 
 # Classification Report
@@ -641,7 +567,6 @@ target = ['class1', 'class2','class3','class4','class5','class6','class7' ]
 print (classification_report(y_test_data, Y_pred, target_names=target))
 
 
-# In[74]:
 
 
 from sklearn.model_selection import learning_curve
@@ -675,7 +600,6 @@ def plot_learning_curve(model,title, X, y,n_jobs = 1, ylim = None, cv = None,tra
     return plt
 
 
-# In[75]:
 
 
 # 'max_features': 0.3, 'n_estimators': 100, 'max_depth': 15, 'min_samples_leaf: 1'
@@ -686,7 +610,6 @@ etc.fit(X_train, y_train)
 etc.score(X_train, y_train)
 
 
-# In[76]:
 
 
 # Plotting learning curve

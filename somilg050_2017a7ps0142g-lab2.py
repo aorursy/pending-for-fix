@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import numpy as np
@@ -15,7 +14,6 @@ import os
 print(os.listdir("../input/nnfl-cnn-lab2/upload"))
 
 
-# In[ ]:
 
 
 FAST_RUN = False
@@ -25,33 +23,28 @@ IMAGE_SIZE=(IMAGE_WIDTH, IMAGE_HEIGHT)
 IMAGE_CHANNELS=3
 
 
-# In[ ]:
 
 
 import io
 df = pd.read_csv('../input/nnfl-cnn-lab2/upload/train_set.csv')
 
 
-# In[ ]:
 
 
 df = df.replace(0,'buildings').replace(1,'forest').replace(2,'glacier').replace(3,'mountain').replace(4,'sea').replace(5,'street')
 df.head()
 
 
-# In[ ]:
 
 
 df.tail()
 
 
-# In[ ]:
 
 
 df['label'].value_counts().plot.bar()
 
 
-# In[ ]:
 
 
 filenames = os.listdir("../input/nnfl-cnn-lab2/upload/train_images/train_images")
@@ -60,14 +53,12 @@ image = load_img("../input/nnfl-cnn-lab2/upload/train_images/train_images/" + sa
 plt.imshow(image)
 
 
-# In[ ]:
 
 
 import tensorflow as tf
 tf.keras.backend.clear_session()
 
 
-# In[ ]:
 
 
 from tensorflow.keras.models import Sequential
@@ -84,7 +75,6 @@ model.add(Flatten())
 model.add(Dense(32, activation='relu'))
 
 
-# In[ ]:
 
 
 from tensorflow.keras.models import Sequential
@@ -118,19 +108,16 @@ model.compile(loss='categorical_crossentropy', optimizer='RMSprop', metrics=['ac
 model.summary()
 
 
-# In[ ]:
 
 
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
 
-# In[ ]:
 
 
 earlystop = EarlyStopping(patience=10)
 
 
-# In[ ]:
 
 
 learning_rate_reduction = ReduceLROnPlateau(monitor='val_acc', 
@@ -140,20 +127,17 @@ learning_rate_reduction = ReduceLROnPlateau(monitor='val_acc',
                                             min_lr=0.00001)
 
 
-# In[ ]:
 
 
 callbacks = [earlystop, learning_rate_reduction]
 
 
-# In[ ]:
 
 
 df["label"] = df["label"].replace({0: 'type0', 1: 'type1', 2: 'type2', 3: 'type3', 4: 'type4', 5: 'type5'})
 df['label'].head()
 
 
-# In[ ]:
 
 
 train_df, validate_df = train_test_split(df, test_size=0.20, random_state=42)
@@ -161,19 +145,16 @@ train_df = train_df.reset_index(drop=True)
 validate_df = validate_df.reset_index(drop=True)
 
 
-# In[ ]:
 
 
 train_df['label'].value_counts().plot.bar()
 
 
-# In[ ]:
 
 
 validate_df['label'].value_counts().plot.bar()
 
 
-# In[ ]:
 
 
 total_train = train_df.shape[0]
@@ -181,14 +162,12 @@ total_validate = validate_df.shape[0]
 batch_size=15
 
 
-# In[ ]:
 
 
 print(total_train)
 print(total_validate)
 
 
-# In[ ]:
 
 
 train_datagen = ImageDataGenerator(
@@ -212,7 +191,6 @@ train_generator = train_datagen.flow_from_dataframe(
 )
 
 
-# In[ ]:
 
 
 validation_datagen = ImageDataGenerator(rescale=1./255)
@@ -227,7 +205,6 @@ validation_generator = validation_datagen.flow_from_dataframe(
 )
 
 
-# In[ ]:
 
 
 example_df = train_df.sample(n=1).reset_index(drop=True)
@@ -241,7 +218,6 @@ example_generator = train_datagen.flow_from_dataframe(
 )
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(12, 12))
@@ -255,7 +231,6 @@ plt.tight_layout()
 plt.show()
 
 
-# In[ ]:
 
 
 epochs=6 if FAST_RUN else 6
@@ -269,13 +244,11 @@ history = model.fit_generator(
 )f
 
 
-# In[ ]:
 
 
 model.save_weights("model.h5")
 
 
-# In[ ]:
 
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 12))
@@ -293,7 +266,6 @@ plt.tight_layout()
 plt.show()
 
 
-# In[ ]:
 
 
 test_filenames = os.listdir("../input/nnfl-cnn-lab2/upload/test_images/test_images/")
@@ -304,7 +276,6 @@ nb_samples = test_df.shape[0]
 test_df.head()
 
 
-# In[ ]:
 
 
 test_gen = ImageDataGenerator(rescale=1./255)
@@ -320,20 +291,17 @@ test_generator = test_gen.flow_from_dataframe(
 )
 
 
-# In[ ]:
 
 
 predict = model.predict_generator(test_generator, steps=np.ceil(nb_samples/batch_size))
 
 
-# In[ ]:
 
 
 test_df['label'] = np.argmax(predict, axis=-1)
 test_df.head()
 
 
-# In[ ]:
 
 
 label_map = dict((v,k) for k,v in train_generator.class_indices.items())
@@ -341,19 +309,16 @@ test_df['label'] = test_df['label'].replace(label_map)
 test_df.head()
 
 
-# In[ ]:
 
 
 test_df["label"] = test_df["label"].replace({'type0': 0, 'type1': 1, 'type2': 2, 'type3': 3, 'type4': 4, 'type5': 5})
 
 
-# In[ ]:
 
 
 test_df['label'].value_counts().plot.bar()
 
 
-# In[ ]:
 
 
 sample_test = test_df.head(18)
@@ -370,28 +335,24 @@ plt.tight_layout()
 plt.show()
 
 
-# In[ ]:
 
 
 test_df = test_df.replace('buildings',0).replace('forest',1).replace('glacier',2).replace('mountain',3).replace('sea',4).replace('street',5)
 submission_df = test_df.copy()
 
 
-# In[ ]:
 
 
 image = load_img("../input/nnfl-cnn-lab2/upload/test_images/test_images/" + "13407.jpg")
 plt.imshow(image)
 
 
-# In[ ]:
 
 
 submission_df.to_csv('submission.csv', index=False)
 submission_df.head()
 
 
-# In[ ]:
 
 
 df=pd.read_csv('/kaggle/working/submission.csv')
@@ -409,7 +370,6 @@ def create_download_link(df, title = "Download CSV file", filename = "data.csv")
 create_download_link(df)
 
 
-# In[ ]:
 
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import os
@@ -14,13 +13,11 @@ import matplotlib.pyplot as plt
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[2]:
 
 
 ls ../input/train
 
 
-# In[3]:
 
 
 labels = []
@@ -34,7 +31,6 @@ for i in range(len(labels[0])):
 print(d)
 
 
-# In[4]:
 
 
 POSSIBLE_LABELS = d.keys()
@@ -44,7 +40,6 @@ name2id = {name: i for i, name in id2name.items()}
 print(id2name)
 
 
-# In[5]:
 
 
 def load_data(data_dir):
@@ -102,13 +97,11 @@ def load_data(data_dir):
     return train_df, valid_df, test_df
 
 
-# In[6]:
 
 
 train_df, valid_df, test_df = load_data('../input/')
 
 
-# In[7]:
 
 
 fig = plt.figure(figsize=(6, 6))
@@ -124,19 +117,16 @@ plt.title('Data Preview', fontsize=16)
 plt.show()
 
 
-# In[8]:
 
 
 train_df.head()
 
 
-# In[9]:
 
 
 train_df.label.value_counts()
 
 
-# In[10]:
 
 
 silence_files = train_df[train_df.label == '_background_noise_']
@@ -144,7 +134,6 @@ train_df      = train_df[train_df.label != '_background_noise_']
 POSSIBLE_LABELS = train_df.label.unique().tolist()
 
 
-# In[11]:
 
 
 from scipy.io import wavfile
@@ -155,13 +144,11 @@ def read_wav_file(fname):
     return wav
 
 
-# In[12]:
 
 
 silence_data = np.concatenate([read_wav_file(x) for x in silence_files.wav_file.values])
 
 
-# In[13]:
 
 
 from scipy.signal import stft
@@ -190,7 +177,6 @@ def process_wav_file(fname):
     return np.stack([phase, amp], axis = 2)
 
 
-# In[14]:
 
 
 from scipy import signal
@@ -208,7 +194,6 @@ def log_specgram(audio, sample_rate, window_size=20,
     return freqs, times, np.log(spec.T.astype(np.float32) + eps)
 
 
-# In[15]:
 
 
 sample_rate, samples = wavfile.read(train_df.wav_file[1])
@@ -231,7 +216,6 @@ ax2.set_xlabel('Seconds')
 plt.show()
 
 
-# In[16]:
 
 
 import librosa
@@ -241,7 +225,6 @@ S = librosa.feature.melspectrogram(samples.astype(np.float32), sr=sample_rate, n
 log_S = librosa.power_to_db(S, ref=np.max)
 
 
-# In[17]:
 
 
 import librosa.display
@@ -253,7 +236,6 @@ plt.colorbar(format='%+02.0f dB')
 plt.tight_layout()
 
 
-# In[18]:
 
 
 mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=20)
@@ -269,13 +251,11 @@ plt.colorbar()
 plt.tight_layout()
 
 
-# In[19]:
 
 
 train_df.wav_file[0]
 
 
-# In[20]:
 
 
 import IPython.display as ipd
@@ -288,13 +268,11 @@ for i in range(10):
     samples += [sample]
 
 
-# In[21]:
 
 
 ipd.Audio(samples[0], rate=sample_rates[0])
 
 
-# In[22]:
 
 
 import random
@@ -307,7 +285,6 @@ from tensorflow.python.keras.utils import to_categorical
 from sklearn.preprocessing import label_binarize
 
 
-# In[23]:
 
 
 def train_generator(train_batch_size, sample_number):
@@ -331,7 +308,6 @@ def train_generator(train_batch_size, sample_number):
             yield x_batch, y_batch
 
 
-# In[24]:
 
 
 def valid_generator(val_batch_size):
@@ -351,7 +327,6 @@ def valid_generator(val_batch_size):
             yield x_batch, y_batch
 
 
-# In[25]:
 
 
 from keras import backend as K
@@ -415,7 +390,6 @@ model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['ac
 model.summary()
 
 
-# In[26]:
 
 
 x_in = Input(shape = (257,98,2)) # Input layer
@@ -443,7 +417,6 @@ model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['ac
 model.summary()
 
 
-# In[27]:
 
 
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
@@ -453,14 +426,12 @@ callbacks = [EarlyStopping(monitor='val_acc', patience=10, verbose=1, min_delta=
              ModelCheckpoint(monitor='val_acc', filepath='starter.hdf5', verbose=1, save_best_only=True, save_weights_only=True, mode='max')]
 
 
-# In[28]:
 
 
 history = model.fit_generator(generator=train_generator(256), steps_per_epoch=151, epochs=50, verbose=1, callbacks=callbacks,
                               validation_data=valid_generator(256), validation_steps=151)
 
 
-# In[29]:
 
 
 batch_size=256
@@ -471,13 +442,11 @@ history = model.fit_generator(generator=train_generator(batch_size, sample_size)
                               validation_steps=sample_size*len(POSSIBLE_LABELS)//batch_size)
 
 
-# In[30]:
 
 
 model.load_weights('starter.hdf5')
 
 
-# In[31]:
 
 
 X_test = []
@@ -486,25 +455,21 @@ for i in test_df.wav_file.values:
 X_test = np.array(X_test)
 
 
-# In[32]:
 
 
 predictions = model.predict(X_test)
 
 
-# In[33]:
 
 
 classes = np.argmax(predictions, axis=1)
 
 
-# In[34]:
 
 
 classes
 
 
-# In[35]:
 
 
 from sklearn.metrics import confusion_matrix, roc_curve, auc, roc_auc_score
@@ -512,7 +477,6 @@ from itertools import cycle
 from scipy import interp
 
 
-# In[36]:
 
 
 plt.figure(figsize=(10, 6))
@@ -528,7 +492,6 @@ plt.legend(['Train', 'Validation'], loc='upper left', fontsize=13)
 plt.show()
 
 
-# In[37]:
 
 
 plt.figure(figsize=(10, 6))
@@ -544,7 +507,6 @@ plt.legend(['Train', 'Validation'], loc='upper left', fontsize=13)
 plt.show()
 
 
-# In[38]:
 
 
 y_test_class = test_df.label_id.values
@@ -572,7 +534,6 @@ ax.set_title('Confusion Matrix', fontsize=16, fontweight='bold')
 plt.show()
 
 
-# In[39]:
 
 
 from sklearn.preprocessing import label_binarize
@@ -633,7 +594,6 @@ plt.legend(loc=4)
 plt.show()
 
 
-# In[ ]:
 
 
 

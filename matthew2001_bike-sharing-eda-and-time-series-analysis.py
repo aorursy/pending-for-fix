@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import pandas as pd
@@ -15,49 +14,41 @@ import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 
-# In[2]:
 
 
 plt.rcParams["figure.figsize"] = (10, 6) # (w, h)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[3]:
 
 
 ls ../input/
 
 
-# In[4]:
 
 
 data = pd.read_csv('../input/train.csv', parse_dates = [0]) # convert to datetime object 
 
 
-# In[5]:
 
 
 data.shape
 
 
-# In[6]:
 
 
 data.columns
 
 
-# In[7]:
 
 
 # renaming columns to non pandas "reserved" object attributes (to avoid mistakes / confusion)
@@ -66,13 +57,11 @@ data.rename(columns={'datetime':'logged',
                  inplace=True)
 
 
-# In[ ]:
 
 
 
 
 
-# In[8]:
 
 
 # ordinal value which represents different levels of precipitation. rename to more appropriate name 
@@ -82,75 +71,63 @@ data.rename(columns=
             inplace=True)
 
 
-# In[9]:
 
 
 data.head(20)
 
 
-# In[10]:
 
 
 data.describe()
 
 
-# In[ ]:
 
 
 
 
 
-# In[11]:
 
 
 #check for any missing values
 data.isnull().values.any()
 
 
-# In[12]:
 
 
 # nice!
 
 
-# In[13]:
 
 
 #however, windspeed has many zeros. will check that out later 
 
 
-# In[ ]:
 
 
 
 
 
-# In[14]:
 
 
 # making sure a holiday is not a working day
 len(data[((data.holiday & data.workingday) == 1)])
 
 
-# In[15]:
 
 
 # todo: still there might be correlation between holiday and workingday. will check this out 
 
 
-# In[ ]:
 
 
 
 
 
-# In[16]:
 
 
 data.info()
 
 
-# In[17]:
 
 
 '''
@@ -169,50 +146,42 @@ cnt : numerical
 '''
 
 
-# In[ ]:
 
 
 
 
 
-# In[18]:
 
 
 data.info()
 
 
-# In[ ]:
 
 
 
 
 
-# In[19]:
 
 
 dataOrig = data.copy() # deep copy
 #data = dataOrig.copy()
 
 
-# In[ ]:
 
 
 
 
 
-# In[20]:
 
 
 colsToDrop = []
 
 
-# In[ ]:
 
 
 
 
 
-# In[21]:
 
 
 # unravel date time data and add them as as features 
@@ -223,44 +192,37 @@ data['month'] = data.logged.dt.month # month in year
 data['year'] = data.logged.dt.year # year within the two year timespan 
 
 
-# In[ ]:
 
 
 
 
 
-# In[22]:
 
 
 # drop unraveled datetime object
 colsToDrop.append('logged')
 
 
-# In[ ]:
 
 
 
 
 
-# In[23]:
 
 
 data.head(20)
 
 
-# In[ ]:
 
 
 
 
 
-# In[24]:
 
 
 data.hist(figsize = (25,22), bins=25);
 
 
-# In[25]:
 
 
 for col in data.columns:
@@ -268,85 +230,71 @@ for col in data.columns:
     print()
 
 
-# In[ ]:
 
 
 
 
 
-# In[26]:
 
 
 sns.boxplot(data['cnt']).set_title('Cnt distribution')
 
 
-# In[27]:
 
 
 # cnt has many outlier datapoints beyond the outer quartile 
 
 
-# In[ ]:
 
 
 
 
 
-# In[28]:
 
 
 sns.boxplot(data['season'],data['cnt']).set_title('Cnt distribution across season')
 
 
-# In[29]:
 
 
 # season 1 (spring) has a significant drop in count 
 
 
-# In[ ]:
 
 
 
 
 
-# In[30]:
 
 
 sns.boxplot(data['precipitation'],data['cnt']).set_title('Cnt distribution across precipitation')
 
 
-# In[31]:
 
 
 # amount of rentals drop as it gets more rainy . 
 
 
-# In[ ]:
 
 
 
 
 
-# In[32]:
 
 
 sns.boxplot(data['hour'],data['cnt']).set_title('Cnt distribution across hour')
 
 
-# In[33]:
 
 
 # peak hours are during commuting hours: between 7-8 in the morning, and 17-18 in evening
 
 
-# In[ ]:
 
 
 
 
 
-# In[34]:
 
 
 dateCols = ['hour','day','dayofweek','month','year']
@@ -355,19 +303,16 @@ continuousCols = ['temp','atemp','humidity','windspeed']
 targetCols = ['casual','registered','cnt']
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[35]:
 
 
 for col in continuousCols:
@@ -375,7 +320,6 @@ for col in continuousCols:
     plt.show()
 
 
-# In[36]:
 
 
 '''
@@ -386,25 +330,21 @@ humidity : few outliers
 '''
 
 
-# In[ ]:
 
 
 
 
 
-# In[37]:
 
 
 # windspeed count plot 
 
 
-# In[38]:
 
 
 sns.countplot(data['windspeed']) 
 
 
-# In[39]:
 
 
 '''
@@ -418,19 +358,16 @@ will need to check for correlation to decide if this feature is kept or not
 '''
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[40]:
 
 
 # bar plot with sum estimator 
@@ -439,7 +376,6 @@ for col in dateCols + nonNumCols:
     plt.show()
 
 
-# In[41]:
 
 
 # bar plot with mean estimator
@@ -450,7 +386,6 @@ for col in dateCols + nonNumCols:
     plt.show()
 
 
-# In[42]:
 
 
 '''
@@ -462,13 +397,11 @@ todo: check if day in month is correlated to day in week
 '''
 
 
-# In[ ]:
 
 
 
 
 
-# In[43]:
 
 
 fig=plt.figure()
@@ -486,7 +419,6 @@ ax.legend(loc=2)
 fig.show()
 
 
-# In[44]:
 
 
 '''
@@ -496,19 +428,16 @@ friday and saturday had high usages during the morning-afternoon (10-16 oclock)
 '''
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[45]:
 
 
 fig=plt.figure()
@@ -527,7 +456,6 @@ ax.legend(loc=2)
 fig.show()
 
 
-# In[46]:
 
 
 '''
@@ -535,13 +463,11 @@ we see the same  amounts of rental peaks during those certain hours of the day, 
 '''
 
 
-# In[ ]:
 
 
 
 
 
-# In[47]:
 
 
 fig=plt.figure()
@@ -559,7 +485,6 @@ ax.legend(loc=2)
 fig.show()
 
 
-# In[48]:
 
 
 # registered users alone are the ones who ride during the peak commuting hours, not casual users
@@ -570,107 +495,90 @@ fig.show()
 #also, most riding is done during the second peak (evening)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[49]:
 
 
 # 24 hour window 
 
 
-# In[50]:
 
 
 data['cnt'].rolling(24).mean().plot()
 plt.show()
 
 
-# In[51]:
 
 
 # can see the spikes which are the changes during the different days of the week as discussed . 
 
 
-# In[52]:
 
 
 #zooming out 
 
 
-# In[53]:
 
 
 # one month window
 
 
-# In[54]:
 
 
 daysPerMonth = len(data.day.unique())
 
 
-# In[55]:
 
 
 data['cnt'].rolling(24*daysPerMonth).mean().plot()
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[56]:
 
 
 #each season (each 3 months)
 # https://www.google.com/search?q=how+many+months+a+season&oq=how+many+months+a+season
 
 
-# In[57]:
 
 
 #there are 19 days a month
 
 
-# In[58]:
 
 
 data['cnt'].rolling(24*daysPerMonth*3).mean().plot()
 plt.show()
 
 
-# In[59]:
 
 
 # as seen from the daily, monthly, and seasonal rolling windows, the count grows over each season of time
 
 
-# In[60]:
 
 
 # since season already correlates to the unraveled datetime features, no need to keep as a feature, it will already be incorporated 
 
 
-# In[ ]:
 
 
 
 
 
-# In[61]:
 
 
 corrMatrix = data.corr(method='spearman')
@@ -681,7 +589,6 @@ sns.heatmap(corrMatrix,square = False,annot =True,cmap='Spectral', ax=ax)
 plt.show()
 
 
-# In[62]:
 
 
 # pearson
@@ -692,50 +599,42 @@ sns.heatmap(corrMatrix,square = False,annot =True,cmap='Spectral', ax=ax)
 plt.show()
 
 
-# In[63]:
 
 
 # windspeed has a very low correlation with cnt
 colsToDrop.append('windspeed')
 
 
-# In[ ]:
 
 
 
 
 
-# In[64]:
 
 
 #logically there is a high correlation between month and season 
 
 
-# In[65]:
 
 
 colsToDrop.append('season')
 
 
-# In[ ]:
 
 
 
 
 
-# In[66]:
 
 
 # hifh corr between cnt, registered and casual. makes sense since they are leakage variables! 
 
 
-# In[67]:
 
 
 (data['cnt'] - data['registered']).equals(data['casual'])
 
 
-# In[68]:
 
 
 #bingo!
@@ -744,43 +643,36 @@ colsToDrop.append('registered')
 colsToDrop.append('casual')
 
 
-# In[ ]:
 
 
 
 
 
-# In[69]:
 
 
 # temperature (both temp and atemp) has a corr with cnt. not very high  but still significant enough
 
 
-# In[70]:
 
 
 # humidiy has a neg corr with count. not very high  but still significant enough
 
 
-# In[ ]:
 
 
 
 
 
-# In[71]:
 
 
 # temp is also hightly correlated with atemp
 
 
-# In[72]:
 
 
 tempDiff = (data['atemp'] - data['temp'])
 
 
-# In[73]:
 
 
 print('mean: ' + str(tempDiff.mean()))
@@ -788,56 +680,47 @@ print('median: ' + str(tempDiff.median()))
 print('mode: ' + str(tempDiff.mode()[0]))
 
 
-# In[74]:
 
 
 tempDiff.hist(bins=50)
 
 
-# In[75]:
 
 
 tempDiff.plot()
 
 
-# In[76]:
 
 
 tempDiff.plot(kind='box')
 
 
-# In[77]:
 
 
 data['atemp'].max()
 
 
-# In[78]:
 
 
 data['temp'].max()
 
 
-# In[79]:
 
 
 # temp diff does have a few outliers due to atemp having a few spikes, yet temp and atemp are highly correleated and very close in value. so will simply just drop one of them
 # decided to drop atemp due to the outliers  
 
 
-# In[80]:
 
 
 colsToDrop.append('atemp')
 
 
-# In[ ]:
 
 
 
 
 
-# In[81]:
 
 
 #highly neg correlated with day of week and workingday
@@ -845,61 +728,51 @@ colsToDrop.append('atemp')
 colsToDrop.append('workingday')
 
 
-# In[ ]:
 
 
 
 
 
-# In[82]:
 
 
 colsToDrop
 
 
-# In[ ]:
 
 
 
 
 
-# In[83]:
 
 
 data.columns
 
 
-# In[ ]:
 
 
 
 
 
-# In[84]:
 
 
 #todo: if have time, explore methods to remove corrlelated dimensions such as pca, knn+pca, lasso, tsne...
 
 
-# In[ ]:
 
 
 
 
 
-# In[85]:
 
 
 # setting the target variable: given an order, predict the amount of rentals there will be that day
 
 
-# In[86]:
 
 
 data.head()
 
 
-# In[87]:
 
 
 years = data.logged.dt.year.unique()
@@ -907,49 +780,41 @@ months = data.logged.dt.month.unique()
 days = data.logged.dt.day.unique()
 
 
-# In[88]:
 
 
 years
 
 
-# In[89]:
 
 
 months
 
 
-# In[90]:
 
 
 days
 
 
-# In[ ]:
 
 
 
 
 
-# In[91]:
 
 
 data.head(10)
 
 
-# In[92]:
 
 
 #dataOrig = data.copy()
 
 
-# In[ ]:
 
 
 
 
 
-# In[93]:
 
 
 # alrady accomplished this with the datagrouping / aggregation 
@@ -965,62 +830,52 @@ for y in years:
   '''          
 
 
-# In[94]:
 
 
 #making sure data is sorted properly 
 data.sort_index(ascending=True).equals(data)
 
 
-# In[95]:
 
 
 dataset = data.copy()
 
 
-# In[96]:
 
 
 dataset.head(2)
 
 
-# In[97]:
 
 
 dataset.columns
 
 
-# In[98]:
 
 
 colsToDrop
 
 
-# In[99]:
 
 
 dataset = dataset.drop(colsToDrop,axis=1)
 
 
-# In[100]:
 
 
 dataset.columns
 
 
-# In[101]:
 
 
 dataset = dataset.groupby(['year','month','day']).agg({'precipitation':'mean','temp':'mean','holiday':'mean','humidity':'mean','cnt':'sum'}).reset_index()
 
 
-# In[102]:
 
 
 dataset.head()
 
 
-# In[103]:
 
 
 dataset['precipitation'] = round(dataset['precipitation'])
@@ -1028,128 +883,107 @@ dataset['humidity'] = round(dataset['humidity'])
 dataset['temp'] = round(dataset['temp'],2)
 
 
-# In[104]:
 
 
 dataset.head(10)
 
 
-# In[105]:
 
 
 dataset['tomorrowCnt'] = dataset['cnt'].shift(-1)
 
 
-# In[106]:
 
 
 dataset.head(10)
 
 
-# In[107]:
 
 
 #making sure the only thing na is the last col due to the upshift 
 
 
-# In[108]:
 
 
 dataset.isna().sum() #
 
 
-# In[109]:
 
 
 dataset = dataset.dropna()
 
 
-# In[110]:
 
 
 dataset.isna().sum() #
 
 
-# In[ ]:
 
 
 
 
 
-# In[111]:
 
 
 dataset.head(20)
 
 
-# In[112]:
 
 
 target = dataset.tomorrowCnt
 
 
-# In[113]:
 
 
 tomorrowCntMean = target.mean()
 
 
-# In[114]:
 
 
 tomorrowCntMean
 
 
-# In[115]:
 
 
 dataset = dataset.drop(['cnt','tomorrowCnt'],axis=1)
 
 
-# In[116]:
 
 
 dataset.columns
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[117]:
 
 
 dataset.head()
 
 
-# In[118]:
 
 
 from sklearn import preprocessing
 min_max_scaler = preprocessing.MinMaxScaler()
 
 
-# In[119]:
 
 
 dataBeforeNorm = dataset.copy()
 
 
-# In[120]:
 
 
 #dataset = dataBeforeNorm.copy()
 
 
-# In[121]:
 
 
 #commenting out since got better results not scaling 
@@ -1158,7 +992,6 @@ dataBeforeNorm = dataset.copy()
 #dataset.head()  
 
 
-# In[122]:
 
 
 for col in dataset.columns:
@@ -1166,43 +999,36 @@ for col in dataset.columns:
     print()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[123]:
 
 
 from sklearn.model_selection import train_test_split
 
 
-# In[124]:
 
 
 import xgboost as xgb
 
 
-# In[ ]:
 
 
 
 
 
-# In[125]:
 
 
 # we should split this into train, validation, test but i understood from the problem to only split it into train and test 
 
 
-# In[126]:
 
 
 #For training, use 90% of the data and 10% for test
@@ -1211,7 +1037,6 @@ dm_train = xgb.DMatrix(X_train, label=y_train)
 dm_test = xgb.DMatrix(X_test, label=y_test)
 
 
-# In[127]:
 
 
 '''
@@ -1225,7 +1050,6 @@ def evalerror(preds, dtrain):
 '''
 
 
-# In[128]:
 
 
 clParams = {}
@@ -1241,37 +1065,31 @@ watchlist = [(dm_train, 'train'), (dm_test, 'test')]
 cl = xgb.train(clParams, dm_train, 10000,  watchlist, early_stopping_rounds=500, maximize=False, verbose_eval=10)
 
 
-# In[ ]:
 
 
 
 
 
-# In[129]:
 
 
 xgb.plot_importance(cl)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[130]:
 
 
 # Prediction on test 
 
 
-# In[131]:
 
 
 def MeasurePerf(preds,y_test):
@@ -1292,7 +1110,6 @@ def MeasurePerf(preds,y_test):
     
 
 
-# In[132]:
 
 
 def CalculateCompanyGain(ordered,actual): 
@@ -1307,57 +1124,48 @@ def CalculateCompanyGain(ordered,actual):
     return gain
 
 
-# In[ ]:
 
 
 
 
 
-# In[133]:
 
 
 from sklearn.metrics import mean_squared_error
 
 
-# In[134]:
 
 
 preds = cl.predict(dm_test)
 
 
-# In[ ]:
 
 
 
 
 
-# In[135]:
 
 
 MeasurePerf(preds,y_test)
 
 
-# In[ ]:
 
 
 
 
 
-# In[136]:
 
 
 # company gains with forcasted 
 gainsWithForcasted = CalculateCompanyGain(preds,y_test)
 
 
-# In[137]:
 
 
 # company gains with mean
 gainsWithAverage = CalculateCompanyGain(np.full(len(preds),tomorrowCntMean),y_test)
 
 
-# In[138]:
 
 
 # model doesn't seem to put enough of a penalty on ordering less than required. this is bad since it's more expensive to lose
@@ -1365,19 +1173,16 @@ gainsWithAverage = CalculateCompanyGain(np.full(len(preds),tomorrowCntMean),y_te
 # this gives it equal penalties to under and over ordering. 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[139]:
 
 
 # did we make more money with forcased or average?
@@ -1385,56 +1190,47 @@ gainsWithAverage = CalculateCompanyGain(np.full(len(preds),tomorrowCntMean),y_te
 gainsWithForcasted - gainsWithAverage > 0
 
 
-# In[ ]:
 
 
 
 
 
-# In[140]:
 
 
 # sample test 
 
 
-# In[141]:
 
 
 sampleX = X_train.head(1)
 sampleY = y_train.head(1)
 
 
-# In[142]:
 
 
 dm_sample = xgb.DMatrix(sampleX, label=sampleY)
 
 
-# In[143]:
 
 
 samplePreds = cl.predict(dm_sample)
 
 
-# In[144]:
 
 
 MeasurePerf(samplePreds,sampleY)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[145]:
 
 
 '''
@@ -1454,13 +1250,11 @@ Optionally, more tresholds can be set defining the policy of before the first co
 '''
 
 
-# In[ ]:
 
 
 
 
 
-# In[146]:
 
 
 

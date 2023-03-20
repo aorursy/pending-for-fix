@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 This is  data analysis ( currently in progress also need modifications )
 Please upvote this
 
 
-# In[3]:
 
 
 import pandas as pd
@@ -28,20 +26,17 @@ pd.options.mode.chained_assignment = None
 pd.options.display.max_columns = 999
 
 
-# In[1]:
 
 
 from subprocess import check_output
 print(check_output(["ls", "../input"]).decode("utf8"))
 
 
-# In[ ]:
 
 
 
 
 
-# In[5]:
 
 
 #train_df= pd.read_csv("train_2016_v2.csv", parse_dates=["transactiondate"])
@@ -49,13 +44,11 @@ train_df = pd.read_csv("../input/train_2016_v2.csv", parse_dates=["transactionda
 train_df.shape
 
 
-# In[6]:
 
 
 train_df.head()
 
 
-# In[7]:
 
 
 #pro_df = pd.read_csv("properties_2016.csv")
@@ -63,80 +56,67 @@ pro_df = pd.read_csv("../input/properties_2016.csv")
 pro_df.shape
 
 
-# In[8]:
 
 
 pro_df.head()
 
 
-# In[9]:
 
 
 pro_df.head()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[10]:
 
 
 train_df= pd.merge(train_df,pro_df, on='parcelid', how='left')
 train_df.shape
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[11]:
 
 
 train_df.head()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[12]:
 
 
 
@@ -147,25 +127,21 @@ plt.ylabel('logerror', fontsize=12)
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[13]:
 
 
 ulimit = np.percentile(train_df.logerror.values, 99)
@@ -174,31 +150,26 @@ train_df['logerror'].ix[train_df['logerror']>ulimit] = ulimit
 train_df['logerror'].ix[train_df['logerror']<llimit] = llimit
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[14]:
 
 
 plt.figure(figsize=(8,6))
@@ -208,19 +179,16 @@ plt.ylabel('logerror', fontsize=12)
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[15]:
 
 
 missing_value= train_df.isnull().sum(axis=0).reset_index()
@@ -229,13 +197,11 @@ missing_value['missing_ratio']=missing_value['missing_count'] / train_df.shape[0
 missing_value.ix[missing_value['missing_ratio']>0.99]
 
 
-# In[ ]:
 
 
 
 
 
-# In[17]:
 
 
 missing_value= pro_df.isnull().sum(axis=0).reset_index()
@@ -254,37 +220,31 @@ ax.set_yticklabels(missing_value.column_name.values,rotation='horizontal')
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[18]:
 
 
 missingValueColumns = train_df.columns[train_df.isnull().any()].tolist()
 
 
-# In[ ]:
 
 
 
 
 
-# In[19]:
 
 
 msno.heatmap(train_df[missingValueColumns],figsize=(20,20))
 
 
-# In[ ]:
 
 
 
 
 
-# In[20]:
 
 
 pd.options.display.max_rows = 65
@@ -294,37 +254,31 @@ dtype_df.columns = ["Count", "Column Type"]
 dtype_df
 
 
-# In[ ]:
 
 
 
 
 
-# In[21]:
 
 
 dtype_df.groupby("Column Type").aggregate('count').reset_index()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[22]:
 
 
 dataTypeDf = pd.DataFrame(train_df.dtypes.value_counts()).reset_index().rename(columns={"index":"variableType",0:"count"})
@@ -334,25 +288,21 @@ sns.barplot(data=dataTypeDf,x="variableType",y="count",ax=ax,color="#34495e")
 ax.set(xlabel='Variable Type', ylabel='Count',title="Variables Count Across Datatype")
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[23]:
 
 
 plt.figure(figsize=(12,8))
@@ -361,25 +311,21 @@ plt.xlabel('logerror', fontsize=12)
 plt.show
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[24]:
 
 
 train_df['transaction_month']= train_df['transactiondate'].dt.month
@@ -394,25 +340,21 @@ plt.ylabel('Numberof occurences')
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[25]:
 
 
 (train_df['parcelid'].value_counts().reset_index())['parcelid'].value_counts()
 
 
-# In[ ]:
 
 
 
 
 
-# In[26]:
 
 
 for c in pro_df.columns:
@@ -423,7 +365,6 @@ for c in pro_df.columns:
         pro_df[c] = lbl.transform(list(pro_df[c].values))
 
 
-# In[28]:
 
 
 #life of property
@@ -463,43 +404,36 @@ train_df["N-latitude-round"] = train_df["latitude"].round(-4)
 train_df["N-longitude-round"] = train_df["longitude"].round(-4)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[29]:
 
 
 from sklearn import model_selection, preprocessing
@@ -530,19 +464,16 @@ dtrain = xgb.DMatrix(train_X, train_y, feature_names=train_X.columns.values)
 model = xgb.train(dict(xgb_params, silent=0), dtrain, num_boost_round=100)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[31]:
 
 
 featureImportance = model.get_fscore()
@@ -556,19 +487,16 @@ plt.xticks(rotation=90)
 sns.barplot(data=features.head(15),x="importance",y="features",ax=ax,orient="h",color="#34495e")
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[32]:
 
 
 dtype_df1 = features['features']
@@ -576,25 +504,21 @@ dtype_df1.columns = ["Count", "Column Type"]
 dtype_df1.head()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[33]:
 
 
 dtype_df2 = features['importance']
@@ -602,49 +526,41 @@ dtype_df2.columns = ["Count", "Column Type"]
 dtype_df2.head()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[34]:
 
 
 # Let us just impute the missing values with mean values to compute correlation coefficients #
@@ -675,13 +591,11 @@ plt.show()
    
 
 
-# In[ ]:
 
 
 
 
 
-# In[35]:
 
 
 corr_zero_cols = ['assessmentyear', 'storytypeid', 'pooltypeid2', 'pooltypeid7', 'pooltypeid10', 'poolcnt', 'decktypeid', 'buildingclasstypeid']
@@ -689,26 +603,22 @@ for col in corr_zero_cols:
     print(col, len(train_df_new[col].unique()))
 
 
-# In[ ]:
 
 
 
 
 
-# In[36]:
 
 
 corr_df_sel = corr_df.ix[(corr_df['corr_values']>0.02) | (corr_df['corr_values'] < -0.01)]
 corr_df_sel
 
 
-# In[ ]:
 
 
 
 
 
-# In[37]:
 
 
 cols_to_use = corr_df_sel.col_labels.tolist()
@@ -723,13 +633,11 @@ plt.title("Important variables correlation map", fontsize=15)
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[38]:
 
 
 col = "finishedsquarefeet12"
@@ -746,13 +654,11 @@ plt.title("Finished square feet 12 Vs Log error", fontsize=15)
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[39]:
 
 
 col = "calculatedfinishedsquarefeet"
@@ -769,13 +675,11 @@ plt.title("Calculated finished square feet Vs Log error", fontsize=15)
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[40]:
 
 
 plt.figure(figsize=(12,8))
@@ -787,31 +691,26 @@ plt.title("Frequency of Bathroom count", fontsize=15)
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[41]:
 
 
 plt.figure(figsize=(12,8))
@@ -823,13 +722,11 @@ plt.title("How log error changes with bathroom count?", fontsize=15)
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[42]:
 
 
 #3.03 is the mean value with which we replaced the Null values.
@@ -841,19 +738,16 @@ plt.ylabel('Log Error', fontsize=12)
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[43]:
 
 
 #taxamount
@@ -871,13 +765,11 @@ plt.title("Tax Amount Vs Log error", fontsize=15)
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[44]:
 
 
 plt.figure(figsize=(12,8))
@@ -889,19 +781,16 @@ plt.title("How log error changes with bathroom count?", fontsize=15)
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[45]:
 
 
 # log error varies with the yearbuilt variable.
@@ -909,44 +798,37 @@ from ggplot import *
 ggplot(aes(x='yearbuilt', y='logerror'), data=train_df) +     geom_point(color='steelblue', size=1) +     stat_smooth()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[46]:
 
 
 #logerror varies with respect to latitude and longitude.
 ggplot(aes(x='latitude', y='longitude', color='logerror'), data=train_df) +     geom_point() +     scale_color_gradient(low = 'red', high = 'blue')
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[48]:
 
 
 cols = ["bathroomcnt","bedroomcnt","roomcnt","numberofstories","logerror","calculatedfinishedsquarefeet"]
@@ -958,19 +840,16 @@ for col in cols:
     mergedFiltered[col].ix[mergedFiltered[col]<llimit] = llimit
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[49]:
 
 
 
@@ -982,31 +861,26 @@ plt.xlabel('Calculated Finished Square Feet', fontsize=12)
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[50]:
 
 
 #
@@ -1017,37 +891,31 @@ sns.boxplot(x="numberofstories", y="logerror", data=mergedFiltered,ax=ax,color="
 ax.set(ylabel='Log Error',xlabel="No Of Storeys",title="No Of Storeys Vs Log Error")
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[51]:
 
 
 
@@ -1065,31 +933,26 @@ ax.set_zlabel('Log Error');
 pyplot.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[52]:
 
 
 fig,ax= plt.subplots()
@@ -1098,25 +961,21 @@ sns.boxplot(x="roomcnt", y="logerror", data=mergedFiltered,ax=ax,color="#24495e"
 ax.set(ylabel='Log Error',xlabel="Room Count",title="Room Count Vs Log Error")
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[53]:
 
 
 fig,ax= plt.subplots()
@@ -1125,25 +984,21 @@ sns.boxplot(x="bedroomcnt", y="logerror", data=mergedFiltered,ax=ax,color="#3449
 ax.set(ylabel='Log Error',xlabel="Bedroom Count",title="Bedroom Count Vs Log Error")
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[54]:
 
 
 fig,ax1= plt.subplots()
@@ -1153,25 +1008,21 @@ yearMerged = train_df.groupby(['yearbuilt', 'numberofstories'])["parcelid"].coun
 yearMerged.plot(kind='bar', stacked=True,ax=ax1)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 

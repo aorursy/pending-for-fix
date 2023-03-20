@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import os
@@ -43,13 +42,11 @@ from tqdm import tqdm_notebook as tqdm
 import regex as re
 
 
-# In[2]:
 
 
 get_ipython().system('ls -halt ../input/bart-drop-head')
 
 
-# In[3]:
 
 
 from transformers import *
@@ -271,7 +268,6 @@ class BartForSentimentExtraction(PretrainedBartModel):
         return outputs
 
 
-# In[4]:
 
 
 batch_size = 64
@@ -279,7 +275,6 @@ beam_size = 3
 max_sequence_length = 128
 
 
-# In[5]:
 
 
 def find_best_combinations(start_top_log_probs, start_top_index, end_top_log_probs, end_top_index, valid_start= 0, valid_end=512):
@@ -410,7 +405,6 @@ def convert_lines(tokenizer, df, max_sequence_length = 512):
     return outputs, type_outputs
 
 
-# In[6]:
 
 
 # test_df = pd.read_csv("./data/test_holdout.csv")
@@ -479,7 +473,6 @@ def check_corrs(model_name):
     return corrs
 
 
-# In[7]:
 
 
 all_preds = dict()
@@ -556,7 +549,6 @@ for data_dir in dirs:
 get_ipython().system('rm -rf configs')
 
 
-# In[8]:
 
 
 # model_list = [key for key in all_preds.keys()]
@@ -575,7 +567,6 @@ get_ipython().system('rm -rf configs')
 # print(np.mean([jaccard(x,y) for x,y in zip(sub_df.selected_text, ensembled)]))
 
 
-# In[9]:
 
 
 import numpy as np 
@@ -985,7 +976,6 @@ for i in range(len(test_text)):
     test_pred_text += [test_text[i][test_start_preds[i]-3:test_end_preds[i]-3]]
 
 
-# In[10]:
 
 
 all_vals2 = []
@@ -997,7 +987,6 @@ for i in tqdm(range(len(test_start_logits))):
     all_vals2.append(curr_val)
 
 
-# In[11]:
 
 
 all_vals = [val for val in all_preds.values()] + all_vals2
@@ -1014,7 +1003,6 @@ for i in tqdm(range(len(test_df))):
 #     ensembled.append(ensemble(sep_texts[i], predictions, slow_mode=True))
 
 
-# In[12]:
 
 
 if len(all_vals) == 60:
@@ -1022,13 +1010,11 @@ if len(all_vals) == 60:
     test_df[["textID","selected_text"]].to_csv("submission.csv",index=False)
 
 
-# In[13]:
 
 
 get_ipython().system('head -n10 submission.csv')
 
 
-# In[ ]:
 
 
 

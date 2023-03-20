@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,61 +22,51 @@ test = pd.read_json("../input/test.json")
 train = pd.read_json("../input/train.json")
 
 
-# In[2]:
 
 
 #train[train['inc_angle']=='na']
 
 
-# In[3]:
 
 
 
 
 
-# In[3]:
 
 
 
 
 
-# In[3]:
 
 
 
 
 
-# In[3]:
 
 
 #test.head()
 
 
-# In[4]:
 
 
 
 
 
-# In[4]:
 
 
 
 
 
-# In[4]:
 
 
 
 
 
-# In[4]:
 
 
 
 
 
-# In[4]:
 
 
 
@@ -100,31 +89,26 @@ def sigmoid(z):
     return s
 
 
-# In[5]:
 
 
 
 
 
-# In[5]:
 
 
 
 
 
-# In[5]:
 
 
 
 
 
-# In[5]:
 
 
 
 
 
-# In[5]:
 
 
 
@@ -152,31 +136,26 @@ def initialize_with_zeros(dim):
     return w, b
 
 
-# In[6]:
 
 
 
 
 
-# In[6]:
 
 
 
 
 
-# In[6]:
 
 
 
 
 
-# In[6]:
 
 
 
 
 
-# In[6]:
 
 
 
@@ -234,31 +213,26 @@ def propagate(w, b, X, Y):
     return grads, cost
 
 
-# In[7]:
 
 
 
 
 
-# In[7]:
 
 
 
 
 
-# In[7]:
 
 
 
 
 
-# In[7]:
 
 
 
 
 
-# In[7]:
 
 
 
@@ -324,31 +298,26 @@ def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost = False):
     return params, grads, costs
 
 
-# In[8]:
 
 
 
 
 
-# In[8]:
 
 
 
 
 
-# In[8]:
 
 
 
 
 
-# In[8]:
 
 
 
 
 
-# In[8]:
 
 
 
@@ -383,43 +352,36 @@ def predict(w, b, X):
     return (Y_prediction,A)
 
 
-# In[9]:
 
 
 
 
 
-# In[9]:
 
 
 
 
 
-# In[9]:
 
 
 
 
 
-# In[9]:
 
 
 
 
 
-# In[9]:
 
 
 
 
 
-# In[9]:
 
 
 
 
 
-# In[9]:
 
 
 
@@ -475,55 +437,46 @@ def model(X_train, Y_train, X_test, Y_test, num_iterations = 2000, learning_rate
     return d
 
 
-# In[10]:
 
 
 
 
 
-# In[10]:
 
 
 
 
 
-# In[10]:
 
 
 
 
 
-# In[10]:
 
 
 
 
 
-# In[10]:
 
 
 
 
 
-# In[10]:
 
 
 
 
 
-# In[10]:
 
 
 
 
 
-# In[10]:
 
 
 
 
 
-# In[10]:
 
 
 def train_test_split_fun(array_in, array_out, split_perc=0.25):
@@ -535,31 +488,26 @@ def train_test_split_fun(array_in, array_out, split_perc=0.25):
     return dataset
 
 
-# In[11]:
 
 
 
 
 
-# In[11]:
 
 
 #len(train[train['inc_angle']!='na'])
 
 
-# In[12]:
 
 
 
 
 
-# In[12]:
 
 
 
 
 
-# In[12]:
 
 
 def JSON_to_array(split_perc = 0.25, file='train.json'):
@@ -598,19 +546,16 @@ def JSON_to_array(split_perc = 0.25, file='train.json'):
     return(band_1_array, band_2_array, inc_ang_array)
 
 
-# In[13]:
 
 
 
 
 
-# In[13]:
 
 
 
 
 
-# In[13]:
 
 
 #train_set=pd.read_json(path+'train.json')
@@ -618,115 +563,96 @@ def JSON_to_array(split_perc = 0.25, file='train.json'):
 #max_inc_ang = np.max(np.array(np.abs(inc_ang)))
 
 
-# In[14]:
 
 
 (band_1_array, band_2_array, inc_ang_array) = JSON_to_array(file='train.json')
 
 
-# In[15]:
 
 
 
 
 
-# In[15]:
 
 
 
 
 
-# In[15]:
 
 
 
 
 
-# In[15]:
 
 
 
 
 
-# In[15]:
 
 
 
 
 
-# In[15]:
 
 
 
 
 
-# In[15]:
 
 
 
 
 
-# In[15]:
 
 
 #X_train_band_1, X_val_test_band_1, y_train_band_1, y_val_test_band_1 = band_1_array
 
 
-# In[16]:
 
 
 #X_train_band_1.shape
 
 
-# In[17]:
 
 
 
 
 
-# In[17]:
 
 
 #X_train_inc, X_val_test_inc, y_train_inc, y_val_test_inc = inc_ang_array
 
 
-# In[18]:
 
 
 
 
 
-# In[18]:
 
 
 
 
 
-# In[18]:
 
 
 #X_train_inc.shape
 
 
-# In[19]:
 
 
 
 
 
-# In[19]:
 
 
 #X_val_test_inc.shape
 
 
-# In[20]:
 
 
 
 
 
-# In[20]:
 
 
 #band_2 :- iteration = 15000 , rate = 0.005
@@ -737,52 +663,44 @@ def JSON_to_array(split_perc = 0.25, file='train.json'):
 #test accuracy: 64.83790523690773 %
 
 
-# In[21]:
 
 
 X_train_band_1, X_val_test_band_1, y_train_band_1, y_val_test_band_1 = band_1_array
 d_band_1 = model(X_train_band_1, y_train_band_1, X_val_test_band_1, y_val_test_band_1, num_iterations = 15000, learning_rate = 0.005, print_cost = True)
 
 
-# In[22]:
 
 
 
 
 
-# In[22]:
 
 
 
 
 
-# In[22]:
 
 
 X_train_band_2, X_val_test_band_2, y_train_band_2, y_val_test_band_2 = band_2_array
 d_band_2 = model(X_train_band_2, y_train_band_2, X_val_test_band_2, y_val_test_band_2, num_iterations = 15000, learning_rate = 0.001, print_cost = True)
 
 
-# In[23]:
 
 
 
 
 
-# In[23]:
 
 
 X_train_inc, X_val_test_inc, y_train_inc, y_val_test_inc = inc_ang_array
 d_inc_ang = model(X_train_inc, y_train_inc, X_val_test_inc, y_val_test_inc, num_iterations = 15000, learning_rate = 0.001, print_cost = True)
 
 
-# In[24]:
 
 
 
 
 
-# In[24]:
 
 
 test_band_1=[np.array(i) for i in test['band_1']]
@@ -814,19 +732,16 @@ y_pred_inc_ang = pd.DataFrame(inc_ang_Y_prediction_test.T,columns=['is_iceberg']
 #y_pred_band_1.to_csv('submission_2.csv', index=False)
 
 
-# In[25]:
 
 
 
 
 
-# In[25]:
 
 
 
 
 
-# In[25]:
 
 
 y_pred = pd.DataFrame()
@@ -836,355 +751,296 @@ y_pred['is_iceberg'] = ((y_pred_band_1['is_iceberg']) + (y_pred_band_2['is_icebe
 y_pred.to_csv('submission_3.csv', index=False)
 
 
-# In[26]:
 
 
 
 
 
-# In[26]:
 
 
 
 
 
-# In[26]:
 
 
 #y_pred['is_iceberg'] = ((y_pred_band_1['is_iceberg']) + (y_pred_band_2['is_iceberg']) +(y_pred_inc_ang['is_iceberg']))/3
 
 
-# In[27]:
 
 
 
 
 
-# In[27]:
 
 
 
 
 
-# In[27]:
 
 
 
 
 
-# In[27]:
 
 
 y_pred.head()
 
 
-# In[28]:
 
 
 
 
 
-# In[28]:
 
 
 
 
 
-# In[28]:
 
 
 
 
 
-# In[28]:
 
 
 
 
 
-# In[28]:
 
 
 
 
 
-# In[28]:
 
 
 
 
 
-# In[28]:
 
 
 
 
 
-# In[28]:
 
 
 
 
 
-# In[28]:
 
 
 
 
 
-# In[28]:
 
 
 #y_pred.to_csv('submission_3.csv', index=False)
 
 
-# In[29]:
 
 
 y_pred
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 
 
 
-# In[30]:
 
 
 y_pred
 
 
-# In[31]:
 
 
 
 
 
-# In[31]:
 
 
 len(test)
 
 
-# In[32]:
 
 
 test['prediction'] = None
 
 
-# In[33]:
 
 
 test['prediction'] = 
 
 
-# In[34]:
 
 
 
 
 
-# In[34]:
 
 
 
 
 
-# In[34]:
 
 
 
 
 
-# In[34]:
 
 
 
 
 
-# In[34]:
 
 
 
 
 
-# In[34]:
 
 
 
 
 
-# In[34]:
 
 
 d['w'].shape
 
 
-# In[35]:
 
 
 
 
 
-# In[35]:
 
 
 
 
 
-# In[35]:
 
 
 
 
 
-# In[35]:
 
 
 band1_x_train, band1_x_train 
 
 
-# In[36]:
 
 
 
 
 
-# In[36]:
 
 
 
 
 
-# In[36]:
 
 
 

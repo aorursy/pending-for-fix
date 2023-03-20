@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,13 +19,11 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 ls ../input/smalldata/smalldata/smalldata
 
 
-# In[ ]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
@@ -45,7 +42,6 @@ import seaborn as sns
 import math
 
 
-# In[ ]:
 
 
 import keras
@@ -66,7 +62,6 @@ from keras.models import load_model
 from keras.preprocessing.image import load_img
 
 
-# In[ ]:
 
 
 batch_size = 32
@@ -85,7 +80,6 @@ test_dir='../input/dogscatstest/test1/test1/'
 img_size=224
 
 
-# In[ ]:
 
 
 #Process training data to make it ready for fitting.
@@ -102,7 +96,6 @@ test_generator = test_datagen.flow_from_directory(test_dir,target_size=(img_size
 filename=test_generator.filenames
 
 
-# In[ ]:
 
 
 print ('Creating model...')
@@ -118,7 +111,6 @@ resnet50_model.compile(optimizer=SGD(lr=1e-3), loss='categorical_crossentropy', 
 print ('Model is ready to be fit with training data.')
 
 
-# In[ ]:
 
 
 class LossHistory(Callback):
@@ -134,7 +126,6 @@ checkpoint = ModelCheckpoint('resnet50_model.h5',monitor='val_loss', verbose=1, 
 callbacks_list = [checkpoint,history,early_stopping]
 
 
-# In[ ]:
 
 
 fitted_resnet50_model=resnet50_model.fit_generator(train_generator,
@@ -143,7 +134,6 @@ fitted_resnet50_model=resnet50_model.fit_generator(train_generator,
     validation_steps=math.ceil(validation_generator.samples/validation_generator.batch_size),callbacks=callbacks_list,verbose=1)
 
 
-# In[ ]:
 
 
 acc = fitted_resnet50_model.history['acc']
@@ -163,7 +153,6 @@ plt.legend()
 plt.show()
 
 
-# In[ ]:
 
 
 # Create a generator for prediction
@@ -212,13 +201,11 @@ for i in range(len(errors)):
     plt.show()
 
 
-# In[ ]:
 
 
 model=load_model('../input/resnet50-all/resnet50_model.h5')
 
 
-# In[ ]:
 
 
 test_generator.reset()
@@ -235,7 +222,6 @@ for i in range(len(predictions)):
         new_preds.append('cat')
 
 
-# In[ ]:
 
 
 def display_testdata(testdata,filenames):
@@ -253,19 +239,16 @@ def display_testdata(testdata,filenames):
     plt.show()
 
 
-# In[ ]:
 
 
 filename.index('test/10.jpg')
 
 
-# In[ ]:
 
 
 display_testdata(new_preds[7700:7725],filename[7700:7725])
 
 
-# In[ ]:
 
 
 def create_submission():
@@ -282,7 +265,6 @@ def create_submission():
     results.to_csv("submission.csv",index=False)
 
 
-# In[ ]:
 
 
 create_submission()

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,7 +21,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 # HANDLE DATA SIZE
@@ -53,7 +51,6 @@ def handle_data(data):
     return dict_dtypes
 
 
-# In[3]:
 
 
 train_rows = 3767000
@@ -66,13 +63,11 @@ dtypes_train = handle_data(data_train_init)
 dtypes_test =handle_data(data_test_init)
 
 
-# In[4]:
 
 
 dtypes_train
 
 
-# In[5]:
 
 
 import random
@@ -84,7 +79,6 @@ def get_random_idx(liste_idx) :
     return sample
 
 
-# In[6]:
 
 
 train_rows = 3767000
@@ -97,47 +91,40 @@ list_idx_random_train = get_random_idx(liste_idx_train)
 list_idx_random_test = get_random_idx(liste_idx_test)
 
 
-# In[7]:
 
 
 data_train = pd.read_csv('/kaggle/input/expedia-hotel-recommendations/train.csv', dtype=dtypes_train, nrows = 300_000)
 #data_test = pd.read_csv('/kaggle/input/expedia-hotel-recommendations/test.csv', dtype=dtypes_test, skiprows = list_idx_random_test)
 
 
-# In[8]:
 
 
 from sklearn.tree import DecisionTreeClassifier
 
 
-# In[9]:
 
 
 X = data_train.iloc[:, 18].values  #train on is_booking -> booké ou non
 y = data_train.iloc[:, -1].values  #test on hotel_cluster -> quel type d'hotel
 
 
-# In[10]:
 
 
 X = X.reshape(-1,1)
 y
 
 
-# In[11]:
 
 
 np.unique(y)
 
 
-# In[12]:
 
 
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
 
 
-# In[13]:
 
 
 from sklearn.tree import DecisionTreeClassifier
@@ -145,26 +132,22 @@ classifier = DecisionTreeClassifier(criterion='entropy', random_state=0)
 classifier.fit(X_train, y_train)
 
 
-# In[14]:
 
 
 y_pred = classifier.predict(X_test)
 
 
-# In[15]:
 
 
 classifier.score(X_test, y_pred)
 
 
-# In[16]:
 
 
 from sklearn.metrics import accuracy_score
 accuracy_score(y_test, y_pred)
 
 
-# In[17]:
 
 
 from sklearn.metrics import f1_score
@@ -175,7 +158,6 @@ f1_macro = f1_score(y_test, y_pred, average='macro')
 print("weighted :", f1_weighted, "\n--------------------------------\n","macro :", f1_macro)
 
 
-# In[18]:
 
 
 from sklearn.metrics import confusion_matrix
@@ -183,19 +165,16 @@ cm = confusion_matrix(y_test, y_pred)
 cm
 
 
-# In[19]:
 
 
 from sklearn.tree import export_graphviz
 
 
-# In[20]:
 
 
 pip install pydotplus
 
 
-# In[21]:
 
 
 from sklearn.externals.six import StringIO  

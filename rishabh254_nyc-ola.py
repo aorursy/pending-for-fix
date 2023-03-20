@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,13 +19,11 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 data =  pd.read_csv('../input/train.csv', nrows = 15_000_000)
 
 
-# In[ ]:
 
 
 # Given a dataframe, add two new features 'abs_diff_longitude' and
@@ -39,7 +36,6 @@ def add_travel_vector_features(df):
 add_travel_vector_features(data)
 
 
-# In[ ]:
 
 
 print('Old size: %d' % len(data))
@@ -47,14 +43,12 @@ data = data.dropna(how = 'any', axis = 'rows')
 print('New size: %d' % len(data))
 
 
-# In[ ]:
 
 
 from datetime import datetime
 data['datetime_object'] = [datetime.strptime(date,'%Y-%m-%d %H:%M:%S %Z') for date in data['pickup_datetime']]
 
 
-# In[ ]:
 
 
 #print(data.describe())
@@ -69,7 +63,6 @@ data['distance_miles'] = distance(data.pickup_latitude, data.pickup_longitude,  
 (data.head())
 
 
-# In[ ]:
 
 
 print('Old size: %d' % len(data))
@@ -87,7 +80,6 @@ data = data[data.distance_to_center<15.0]
 print('New size: %d' % len(data))
 
 
-# In[ ]:
 
 
 def late_night (row):
@@ -120,7 +112,6 @@ data['late_night'] = data.apply (lambda x: late_night(x), axis=1)
 # There is a $1 surcharge from 4pm to 8pm on weekdays, excluding holidays.
 
 
-# In[ ]:
 
 
 rangeA = 1.5
@@ -177,7 +168,6 @@ data = data[(data.jfk | data.ewr | data.lgr | data.Nassau | data.Suffolk | data.
 data_air.describe()
 
 
-# In[ ]:
 
 
 '''import seaborn as sns
@@ -193,7 +183,6 @@ hm = sns.heatmap(cm, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'
 plt.show()'''
 
 
-# In[ ]:
 
 
 
@@ -206,7 +195,6 @@ plt.show()
 data.head()
 
 
-# In[ ]:
 
 
 # Drop unwanted columns
@@ -229,7 +217,6 @@ data_air.head()
 #test_clean = test.drop(dropped_columns + ['key', 'passenger_count'], axis=1)
 
 
-# In[ ]:
 
 
 # split data in train and validation (90% ~ 10%)
@@ -243,7 +230,6 @@ train_df = train_df.drop(['fare_amount'], axis=1)
 validation_df = validation_df.drop(['fare_amount'], axis=1)
 
 
-# In[ ]:
 
 
 # split data in train and validation (90% ~ 10%)
@@ -256,7 +242,6 @@ train_air_df = train_air_df.drop(['fare_amount'], axis=1)
 validation_air_df = validation_air_df.drop(['fare_amount'], axis=1)
 
 
-# In[ ]:
 
 
 test_df = pd.read_csv('../input/test.csv')
@@ -321,7 +306,6 @@ test_air_clean = test_air_df.drop(dropped_columns_test_air, axis=1)
 test_air_clean.describe()
 
 
-# In[ ]:
 
 
 
@@ -346,7 +330,6 @@ validation_air_df_scaled = scaler.transform(validation_air_df)
 test_air_scaled = scaler.transform(test_air_clean)
 
 
-# In[ ]:
 
 
 BATCH_SIZE = 256
@@ -372,7 +355,6 @@ model.compile(loss='mse', optimizer=adam, metrics=['mae'])
 print(train_labels)
 
 
-# In[ ]:
 
 
 BATCH_SIZE = 256
@@ -398,7 +380,6 @@ model_air.compile(loss='mse', optimizer=adam, metrics=['mae'])
 print(train_air_labels)
 
 
-# In[ ]:
 
 
 print('Dataset size: %s' % DATASET_SIZE)
@@ -413,7 +394,6 @@ history = model.fit(x=train_df_scaled, y=train_labels, batch_size=BATCH_SIZE, ep
                     shuffle=True)
 
 
-# In[ ]:
 
 
 print('Dataset size: %s' % DATASET_SIZE)
@@ -428,7 +408,6 @@ history_air = model_air.fit(x=train_air_df_scaled, y=train_air_labels, batch_siz
                     shuffle=True)
 
 
-# In[ ]:
 
 
 #plot_loss_accuracy(history)
@@ -480,7 +459,6 @@ output_submission(test_df1,pred, SUBMISSION_NAME)
 #train_df.dtypes
 
 
-# In[ ]:
 
 
 # Construct and return an Nx3 input matrix for our linear model
@@ -495,7 +473,6 @@ def get_input_matrix(df):
 #print(train_y.shape)
 
 
-# In[ ]:
 
 
 # The lstsq function returns several things, and we only care about the actual weight vector w.
@@ -503,14 +480,12 @@ def get_input_matrix(df):
 #print(w)
 
 
-# In[ ]:
 
 
 #w_OLS = np.matmul(np.matmul(np.linalg.inv(np.matmul(train_X.T, train_X)), train_X.T), train_y)
 #print(w_OLS)
 
 
-# In[ ]:
 
 
 #test_df = pd.read_csv('../input/test.csv')
@@ -530,7 +505,6 @@ test_df.dtypes
 #val_df.dtypes
 
 
-# In[ ]:
 
 
 # Reuse the above helper functions to add our features and generate the input matrix.

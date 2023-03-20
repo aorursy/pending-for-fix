@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 from tqdm import tqdm_notebook as tqdm
@@ -48,7 +47,6 @@ del structures
 gc.collect()
 
 
-# In[2]:
 
 
 target = train_df.pop('scalar_coupling_constant')
@@ -67,7 +65,6 @@ all_data['distance'] = (
     ).pow(0.5)
 
 
-# In[3]:
 
 
 structures = pd.read_csv("../input/champs-scalar-coupling/structures.csv")
@@ -84,7 +81,6 @@ structures_df = structures_df[structures_df.atom_1.isin(['F', 'O'])]
 gc.collect()
 
 
-# In[4]:
 
 
 for atom in ['O', 'F']:
@@ -135,7 +131,6 @@ num_features = all_data.shape[1]
 all_data.iloc[:5,prev_features:num_features].head()
 
 
-# In[5]:
 
 
 grps = [['molecule_name', 'atom_index_0'], ['molecule_name', 'atom_index_1']]
@@ -165,7 +160,6 @@ num_features = all_data.shape[1]
 all_data.iloc[:5,prev_features:num_features].head()
 
 
-# In[6]:
 
 
 bond_data = pd.read_csv("../input/submolecular-bond-data/structures_bond.csv", usecols = [
@@ -208,7 +202,6 @@ all_data = all_data.merge(atoms_unique, on=['molecule_name'], how='left')
 del atoms_unique, atom_counts
 
 
-# In[7]:
 
 
 atomic_radius = {'H':0.38, 'C':0.77, 'N':0.75, 'O':0.73, 'F':0.71} # Without fudge factor
@@ -261,7 +254,6 @@ num_features = all_data.shape[1]
 all_data.iloc[:5,prev_features:num_features].head()
 
 
-# In[8]:
 
 
 # Cosine Distance
@@ -275,7 +267,6 @@ all_data.drop(columns=['dot_product', 'norm_atom_0', 'norm_atom_1'], inplace=Tru
 gc.collect()
 
 
-# In[9]:
 
 
 for idx in [0, 1]:
@@ -321,7 +312,6 @@ num_features = all_data.shape[1]
 all_data.iloc[:5,prev_features:num_features].head()
 
 
-# In[10]:
 
 
 yuk0 = pd.read_csv("yuk.csv").rename(columns={'atom_index': 'atom_index_0'})
@@ -336,7 +326,6 @@ gc.collect()
 all_data_index.head()
 
 
-# In[11]:
 
 
 for col in all_data_index.columns:
@@ -344,14 +333,12 @@ for col in all_data_index.columns:
         all_data[col] = all_data_index[col]
 
 
-# In[12]:
 
 
 del  all_data_index
 gc.collect()
 
 
-# In[13]:
 
 
 types = all_data.dtypes
@@ -365,7 +352,6 @@ for col in cat_columns:
     encoders[col] = lbl
 
 
-# In[14]:
 
 
 # Error function
@@ -375,7 +361,6 @@ def group_mean_log_mae(y_true, y_pred, groups, floor=1e-9):
     return np.log(maes.map(lambda x: max(x, floor))).mean()
 
 
-# In[15]:
 
 
 features = [col for col in all_data.columns if col != 'fc' and col != 'id' and col not in ['atom_index_0', 'atom_index_1', 'scalar_coupling_constant', 'molecule_name']]
@@ -412,7 +397,6 @@ def lgbm_model_oof(train_X, train_y, test_X, n_folds, lgbm_params):
     return predictions, oof, feature_importance_df
 
 
-# In[16]:
 
 
 params_dict = {}
@@ -447,7 +431,6 @@ params_dict['1JHN'] = {
 }
 
 
-# In[17]:
 
 
 predictions_type = np.zeros(len(test_df))
@@ -499,7 +482,6 @@ for typ in  all_data.type.unique():
     gc.collect()
 
 
-# In[18]:
 
 
 types = encoders['type'].inverse_transform(all_data[:train_size]['type'])
@@ -513,14 +495,12 @@ print('Overal Log Mae:')
 print(np.log(maes.map(lambda x: max(x, floor))).mean())
 
 
-# In[19]:
 
 
 test_df['scalar_coupling_constant'] = predictions_type
 test_df[['id', 'scalar_coupling_constant']].to_csv('submission.csv', index=False)
 
 
-# In[20]:
 
 
 for key, value in feature_importance_dfs.items():

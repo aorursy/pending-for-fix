@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import os
@@ -19,26 +18,22 @@ import matplotlib.pyplot as plt
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[2]:
 
 
 ls ../input/galaxy-zoo-the-galaxy-challenge/44352/
 
 
-# In[3]:
 
 
 DATA_DIR = '../input/galaxy-zoo-the-galaxy-challenge/44352/'
 
 
-# In[4]:
 
 
 df = pd.read_csv(os.path.join(DATA_DIR, 'training_solutions_rev1.csv'))
 df.head()
 
 
-# In[5]:
 
 
 # Based on https://www.kaggle.com/helmehelmuto/keras-cnn
@@ -71,26 +66,22 @@ def get_train_data(dataframe, shape=IMG_SHAPE, crop_size=CROP_SIZE):
 get_ipython().run_line_magic('time', 'X_train, y_train = get_train_data(df)')
 
 
-# In[6]:
 
 
 X_train.shape, y_train.shape
 
 
-# In[7]:
 
 
 plt.pcolormesh(X_train[1,:,:,0])
 plt.colorbar()
 
 
-# In[8]:
 
 
 X_train.max()
 
 
-# In[9]:
 
 
 ds = xr.Dataset({
@@ -99,25 +90,21 @@ ds = xr.Dataset({
 }).astype(np.float32)
 
 
-# In[10]:
 
 
 ds.nbytes / 1e9  # GB
 
 
-# In[11]:
 
 
 get_ipython().run_line_magic('time', "ds.to_netcdf('galaxy_train.nc')")
 
 
-# In[12]:
 
 
 ls -lh ./galaxy_train.nc
 
 
-# In[ ]:
 
 
 

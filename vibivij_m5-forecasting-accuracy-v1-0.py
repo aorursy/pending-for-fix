@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[7]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,7 +22,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[11]:
 
 
 import pandas as pd
@@ -31,7 +29,6 @@ sample = pd.read_csv('/kaggle/input/m5-forecasting-accuracy/sample_submission.cs
 sample.head()
 
 
-# In[9]:
 
 
 # util functions to reduce pandas dataframe memory
@@ -68,7 +65,6 @@ sales_train = pd.read_csv('/kaggle/input/m5-forecasting-accuracy/sales_train_val
 sales_train = df_mem_reduce(sales_train)
 
 
-# In[10]:
 
 
 calendar = pd.read_csv('/kaggle/input/m5-forecasting-accuracy/calendar.csv')
@@ -77,13 +73,11 @@ print(calendar.tail())
 calendar['date'].shape
 
 
-# In[12]:
 
 
 sales_train.loc[sales_train['item_id']=='HOBBIES_1_001',:]
 
 
-# In[13]:
 
 
 sales_train_dates_columns = sales_train.columns[6:]
@@ -92,7 +86,6 @@ sales_train_dates_columns_recent_28 = sales_train_dates_columns[-28:]
 sales_train.loc[sales_train['item_id']=='HOBBIES_1_001',sales_train_dates_columns_recent_28].head()
 
 
-# In[14]:
 
 
 sales_train_agg_cat_store = sales_train.groupby(['cat_id','store_id'])[sales_train_dates_columns_recent_28].mean().reset_index()
@@ -103,7 +96,6 @@ sales_train_agg_cat_store.rename(columns=newCols, inplace=True)
 sales_train_agg_cat_store.head()
 
 
-# In[15]:
 
 
 sample['_cat_store'] = sample.apply(lambda x:x['id'].split('_')[0]+"_"+x['id'].split('_')[3]+"_"+x['id'].split('_')[4] , axis=1 )#cat_id	store_id	
@@ -112,7 +104,6 @@ sample_joint = sample[['id','_cat_store']].merge(sales_train_agg_cat_store, on='
 print(sample_joint.head())
 
 
-# In[16]:
 
 
 import os
@@ -123,20 +114,17 @@ if '_cat_store' in sample_joint.columns:
 sample_joint.to_csv('output/submission_last_28_days.csv', index=False, float_format='%.2f')
 
 
-# In[17]:
 
 
 ls -alh output/
 
 
-# In[18]:
 
 
 
 get_ipython().system('head output/submission_last_28_days.csv')
 
 
-# In[ ]:
 
 
 

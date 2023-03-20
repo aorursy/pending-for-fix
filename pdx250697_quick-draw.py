@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 batch_size = 1024
@@ -12,7 +11,6 @@ TEST_SAMPLES = 50
 NUM_CLASSES = 5
 
 
-# In[2]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
@@ -37,7 +35,6 @@ base_dir = os.path.join('..', 'input')
 test_path = os.path.join(base_dir, 'test_simplified.csv')
 
 
-# In[3]:
 
 
 from ast import literal_eval
@@ -78,7 +75,6 @@ def read_batch(samples=5,
     return full_df
 
 
-# In[4]:
 
 
 train_args = dict(samples=TRAIN_SAMPLES, 
@@ -98,7 +94,6 @@ word_encoder.fit(train_df['word'])
 print('words', len(word_encoder.classes_), '=>', ', '.join([x for x in word_encoder.classes_]))
 
 
-# In[5]:
 
 
 def get_Xy(in_df):
@@ -111,13 +106,11 @@ test_X, test_y = get_Xy(test_df)
 print(train_X.shape)
 
 
-# In[6]:
 
 
 print(train_y.shape)
 
 
-# In[7]:
 
 
 fig, m_axs = plt.subplots(3,3, figsize = (16, 16))
@@ -133,7 +126,6 @@ for c_id, c_ax in zip(rand_idxs, m_axs.flatten()):
     c_ax.set_title(word_encoder.classes_[np.argmax(train_y[c_id])])
 
 
-# In[8]:
 
 
 from keras.models import Sequential
@@ -163,7 +155,6 @@ stroke_read_model.compile(optimizer = 'adam',
 stroke_read_model.summary()
 
 
-# In[9]:
 
 
 weight_path="{}_weights.best.hdf5".format('stroke_lstm_model')
@@ -180,7 +171,6 @@ early = EarlyStopping(monitor="val_loss",
 callbacks_list = [checkpoint, early, reduceLROnPlat]
 
 
-# In[10]:
 
 
 from IPython.display import clear_output
@@ -192,7 +182,6 @@ stroke_read_model.fit(train_X, train_y,
 clear_output()
 
 
-# In[11]:
 
 
 stroke_read_model.load_weights(weight_path)
@@ -200,7 +189,6 @@ lstm_results = stroke_read_model.evaluate(test_X, test_y, batch_size = 1024
 print('Accuracy: %2.1f%%, Top 3 Accuracy %2.1f%%' % (100*lstm_results[1], 100*lstm_results[2]))
 
 
-# In[12]:
 
 
 from sklearn.metrics import confusion_matrix, classification_report
@@ -212,7 +200,6 @@ print(classification_report(test_cat, pred_cat,
                             target_names = [x for x in word_encoder.classes_]))
 
 
-# In[13]:
 
 
 points_to_use = [5, 15, 20, 30, 40, 50]
@@ -247,7 +234,6 @@ for c_id, c_axs in zip(rand_idxs, m_axs):
                                                                  100*stroke_pred[res_idx]/top_10_sum))
 
 
-# In[14]:
 
 
 sub_df = pd.read_csv(test_path)

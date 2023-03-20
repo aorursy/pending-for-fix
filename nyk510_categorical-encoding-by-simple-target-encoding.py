@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,13 +21,11 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 get_ipython().system('pip install git+https://gitlab.com/nyker510/vivid')
 
 
-# In[3]:
 
 
 train_df = pd.read_csv('/kaggle/input/cat-in-the-dat-ii/train.csv')
@@ -36,25 +33,21 @@ test_df = pd.read_csv('/kaggle/input/cat-in-the-dat-ii/test.csv')
                        
 
 
-# In[4]:
 
 
 y = train_df['target'].values
 
 
-# In[5]:
 
 
 del train_df['target']
 
 
-# In[6]:
 
 
 train_df.head()
 
 
-# In[7]:
 
 
 for c in train_df.columns:
@@ -72,13 +65,11 @@ for c in train_df.columns:
     print(f'{c} intersection: {n_intersection / len(train_set)}')
 
 
-# In[8]:
 
 
 train_df.columns
 
 
-# In[9]:
 
 
 train_df['ord_0'].unique()
@@ -86,31 +77,26 @@ train_df['ord_0'].unique()
 test_df['ord_0'].unique()
 
 
-# In[10]:
 
 
 set(train_df[c].unique()) -
 
 
-# In[11]:
 
 
 from vivid.featureset.encodings import OneHotEncodingAtom
 
 
-# In[12]:
 
 
 from vivid.utils import get_logger, timer
 
 
-# In[13]:
 
 
 logger = get_logger(__name__)
 
 
-# In[14]:
 
 
 from sklearn.model_selection import GroupKFold, StratifiedKFold
@@ -146,13 +132,11 @@ class TargetEncodingTransformer:
         return retval
 
 
-# In[15]:
 
 
 from vivid.featureset import AbstractAtom
 
 
-# In[16]:
 
 
 class TargetEncodingAtom(AbstractAtom):
@@ -188,13 +172,11 @@ class TargetEncodingAtom(AbstractAtom):
         return self.call(input_df, y=None)
 
 
-# In[17]:
 
 
 TargetEncodingAtom().generate(train_df, y)
 
 
-# In[18]:
 
 
 from collections import OrderedDict
@@ -210,13 +192,11 @@ class CatOneHotEoncodingAtom(OneHotEncodingAtom):
         return self
 
 
-# In[19]:
 
 
 CatOneHotEoncodingAtom().generate(train_df, y)
 
 
-# In[20]:
 
 
 from vivid.out_of_fold.boosting import LGBMClassifierOutOfFold, XGBoostClassifierOutOfFold
@@ -232,7 +212,6 @@ from rgf.sklearn import RGFClassifier
 from sklearn.linear_model import LogisticRegression
 
 
-# In[21]:
 
 
 class KaggleKernelMixin:
@@ -286,13 +265,11 @@ class RF(FillnaMixin, KaggleKernelMixin, RFClassifierFeatureOutOfFold):
     initial_params = {'n_estimators': 125, 'max_features': 0.2, 'max_depth': 25, 'min_samples_leaf': 4, 'n_jobs': -1}
 
 
-# In[22]:
 
 
 from vivid.featureset.molecules import create_molecule, MoleculeFeature
 
 
-# In[23]:
 
 
 class ExtraTree(FillnaMixin, KaggleKernelMixin, BaseOutOfFoldFeature):
@@ -308,7 +285,6 @@ class Logistic(FillnaMixin, KaggleKernelMixin, BaseOutOfFoldFeature):
     init_params = { 'input_scaling': 'standard' }
 
 
-# In[24]:
 
 
 basic_molecule = create_molecule([
@@ -317,13 +293,11 @@ basic_molecule = create_molecule([
 ], name='basic')
 
 
-# In[25]:
 
 
 entry_point = MoleculeFeature(basic_molecule, root_dir='/kaggle/working/')
 
 
-# In[26]:
 
 
 single_models = [
@@ -334,13 +308,11 @@ single_models = [
 ]
 
 
-# In[27]:
 
 
 merge = MergeFeature(single_models[:], name='merged', root_dir=entry_point.root_dir)
 
 
-# In[28]:
 
 
 stacking_models = [
@@ -350,38 +322,32 @@ stacking_models = [
 ]
 
 
-# In[29]:
 
 
 for m in stacking_models:
     m.fit(train_df, y)
 
 
-# In[30]:
 
 
 final_model = stacking_models[-1]
 
 
-# In[31]:
 
 
 pred = final_model.predict(test_df).values[:, 0]
 
 
-# In[32]:
 
 
 sub_df = pd.read_csv('/kaggle/input/cat-in-the-dat-ii/sample_submission.csv')
 
 
-# In[33]:
 
 
 sub_df['target'] = pred
 
 
-# In[34]:
 
 
 sub_df.to_csv('/kaggle/working/submission.csv', index=False)

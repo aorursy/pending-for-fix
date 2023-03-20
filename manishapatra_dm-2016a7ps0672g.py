@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import numpy as np
@@ -13,20 +12,17 @@ test_data = pd.read_csv('../input/test.csv')
 Data = data
 
 
-# In[ ]:
 
 
 data.head()
 test_data.head()
 
 
-# In[ ]:
 
 
 data.info()
 
 
-# In[ ]:
 
 
 #finding categorical and continuous features
@@ -39,14 +35,12 @@ for i in data.columns:
     
 
 
-# In[ ]:
 
 
 print(feature_values)
 print(len(feature_values))
 
 
-# In[ ]:
 
 
 data.isnull().sum()
@@ -54,7 +48,6 @@ null_columns = ['Worker Class', 'Enrolled', 'MIC', 'MOC', 'Hispanic', 'MLU', 'Re
 len(null_columns)
 
 
-# In[ ]:
 
 
 #plotting the correlation matrix to visualise correlation between the class and features
@@ -84,14 +77,12 @@ sns.heatmap(corr, mask=mask, cmap=cmap, vmax=1, center=0.5,
 plt.show()
 
 
-# In[ ]:
 
 
 #count number of 0's and 1's
 data.groupby('Class').size()
 
 
-# In[ ]:
 
 
 #feature selection
@@ -104,13 +95,11 @@ test_data1 = test_data1.drop(columns = null_columns)
 test_data1.head()
 
 
-# In[ ]:
 
 
 data.head()
 
 
-# In[ ]:
 
 
 #using get dummies to encode data
@@ -119,7 +108,6 @@ data_one_hot_encoded = pd.get_dummies(data, columns = categorical)
 #data_one_hot_encoded.info()
 
 
-# In[ ]:
 
 
 #label encoding
@@ -148,7 +136,6 @@ class MultiColumnLabelEncoder:
         return self.fit(X,y).transform(X)
 
 
-# In[ ]:
 
 
 data_label_encoded = MultiColumnLabelEncoder(columns = categorical).fit_transform(data)
@@ -157,7 +144,6 @@ test_data_label_encoded = MultiColumnLabelEncoder(columns = categorical).fit_tra
 test_data_label_encoded.info()
 
 
-# In[ ]:
 
 
 y = data['Class']
@@ -174,7 +160,6 @@ X_one_hot = data_one_hot_encoded.drop(['Class'], axis = 1)
 X_one_hot.shape
 
 
-# In[ ]:
 
 
 #Using undersampling
@@ -184,7 +169,6 @@ X_res, y_res = rus.fit_resample(X_label_encoded, y_label_encoded)
 X_res.shape
 
 
-# In[ ]:
 
 
 '''
@@ -193,7 +177,6 @@ tl = TomekLinks(ratio='majority')
 X_tl, y_tl = tl.fit_sample(X_label_encoded, y_label_encoded)
 
 
-# In[ ]:
 
 
 from imblearn.over_sampling import SMOTE
@@ -202,14 +185,12 @@ smote = SMOTE(ratio='minority')
 X_sm, y_sm = smote.fit_sample(X_label_encoded, y_label_encoded)
 
 
-# In[ ]:
 
 
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.20, random_state=42)
 
 
-# In[ ]:
 
 
 #Performing Min_Max Normalization
@@ -227,7 +208,6 @@ np_scaled_test = min_max_scaler.fit_transform(test_data_label_encoded)
 x_final_test = pd.DataFrame(np_scaled_test)
 
 
-# In[ ]:
 
 
 from sklearn.linear_model import LogisticRegression
@@ -241,7 +221,6 @@ y_pred = lg.predict(X_test)
 roc_auc_score(y_pred, y_test)
 
 
-# In[ ]:
 
 
 #Naive Bayes
@@ -252,7 +231,6 @@ y_pred = nb.predict(X_test)
 roc_auc_score(y_pred, y_test)
 
 
-# In[ ]:
 
 
 #Decision Tree Classifier 
@@ -263,7 +241,6 @@ y_pred = dtc.predict(X_test)
 roc_auc_score(y_pred, y_test)
 
 
-# In[ ]:
 
 
 from sklearn.ensemble import RandomForestClassifier
@@ -274,7 +251,6 @@ y_pred = rf.predict(X_test)
 roc_auc_score(y_pred, y_test)
 
 
-# In[ ]:
 
 
 #Adaboost
@@ -287,7 +263,6 @@ y_pred = ada.predict(X_test)
 roc_auc_score(y_pred, y_test)
 
 
-# In[ ]:
 
 
 from sklearn.model_selection import cross_validate
@@ -301,7 +276,6 @@ print"Train Accuracy for 3 folds= ",np.mean(cv_results['train_score'])
 print"Validation Accuracy for 3 folds = ",np.mean(cv_results['test_score'])
 
 
-# In[ ]:
 
 
 from sklearn.model_selection import GridSearchCV
@@ -321,7 +295,6 @@ best_rf = grid_fit.best_estimator_         #Get the best estimator. For this, ch
 print(grid_fit.best_params_)
 
 
-# In[ ]:
 
 
 from sklearn.model_selection import GridSearchCV
@@ -341,7 +314,6 @@ best_rf = grid_fit.best_estimator_         #Get the best estimator. For this, ch
 print(grid_fit.best_params_)
 
 
-# In[ ]:
 
 
 from sklearn.ensemble import RandomForestClassifier
@@ -354,7 +326,6 @@ y_pred = rf.predict(x_final_test)
 np.count_nonzero(y_pred)
 
 
-# In[ ]:
 
 
 #Decision Tree Classifier (Final?)
@@ -366,7 +337,6 @@ roc_auc_score(y_pred, y_test)
 np.count_nonzero(y_pred)
 
 
-# In[ ]:
 
 
 #Adaboost
@@ -379,34 +349,29 @@ y_pred = ada.predict(X_test)
 roc_auc_score(y_pred, y_test)
 
 
-# In[ ]:
 
 
 y_pred_final = ada.predict(x_final_test)
 y_pred_final.shape
 
 
-# In[ ]:
 
 
 test_data['Class'] = y_pred_final
 test_data.groupby('Class').size()
 
 
-# In[ ]:
 
 
 df_submit = test_data[['ID', 'Class']]
 df_submit.head()
 
 
-# In[ ]:
 
 
 df_submit.to_csv('df_submit4.csv', index = False)
 
 
-# In[ ]:
 
 
 from IPython.display import HTML
@@ -423,7 +388,6 @@ def create_download_link(df, title = "Download CSV file", filename = "data.csv")
 create_download_link(df_submit4)
 
 
-# In[ ]:
 
 
 

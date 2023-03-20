@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 TRAIN_DIR = '/kaggle/input/deepfake-detection-challenge/train_sample_videos/'
@@ -13,14 +12,12 @@ SCALE = 0.25
 N_FRAMES = None
 
 
-# In[2]:
 
 
 get_ipython().system('pip install facenet-pytorch > /dev/null 2>&1')
 get_ipython().system('apt install zip > /dev/null 2>&1')
 
 
-# In[3]:
 
 
 import os
@@ -38,7 +35,6 @@ device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 print(f'Running on device: {device}')
 
 
-# In[4]:
 
 
 class FaceExtractor:
@@ -97,14 +93,12 @@ class FaceExtractor:
         v_cap.release()
 
 
-# In[5]:
 
 
 with open(METADATA_PATH, 'r') as f:
     metadata = json.load(f)
 
 
-# In[6]:
 
 
 train_df = pd.DataFrame(
@@ -118,34 +112,29 @@ train_df = pd.DataFrame(
 train_df.head()
 
 
-# In[7]:
 
 
 # Load face detector
 face_detector = MTCNN(margin=14, keep_all=True, factor=0.5, device=device).eval()
 
 
-# In[8]:
 
 
 # Define face extractor
 face_extractor = FaceExtractor(detector=face_detector, n_frames=N_FRAMES, resize=SCALE)
 
 
-# In[9]:
 
 
 # Get the paths of all train videos
 all_train_videos = glob.glob(os.path.join(TRAIN_DIR, '*.mp4'))
 
 
-# In[10]:
 
 
 get_ipython().system('mkdir -p $TMP_DIR')
 
 
-# In[11]:
 
 
 with torch.no_grad():
@@ -161,19 +150,16 @@ with torch.no_grad():
         face_extractor(path, save_dir)
 
 
-# In[12]:
 
 
 cd $TMP_DIR
 
 
-# In[13]:
 
 
 train_df.to_csv('metadata.csv', index=False)
 
 
-# In[14]:
 
 
 get_ipython().system('zip -r -m -q /kaggle/working/$ZIP_NAME *')

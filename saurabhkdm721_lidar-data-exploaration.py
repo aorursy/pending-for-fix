@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,13 +21,11 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 pip install -U git+https://github.com/lyft/nuscenes-devkit
 
 
-# In[3]:
 
 
 get_ipython().system('pip install moviepy')
@@ -51,7 +48,6 @@ from tqdm import tqdm_notebook as tqdm
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[4]:
 
 
 
@@ -61,19 +57,16 @@ get_ipython().system('ln -s /kaggle/input/3d-object-detection-for-autonomous-veh
 get_ipython().system('ln -s /kaggle/input/3d-object-detection-for-autonomous-vehicles/train_data data')
 
 
-# In[5]:
 
 
 lyftdata = LyftDataset(data_path='.', json_path='data/', verbose=True)
 
 
-# In[6]:
 
 
 lyftdata.list_scenes()
 
 
-# In[7]:
 
 
 
@@ -81,7 +74,6 @@ my_scene = lyftdata.scene[0]
 my_scene
 
 
-# In[8]:
 
 
 my_sample_token = my_scene["first_sample_token"]
@@ -90,20 +82,17 @@ my_sample_token = my_scene["first_sample_token"]
 lyftdata.render_sample(my_sample_token)
 
 
-# In[9]:
 
 
 my_sample = lyftdata.get('sample', my_sample_token)
 my_sample
 
 
-# In[10]:
 
 
 lyftdata.list_sample(my_sample['token'])
 
 
-# In[11]:
 
 
 
@@ -112,13 +101,11 @@ lyftdata.render_pointcloud_in_image(sample_token = my_sample["token"],
                                       camera_channel = 'CAM_FRONT')
 
 
-# In[12]:
 
 
 my_sample['data']
 
 
-# In[13]:
 
 
 
@@ -127,13 +114,11 @@ my_sample_data = lyftdata.get('sample_data', my_sample['data'][sensor_channel])
 my_sample_data
 
 
-# In[14]:
 
 
 lyftdata.render_sample_data(my_sample_data['token'])
 
 
-# In[15]:
 
 
 my_annotation_token = my_sample['anns'][16]
@@ -141,13 +126,11 @@ my_annotation =  my_sample_data.get('sample_annotation', my_annotation_token)
 my_annotation
 
 
-# In[16]:
 
 
 lyftdata.render_annotation(my_annotation_token)
 
 
-# In[17]:
 
 
 
@@ -157,20 +140,17 @@ print("First annotated sample of this instance:")
 lyftdata.render_annotation(my_instance['first_annotation_token'])
 
 
-# In[18]:
 
 
 print("Last annotated sample of this instance")
 lyftdata.render_annotation(my_instance['last_annotation_token'])
 
 
-# In[19]:
 
 
 lyftdata.list_categories()
 
 
-# In[20]:
 
 
 lyftdata.category[2]

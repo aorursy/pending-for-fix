@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,7 +21,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import numpy as np
@@ -31,7 +29,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-# In[3]:
 
 
 data = pd.read_csv('/kaggle/input/rossmann-store-sales/train.csv')
@@ -39,106 +36,89 @@ store= pd.read_csv('/kaggle/input/rossmann-store-sales/store.csv')
 test= pd.read_csv('/kaggle/input/rossmann-store-sales/test.csv')
 
 
-# In[4]:
 
 
 print(data.shape)
 print(store.shape)
 
 
-# In[5]:
 
 
 data.head()
 
 
-# In[6]:
 
 
 store.head()
 
 
-# In[7]:
 
 
 data.info()
 # data.dtypes
 
 
-# In[8]:
 
 
 data.describe(include='object')
 
 
-# In[9]:
 
 
 data.describe()[['Sales','Customers']]
 
 
-# In[10]:
 
 
 data.describe()[['Sales','Customers']].loc['mean']
 
 
-# In[11]:
 
 
 data.describe()[['Sales','Customers']].loc['min']
 
 
-# In[12]:
 
 
 data.describe()[['Sales','Customers']].loc['max']
 
 
-# In[13]:
 
 
 data.Store.nunique()
 
 
-# In[14]:
 
 
 data.head()
 data.Store.value_counts().head(50).plot.bar()
 
 
-# In[15]:
 
 
 data.Store.value_counts().tail(50).plot.bar()
 
 
-# In[16]:
 
 
 data.Store.value_counts()
 
 
-# In[17]:
 
 
 data.DayOfWeek.value_counts()
 
 
-# In[18]:
 
 
 data.Open.value_counts()
 
 
-# In[19]:
 
 
 data.Promo.value_counts()
 
 
-# In[20]:
 
 
 data['Date']=pd.to_datetime(data['Date'],format='%Y-%m-%d')
@@ -149,13 +129,11 @@ print(store_rows.shape)
 # store_rows.resample('1D',on='Date')['Sales'].sum().plot.line(figsize=(14,4))
 
 
-# In[21]:
 
 
 # store_rows[store_rows['Sales']==0]
 
 
-# In[22]:
 
 
 test['Date']=pd.to_datetime(test['Date'],format='%Y-%m-%d')
@@ -163,45 +141,38 @@ store_test_rows = test[test['Store']==store_id]
 store_test_rows['Date'].min(),store_test_rows['Date'].max()
 
 store_test_rows
-# In[23]:
 
 
 store_rows['Sales'].plot.hist()
 # it is slightly skewed.
 
 
-# In[24]:
 
 
 data['Sales'].plot.hist()
 # it is slightly skewed.
 
 
-# In[25]:
 
 
 store.head()
 
 
-# In[26]:
 
 
 # store.isna.sum()
 
 
-# In[27]:
 
 
 store_id=store[store['Store']==1].T
 
 
-# In[28]:
 
 
 store[~store['Promo2SinceYear'].isna()].iloc[0]
 
 
-# In[29]:
 
 
 # Method1
@@ -217,7 +188,6 @@ store.isna().sum()
       
 
 
-# In[30]:
 
 
 data_merged = data.merge(store, on='Store',how='left')
@@ -226,7 +196,6 @@ print(data_merged.shape)
 print(data_merged.isna().sum().sum()) #to cross check if there are any missing values
 
 
-# In[31]:
 
 
 # encoding
@@ -238,14 +207,12 @@ data_merged['year']=data_merged['Date'].dt.year
 #data_merged['dayofweek']=data_merged['Date'].dt.strftime('%a')
 
 
-# In[32]:
 
 
 # Decision tress - label encoding should be used.
 # regression - one hot encoding must be used.
 
 
-# In[33]:
 
 
 # data_merged.dtypes
@@ -257,7 +224,6 @@ data_merged['StateHoliday']=data_merged['StateHoliday'].astype(int)
 data_merged
 
 
-# In[34]:
 
 
 # encoding assorted
@@ -268,7 +234,6 @@ data_merged['Assortment']=data_merged['Assortment'].astype(int)
 data_merged
 
 
-# In[35]:
 
 
 data_merged['StoreType'].unique()
@@ -277,7 +242,6 @@ data_merged['StoreType']=data_merged['StoreType'].astype(int)
 data_merged
 
 
-# In[36]:
 
 
 data_merged['PromoInterval'].unique()
@@ -286,7 +250,6 @@ data_merged['PromoInterval']=data_merged['PromoInterval'].map(map_promo)
 data_merged
 
 
-# In[37]:
 
 
 # Train and validate Split
@@ -296,7 +259,6 @@ train_x,validate_x,train_y,validate_y = train_test_split(data_merged[features],n
 train_x.shape,validate_x.shape,train_y.shape,validate_y.shape
 
 
-# In[38]:
 
 
 # from sklearn.tree import DecisionTreeRegressor
@@ -309,13 +271,11 @@ model_dt=DecisionTreeRegressor(max_depth=10,random_state=1).fit(train_x,train_y)
 validate_y_pred=model_dt.predict(validate_x)
 
 
-# In[39]:
 
 
 get_ipython().system('pip install pydotplus')
 
 
-# In[40]:
 
 
 def draw_tree(model, columns):
@@ -336,13 +296,11 @@ def draw_tree(model, columns):
     return Image(graph.create_png())
 
 
-# In[41]:
 
 
 draw_tree(model_dt,features)
 
 
-# In[42]:
 
 
 validate_y_pred = model_dt.predict(validate_x)
@@ -352,7 +310,6 @@ validate_y_pred_inv = np.exp(validate_y_pred) - 1
 np.sqrt(mean_squared_error(validate_y_inv , validate_y_pred_inv))
 
 
-# In[43]:
 
 
 def ToWeight(y):
@@ -371,19 +328,16 @@ np.sqrt(mean_squared_error(validate_y_inv , validate_y_pred_inv))
 rmspe(validate_y_inv,validate_y_pred_inv)
 
 
-# In[44]:
 
 
 # submitting the train on test data set
 
 
-# In[45]:
 
 
 model_dt.feature_importances_
 
 
-# In[46]:
 
 
 import matplotlib.pyplot as plt
@@ -392,7 +346,6 @@ plt.barh(features,model_dt.feature_importances_)
 pd.Series(model_dt.feature_importances_,index=features)
 
 
-# In[47]:
 
 
 from sklearn.model_selection import GridSearchCV
@@ -402,26 +355,22 @@ base_model = DecisionTreeRegressor()
 cv_model = GridSearchCV(base_model,param_grid =parameters,cv=5,return_train_score =True).fit(train_x,train_y)
 
 
-# In[48]:
 
 
 cv_model.best_params_
 
 
-# In[49]:
 
 
 df_cv_results=pd.DataFrame(cv_model.cv_results_).sort_values(by='mean_test_score',ascending=False)[['param_max_depth','mean_test_score']]
 df_cv_results.set_index('param_max_depth')['mean_test_score'].plot.line()
 
 
-# In[50]:
 
 
 df_cv_results[df_cv_results['param_max_depth']==11].T
 
 
-# In[51]:
 
 
 stores_avg_cust = data.groupby(['Store'])[['Customers']].mean().reset_index().astype(int)
@@ -443,20 +392,17 @@ map_promo = {'Jan,Apr,Jul,Oct':1,'Feb,May,Aug,Nov':2,'Mar,Jun,Sept,Dec':3}
 test_merged['PromoInterval']=test_merged['PromoInterval'].map(map_promo)
 
 
-# In[52]:
 
 
 test_merged
 
 
-# In[53]:
 
 
 test_pred = model_dt.predict(test_merged[features])
 test_pred_inv = np.exp(test_pred) - 1
 
 
-# In[54]:
 
 
 submission = pd.read_csv('/kaggle/input/rossmann-store-sales/sample_submission.csv')
@@ -465,13 +411,11 @@ submission_predicted.to_csv('submission.csv',index=False)
 submission_predicted.head()
 
 
-# In[55]:
 
 
 import xgboost as xgb
 
 
-# In[56]:
 
 
 dtrain = xgb.Dmatrix(train_x[features],train_y)

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import numpy as np
@@ -20,63 +19,53 @@ from sklearn.naive_bayes import MultinomialNB
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[ ]:
 
 
 your_local_path="Mcintosh HD/Users/rk/Desktop/UPXTECH/PROJECT/NLP/Bag of world"
 
 
-# In[ ]:
 
 
 cd /Users/rk/Desktop/UPXTECH/PROJECT/NLP/Bag of world
 
 
-# In[ ]:
 
 
 train = pd.read_csv("labeledTrainData.tsv", delimiter='\t')
 
 
-# In[ ]:
 
 
 train.head()
 
 
-# In[ ]:
 
 
 test = pd.read_csv("testData.tsv", delimiter='\t')
 
 
-# In[ ]:
 
 
 test.head()
 
 
-# In[ ]:
 
 
 train.shape
 
 
-# In[ ]:
 
 
 from bs4 import BeautifulSoup
 import re     # to remove Punctuation and numbers
 
 
-# In[ ]:
 
 
 from nltk.corpus import stopwords 
 stopset = set(stopwords.words('english'))
 
 
-# In[ ]:
 
 
 from nltk.corpus import stopwords 
@@ -84,7 +73,6 @@ print
 stopwords.words("english")
 
 
-# In[ ]:
 
 
 def review_to_words( raw_review ):
@@ -109,7 +97,6 @@ def review_to_words( raw_review ):
     return( " ".join( meaningful_words ))
 
 
-# In[ ]:
 
 
 num_reviews = train["review"].size
@@ -119,7 +106,6 @@ for i in range( 0, num_reviews ):
     clean_train_reviews.append( review_to_words( train["review"][i] ) )
 
 
-# In[ ]:
 
 
 from sklearn.feature_extraction.text import CountVectorizer 
@@ -133,14 +119,12 @@ train_data_features = vectorizer.fit_transform(clean_train_reviews)
 train_data_features = train_data_features.toarray()
 
 
-# In[ ]:
 
 
 vocab = vectorizer.get_feature_names()
 print(vocab)
 
 
-# In[ ]:
 
 
 from sklearn.ensemble import RandomForestClassifier
@@ -148,7 +132,6 @@ forest = RandomForestClassifier(n_estimators = 500)
 forest = forest.fit( train_data_features, train["sentiment"] )
 
 
-# In[ ]:
 
 
 # Create an empty list and append the clean reviews one by one
@@ -156,7 +139,6 @@ num_reviews = len(test["review"])
 clean_test_reviews = []
 
 
-# In[ ]:
 
 
 print ("Cleaning and parsing the test set movie reviews...\n")
@@ -167,7 +149,6 @@ for i in range(0,num_reviews):
     clean_test_reviews.append( clean_review )
 
 
-# In[ ]:
 
 
 
@@ -175,27 +156,23 @@ test_data_features = vectorizer.transform(clean_test_reviews)
 test_data_features = test_data_features.toarray()
 
 
-# In[ ]:
 
 
 result = forest.predict(test_data_features)
 print (result)
 
 
-# In[ ]:
 
 
 test.shape
 
 
-# In[ ]:
 
 
 output = pd.DataFrame( data={"id":test["id"], "sentiment":result} )
 print (output)
 
 
-# In[ ]:
 
 
 

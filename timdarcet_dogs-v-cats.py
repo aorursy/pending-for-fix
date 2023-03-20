@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 print('V1')
 
 
-# In[2]:
 
 
 import os
@@ -105,7 +103,6 @@ dog.2877.jpg,
 dog.8898.jpg]
 
 
-# In[3]:
 
 
 os.makedirs(os.path.join(TRAIN_DIR, 'dogs'), exist_ok=True)
@@ -156,7 +153,6 @@ else:
 
 
 
-# In[4]:
 
 
 train_image_gen = ImageDataGenerator(preprocessing_function=preprocess_input,
@@ -187,7 +183,6 @@ test_generator = test_image_gen.flow_from_directory(TEST_DIR,
                                                     shuffle=False)
 
 
-# In[5]:
 
 
 model = Sequential()
@@ -202,7 +197,6 @@ model.compile(optimizer=MODEL_OPTIMIZER,
               metrics=METRICS)
 
 
-# In[6]:
 
 
 model.fit_generator(train_generator,
@@ -212,26 +206,22 @@ model.fit_generator(train_generator,
                     validation_steps=STEPS_PER_EPOCH_VALIDATION)
 
 
-# In[7]:
 
 
 model.save_weights('model_weights.h5')
 model.save('model_keras.h5')
 
 
-# In[8]:
 
 
 predictions = model.predict_generator(test_generator, steps = len(test_generator), verbose = 1)
 
 
-# In[9]:
 
 
 pred_labs = list(map(lambda x: x[1] / (x[0] + x[1]), predictions))
 
 
-# In[10]:
 
 
 counter = range(1, len(test_generator) + 1)

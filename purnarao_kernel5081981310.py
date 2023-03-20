@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import warnings
@@ -10,13 +9,11 @@ warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 
-# In[2]:
 
 
 import tensorflow as tf
 
 
-# In[3]:
 
 
 import numpy as np 
@@ -52,26 +49,22 @@ from keras.optimizers import Adam
 from tensorflow.nn import sigmoid_cross_entropy_with_logits
 
 
-# In[4]:
 
 
 from keras import applications
 
 
-# In[5]:
 
 
 applications.ResNet101(include_top=False, weights="imagenet")
 
 
-# In[6]:
 
 
 train_brute_force = True
 train_anysubtype_network = True
 
 
-# In[7]:
 
 
 #MODELOUTPUT_PATH = ""
@@ -79,14 +72,12 @@ train_anysubtype_network = True
 #brute_force_losses_path = "../input/rsna-ih-detection-baseline-models/brute_force_losses.csv"
 
 
-# In[8]:
 
 
 import os
 os.listdir('../input/')
 
 
-# In[9]:
 
 
 def rescale_pixelarray(dataset):
@@ -183,7 +174,6 @@ class Preprocessor:
 #         return image
 
 
-# In[10]:
 
 
 class DataLoader(Sequence):
@@ -243,7 +233,6 @@ class DataLoader(Sequence):
         return targets
 
 
-# In[11]:
 
 
 INPUT_PATH = "../input/rsna-intracranial-hemorrhage-detection/"
@@ -251,21 +240,18 @@ train_dir = INPUT_PATH + "stage_1_train_images/"
 test_dir = INPUT_PATH + "stage_1_test_images/"
 
 
-# In[12]:
 
 
 submission = pd.read_csv(INPUT_PATH+"stage_1_sample_submission.csv")
 submission.head(7)
 
 
-# In[13]:
 
 
 traindf = pd.read_csv(INPUT_PATH + "stage_1_train.csv")
 traindf.head()
 
 
-# In[14]:
 
 
 label = traindf.Label.values
@@ -275,7 +261,6 @@ traindf = traindf.rename({0: "id", 1: "subtype"}, axis=1)
 traindf.head()
 
 
-# In[15]:
 
 
 testdf = submission.ID.str.rsplit("_", n=1, expand=True)
@@ -284,28 +269,24 @@ testdf.loc[:, "label"] = 0
 testdf.head()
 
 
-# In[16]:
 
 
 traindf = pd.pivot_table(traindf, index="id", columns="subtype", values="label")
 traindf.head()
 
 
-# In[17]:
 
 
 testdf = pd.pivot_table(testdf, index="id", columns="subtype", values="label")
 testdf.head(1)
 
 
-# In[18]:
 
 
 #pretrained_models_path = "../input/keras-pretrained-models/"
 #listdir("../input/keras-pretrained-models/")
 
 
-# In[19]:
 
 
 pretrained_models = {
@@ -321,7 +302,6 @@ pretrained_models = {
 }
 
 
-# In[20]:
 
 
 def resnet_50():
@@ -345,7 +325,6 @@ def resnet_101():
     return net
 
 
-# In[21]:
 
 
 MODELOUTPUT_PATH = ""
@@ -409,7 +388,6 @@ class MyNetwork:
         return predictions
 
 
-# In[22]:
 
 
 undersample_seed=0
@@ -418,7 +396,6 @@ num_ill_patients = traindf[traindf["any"]==1].shape[0]
 num_ill_patients
 
 
-# In[23]:
 
 
 healthy_patients = traindf[traindf["any"]==0].index.values
@@ -428,7 +405,6 @@ healthy_patients_selection = np.random.RandomState(undersample_seed).choice(
 len(healthy_patients_selection)
 
 
-# In[24]:
 
 
 sick_patients = traindf[traindf["any"]==1].index.values
@@ -436,7 +412,6 @@ selected_patients = list(set(healthy_patients_selection).union(set(sick_patients
 len(selected_patients)/2
 
 
-# In[25]:
 
 
 remove_list = ['ID_c6bbec638',
@@ -711,13 +686,11 @@ remove_list = ['ID_c6bbec638',
  'ID_68e45bca7']
 
 
-# In[26]:
 
 
 traindf.drop(remove_list,axis = 0,inplace = True)
 
 
-# In[27]:
 
 
 #new_traindf = traindf.loc[selected_patients].copy()
@@ -725,7 +698,6 @@ traindf["any"].value_counts()
 new_traindf = traindf.copy()
 
 
-# In[28]:
 
 
 split_seed = 1
@@ -737,7 +709,6 @@ print(train_data.shape)
 print(dev_data.shape)
 
 
-# In[29]:
 
 
 pos_perc_train = train_data.sum() / train_data.shape[0] * 100
@@ -750,7 +721,6 @@ sns.barplot(x=pos_perc_dev.index, y=pos_perc_dev.values, palette="Set2", ax=ax[1
 ax[1].set_title("Target distribution used for dev data");
 
 
-# In[30]:
 
 
 # multilabel loss (optional weighted)
@@ -775,7 +745,6 @@ def multilabel_loss(class_weights=None):
     return multilabel_loss_inner
 
 
-# In[31]:
 
 
 def multilabel_focal_loss(class_weights=None, alpha=1, gamma=2):
@@ -809,7 +778,6 @@ def multilabel_focal_loss(class_weights=None, alpha=1, gamma=2):
     return mutlilabel_focal_loss_inner
 
 
-# In[32]:
 
 
 BACKBONE = "resnet_101"
@@ -821,7 +789,6 @@ CT_WIDTH = 150
 LR = 0.005
 
 
-# In[33]:
 
 
 train_preprocessor = Preprocessor(path=train_dir,
@@ -843,7 +810,6 @@ test_preprocessor = Preprocessor(path=test_dir,
                                 augment=False)
 
 
-# In[34]:
 
 
 fig, ax = plt.subplots(1,4,figsize=(20,20))
@@ -860,7 +826,6 @@ for m in range(4):
     ax[m].set_title(title);
 
 
-# In[35]:
 
 
 train_dataloader = DataLoader(train_data,
@@ -880,31 +845,26 @@ test_dataloader = DataLoader(testdf,
                              shuffle=False)
 
 
-# In[36]:
 
 
 dev_dataloader.__len__()
 
 
-# In[37]:
 
 
 train_dataloader.__len__()
 
 
-# In[38]:
 
 
 test_dataloader.__len__()
 
 
-# In[39]:
 
 
 my_class_weights = [0.2, 0.16, 0.16, 0.16, 0.16, 0.16]
 
 
-# In[40]:
 
 
 if train_brute_force:
@@ -951,20 +911,17 @@ else:
     test_pred = model.predict(test_dataloader)
 
 
-# In[41]:
 
 
 testdf.shape
 
 
-# In[42]:
 
 
 test_pred = model.predict(test_dataloader)
 test_pred.shape
 
 
-# In[43]:
 
 
 def turn_to_submission(test_data, pred, submission):
@@ -978,32 +935,27 @@ def turn_to_submission(test_data, pred, submission):
     return submission
 
 
-# In[44]:
 
 
 bruteforce_submission = turn_to_submission(testdf, test_pred, submission)
 bruteforce_submission.head()
 
 
-# In[ ]:
 
 
 
 
 
-# In[45]:
 
 
 bruteforce_submission.to_csv("bruteforce_submission.csv", index=False)
 
 
-# In[46]:
 
 
 dev_pred = model.predict(dev_dataloader)
 
 
-# In[47]:
 
 
 class AnySubtypeNetwork(MyNetwork):
@@ -1048,7 +1000,6 @@ class AnySubtypeNetwork(MyNetwork):
                            metrics=self.metrics_list)
 
 
-# In[48]:
 
 
 class AnySubtypeDataLoader(DataLoader):
@@ -1094,7 +1045,6 @@ class AnySubtypeDataLoader(DataLoader):
         return y_any, y_subtype
 
 
-# In[49]:
 
 
 train_dataloader = AnySubtypeDataLoader(train_data,
@@ -1113,7 +1063,6 @@ test_dataloader = AnySubtypeDataLoader(testdf,
                                        shuffle=False)
 
 
-# In[50]:
 
 
 if train_anysubtype_network:
@@ -1134,19 +1083,16 @@ if train_anysubtype_network:
     plt.plot(history.history["val_loss"], 'o-')
 
 
-# In[51]:
 
 
 train_dir
 
 
-# In[52]:
 
 
 f = os.listdir(train_dir)
 
 
-# In[53]:
 
 
 len(f)

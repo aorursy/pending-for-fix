@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -55,7 +54,6 @@ def read_test_data():
     return X
 
 
-# In[2]:
 
 
 X_train, y_train, X_test, y_test = read_data(train_data_perc=0.6)
@@ -101,7 +99,6 @@ print("sincere_stats", sincere_stats)
 """
 
 
-# In[3]:
 
 
 """
@@ -180,7 +177,6 @@ unique_words = set(vectorizer.get_feature_names())
 print("Number of unique words: ", len(unique_words))
 
 
-# In[4]:
 
 
 def load_glove_with_vocabulary(vocabulary_map):
@@ -218,7 +214,6 @@ embs = load_glove_with_vocabulary(vectorizer.vocabulary_)
 print("embs.shape", embs.shape)
 
 
-# In[5]:
 
 
 import torch
@@ -285,7 +280,6 @@ print("final_test_offsets.shape", final_test_offsets.shape)
 print("Created words and offsets for final test data")
 
 
-# In[6]:
 
 
 class BagOfEmbeddings(nn.Module):
@@ -314,13 +308,11 @@ model = BagOfEmbeddings(embs, dropout=0.1, hidden_dim=75, embedding_mode='mean')
 print("model", model)
 
 
-# In[7]:
 
 
 Run bag of embeddings model training
 
 
-# In[8]:
 
 
 loss = nn.BCEWithLogitsLoss()
@@ -374,7 +366,6 @@ print("Training avg model complete!")
                 
 
 
-# In[9]:
 
 
 def run_test(model, loss_fn, 
@@ -436,7 +427,6 @@ print("boe_final_pred", boe_final_pred)
 print("Final test outputs done")
 
 
-# In[10]:
 
 
 logistic_regression_model = LogisticRegression(solver='lbfgs', max_iter=1000, n_jobs=-1, random_state=SEED)
@@ -447,7 +437,6 @@ best_threshold_logreg, best_score_logreg = calculate_best_threshold(y_test[:4000
 logreg_final_predictions = logistic_regression_model.predict_proba(final_test_prepared_data)[:, 1]
 
 
-# In[11]:
 
 
 #final_classifier = lgbm.sklearn.LGBMClassifier(learning_rate=0.05,
@@ -472,7 +461,6 @@ final_predictions = final_classifier.predict_proba(X_final_augmented_test)[:,1]
 best_threshold_final, best_score_final = calculate_best_threshold(y_final_augmented_test, final_predictions)
 
 
-# In[12]:
 
 
 

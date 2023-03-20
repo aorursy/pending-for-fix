@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import matplotlib.pyplot as plt
@@ -31,7 +30,6 @@ warnings.filterwarnings('ignore')
 pd.options.display.max_columns = 999
 
 
-# In[2]:
 
 
 import os
@@ -58,7 +56,6 @@ submission['visitors'] = np.nan
 submission['test_number'] = range(len(submission))
 
 
-# In[3]:
 
 
 air_visit['id'] = np.nan
@@ -76,7 +73,6 @@ air_visit = air_visit.drop(columns=['air_genre_name', 'hpg_store_id'])
 air_visit.head(2)
 
 
-# In[4]:
 
 
 # Prior year mapping - previous year Monday to this year Monday
@@ -85,7 +81,6 @@ air_visit['prev_visitors'] = air_visit.groupby(
      air_visit['visit_date'].dt.weekday])['visitors'].shift()
 
 
-# In[5]:
 
 
 # year / month / day_of_week
@@ -113,7 +108,6 @@ air_visit["season"] = air_visit.apply(lambda row:seasonLabel(row), axis=1)
 air_visit['summer_yes'] = np.where(air_visit['season'] == 'summer', 1, 0)
 
 
-# In[6]:
 
 
 # rename the columns to make the column name match other dataset
@@ -128,7 +122,6 @@ date_info['visit_date'] = pd.to_datetime(date_info['visit_date'])
 air_visit = pd.merge(air_visit, date_info, on='visit_date')
 
 
-# In[7]:
 
 
 # days since 25th
@@ -145,7 +138,6 @@ def daysToPrev25th(row):
 air_visit["daysToPrev25th"] = air_visit.apply(lambda row:daysToPrev25th(row), axis=1)
 
 
-# In[8]:
 
 
 # Splitting up locations
@@ -166,7 +158,6 @@ air_visit = pd.concat([air_visit, air_df], axis=1)
 air_visit = air_visit.drop(columns=['air_geo1', 'air_geo2'])
 
 
-# In[9]:
 
 
 # Population and Density
@@ -182,7 +173,6 @@ air_visit = pd.merge(air_visit, pop, left_on = 'geo1', right_on= 'cities', how='
 air_visit = air_visit.drop(columns=['cities', 'air_area_name'])
 
 
-# In[10]:
 
 
 # =============================================================================
@@ -215,7 +205,6 @@ tmp = air_visit.groupby(['air_store_id', 'dow'], as_index=False)['visitors'].cou
 air_visit = pd.merge(air_visit, tmp, how='left', on=['air_store_id', 'dow'])
 
 
-# In[11]:
 
 
 # https://github.com/MaxHalford/kaggle-recruit-restaurant/blob/master/Solution.ipynb
@@ -236,7 +225,6 @@ air_visit['visitors_capped'] = stores.apply(lambda g: cap_values(g['visitors']))
 air_visit['visitors_capped_log1p'] = np.log1p(air_visit['visitors_capped'])
 
 
-# In[12]:
 
 
 # Split up
@@ -254,13 +242,11 @@ air_visit = air_visit.drop(columns = ['is_outlier', 'visitors_capped', 'visitors
 air_visit.head()
 
 
-# In[ ]:
 
 
 
 
 
-# In[13]:
 
 
 air_visit['visitors'] = air_visit['visitors'].astype(float)
@@ -268,7 +254,6 @@ air_visit['visit_date'] = air_visit['visit_date'].astype(np.str)
 air_visit = pd.get_dummies(air_visit, columns=['season', 'dow', 'geo1', 'day_of_week'])
 
 
-# In[14]:
 
 
 train = air_visit[air_visit.is_test == False]
@@ -289,7 +274,6 @@ print(len(train_x.columns),len(test_x.columns))
 train_x.head()
 
 
-# In[15]:
 
 
 #LGBM
@@ -354,25 +338,21 @@ print('Local RMSLE: {:.5f} (±{:.5f})'.format(val_mean, val_std))
 feature_importances.sort_values(0, ascending=False)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[16]:
 
 
 # Basic tidying of the training and test table
@@ -400,7 +380,6 @@ train_df = train_df.fillna(-1)
 test = test.fillna(-1)
 
 
-# In[17]:
 
 
 # Encode categorical columns
@@ -424,7 +403,6 @@ train_df['Food_Type'] = le_ftype.transform(train_df['Food_Type'])
 test['Food_Type'] = le_ftype.transform(test['Food_Type'])
 
 
-# In[18]:
 
 
 # Simultaneous transformation of Train and test sets
@@ -491,7 +469,6 @@ df_to_reshape = df_to_reshape.fillna(-1)
 columns_list = [x for x in list(df_to_reshape.iloc[:,2:])]
 
 
-# In[19]:
 
 
 # Normalize
@@ -501,7 +478,6 @@ scaler.fit(df_to_reshape[columns_list])
 df_to_reshape[columns_list] = scaler.transform(df_to_reshape[columns_list])
 
 
-# In[20]:
 
 
 # Reshape
@@ -521,7 +497,6 @@ Y_lstm = Y_lstm_df.values[:,2].reshape(len(train_df['air_store_id'].unique()),
 n_test_dates = len(test['visit_date'].unique())
 
 
-# In[21]:
 
 
 # Train test split
@@ -551,7 +526,6 @@ X_val = X_lstm[:,-140:,:]
 Y_val = Y_lstm[:,-140:,:]
 
 
-# In[22]:
 
 
 # Model
@@ -624,7 +598,6 @@ def dec_enc_n_days_gen(X_3d, Y_3d, length):
  
 
 
-# In[23]:
 
 
 # Generator
@@ -648,7 +621,6 @@ def dec_enc_n_days_gen(X_3d, Y_3d, length):
                Y_decoder)
 
 
-# In[24]:
 
 
 '''
@@ -667,7 +639,6 @@ training_model.fit_generator(dec_enc_n_days_gen(X_lstm[:,:,:], Y_lstm[:,:,:], 39
                             epochs = 5)
 
 
-# In[25]:
 
 
 def predict_sequence(inf_enc, inf_dec, input_seq, Y_input_seq, target_seq):
@@ -731,13 +702,11 @@ enc_dec_pred = predict_sequence(encoder_model,
                                 X_lstm_test[:,:,:])
 
 
-# In[ ]:
 
 
 
 
 
-# In[26]:
 
 
 # Manager intuition
@@ -755,7 +724,6 @@ df['difference_decimal'] = abs(
     df['visitors_x'] - df['prev_day_visitors']) / df['visitors_x']
 
 
-# In[ ]:
 
 
 

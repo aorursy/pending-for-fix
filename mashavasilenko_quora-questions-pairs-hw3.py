@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import pandas as pd
@@ -30,14 +29,12 @@ from torch.utils.data import Dataset, DataLoader
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence 
 
 
-# In[2]:
 
 
 train = pd.read_csv("../input/train.csv")
 test = pd.read_csv("../input/test.csv")
 
 
-# In[3]:
 
 
 # Add the string 'empty' to empty strings
@@ -45,7 +42,6 @@ train = train.fillna('empty')
 test = test.fillna('empty')
 
 
-# In[4]:
 
 
 # Preview some of the pairs of questions
@@ -55,13 +51,11 @@ for i in range(10):
     print(train.question2[i])
 
 
-# In[5]:
 
 
 get_ipython().system('python -m spacy download en')
 
 
-# In[6]:
 
 
 
@@ -120,38 +114,32 @@ def spacy_tok(x): return [tok.text for tok in my_tok.tokenizer(clean_text(x))]
 def remove_stop_words(tokens): return [tok for tok in tokens if tok not in spacy_stopwords]
 
 
-# In[7]:
 
 
 sent = "Motorola (company): Can I hack my Charter Motorolla DCX3400?"
 
 
-# In[8]:
 
 
 clean_sent = clean_text(sent)
 
 
-# In[9]:
 
 
 tokens = spacy_tok(clean_sent)
 tokens
 
 
-# In[10]:
 
 
 remove_stop_words(tokens)
 
 
-# In[11]:
 
 
 combined = pd.concat([train,test])
 
 
-# In[12]:
 
 
 print(train.shape)
@@ -159,13 +147,11 @@ print(test.shape)
 print(combined.shape)
 
 
-# In[13]:
 
 
 combined.head()
 
 
-# In[14]:
 
 
 counts = Counter()
@@ -178,7 +164,6 @@ for question in questions:
             pass
 
 
-# In[15]:
 
 
 '''counts = Counter()
@@ -188,19 +173,16 @@ for question in questions:
         counts.update(spacy_tok(sent))'''
 
 
-# In[16]:
 
 
 counts
 
 
-# In[17]:
 
 
 len(counts.keys())
 
 
-# In[18]:
 
 
 # Vocabulary
@@ -211,13 +193,11 @@ for word in counts:
     words.append(word)
 
 
-# In[19]:
 
 
 len(words)
 
 
-# In[20]:
 
 
 # WHat is the 99% quantile of  length of the sentence?
@@ -226,19 +206,16 @@ combined['len_q1'] = combined['question1'].apply(lambda x: len(x.split()))
 combined['len_q2'] = combined['question2'].apply(lambda x: len(x.split()))
 
 
-# In[21]:
 
 
 combined['len_q1'].quantile(q = 0.99)
 
 
-# In[22]:
 
 
 combined['len_q2'].quantile(q = 0.99)
 
 
-# In[23]:
 
 
 # note that spacy_tok takes a while run it just once
@@ -255,7 +232,6 @@ def encode_sentence(sent, vocab2index, N=30, padding_start=True):
     return enc
 
 
-# In[24]:
 
 
 # Encoding questions in the train dataset
@@ -263,7 +239,6 @@ train['enc_question1'] = train['question1'].apply(lambda x: encode_sentence(x,vo
 train['enc_question2'] = train['question2'].apply(lambda x: encode_sentence(x,vocab2index, N=40, padding_start=True) )
 
 
-# In[25]:
 
 
 # Encoding questions in the test datset
@@ -271,13 +246,11 @@ test['enc_question1'] = test['question1'].apply(lambda x: encode_sentence(x,voca
 test['enc_question2'] = test['question2'].apply(lambda x: encode_sentence(x,vocab2index, N=40, padding_start=True) )
 
 
-# In[26]:
 
 
 from sklearn.model_selection import train_test_split
 
 
-# In[27]:
 
 
 VALID_IDX = 40000
@@ -288,45 +261,38 @@ X_valid = train[['enc_question1','enc_question2']][(N-VALID_IDX):]
 y_valid= train['is_duplicate'][(N-VALID_IDX):].values
 
 
-# In[28]:
 
 
 X_train.reset_index(inplace=True, drop=True)
 X_valid.reset_index(inplace=True, drop=True)
 
 
-# In[29]:
 
 
 len(y_train)
 
 
-# In[30]:
 
 
 len(X_train)
 
 
-# In[31]:
 
 
 len(X_valid)
 
 
-# In[32]:
 
 
 len(y_valid)
 
 
-# In[33]:
 
 
 X_valid.reset_index(inplace=True, drop=True)
 X_valid.head()
 
 
-# In[34]:
 
 
 class QuoraDataset(Dataset):
@@ -349,44 +315,37 @@ class QuoraDataset(Dataset):
         return x1, x2, self.y[idx]
 
 
-# In[35]:
 
 
 train_ds_v0 = QuoraDataset(X_train,y_train, padding_start=False)
 valid_ds_v0 = QuoraDataset(X_valid,y_valid, padding_start=False)
 
 
-# In[36]:
 
 
 len(y_valid)
 
 
-# In[37]:
 
 
 train_ds_v0[364289]
 
 
-# In[38]:
 
 
 valid_ds_v0[15468]
 
 
-# In[39]:
 
 
 y_valid[0]
 
 
-# In[ ]:
 
 
 
 
 
-# In[40]:
 
 
 batch_size = 32
@@ -394,19 +353,16 @@ train_dl_v0 = DataLoader(train_ds_v0, batch_size=batch_size, shuffle=True)
 valid_dl_v0 = DataLoader(valid_ds_v0, batch_size=batch_size)
 
 
-# In[41]:
 
 
 x1, x2,y = next(iter(train_dl_v0))
 
 
-# In[42]:
 
 
 x1
 
 
-# In[43]:
 
 
 class LSTMV0Model(torch.nn.Module) :
@@ -439,7 +395,6 @@ class LSTMV0Model(torch.nn.Module) :
         return prediction.unsqueeze(-1)
 
 
-# In[44]:
 
 
 def train_epocs_v0(model, batch_size, epochs=10, lr=0.001):
@@ -466,7 +421,6 @@ def train_epocs_v0(model, batch_size, epochs=10, lr=0.001):
             print("train loss %.3f val loss %.3f and val accuracy %.3f" % (sum_loss/total, val_loss, val_acc))
 
 
-# In[45]:
 
 
 def val_metrics_v0(model, valid_dl):
@@ -488,7 +442,6 @@ def val_metrics_v0(model, valid_dl):
     return sum_loss/total, correct/total
 
 
-# In[46]:
 
 
 batch_size = 5000
@@ -496,7 +449,6 @@ train_dl = DataLoader(train_ds_v0, batch_size=batch_size, shuffle=True)
 val_dl = DataLoader(valid_ds_v0, batch_size=batch_size)
 
 
-# In[47]:
 
 
 vocab_size = len(words)
@@ -504,37 +456,31 @@ print(vocab_size)
 model_v0 = LSTMV0Model(vocab_size, 50, 50).cuda()
 
 
-# In[48]:
 
 
 train_epocs_v0(model_v0,batch_size = batch_size, epochs=50, lr=0.001)
 
 
-# In[49]:
 
 
 test_dl = 
 
 
-# In[50]:
 
 
 ### Make prediction
 
 
-# In[51]:
 
 
 subm = pd.read_csv("../input/sample_submission.csv")
 
 
-# In[52]:
 
 
 #test = pd.read_csv('../input/test.csv')
 
 
-# In[53]:
 
 
 sample_sub = pd.read_csv('../input/sample_submission.csv')
@@ -553,7 +499,6 @@ sample_sub.is_duplicate = y_pred
 sample_sub.to_csv("submit.csv", index=False)
 
 
-# In[ ]:
 
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -11,7 +10,6 @@ import matplotlib.pyplot as plt
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[2]:
 
 
 def __rolling_window(data, window_size):
@@ -138,13 +136,11 @@ def roc_auc_truncated(labels, predictions, tpr_thresholds=(0.2, 0.4, 0.6, 0.8),
     return area
 
 
-# In[3]:
 
 
 ls ../input/flavours-of-physics-kernels-only
 
 
-# In[4]:
 
 
 print("Load the train/test/eval data using pandas")
@@ -152,7 +148,6 @@ train = pd.read_csv("../input/flavours-of-physics-kernels-only/training.csv.zip"
 test  = pd.read_csv("../input/flavours-of-physics-kernels-only/test.csv.zip")
 
 
-# In[5]:
 
 
 # -------------- loading data files -------------- #
@@ -210,14 +205,12 @@ filter_out = ['id', 'min_ANNmuon', 'production', 'mass', 'signal',
 features = list(f for f in train.columns if f not in filter_out)
 
 
-# In[6]:
 
 
 mungedtrain = train[features].astype(complex)
 mungedtest = test[features].astype(complex)
 
 
-# In[7]:
 
 
 def Output(p):
@@ -333,7 +326,6 @@ def GPComplex(data):
              0.800000*np.tanh(np.imag(((np.cos((((np.power((((((data["LifeTime"]) / (((np.tanh((complex(1.86195778846740723)))) * (np.conjugate(data["NEW_FD_SUMP"]))*(complex(0,1)))))) - (((((data["dira"]) + (data["LifeTime"]))) + (data["LifeTime"]))))),2.)) / 2.0)))) - (((data["VertexChi2"]) + (np.power((((np.tanh((data["LifeTime"]))) / (data["NEW_FD_SUMP"]))),3.))))))))
 
 
-# In[8]:
 
 
 plt.figure(figsize=(15,15))
@@ -342,14 +334,12 @@ plt.scatter(GPReal(mungedtrain),GPComplex(mungedtrain),s=1,color=[colors[int(c)]
 plt.show()
 
 
-# In[9]:
 
 
 plt.figure(figsize=(15,15))
 plt.scatter(GPReal(mungedtest[::12]),GPComplex(mungedtest[::12]),s=1)
 
 
-# In[10]:
 
 
 check_agreement = pd.read_csv('../input/flavours-of-physics-kernels-only/check_agreement.csv.zip')
@@ -382,20 +372,17 @@ AUC = roc_auc_truncated(train['signal'], train_eval_probs)
 print ('AUC', AUC)
 
 
-# In[11]:
 
 
 mungedtest.head()
 
 
-# In[12]:
 
 
 sub = pd.DataFrame({'id':test.id.values,'prediction':Output(.3*GPReal(mungedtest)+.7*GP(mungedtest.astype(float)))})
 sub.head()
 
 
-# In[13]:
 
 
 sub.to_csv('submission.csv',index=False)

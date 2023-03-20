@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -15,7 +14,6 @@ from kaggle.competitions import twosigmanews
 from sklearn.metrics import confusion_matrix, accuracy_score
 
 
-# In[2]:
 
 
 env = twosigmanews.make_env()
@@ -23,7 +21,6 @@ env = twosigmanews.make_env()
 market_orig, news_orig = env.get_training_data()
 
 
-# In[3]:
 
 
 # We'll use data from 2013 onwards to speed things up a bit
@@ -31,7 +28,6 @@ market_orig = market_orig[market_orig['time'] >= "2013-01-01"]
 market_orig.head()
 
 
-# In[4]:
 
 
 def unique_asset_names(df):
@@ -40,7 +36,6 @@ def unique_asset_names(df):
 unique_asset_names(market_orig)
 
 
-# In[5]:
 
 
 def most_common_asset_name(df):
@@ -49,7 +44,6 @@ def most_common_asset_name(df):
 most_common_asset_name(market_orig)
 
 
-# In[6]:
 
 
 def max_next10(df):
@@ -58,7 +52,6 @@ def max_next10(df):
 max_next10(market_orig)
 
 
-# In[7]:
 
 
 # Matplotlib is available as "plt"
@@ -70,7 +63,6 @@ def plot_fb(df):
 plot_fb(market_orig)
 
 
-# In[8]:
 
 
 def asset_presence(df):
@@ -79,7 +71,6 @@ def asset_presence(df):
 asset_presence(market_orig)
 
 
-# In[9]:
 
 
 def remove_unknown(df):
@@ -88,7 +79,6 @@ def remove_unknown(df):
 market = remove_unknown(market_orig)
 
 
-# In[10]:
 
 
 def clip_next10(df):
@@ -97,7 +87,6 @@ def clip_next10(df):
 market = clip_next10(market)
 
 
-# In[11]:
 
 
 def remove_short_lived(df):
@@ -106,7 +95,6 @@ def remove_short_lived(df):
 market = remove_short_lived(market)
 
 
-# In[12]:
 
 
 # https://github.com/bukosabino/ta/blob/master/ta/momentum.py
@@ -144,13 +132,11 @@ def rsi(close, n=14, fillna=False):
     return pd.Series(rsi, name='rsi')
 
 
-# In[13]:
 
 
 # TODO: Add the RSI indicator to the market df
 
 
-# In[14]:
 
 
 def add_volume_avg(df):
@@ -159,7 +145,6 @@ def add_volume_avg(df):
 add_volume_avg(market)
 
 
-# In[15]:
 
 
 def add_lag_features(df):
@@ -168,7 +153,6 @@ def add_lag_features(df):
 market = add_lag_features(market)
 
 
-# In[16]:
 
 
 # Returns:
@@ -185,7 +169,6 @@ X_train, y_train = get_data()
 X_test, y_test   = get_data()
 
 
-# In[17]:
 
 
 def train_clf(X_train, y_train):
@@ -205,7 +188,6 @@ def train_clf(X_train, y_train):
 clf = train_clf(X_train, y_train)
 
 
-# In[18]:
 
 
 def accuracy(clf, X_test, y_test):
@@ -214,7 +196,6 @@ def accuracy(clf, X_test, y_test):
 accuracy(clf, X_test, y_test)
 
 
-# In[19]:
 
 
 # You can use this helper, if you want.
@@ -234,7 +215,6 @@ def plot_feature_importances(clf, feature_columns):
     plt.tight_layout()
 
 
-# In[20]:
 
 
 # Returns a series of confidence values
@@ -246,7 +226,6 @@ def get_confidence(clf, X_test):
 confidence = get_confidence(clf, X_test)
 
 
-# In[21]:
 
 
 # You can use this helper:
@@ -263,7 +242,6 @@ def get_scoring_data(market):
 actual_returns, universe, dates = get_scoring_data(market)
 
 
-# In[22]:
 
 
 def score(confidence, actual_returns, universe, dates):
@@ -272,13 +250,11 @@ def score(confidence, actual_returns, universe, dates):
 score(confidence, actual_returns, universe, dates)
 
 
-# In[23]:
 
 
 # Modify the "score" function above to plot your strategy's daily returns
 
 
-# In[24]:
 
 
 def cross_validate():
@@ -292,19 +268,16 @@ def cross_validate():
 cross_validate()
 
 
-# In[25]:
 
 
 # Implement a voting strategy, you can reuse a lot of the code from the cross_validation step
 
 
-# In[26]:
 
 
 
 
 
-# In[26]:
 
 
 

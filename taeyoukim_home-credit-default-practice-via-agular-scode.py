@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import os
@@ -20,38 +19,32 @@ from sklearn.metrics import roc_auc_score
 import warnings
 
 
-# In[2]:
 
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
-# In[3]:
 
 
 pd.set_option('display.max_rows', 60)
 pd.set_option('display.max_columns', 100)
 
 
-# In[4]:
 
 
 debug = True
 
 
-# In[5]:
 
 
 num_rows = 30000 if debug else None
 
 
-# In[6]:
 
 
 
 
 
-# In[6]:
 
 
 # GENERAL CONFIGURATIONS
@@ -60,116 +53,97 @@ DATA_DIRECTORY = "../input/"
 SUBMISSION_SUFIX = "_model2_04"
 
 
-# In[7]:
 
 
 path = DATA_DIRECTORY
 num_rows = num_rows
 
 
-# In[8]:
 
 
 train = pd.read_csv(os.path.join(path, 'application_train.csv'), nrows=num_rows)
 
 
-# In[9]:
 
 
 test = pd.read_csv(os.path.join(path, 'application_test.csv'), nrows=num_rows)
 
 
-# In[10]:
 
 
 train.head()
 
 
-# In[11]:
 
 
 df = train.append(test)
 
 
-# In[12]:
 
 
 del train, test;
 
 
-# In[13]:
 
 
 gc.collect()
 
 
-# In[14]:
 
 
 df['CODE_GENDER'].value_counts()
 
 
-# In[15]:
 
 
 df = df[df['CODE_GENDER'] != 'XNA']
 
 
-# In[16]:
 
 
 df = df[df['AMT_INCOME_TOTAL']<20000000]
 
 
-# In[17]:
 
 
 (df['DAYS_EMPLOYED']==365243).sum()
 
 
-# In[18]:
 
 
 df['DAYS_EMPLOYED'].replace(365243, np.nan, inplace=True)
 
 
-# In[19]:
 
 
 df['DAYS_LAST_PHONE_CHANGE'].replace(0, np.nan, inplace=True)
 
 
-# In[20]:
 
 
 docs = [f for f in df.columns if 'FLAG_DOC' in f]
 
 
-# In[21]:
 
 
 df['DOCUMENT_COUNT'] = df[docs].sum(axis=1)
 
 
-# In[22]:
 
 
 df['DOCUMENT_COUNT'].hist()
 
 
-# In[23]:
 
 
 df[docs].kurtosis(axis=1).hist()
 
 
-# In[24]:
 
 
 df['NEW_DOC_KURT'] = df[docs].kurtosis(axis=1)
 
 
-# In[25]:
 
 
 def get_age_label(days_birth):
@@ -183,26 +157,22 @@ def get_age_label(days_birth):
     else: return 0
 
 
-# In[26]:
 
 
 df['AGE_RANGE'] = df['DAYS_BIRTH'].apply(lambda x: get_age_label(x))
 
 
-# In[27]:
 
 
 df['EXT_SOURCE_1'] * df['EXT_SOURCE_2']* df['EXT_SOURCE_3']
 
 
-# In[28]:
 
 
 df['EXT_SOURCES_PROD'] = df['EXT_SOURCE_1'] * df['EXT_SOURCE_2'] * df['EXT_SOURCE_3']
 df['EXT_SOURCES_WEIGHTED'] = df.EXT_SOURCE_1 * 2 + df.EXT_SOURCE_2 * 1 + df.EXT_SOURCE_3 * 3
 
 
-# In[29]:
 
 
 #credit ratio preprocessing
@@ -210,7 +180,6 @@ df['CREDIT_TO_ANNUITY_RATIO'] = df['AMT_CREDIT'] / df['AMT_ANNUITY']
 df['CREDIT_TO_GOODS_RATIO'] = df['AMT_CREDIT'] / df['AMT_GOODS_PRICE']
 
 
-# In[30]:
 
 
 #income ratio preprocessing
@@ -220,7 +189,6 @@ df['INCOME_TO_EMPLOYED_RATIO'] = df['AMT_INCOME_TOTAL'] / df['DAYS_EMPLOYED']
 df['INCOME_TO_BIRTH_RATIO'] = df['AMT_INCOME_TOTAL'] / df['DAYS_BIRTH']
 
 
-# In[31]:
 
 
 #time ratio (period)
@@ -231,7 +199,6 @@ df['CAR_TO_EMPLOYED_RATIO'] = df['OWN_CAR_AGE'] / df['DAYS_EMPLOYED']
 df['PHONE_TO_BIRTH_RATIO'] = df['DAYS_LAST_PHONE_CHANGE'] / df['DAYS_BIRTH']
 
 
-# In[32]:
 
 
 #define functions
@@ -325,7 +292,6 @@ def add_features(feature_name, aggs, features, feature_names, groupby):
     return features, feature_names
 
 
-# In[33]:
 
 
 #groupby
@@ -345,14 +311,12 @@ df = do_mean(df, group, 'AMT_ANNUITY', 'GROUP_ANNUITY_MEAN')
 df = do_std(df, group, 'AMT_ANNUITY', 'GROUP_ANNUITY_STD')
 
 
-# In[34]:
 
 
 # Encode categorical features (LabelEncoder)
 df, le_encoded_cols = label_encoder(df, None)
 
 
-# In[35]:
 
 
 def drop_application_columns(df):
@@ -375,13 +339,11 @@ def drop_application_columns(df):
         'FONDKAPREMONT_MODE', 'EMERGENCYSTATE_MODE']
 
 
-# In[36]:
 
 
 df = drop_application_columns(df)
 
 
-# In[37]:
 
 
 drop_list= ['CNT_CHILDREN', 'CNT_FAM_MEMBERS', 'HOUR_APPR_PROCESS_START',
@@ -402,7 +364,6 @@ drop_list= ['CNT_CHILDREN', 'CNT_FAM_MEMBERS', 'HOUR_APPR_PROCESS_START',
 ]
 
 
-# In[38]:
 
 
 for doc_num in [2,4,5,6,7,9,10,11,12,13,14,15,16,17,19,20,21]:
@@ -411,7 +372,6 @@ df.drop(drop_list, axis=1, inplace=True)
 return df
 
 
-# In[39]:
 
 
 def get_age_label(days_birth):
@@ -425,7 +385,6 @@ def get_age_label(days_birth):
     else: return 0
 
 
-# In[40]:
 
 
 def get_bureau(path, num_rows= None):
@@ -439,7 +398,6 @@ def get_bureau(path, num_rows= None):
     bureau['CREDIT_TO_ANNUITY_RATIO'] = bureau['AMT_CREDIT_SUM'] / bureau['AMT_ANNUITY']
 
 
-# In[41]:
 
 
 # One-hot encoder
@@ -503,7 +461,6 @@ del bb; gc.collect()
 return bb_processed
 
 
-# In[42]:
 
 
 # ------------------------- PREVIOUS PIPELINE -------------------------
@@ -1247,31 +1204,26 @@ if __name__ == "__main__":
         main(debug= False)
 
 
-# In[43]:
 
 
 
 
 
-# In[43]:
 
 
 
 
 
-# In[43]:
 
 
 
 
 
-# In[43]:
 
 
 
 
 
-# In[43]:
 
 
 

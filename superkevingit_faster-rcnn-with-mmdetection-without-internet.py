@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().system('pip install ../input/mmcvwhl/addict-2.2.1-py3-none-any.whl')
@@ -10,13 +9,11 @@ get_ipython().system('pip install ../input/mmdetection20-5-13/terminal-0.4.0-py3
 get_ipython().system('pip install ../input/mmdetection20-5-13/terminaltables-3.1.0-py3-none-any.whl')
 
 
-# In[2]:
 
 
 get_ipython().system('cp -r ../input/mmdetection20-5-13/mmdetection/mmdetection .')
 
 
-# In[3]:
 
 
 get_ipython().system('mkdir -p mmdetection/data/Wheatdetection/annotations')
@@ -25,7 +22,6 @@ get_ipython().system('cp -r ../input/global-wheat-detection/sample_submission.cs
 get_ipython().system('mkdir mmdetection/configs/wheatdetection')
 
 
-# In[4]:
 
 
 get_ipython().system('cp ../input/mmdetfasterrcnn/config/config/faster_rcnn_r50_fpn_1x_coco_test.py mmdetection/configs/wheatdetection')
@@ -34,74 +30,62 @@ get_ipython().system('cp ../input/mmdetfasterrcnn/config/config/__init__.py mmde
 get_ipython().system('cp ../input/mmdetfasterrcnn/config/config/wheat.py mmdetection/mmdet/datasets')
 
 
-# In[5]:
 
 
 cd mmdetection
 
 
-# In[6]:
 
 
 get_ipython().system('cp -r ../../input/mmdetection20-5-13/cocoapi/cocoapi .')
 
 
-# In[7]:
 
 
 cd cocoapi/PythonAPI
 
 
-# In[8]:
 
 
 get_ipython().system('make')
 
 
-# In[9]:
 
 
 get_ipython().system('make install')
 
 
-# In[10]:
 
 
 get_ipython().system('python setup.py install')
 
 
-# In[11]:
 
 
 import pycocotools
 
 
-# In[12]:
 
 
 cd ../..
 
 
-# In[13]:
 
 
 get_ipython().system('pip install -v -e .')
 
 
-# In[14]:
 
 
 cd ../
 
 
-# In[15]:
 
 
 import sys
 sys.path.append('mmdetection') # To find local version
 
 
-# In[16]:
 
 
 from mmdet.apis import init_detector, inference_detector, show_result_pyplot
@@ -122,7 +106,6 @@ from PIL import Image
 import torch
 
 
-# In[17]:
 
 
 def format_prediction_string(boxes, scores):
@@ -147,7 +130,6 @@ def gen_test_annotation(test_data_path, annotation_path):
         json.dump(test_anno_list, f)
 
 
-# In[18]:
 
 
 DIR_INPUT = '/kaggle/working/mmdetection/data/Wheatdetection'
@@ -163,7 +145,6 @@ test_df = pd.read_csv(f'{DIR_INPUT}/sample_submission.csv')
 gen_test_annotation(DIR_TEST, DIR_ANNO + '/detection_test.json')
 
 
-# In[19]:
 
 
 config_file = '/kaggle/working/mmdetection/configs/wheatdetection/faster_rcnn_r50_fpn_1x_coco_test.py'
@@ -173,7 +154,6 @@ cfg.data.test.test_mode = True
 distributed = False
 
 
-# In[20]:
 
 
 dataset = build_dataset(cfg.data.test)
@@ -185,7 +165,6 @@ data_loader = build_dataloader(
     shuffle=False)
 
 
-# In[21]:
 
 
 #################################### faster rcnn ############################################
@@ -216,7 +195,6 @@ for images_info, result in zip(dataset.data_infos, outputs):
     results.append(result)
 
 
-# In[22]:
 
 
 test_df = pd.DataFrame(results, columns=['image_id', 'PredictionString'])
@@ -225,7 +203,6 @@ test_df = pd.DataFrame(results, columns=['image_id', 'PredictionString'])
 test_df.to_csv('submission.csv', index=False)
 
 
-# In[23]:
 
 
 get_ipython().system('rm -rf mmdetection/')

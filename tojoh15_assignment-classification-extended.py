@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import tensorflow as tf
@@ -12,7 +11,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
 
-# In[ ]:
 
 
 # Load data (must be in same folder as this file, which it will be if you simply unzip the assignment).
@@ -32,7 +30,6 @@ x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.
 print(x_train.shape, x_val.shape, x_test.shape, y_train.shape, y_val.shape)
 
 
-# In[ ]:
 
 
 model = tf.keras.models.Sequential([
@@ -50,13 +47,11 @@ model.compile(
 model.fit(x_train, y_train, epochs=10)
 
 
-# In[ ]:
 
 
 model.evaluate(x_val, y_val)
 
 
-# In[ ]:
 
 
 def build_model(nodes1, nodes2, lr):
@@ -76,7 +71,6 @@ def build_model(nodes1, nodes2, lr):
     return model
 
 
-# In[ ]:
 
 
 epochs_list = [??] # "default" is 10. check if it overfit at 10 - if not, try maybe double (and maybe more)
@@ -98,32 +92,27 @@ for epochs in epochs_list:
 results = pd.DataFrame(results, columns=['loss', 'acc', 'epochs', 'nodes1', 'nodes2', 'lr'])
 
 
-# In[ ]:
 
 
 results
 
 
-# In[ ]:
 
 
 results[results['loss'] == results['loss'].min()]
 
 
-# In[ ]:
 
 
 results[results['acc'] == results['acc'].max()]
 
 
-# In[ ]:
 
 
 model_final = build_model(???)
 model_final.fit(np.concatenate([x_train, x_val]), np.concatenate([y_train, y_val]), epochs=??)
 
 
-# In[ ]:
 
 
 y_test_hat = model_final.predict(x_test)
@@ -134,7 +123,6 @@ y_test_hat_pd = pd.DataFrame({
 })
 
 
-# In[ ]:
 
 
 # After you make your predictions, you should submit them on the Kaggle webpage for our competition.

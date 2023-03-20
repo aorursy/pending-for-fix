@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import pandas as pd, numpy as np
@@ -13,7 +12,6 @@ import tokenizers
 print('TF version',tf.__version__)
 
 
-# In[2]:
 
 
 def read_train():
@@ -36,19 +34,16 @@ test_df = read_test()
 submission_df = read_submission()
 
 
-# In[3]:
 
 
 train_df
 
 
-# In[4]:
 
 
 train_list = train_df.to_dict('records')
 
 
-# In[5]:
 
 
 MAX_SEQUENCE_LENGTH = 0
@@ -59,7 +54,6 @@ for image_data in train_list:
 print(MAX_SEQUENCE_LENGTH)
 
 
-# In[6]:
 
 
 MAX_SEQUENCE_LENGTH = 0
@@ -70,19 +64,16 @@ for image_data in train_list:
 print(MAX_SEQUENCE_LENGTH)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[7]:
 
 
 def jaccard(str1, str2): 
@@ -92,7 +83,6 @@ def jaccard(str1, str2):
     return float(len(c)) / (len(a) + len(b) - len(c))
 
 
-# In[8]:
 
 
 MAX_LEN = 96
@@ -106,7 +96,6 @@ tokenizer = tokenizers.ByteLevelBPETokenizer(
 sentiment_id = {'positive': 1313, 'negative': 2430, 'neutral': 7974}
 
 
-# In[9]:
 
 
 ct = train_df.shape[0]
@@ -148,7 +137,6 @@ for k in range(train_df.shape[0]):
         end_tokens[k,toks[-1]+1] = 1
 
 
-# In[10]:
 
 
 ct = test_df.shape[0]
@@ -166,20 +154,17 @@ for k in range(test_df.shape[0]):
     attention_mask_t[k,:len(enc.ids)+5] = 1
 
 
-# In[11]:
 
 
 def scheduler(epoch):
     return 3e-5 * 0.2**epoch
 
 
-# In[12]:
 
 
 from keras import regularizers
 
 
-# In[13]:
 
 
 
@@ -228,25 +213,21 @@ def build_model():
     return model
 
 
-# In[ ]:
 
 
 
 
 
-# In[14]:
 
 
 model.summary()
 
 
-# In[15]:
 
 
 n_splits = 5
 
 
-# In[16]:
 
 
 ''''
@@ -299,7 +280,6 @@ for fold,(idxT,idxV) in enumerate(skf.split(input_ids,train_df.sentiment.values)
 ''''
 
 
-# In[17]:
 
 
 
@@ -321,7 +301,6 @@ for i in range(5):
     preds_end += preds[1]/n_splits
 
 
-# In[18]:
 
 
 
@@ -338,7 +317,6 @@ for k in range(input_ids_t.shape[0]):
     all.append(st)
 
 
-# In[19]:
 
 
 
@@ -346,7 +324,6 @@ test_df['selected_text'] = all
 test_df[['textID','selected_text']].to_csv('submission.csv',index=False)
 
 
-# In[ ]:
 
 
 

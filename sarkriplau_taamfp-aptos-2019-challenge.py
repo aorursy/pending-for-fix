@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import pandas as pd
@@ -16,13 +15,11 @@ import zipfile
 import cv2
 
 
-# In[ ]:
 
 
 
 
 
-# In[2]:
 
 
 train_path_labels = '../input/aptos2019-blindness-detection/train.csv'
@@ -36,13 +33,11 @@ train_labels = pd.read_csv(train_path_labels)
 test_labels = pd.read_csv(test_path_labels)
 
 
-# In[3]:
 
 
 train_labels.head()
 
 
-# In[4]:
 
 
 ## Reading some images and compare 
@@ -67,19 +62,16 @@ cv2.imshow('Number4',gray2)
 cv2.waitKey(0)
 
 
-# In[5]:
 
 
 hist = np.histogram(gray2.flatten(),256,[0,256])[0]
 
 
-# In[6]:
 
 
 hist
 
 
-# In[7]:
 
 
 from os import listdir,makedirs
@@ -98,7 +90,6 @@ for image in files:
     cv2.imwrite(dstPath,gray)
 
 
-# In[8]:
 
 
 files = [f for f in listdir(path_train_gray) if isfile(join(path_train_gray,f))] 
@@ -111,7 +102,6 @@ for images in files:
     
 
 
-# In[9]:
 
 
 def image_processing(original_path, new_path):
@@ -125,7 +115,6 @@ def image_processing(original_path, new_path):
         cv2.imwrite(different_path,resized_image)
 
 
-# In[10]:
 
 
 original_path_train = r'Train_Images' # Source Folder
@@ -134,7 +123,6 @@ new_path_train = r'Gray_Images' # Destination Folder
 image_processing(original_path_train, new_path_train)
 
 
-# In[11]:
 
 
 import numpy as np 
@@ -160,7 +148,6 @@ from keras.models import Sequential
 import warnings
 
 
-# In[12]:
 
 
 def prepareImages(data, m, dataset):
@@ -182,7 +169,6 @@ def prepareImages(data, m, dataset):
     return X_train
 
 
-# In[13]:
 
 
 def prepare_labels(y):
@@ -201,7 +187,6 @@ def prepare_labels(y):
     return y, label_encode
 
 
-# In[14]:
 
 
 train_csv = pd.read_csv(train_path_labels)
@@ -211,13 +196,11 @@ X = prepareImages(train_labels, train_labels.shape[0], 'Train_Images')
 X /= 255
 
 
-# In[15]:
 
 
 y, label_encoder = prepare_labels(train_labels['id_code'])
 
 
-# In[16]:
 
 
 model = Sequential()
@@ -248,7 +231,6 @@ model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accu
 model.fit(X,y, batch_size = 32,epochs = 3,  validation_split = 0.1)
 
 
-# In[17]:
 
 
 history = model.fit(X, y, epochs=100, batch_size=100, verbose=1)

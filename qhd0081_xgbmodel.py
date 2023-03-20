@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import os
@@ -15,47 +14,40 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import roc_auc_score
 
 
-# In[2]:
 
 
 train=pd.read_csv('../input/train.csv')
 test=pd.read_csv('../input/test.csv')
 
 
-# In[3]:
 
 
 features = [c for c in train.columns if c not in ['ID_code', 'target']]
 
 
-# In[4]:
 
 
 y=train['target']
 X = train.drop(['target', 'ID_code'], axis=1)
 
 
-# In[5]:
 
 
 ID_code=test['ID_code']
 X_test = test.drop(['ID_code'],axis = 1)
 
 
-# In[6]:
 
 
 n_splits = 5 # Number of K-fold Splits
 splits = list(StratifiedKFold(n_splits=n_splits, shuffle=False).split(X, y))
 
 
-# In[7]:
 
 
 import xgboost as xgb
 
 
-# In[8]:
 
 
 params ={
@@ -70,13 +62,11 @@ params ={
                scale_pos_weight = round(sum(!y) / sum(y), 2))
 
 
-# In[9]:
 
 
 y.value_counts()
 
 
-# In[10]:
 
 
 xgb_param = {
@@ -94,7 +84,6 @@ xgb_param = {
         }
 
 
-# In[11]:
 
 
 oof = np.zeros(len(X))
@@ -123,14 +112,12 @@ for i, (train_idx, valid_idx) in enumerate(splits):
 print("CV score: {:<8.5f}".format(roc_auc_score(y, oof)))
 
 
-# In[12]:
 
 
 xgb_test=xgb.DMatrix(X_test.values)
 predictions=clf.predict(xgb_test,ntree_limit=clf.best_ntree_limit)
 
 
-# In[13]:
 
 
 submission=pd.DataFrame()
@@ -139,7 +126,6 @@ submission['target']=predictions
 submission.to_csv('sub_xgb_v1.csv', index=False)
 
 
-# In[14]:
 
 
 for i, (train_idx, valid_idx) in enumerate(splits): 
@@ -147,13 +133,11 @@ for i, (train_idx, valid_idx) in enumerate(splits):
     oof[valid_idx] = clf.predict(xgb_valid, ntree_limit=clf.best_ntree_limit)
 
 
-# In[15]:
 
 
 print("CV score: {:<8.5f}".format(roc_auc_score(y, oof)))
 
 
-# In[16]:
 
 
 params = {
@@ -166,7 +150,6 @@ params = {
         }
 
 
-# In[17]:
 
 
 from sklearn.model_selection import RandomizedSearchCV
@@ -174,7 +157,6 @@ xgb_clf = XGBClassifier(n_estimators=600, objective='binary:logistic',
                     silent=True, nthread=1)
 
 
-# In[18]:
 
 
 splits = StratifiedKFold(n_splits=3, shuffle = False)

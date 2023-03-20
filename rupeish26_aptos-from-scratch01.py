@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[7]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,13 +22,11 @@ import os
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[8]:
 
 
 os.listdir('../input/aptos2019-blindness-detection/')
 
 
-# In[9]:
 
 
 base_image_dir = os.path.join('..','input/aptos2019-blindness-detection/')
@@ -37,67 +34,56 @@ train_dir = os.path.join(base_image_dir,'train_images/')
 train_df = pd.read_csv(os.path.join(base_image_dir,'train.csv'))
 
 
-# In[10]:
 
 
 train_df.head()
 
 
-# In[11]:
 
 
 train_df['image']= train_df['id_code'].map(lambda x: '{}.png'.format(x))
 
 
-# In[12]:
 
 
 train_df['diagnosis']= train_df['diagnosis'].map(lambda x: str(x))
 
 
-# In[13]:
 
 
 train_df.head()
 
 
-# In[14]:
 
 
 train_df = train_df.drop(columns=['id_code'])
 
 
-# In[15]:
 
 
 train_df.head()
 
 
-# In[16]:
 
 
 train_df = train_df.sample(frac=1).reset_index(drop=True)
 
 
-# In[17]:
 
 
 train_df.head()
 
 
-# In[18]:
 
 
 print("Number of images: {}".format(len(train_df)))
 
 
-# In[19]:
 
 
 train_df['diagnosis'].hist(figsize=(10,5))
 
 
-# In[87]:
 
 
 from PIL import Image
@@ -107,61 +93,51 @@ w, h = img.size
 print(w,h)
 
 
-# In[88]:
 
 
 plt.imshow(np.asarray(img))
 
 
-# In[89]:
 
 
 from sklearn.model_selection import train_test_split
 
 
-# In[90]:
 
 
 train, valid = train_test_split(train_df,test_size=0.2, random_state=42, shuffle=True)
 
 
-# In[91]:
 
 
 train.shape
 
 
-# In[92]:
 
 
 valid.shape
 
 
-# In[93]:
 
 
 from tensorflow import keras
 
 
-# In[94]:
 
 
 from keras.applications.inception_v3 import InceptionV3
 
 
-# In[95]:
 
 
 model = InceptionV3()
 
 
-# In[96]:
 
 
 model.summary()
 
 
-# In[97]:
 
 
 from keras.models import Model
@@ -170,7 +146,6 @@ from keras.layers import Flatten
 import tensorflow as tf
 
 
-# In[98]:
 
 
 flat1 = Flatten()(model.layers[-1].output)
@@ -178,19 +153,16 @@ class1 = Dense(1024, activation='relu')(flat1)
 output = Dense(5, activation='softmax')(class1)
 
 
-# In[99]:
 
 
 model = Model(inputs=model.inputs, outputs=output)
 
 
-# In[100]:
 
 
 model.summary()
 
 
-# In[101]:
 
 
 model.compile(optimizer='adam',
@@ -198,26 +170,22 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 
-# In[102]:
 
 
 #history = model.fit(train_images, train_labels, epochs=10, 
  #                   validation_data=(test_images, test_labels))
 
 
-# In[103]:
 
 
 from keras_preprocessing.image import ImageDataGenerator
 
 
-# In[104]:
 
 
 datagen=ImageDataGenerator()
 
 
-# In[105]:
 
 
 train_generator=datagen.flow_from_dataframe(
@@ -233,7 +201,6 @@ class_mode="categorical",
 target_size=(299,299))
 
 
-# In[107]:
 
 
 valid_generator=datagen.flow_from_dataframe(
@@ -248,14 +215,12 @@ class_mode="categorical",
 target_size=(299,299))
 
 
-# In[108]:
 
 
 STEP_SIZE_TRAIN=train_generator.n//train_generator.batch_size
 STEP_SIZE_VALID=valid_generator.n//valid_generator.batch_size
 
 
-# In[109]:
 
 
 model.fit_generator(generator=train_generator,
@@ -266,7 +231,6 @@ model.fit_generator(generator=train_generator,
 )
 
 
-# In[42]:
 
 
 test_generator=test_datagen.flow_from_dataframe(
@@ -281,56 +245,47 @@ class_mode=None,
 target_size=(32,32))
 
 
-# In[ ]:
 
 
 model.evaluate_generator(generator=valid_generator,
 steps=1)
 
 
-# In[111]:
 
 
 mkdir model
 
 
-# In[112]:
 
 
 ls
 
 
-# In[113]:
 
 
 model.save('/kaggle/working/model')
 
 
-# In[114]:
 
 
 ls model/
 
 
-# In[115]:
 
 
 model_new = keras.models.load_model('/kaggle/working/model')
 
 
-# In[116]:
 
 
 model_new.summary()
 
 
-# In[ ]:
 
 
 valid_generator.reset()
 
 
-# In[ ]:
 
 
 pred=model.predict_generator(valid_generator,
@@ -338,31 +293,26 @@ steps=STEP_SIZE_VALID,
 verbose=1)
 
 
-# In[ ]:
 
 
 predicted_class_indices=np.argmax(pred,axis=1)
 
 
-# In[ ]:
 
 
 valid
 
 
-# In[165]:
 
 
 x = train_dir+'0024cdab0c1e.png'
 
 
-# In[166]:
 
 
 x
 
 
-# In[147]:
 
 
 from PIL import Image
@@ -372,74 +322,62 @@ w, h = img.size
 print(w,h)
 
 
-# In[148]:
 
 
 x= np.array(img)
 x.shape
 
 
-# In[149]:
 
 
 x = np.resize(x,(299,299,3))
 
 
-# In[150]:
 
 
 x = np.expand_dims(x,0)
 
 
-# In[151]:
 
 
 x.shape
 
 
-# In[152]:
 
 
 model.summary()
 
 
-# In[153]:
 
 
 pred = model.predict(x,batch_size=1, verbose=0, steps=None, callbacks=None)
 
 
-# In[154]:
 
 
 pred
 
 
-# In[155]:
 
 
 np.argmax(pred,axis=1)
 
 
-# In[156]:
 
 
 pred_new = model_new.predict(x,batch_size=1, verbose=0, steps=None, callbacks=None)
 
 
-# In[157]:
 
 
 pred_new
 
 
-# In[158]:
 
 
 np.argmax(pred_new,axis=1)
 
 
-# In[167]:
 
 
 import cv2
@@ -459,13 +397,11 @@ prediction =  model_new.predict([img])
 print(prediction)
 
 
-# In[168]:
 
 
 np.argmax(prediction,axis=1)
 
 
-# In[ ]:
 
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,19 +19,16 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 from PIL import Image, ImageFilter, ImageChops, ImageOps
 
 
-# In[3]:
 
 
 from tqdm import tqdm_notebook
 
 
-# In[4]:
 
 
 import argparse
@@ -60,14 +56,12 @@ random.seed(manualSeed)
 torch.manual_seed(manualSeed)
 
 
-# In[5]:
 
 
 get_ipython().system('rm -r ../train')
 get_ipython().system('rm -r ../test')
 
 
-# In[6]:
 
 
 get_ipython().system('mkdir ../train')
@@ -78,19 +72,16 @@ get_ipython().system('mkdir ../train/1')
 get_ipython().system('mkdir ../train/1/1')
 
 
-# In[7]:
 
 
 data = pd.read_csv('/kaggle/input/train_labels.csv')
 
 
-# In[8]:
 
 
 data.head()
 
 
-# In[9]:
 
 
 ORIGINAL_SIZE = 96
@@ -127,7 +118,6 @@ def process(path, mode, label):
         colorImage.save("../%s/%d/%d/%s_%d.png" % (mode, label, label, path, I+12), "PNG")  
 
 
-# In[10]:
 
 
 values = data.values
@@ -136,19 +126,16 @@ for I in tqdm_notebook(range(len(values))):
     process(values[I][0], "train", values[I][1])
 
 
-# In[11]:
 
 
 print(len(os.listdir("../train/0/0")))
 
 
-# In[12]:
 
 
 print(len(os.listdir("../train/1/1")))
 
 
-# In[13]:
 
 
 # Root directory for dataset
@@ -189,7 +176,6 @@ beta1 = 0.5
 ngpu = 1
 
 
-# In[14]:
 
 
 dataset = dset.ImageFolder(root=dataroot,
@@ -214,7 +200,6 @@ plt.title("Training Images")
 plt.imshow(np.transpose(vutils.make_grid(real_batch[0].to(device)[:64], padding=2, normalize=True).cpu(),(1,2,0)))
 
 
-# In[15]:
 
 
 def weights_init(m):
@@ -226,7 +211,6 @@ def weights_init(m):
         nn.init.constant_(m.bias.data, 0)
 
 
-# In[16]:
 
 
 class Generator(nn.Module):
@@ -260,7 +244,6 @@ class Generator(nn.Module):
         return self.main(input)
 
 
-# In[17]:
 
 
 # Create the generator
@@ -278,7 +261,6 @@ netG.apply(weights_init)
 print(netG)
 
 
-# In[18]:
 
 
 class Discriminator(nn.Module):
@@ -310,7 +292,6 @@ class Discriminator(nn.Module):
         return self.main(input)
 
 
-# In[19]:
 
 
 # Create the Discriminator
@@ -324,7 +305,6 @@ netD.apply(weights_init)
 print(netD)
 
 
-# In[20]:
 
 
 # Initialize BCELoss function
@@ -343,7 +323,6 @@ optimizerD = optim.Adam(netD.parameters(), lr=lr, betas=(beta1, 0.999))
 optimizerG = optim.Adam(netG.parameters(), lr=lr, betas=(beta1, 0.999))
 
 
-# In[21]:
 
 
 # Training Loop
@@ -429,7 +408,6 @@ for epoch in range(num_epochs):
         iters += 1
 
 
-# In[22]:
 
 
 plt.figure(figsize=(10,5))
@@ -442,7 +420,6 @@ plt.legend()
 plt.show()
 
 
-# In[23]:
 
 
 real_batch = next(iter(dataloader))
@@ -462,7 +439,6 @@ plt.imshow(np.transpose(img_list[-1],(1,2,0)))
 plt.show()
 
 
-# In[ ]:
 
 
 

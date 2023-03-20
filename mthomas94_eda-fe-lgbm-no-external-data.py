@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import re
@@ -19,7 +18,6 @@ import scipy.stats as stats
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[2]:
 
 
 # Function to reduce memory usage.  From: https://www.kaggle.com/fabiendaniel/detecting-malwares-with-lgbm
@@ -52,7 +50,6 @@ def reduce_mem_usage(df, verbose=True):
     return df
 
 
-# In[3]:
 
 
 train = pd.read_csv('../input/tmdb-box-office-prediction/train.csv'))
@@ -60,20 +57,17 @@ test = pd.read_csv('../input/tmdb-box-office-prediction/test.csv')
 train.head()
 
 
-# In[4]:
 
 
 train.info()
 
 
-# In[5]:
 
 
 # Revenues are not uniformally distributed
 train['revenue'].hist(bins=25)
 
 
-# In[6]:
 
 
 # When comparing the listed revenues with their actual values found online, 
@@ -81,28 +75,24 @@ train['revenue'].hist(bins=25)
 train.sort_values('revenue').head()
 
 
-# In[7]:
 
 
 # Budget is also skewed.
 train['budget'].hist(bins=25)
 
 
-# In[8]:
 
 
 # $0 budget for some movies?
 train['budget'].describe()
 
 
-# In[9]:
 
 
 print('Movies with 0$ Budget:', len(train[train['budget'] == 0]))
 train[train['budget'] == 0].head()
 
 
-# In[10]:
 
 
 # Create columns for year, month, and day of week
@@ -116,19 +106,16 @@ train['release_year'] = train['release_date'].apply(lambda t: t.year if t.year <
 #train.drop('release_date', inplace=True)
 
 
-# In[11]:
 
 
 train['runtime'].hist(bins=25)
 
 
-# In[12]:
 
 
 len(train[train['runtime'] == 0])
 
 
-# In[13]:
 
 
 # I'll write a function that will map the average runtime for each year to movies with 0 runtie.
@@ -146,20 +133,17 @@ def map_runtime(df):
     return df
 
 
-# In[14]:
 
 
 train = map_runtime(train)
 train.runtime.describe()
 
 
-# In[15]:
 
 
 train['homepage'].head()
 
 
-# In[16]:
 
 
 # For homepage, I'll change it to 0 for NaN and 1 if a page is listed.
@@ -167,13 +151,11 @@ train['homepage'].fillna(0, inplace=True)
 train.loc[train['homepage'] != 0, 'homepage'] = 1
 
 
-# In[17]:
 
 
 train['poster_path'].head()
 
 
-# In[18]:
 
 
 # For poster_path, I'll change it to 0 for NaN and 1 if a path is listed.
@@ -181,20 +163,17 @@ train['poster_path'].fillna(0, inplace=True)
 train.loc[train['poster_path'] != 0, 'poster_path'] = 1
 
 
-# In[19]:
 
 
 train['genres'].describe()
 
 
-# In[20]:
 
 
 # For genres, I'll fill Na values with drama (most common).  Likely a better approach available.
 train.genres = train.genres.fillna('18')
 
 
-# In[21]:
 
 
 # To fill in zero budget data points, I'll try to use correlated values as predictors
@@ -203,7 +182,6 @@ for i in X.select_dtypes(include='number', exclude='datetime'):
     print(i, stats.pearsonr(X.budget, X[i]))
 
 
-# In[22]:
 
 
 # release_year and popularity correlate most strongly with budget
@@ -224,91 +202,77 @@ def map_budget(df):
     return df
 
 
-# In[23]:
 
 
 train = map_budget(train)
 train.budget.describe()
 
 
-# In[24]:
 
 
 train['belongs_to_collection'].head()
 
 
-# In[25]:
 
 
 # belongs_to_collection NaN values can be replaced with 'none'
 train['belongs_to_collection'] = train['belongs_to_collection'].fillna('none')
 
 
-# In[26]:
 
 
 train['spoken_languages'].head()
 
 
-# In[27]:
 
 
 train.spoken_languages.value_counts(dropna=False)
 
 
-# In[28]:
 
 
 # For spoken_languages I'll fill Na values with [{'iso_639_1': 'en', 'name': 'English'}]
 train.spoken_languages = train.spoken_languages.fillna("[{'iso_639_1': 'en', 'name': 'English'}]")
 
 
-# In[29]:
 
 
 train['overview'].head()
 
 
-# In[30]:
 
 
 # For overview, I'll fill Na values with 'none'
 train.overview = train.overview.fillna('none')
 
 
-# In[31]:
 
 
 train['Keywords'].head()
 
 
-# In[32]:
 
 
 # For Keywords, I'll fill Na values with 'none'
 train.Keywords = train.Keywords.fillna('none')
 
 
-# In[33]:
 
 
 train.production_countries.describe()
 
 
-# In[34]:
 
 
 # For production_countries, I'll fill Na with the most common value
 train.production_countries = train.production_countries.fillna("[{'iso_3166_1': 'US', 'name': 'United States of America'}]")
 
 
-# In[35]:
 
 
 train.production_companies.value_counts()
 
 
-# In[36]:
 
 
 # Create a columns for title length
@@ -321,7 +285,6 @@ train = pd.concat([train,title_len], axis=1)
 train['title_length'].describe()
 
 
-# In[37]:
 
 
 # For genres, I'll make a new column counting the number of listed genre types
@@ -342,7 +305,6 @@ train = pd.concat([train, genre_ids, num_genre_types], axis=1)
 train['num_genre_types'].describe()
 
 
-# In[38]:
 
 
 # Create column for sequels
@@ -358,7 +320,6 @@ train = pd.concat([train, is_sequel], axis=1)
 train['is_sequel'].describe()
 
 
-# In[39]:
 
 
 keyword_words = []
@@ -380,7 +341,6 @@ train = pd.concat([train, num_keywords], axis=1)
 train['num_keywords'].describe()
 
 
-# In[40]:
 
 
 # could use the numbers from the categories, sum them up, and then convert them to a category to target incode
@@ -393,13 +353,11 @@ train = pd.concat([keyword_ids, train], axis=1)
 train.keyword_ids.head()
 
 
-# In[41]:
 
 
 train.belongs_to_collection.head()
 
 
-# In[42]:
 
 
 # Extract number from belongs to collection
@@ -418,7 +376,6 @@ train = pd.concat([train, collection_id], axis=1)
 train['collection_id'].describe()
 
 
-# In[43]:
 
 
 # Add column with 1 for movies in a collection and 0 if not
@@ -435,13 +392,11 @@ train = pd.concat([train, is_in_collection], axis=1)
 train['is_in_collection'].describe()
 
 
-# In[44]:
 
 
 train['production_countries'].head()
 
 
-# In[45]:
 
 
 # Create a column for production country (1 for US, 0 for rest of world)
@@ -458,7 +413,6 @@ train = pd.concat([train, US_prod_country], axis=1)
 train['US_prod_country'].describe()
 
 
-# In[46]:
 
 
 # Create column for number of production countries
@@ -472,7 +426,6 @@ train = pd.concat([train, num_production_countries], axis=1)
 train['num_production_countries'].describe()
 
 
-# In[47]:
 
 
 # Create a column for each production company name and a column for the number of companies
@@ -545,7 +498,6 @@ train = pd.concat([train, num_production_companies, production_company_1, produc
 train.production_company_8.head()
 
 
-# In[48]:
 
 
 # Create a column for number of spoken languages
@@ -559,7 +511,6 @@ train = pd.concat([train, num_spoken_languages], axis=1)
 train['num_spoken_languages'].describe()
 
 
-# In[49]:
 
 
 # Create column for release status
@@ -574,7 +525,6 @@ train = pd.concat([train, status_is_released], axis=1)
 train['status_is_released'].describe()
 
 
-# In[50]:
 
 
 def data_processing(df):
@@ -873,7 +823,6 @@ def data_processing(df):
     return reduce_mem_usage(df)
 
 
-# In[51]:
 
 
 # Reload the data fresh and apply the processing function
@@ -883,14 +832,12 @@ train = data_processing(train)
 test = data_processing(test)
 
 
-# In[52]:
 
 
 # There are 13 object columns that will need to be converted to numeric
 train.info()
 
 
-# In[53]:
 
 
 def train_target_encoded_year(df, cols):
@@ -903,7 +850,6 @@ def train_target_encoded_year(df, cols):
     return df
 
 
-# In[54]:
 
 
 def test_target_encoded_year(df_train, df_test, cols):
@@ -916,7 +862,6 @@ def test_target_encoded_year(df_train, df_test, cols):
     return df_test
 
 
-# In[55]:
 
 
 def target_encode(df, target_feature, m = 300): 
@@ -940,7 +885,6 @@ for i in df_test[df_test.isnull()]: #df_test[df_test.isnull()].index
         X[i] = X[i].map(d[i]) # df_test[]
 
 
-# In[56]:
 
 
 def test_target_encoded_year(df_train, df_test):
@@ -965,14 +909,12 @@ def test_target_encoded_year(df_train, df_test):
     return reduce_mem_usage(df_test)
 
 
-# In[57]:
 
 
 # The numeric columns look okay, but budget may need normalization as the st. dev is quite large
 train.describe()
 
 
-# In[58]:
 
 
 # Budget normalization - Didn't improve model accuracy for linear regression (remained the same)
@@ -980,14 +922,12 @@ train.describe()
 #train.head()
 
 
-# In[59]:
 
 
 from category_encoders import *
 from sklearn.preprocessing import LabelEncoder
 
 
-# In[60]:
 
 
 # Make complete list of genre ids
@@ -1004,13 +944,11 @@ for i in train.loc[:, 'genre_id_1': 'genre_id_7'].columns:
     train[i] = train[i].map(genre_ids_dict)
 
 
-# In[61]:
 
 
 train.loc[:, 'production_company_2': 'production_company_8'].head()
 
 
-# In[62]:
 
 
 # Make complete list of production companies
@@ -1027,7 +965,6 @@ for i in train.loc[:, 'production_company_1': 'production_company_8'].columns:
     train[i] = train[i].map(prod_companies_dict)
 
 
-# In[63]:
 
 
 le = LabelEncoder()
@@ -1036,7 +973,6 @@ train['original_language'] = le.fit_transform(train['original_language'])
 train.info()
 
 
-# In[64]:
 
 
 from sklearn.preprocessing import LabelEncoder
@@ -1073,7 +1009,6 @@ def cat_encode(df):
     return reduce_mem_usage(df)
 
 
-# In[65]:
 
 
 train = cat_encode(train)
@@ -1081,7 +1016,6 @@ test = cat_encode(test)
 train.info()
 
 
-# In[66]:
 
 
 # Get an idea of what correlates most strongly with revenue
@@ -1089,14 +1023,12 @@ for i in train.columns:
     print(i, stats.pearsonr(train[i], train['revenue']))
 
 
-# In[67]:
 
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 
 
-# In[68]:
 
 
 X = train.drop(['id', 'revenue'], axis=1)
@@ -1104,7 +1036,6 @@ y = train['revenue']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=101)
 
 
-# In[69]:
 
 
 from sklearn.linear_model import LinearRegression
@@ -1113,20 +1044,17 @@ model.fit(X_train, y_train)
 pred = model.predict(X_test)
 
 
-# In[70]:
 
 
 sns.distplot((y_test-pred),bins=50)
 
 
-# In[71]:
 
 
 def rmsle(y_true, y_pred):
     return 'rmsle', np.sqrt(np.mean(np.power(np.log1p(y_pred) - np.log1p(y_true), 2))), False
 
 
-# In[72]:
 
 
 from sklearn import metrics
@@ -1136,20 +1064,17 @@ print('RMSE:', np.sqrt(metrics.mean_squared_error(y_test, pred)))
 print('RMSLE:', rmsle(y_test, pred))
 
 
-# In[73]:
 
 
 from lightgbm import LGBMRegressor
 lr = LGBMRegressor(boosting_type='dart', random_state=101)
 
 
-# In[74]:
 
 
 from sklearn.model_selection import GridSearchCV,StratifiedKFold
 
 
-# In[75]:
 
 
 # grid_1
@@ -1173,14 +1098,12 @@ params_1 = {'num_leaves': [20, 40, 60, 80, 100], #20 is best
          }
 
 
-# In[76]:
 
 
 grid_1 = GridSearchCV(lr, param_grid=params_1, scoring='neg_mean_squared_error', cv=5)
 grid_1.fit(X_train, y_train)
 
 
-# In[77]:
 
 
 print(grid_1.best_params_)
@@ -1188,7 +1111,6 @@ print(grid_1.best_score_)
 print(grid_1.best_estimator_)
 
 
-# In[78]:
 
 
 # grid_2
@@ -1212,14 +1134,12 @@ params_2 = {'num_leaves': [10, 15, 20], # 20 is best
          }
 
 
-# In[79]:
 
 
 grid_2 = GridSearchCV(lr, param_grid=params_2, scoring='neg_mean_squared_error', cv=5)
 grid_2.fit(X_train, y_train)
 
 
-# In[80]:
 
 
 print(grid_2.best_params_)
@@ -1227,7 +1147,6 @@ print(grid_2.best_score_)
 print(grid_2.best_estimator_)
 
 
-# In[81]:
 
 
 # grid_3
@@ -1251,14 +1170,12 @@ params_3 = {'num_leaves': [20],
          }
 
 
-# In[82]:
 
 
 grid_3 = GridSearchCV(lr, param_grid=params_3, scoring='neg_mean_squared_error', cv=5)
 grid_3.fit(X_train, y_train)
 
 
-# In[83]:
 
 
 print(grid_3.best_params_)
@@ -1266,7 +1183,6 @@ print(grid_3.best_score_)
 print(grid_3.best_estimator_)
 
 
-# In[84]:
 
 
 # grid_4
@@ -1290,14 +1206,12 @@ params_4 = {'num_leaves': [20],
          }
 
 
-# In[85]:
 
 
 grid_4 = GridSearchCV(lr, param_grid=params_4, scoring='neg_mean_squared_error', cv=5)
 grid_4.fit(X_train, y_train)
 
 
-# In[86]:
 
 
 print(grid_4.best_params_)
@@ -1305,7 +1219,6 @@ print(grid_4.best_score_)
 print(grid_4.best_estimator_)
 
 
-# In[87]:
 
 
 # grid_5
@@ -1329,14 +1242,12 @@ params_5 = {'num_leaves': [20],
          }
 
 
-# In[88]:
 
 
 grid_5 = GridSearchCV(lr, param_grid=params_4, scoring='neg_mean_squared_error', cv=5)
 grid_5.fit(X_train, y_train)
 
 
-# In[89]:
 
 
 print(grid_5.best_params_)
@@ -1344,7 +1255,6 @@ print(grid_5.best_score_)
 print(grid_5.best_estimator_)
 
 
-# In[90]:
 
 
 lr = LGBMRegressor(boosting_type='dart',
@@ -1367,7 +1277,6 @@ lr = LGBMRegressor(boosting_type='dart',
                    n_jobs=-1)
 
 
-# In[91]:
 
 
 lr.fit(X_train, y_train,
@@ -1376,13 +1285,11 @@ lr.fit(X_train, y_train,
         early_stopping_rounds=500)
 
 
-# In[92]:
 
 
 pred = lr.predict(X_test, num_iteration=lr.best_iteration_)
 
 
-# In[93]:
 
 
 print('MAE:', metrics.mean_absolute_error(y_test, pred))
@@ -1391,7 +1298,6 @@ print('RMSE:', np.sqrt(metrics.mean_squared_error(y_test, pred)))
 print('RMSLE:', rmsle(y_test, pred))
 
 
-# In[94]:
 
 
 submission = pd.DataFrame()
@@ -1399,7 +1305,6 @@ submission['id'] = test['id']
 submission['revenue'] = lr.predict(test.drop('id', axis=1), num_iteration=lr.best_iteration_)
 
 
-# In[95]:
 
 
 submission.to_csv('TMDB_test_predictions.csv', index=False)

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -25,7 +24,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 # below 2 statements are taking 2 much time
@@ -35,76 +33,64 @@ train_df = pd.read_csv('../input/train.csv',nrows=10000000)
 test_df = pd.read_csv('../input/test.csv')
 
 
-# In[ ]:
 
 
 train_df.dtypes
 
 
-# In[ ]:
 
 
 test_df.tail(3)
 
 
-# In[ ]:
 
 
 train_df.shape
 
 
-# In[ ]:
 
 
 # This dataset is having large number of rows
 train_df.keys()
 
 
-# In[ ]:
 
 
 # as we see that null values are very less as compared to number of rows imported, so we can delete these 69 rows
 train_df.isnull().sum()
 
 
-# In[ ]:
 
 
 test_df.isnull().sum().sort_values(ascending=False)
 
 
-# In[ ]:
 
 
 train_df = train_df.dropna(how='any',axis =0)
 
 
-# In[ ]:
 
 
 train_df.isnull().sum()
 
 
-# In[ ]:
 
 
 train_df.shape
 
 
-# In[ ]:
 
 
 test_df.isnull().sum()
 
 
-# In[ ]:
 
 
 
 train_df['fare_amount'].describe()
 
 
-# In[ ]:
 
 
 # there are 420 rows with fare_amount < 0  which is not possible . so we can delete these rows
@@ -112,7 +98,6 @@ train_df[train_df['fare_amount']<0]
          
 
 
-# In[ ]:
 
 
 from collections import Counter
@@ -120,13 +105,11 @@ from collections import Counter
 Counter(train_df['fare_amount']<0)
 
 
-# In[ ]:
 
 
 #counter1 = for i in train_df['fare_amount'] 
 
 
-# In[ ]:
 
 
 #so the fare amount minimum is negative which cannot be possible . So this lines may be having wrong data.
@@ -134,44 +117,37 @@ Counter(train_df['fare_amount']<0)
 train_df = train_df.drop(train_df[train_df['fare_amount'] < 0].index,axis = 0)
 
 
-# In[ ]:
 
 
 train_df.describe()
 
 
-# In[ ]:
 
 
 train_df.shape
 
 
-# In[ ]:
 
 
 # if we look at the passenger_count field then we see that it is coming as 208 which is an outlier . There are 12 rows where passenger count is greater than 10
 len(train_df[train_df['passenger_count']>10].index)
 
 
-# In[ ]:
 
 
 len(test_df[test_df['passenger_count']>10].index)
 
 
-# In[ ]:
 
 
 train_df = train_df.drop(train_df[train_df['passenger_count'] > 10].index,axis = 0)
 
 
-# In[ ]:
 
 
 train_df.shape
 
 
-# In[ ]:
 
 
 #now coming to date time columns
@@ -179,26 +155,22 @@ train_df['key'] = pd.to_datetime(train_df['key'])
 train_df['pickup_datetime'] = pd.to_datetime(train_df['pickup_datetime'])
 
 
-# In[ ]:
 
 
 test_df.info()
 
 
-# In[ ]:
 
 
 test_df['key'] = pd.to_datetime(test_df['key'])
 test_df['pickup_datetime'] = pd.to_datetime(test_df['pickup_datetime'])
 
 
-# In[ ]:
 
 
 train_df.head(2)
 
 
-# In[ ]:
 
 
 #getting the values from date time column
@@ -209,13 +181,11 @@ train_df['hour'] = train_df.pickup_datetime.dt.hour
 train_df['dayweek'] = train_df.pickup_datetime.dt.dayofweek
 
 
-# In[ ]:
 
 
 train_df.sort_values(by=['year'],ascending=False)
 
 
-# In[ ]:
 
 
 test_df['month'] = test_df.pickup_datetime.dt.month
@@ -225,20 +195,17 @@ test_df['hour'] = test_df.pickup_datetime.dt.hour
 test_df['dayweek'] = test_df.pickup_datetime.dt.dayofweek
 
 
-# In[ ]:
 
 
 #data = [train_df,test_df]
 test_df.head(10)
 
 
-# In[ ]:
 
 
 train_df.describe()
 
 
-# In[ ]:
 
 
 # now checking latitude and longitude columns
@@ -247,49 +214,41 @@ train_df.describe()
 len(train_df[train_df['pickup_latitude'] <-90])
 
 
-# In[ ]:
 
 
 len(test_df[test_df['pickup_latitude'] <-90])
 
 
-# In[ ]:
 
 
 len(train_df[train_df['pickup_latitude'] >90])
 
 
-# In[ ]:
 
 
 len(test_df[test_df['pickup_latitude'] >90])
 
 
-# In[ ]:
 
 
 train_df = train_df.drop(((train_df[train_df['dropoff_latitude']<-90])|(train_df[train_df['dropoff_latitude']>90])).index, axis=0)
 
 
-# In[ ]:
 
 
 train_df = train_df.drop(((train_df[train_df['pickup_latitude']<-90])|(train_df[train_df['pickup_latitude']>90])).index, axis=0)
 
 
-# In[ ]:
 
 
 train_df = train_df.drop(((train_df[train_df['dropoff_longitude']<-180])|(train_df[train_df['dropoff_longitude']>180])).index, axis=0)
 
 
-# In[ ]:
 
 
 train_df = train_df.drop(((train_df[train_df['pickup_longitude']<-180])|(train_df[train_df['pickup_longitude']>180])).index, axis=0)
 
 
-# In[ ]:
 
 
 test_df = test_df.drop(((test_df[test_df['dropoff_latitude']<-90])|(test_df[test_df['dropoff_latitude']>90])).index, axis=0)
@@ -298,19 +257,16 @@ test_df = test_df.drop(((test_df[test_df['dropoff_longitude']<-180])|(test_df[te
 test_df = test_df.drop(((test_df[test_df['pickup_longitude']<-180])|(test_df[test_df['pickup_longitude']>180])).index, axis=0)
 
 
-# In[ ]:
 
 
 train_df.describe()
 
 
-# In[ ]:
 
 
 test_df.shape
 
 
-# In[ ]:
 
 
 # using the haversine formula
@@ -329,7 +285,6 @@ def haversine(pickup_latitude,pickup_longitude,dropoff_latitude,dropoff_longitud
     
 
 
-# In[ ]:
 
 
 # using the haversine formula
@@ -347,37 +302,31 @@ def haversine_test(pickup_latitude,pickup_longitude,dropoff_latitude,dropoff_lon
         i['distance'] = d
 
 
-# In[ ]:
 
 
 haversine('pickup_latitude','pickup_longitude','dropoff_latitude','dropoff_longitude')
 
 
-# In[ ]:
 
 
 haversine_test('pickup_latitude','pickup_longitude','dropoff_latitude','dropoff_longitude')
 
 
-# In[ ]:
 
 
 train_df.head(10)
 
 
-# In[ ]:
 
 
 test_df.head(2)
 
 
-# In[ ]:
 
 
 train_df['distance'].describe()
 
 
-# In[ ]:
 
 
 
@@ -388,14 +337,12 @@ plt.xlabel('No. of Passengers')
 plt.ylabel('Fare')
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(15,8))
 plt.hist(train_df['passenger_count'],bins=20)
 
 
-# In[ ]:
 
 
 #maximum frequency is by passengers travelling alone and highest fare also has come from a single passenger
@@ -403,13 +350,11 @@ train_df['fare_amount'].describe()
 train_df[train_df['fare_amount']>1000]
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 # if we see the fare_amount then it is 1276 with distance as 0
@@ -417,14 +362,12 @@ train_df[train_df['fare_amount']>1000]
 # so we need to delete the same as it is not appropriate
 
 
-# In[ ]:
 
 
 
 train_df.head(1)
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(14,6))
@@ -433,7 +376,6 @@ plt.xlabel('year')
 plt.ylabel('fare')
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(14,6))
@@ -442,13 +384,11 @@ plt.xlabel('year')
 plt.ylabel('fare')
 
 
-# In[ ]:
 
 
 # year 2015 has lowest rides but fare amount has increased alot maybe due to inflation
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(15,8))
@@ -457,20 +397,17 @@ plt.xlabel('month')
 plt.ylabel('fare')
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(15,6))
 plt.hist(train_df['month'],bins=12)
 
 
-# In[ ]:
 
 
 # nothing to derive based on month
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(16,6))
@@ -479,20 +416,17 @@ plt.xlabel('day')
 plt.ylabel('fare_amount')
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(15,6))
 plt.hist(train_df['day'],bins=31)
 
 
-# In[ ]:
 
 
 #again there is not much of a difference as 31 is not there in many months so its value is less
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(16,6))
@@ -501,21 +435,18 @@ plt.xlabel('hour')
 plt.ylabel('fare_amount')
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(20,10))
 plt.hist(train_df['hour'],bins=24)
 
 
-# In[ ]:
 
 
 # hours is giving us some insights as we see from the graph that from 1am to 6 am , rides are very less and from 6 pm to 12 am rides frequency is more.
 #fare_Amount is highest at 3 pm
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(16,6))
@@ -524,38 +455,32 @@ plt.xlabel('dayweek')
 plt.ylabel('fare_amount')
 
 
-# In[ ]:
 
 
 train_df.head(1)
 
 
-# In[ ]:
 
 
 train_df.shape
 
 
-# In[ ]:
 
 
 #  NY is a state which is not located at either 0 longitude or 0 latitude or 180 longitude or 180 latitude
 train_df.describe()
 
 
-# In[ ]:
 
 
 #train_df[((train_df['dropoff_longitude'] == 0)&(train_df['pickup_longitude'] == 0)&(train_df['dropoff_latitude'] == 0)&(train_df['pickup_latitude'] == 0)) & (train_df['fare_amount']!=0) ]
 
 
-# In[ ]:
 
 
 #train_df[((train_df['dropoff_longitude'] ==train_df['pickup_longitude'])&(train_df['dropoff_latitude'] == train_df['pickup_latitude'])) & (train_df['fare_amount']!=0) ]
 
 
-# In[ ]:
 
 
 
@@ -563,43 +488,36 @@ train_df.describe()
 len(train_df[(train_df['distance']==0)&(train_df['fare_amount']==0)])
 
 
-# In[ ]:
 
 
 train_df.shape
 
 
-# In[ ]:
 
 
 train_df=train_df.drop(train_df[(train_df['distance']==0)&(train_df['fare_amount']==0)].index,axis=0)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 train_df.shape
 
 
-# In[ ]:
 
 
 train_Df.shape
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 correlations = train_df.corr()
@@ -607,7 +525,6 @@ corrmat = correlations['fare_amount'].sort_values(ascending=False)
 corrmat
 
 
-# In[ ]:
 
 
 x = train_df.drop(['key','pickup_datetime', 'fare_amount'], axis=1)
@@ -615,19 +532,16 @@ y = train_df['fare_amount']
 
 
 
-# In[ ]:
 
 
 x.head(1)
 
 
-# In[ ]:
 
 
 y.head(1)
 
 
-# In[ ]:
 
 
 
@@ -638,21 +552,18 @@ from sklearn.linear_model import LinearRegression
 x_train, x_validate, y_train, y_validate = train_test_split(x, y, random_state=0, test_size=0.25)
 
 
-# In[ ]:
 
 
 
 from sklearn.linear_model import Ridge, RidgeCV, ElasticNet, LassoCV, LassoLarsCV
 
 
-# In[ ]:
 
 
 def rmse(model,x,y):
     return(np.sqrt(np.abs(cross_val_score(model, x, y, scoring="neg_mean_squared_error", cv = 5))))
 
 
-# In[ ]:
 
 
 from sklearn.ensemble import RandomForestRegressor
@@ -663,13 +574,11 @@ forestreg_cvscores = rmse(forestreg, x, y)
 print('Random forest regression  and cross validation score is {0}'.format(forestreg_cvscores.mean()*10))
 
 
-# In[ ]:
 
 
 train_df.head(5)
 
 
-# In[ ]:
 
 
 x_test = test_df.drop(['key','pickup_datetime'], axis=1)
@@ -681,7 +590,6 @@ data1.to_csv('submission.csv', index=False)
 #x_test = scaler.transform(x_test)
 
 
-# In[ ]:
 
 
 #linreg = LinearRegression()

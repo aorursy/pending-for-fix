@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,7 +22,6 @@ import matplotlib.pyplot as plt
 # # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 path='/kaggle/input/petfinder-sentiment/'
@@ -55,13 +53,11 @@ test_meta['StateName']=stateNames
 test_meta
 
 
-# In[3]:
 
 
 test_meta.info()
 
 
-# In[4]:
 
 
 stateAdoption=train_meta.groupby('StateName').agg({'PetID': ['count']}).reset_index()
@@ -77,13 +73,11 @@ plt.legend()
 plt.show()
 
 
-# In[5]:
 
 
 train_meta.State.isnull().count()
 
 
-# In[6]:
 
 
 stateAdoption0=train_meta[train_meta.AdoptionSpeed==0].groupby('StateName').agg({'PetID': ['count']}).reset_index()
@@ -121,13 +115,11 @@ plt.legend()
 plt.show()
 
 
-# In[7]:
 
 
 train_meta.info()
 
 
-# In[8]:
 
 
 # count the number of duplicate values
@@ -136,13 +128,11 @@ c = Counter(list(zip(train_meta.columns)))
 c
 
 
-# In[9]:
 
 
 train_meta.corr()
 
 
-# In[10]:
 
 
 f = plt.figure(figsize=(19, 15))
@@ -154,13 +144,11 @@ cb.ax.tick_params(labelsize=14)
 plt.title('Correlation Matrix', fontsize=16);
 
 
-# In[11]:
 
 
 train_meta.hist(figsize=(15,15))
 
 
-# In[12]:
 
 
 #Linear Regression?
@@ -183,14 +171,12 @@ finalDf = pd.concat([principalDf, train_meta[['AdoptionSpeed']]], axis = 1)
 finalDf
 
 
-# In[13]:
 
 
 plt.scatter(finalDf['AdoptionSpeed'],finalDf['principal component 1'], c = 'red',s=50)
 plt.show()
 
 
-# In[14]:
 
 
 plt.scatter(finalDf['principal component 2']
@@ -199,13 +185,11 @@ plt.scatter(finalDf['principal component 2']
 plt.show()
 
 
-# In[15]:
 
 
 pca.explained_variance_ratio_
 
 
-# In[16]:
 
 
 pca = PCA(n_components=1)
@@ -220,13 +204,11 @@ plt.scatter(finalDf['principal component 1']
 plt.show()
 
 
-# In[17]:
 
 
 train_meta.shape
 
 
-# In[18]:
 
 
 
@@ -236,7 +218,6 @@ feat=train_meta.drop(features, axis=1).columns
 feat
 
 
-# In[19]:
 
 
 # This examples shows the use of forests of trees to evaluate the importance of features on an artificial classification task. 
@@ -280,7 +261,6 @@ plt.xlim([-1, X.shape[1]])
 plt.show()
 
 
-# In[20]:
 
 
 from sklearn.datasets import fetch_mldata
@@ -324,25 +304,21 @@ plt.scatter(valid_lbl, y_pred)
 print(y_pred)
 
 
-# In[ ]:
 
 
 
 
 
-# In[21]:
 
 
 features
 
 
-# In[22]:
 
 
 test_meta[features.remove('AdoptionSpeed')].columns
 
 
-# In[23]:
 
 
 from sklearn.datasets import fetch_mldata
@@ -397,14 +373,12 @@ submission['AdoptionSpeed'].hist()
 submission.to_csv('submission.csv', index=False)
 
 
-# In[24]:
 
 
 submission=pd.read_csv('submission.csv')
 submission
 
 
-# In[25]:
 
 
 #submit
@@ -416,7 +390,6 @@ submission.to_csv('samplesubmission.csv', index=False)
 submission
 
 
-# In[26]:
 
 
 from sklearn.datasets import fetch_mldata
@@ -449,7 +422,6 @@ plt.scatter(valid_lbl, y_pred)
 print(y_pred)
 
 
-# In[27]:
 
 
 # Importing the required packages 
@@ -559,7 +531,6 @@ submission_entropy = pd.concat([test_meta['PetID'], submission_entropy], axis = 
 submission_entropy.to_csv('samplesubmissionTreeEntropy.csv', index=False)
 
 
-# In[28]:
 
 
 _=plt.hist(y_pred_entropy, bins='auto')
@@ -567,7 +538,6 @@ plt.title("Histogram with 'auto' bins for Entropy")
 plt.show()
 
 
-# In[29]:
 
 
 print('ENTROPY prediction for test_meta histogram:')
@@ -576,7 +546,6 @@ plt.title("Histogram with 'auto' bins for ENTROPY")
 plt.show()
 
 
-# In[30]:
 
 
 # Visualize the decision tree: gini
@@ -589,7 +558,6 @@ graph = graphviz.Source(data)
 graph
 
 
-# In[31]:
 
 
 # Decision tree classifier – Decision tree classifier is a systematic approach for multiclass classification. 
@@ -620,7 +588,6 @@ plot_confusion_matrix(cm, classes = ['0', '1','2','3','4'],
 plt.savefig('cmDecisionTree.png')
 
 
-# In[32]:
 
 
 # training a KNN classifier 
@@ -640,7 +607,6 @@ plt.savefig('cmDecisionTree.png')
 # X_test=test_meta.drop(['Name','RescuerID','Description','PetID'], axis=1)
 
 
-# In[33]:
 
 
 #Name
@@ -654,13 +620,11 @@ print("Ratio of unique Name to the sample size: ",len(set(test_meta.Name.unique(
 print("Ratio of unique Description to the sample size: ",len(set(test_meta.Description.unique()))/len(list(test_meta.Description)))
 
 
-# In[34]:
 
 
 train_meta.Name.head(20)
 
 
-# In[35]:
 
 
 #Name: Maximum and minimum font size
@@ -680,7 +644,6 @@ plt.margins(x=0, y=0)
 plt.show()
 
 
-# In[36]:
 
 
 t=''
@@ -695,7 +658,6 @@ plt.title("Top 20 names")
 plt.show()
 
 
-# In[37]:
 
 
 from PIL import Image
@@ -706,14 +668,12 @@ catdog_mask = np.array(Image.open(path))
 # catdog_mask
 
 
-# In[38]:
 
 
 # train_meta.AdoptionSpeed
 test_meta.Type.hist()
 
 
-# In[39]:
 
 
 #Dog
@@ -748,7 +708,6 @@ plt.axis("off")
 plt.show()
 
 
-# In[40]:
 
 
 #Dog
@@ -781,7 +740,6 @@ plt.axis("off")
 plt.show()
 
 
-# In[41]:
 
 
 #Cat
@@ -812,7 +770,6 @@ plt.axis("off")
 plt.show()
 
 
-# In[42]:
 
 
 #Cat
@@ -844,20 +801,17 @@ plt.axis("off")
 plt.show()
 
 
-# In[43]:
 
 
 train_meta.head()
 
 
-# In[44]:
 
 
 obj_df = train_meta.select_dtypes(include=['object']).copy()
 obj_df.head()
 
 
-# In[45]:
 
 
 print(obj_df.shape)
@@ -867,13 +821,11 @@ for i in obj_df.columns:
     print(i,' has unique values= ', obj_df[i].unique(), ' : ',len(t) )
 
 
-# In[46]:
 
 
 obj_df.info()
 
 
-# In[47]:
 
 
 t=obj_df["StateName"].value_counts()
@@ -883,13 +835,11 @@ t.plot(figsize =(10,10))
 print(t.index)
 
 
-# In[48]:
 
 
 obj_df[obj_df.isnull().any(axis=1)]
 
 
-# In[49]:
 
 
 #Hot One encoding for StateName
@@ -900,13 +850,11 @@ obj_df["StateNameLabel"] = lb_make.fit(t)
 obj_df[["make", "make_code"]].head(11)
 
 
-# In[ ]:
 
 
 
 
 
-# In[50]:
 
 
 path='/kaggle/input/petfinder-adoption-prediction/'
@@ -1008,7 +956,6 @@ print(test_meta.info())
 print(test_meta.head())
 
 
-# In[51]:
 
 
 train_meta['Breed1Name'][(train_meta.Type == 1) & (train_meta.Breed1Name == 'nan')] = "dog"
@@ -1016,7 +963,6 @@ train_meta['Breed1Name'][(train_meta.Type == 2) & (train_meta.Breed1Name == 'nan
 train_meta[train_meta.Breed1Name=='nan']
 
 
-# In[52]:
 
 
 test_meta['Breed1Name'][(test_meta.Type == 1) & (test_meta.Breed1Name == 'nan')] = "dog"
@@ -1024,13 +970,11 @@ test_meta['Breed1Name'][(test_meta.Type == 2) & (test_meta.Breed1Name == 'nan')]
 test_meta[test_meta.Breed1Name=='nan']
 
 
-# In[53]:
 
 
 train_meta.info()
 
 
-# In[54]:
 
 
 #24/12/2019
@@ -1043,13 +987,11 @@ test.to_csv('test_meta.csv')
 # test
 
 
-# In[55]:
 
 
 breed.groupby(['Type'])['BreedID'].count()
 
 
-# In[56]:
 
 
 # # FOR TRAIN dataset
@@ -1073,7 +1015,6 @@ breed.groupby(['Type'])['BreedID'].count()
 # test[test.Name.isnull()]
 
 
-# In[57]:
 
 
 # print('---------TRAIN dataset-------------')
@@ -1084,7 +1025,6 @@ breed.groupby(['Type'])['BreedID'].count()
 # print(test.head())
 
 
-# In[58]:
 
 
 # print('train meta dataset len PetID= ',len(train.PetID.unique()))
@@ -1103,7 +1043,6 @@ breed.groupby(['Type'])['BreedID'].count()
 # print(test_dfs_sentiment.shape)
 
 
-# In[59]:
 
 
 # %%timeit
@@ -1111,7 +1050,6 @@ breed.groupby(['Type'])['BreedID'].count()
 # t=train.PetID[train.PetID.isin(train_dsf_sentiment.PetID)]
 
 
-# In[60]:
 
 
 # train=train_meta[train_meta.PhotoAmt!=0].set_index('PetID')
@@ -1129,13 +1067,11 @@ print(train)
 train.to_csv('trainWithImageDatameda.csv')
 
 
-# In[61]:
 
 
 train_meta.shape[0]-imagesAtt.shape[0]
 
 
-# In[62]:
 
 
 # t=train.PetID[train.PetID.isin(train_dsf_sentiment.PetID)]
@@ -1155,7 +1091,6 @@ train_meta.shape[0]-imagesAtt.shape[0]
 # np.savetxt("PetID_no_sentiment.csv", c1, delimiter=",", fmt='%s')
 
 
-# In[63]:
 
 
 import pandas as pd
@@ -1168,7 +1103,6 @@ train_dsf_sentiment = pd.read_csv("../input/petfinder-sentiment/train_dsf_sentim
 train_meta = pd.read_csv("../input/petfinder-sentiment/train_meta.csv")
 
 
-# In[64]:
 
 
 k=train_meta.groupby(['RescuerID'])['AdoptionSpeed'].count().reset_index(name='meanAdoptionSpeed')
@@ -1184,7 +1118,6 @@ pd.set_option('display.max_rows', maxR.shape[0]+1)
 print(maxR.groupby(['Type','Breed1Name','Age'])['PetID'].count())
 
 
-# In[65]:
 
 
 k=train_meta.groupby(['RescuerID'])['AdoptionSpeed'].mean().reset_index(name='meanAdoptionSpeed')
@@ -1192,7 +1125,6 @@ print(k)
 k.meanAdoptionSpeed.hist()
 
 
-# In[66]:
 
 
 #There are duplication of Names...try to label encoding
@@ -1227,7 +1159,6 @@ print(len(train_meta.RescuerID.unique()))
 print(1-len(train_meta.RescuerID.unique())/train_meta.shape[0])
 
 
-# In[67]:
 
 
 #Label encoding the Name, StateName, Color1Name, Breed1Name, RescuerID
@@ -1252,7 +1183,6 @@ print(train_meta.head())
 print(train_meta.columns)
 
 
-# In[68]:
 
 
 train_meta=train_meta.drop(['Unnamed: 0', 'Unnamed: 0.1'],axis=1)
@@ -1261,7 +1191,6 @@ print(train_meta.columns)
 print(test_meta.columns)
 
 
-# In[69]:
 
 
 features=['Type', 'Age','Gender', 'MaturitySize', 'FurLength',
@@ -1273,7 +1202,6 @@ train_meta.drop(['AdoptionSpeed','Unnamed: 0', 'Unnamed: 0.1'],axis=1).corrwith(
         rot = 45, grid = True)
 
 
-# In[70]:
 
 
 train_meta[features].corrwith(train_meta['AdoptionSpeed']).plot.bar(
@@ -1282,7 +1210,6 @@ train_meta[features].corrwith(train_meta['AdoptionSpeed']).plot.bar(
 train_meta[features].hist(figsize=(15,15))
 
 
-# In[71]:
 
 
 # Basic Logistic Regression
@@ -1333,7 +1260,6 @@ all_sample_title = 'Accuracy Score: {0}'.format(score)
 plt.title(all_sample_title, size = 15);
 
 
-# In[72]:
 
 
 
@@ -1373,19 +1299,16 @@ print(test_sentiment.info())
 print(test_sentiment.head())
 
 
-# In[73]:
 
 
 train_image.info()
 
 
-# In[74]:
 
 
 imagesAtt.hist(figsize=(15,15))
 
 
-# In[75]:
 
 
 t=train_meta.PetID[train_meta.PetID.isin(train_image.PetID)]
@@ -1397,20 +1320,17 @@ print(len(c1)/train_meta.shape[0])
 # np.savetxt("PetID_no_sentiment.csv", c1, delimiter=",", fmt='%s')
 
 
-# In[ ]:
 
 
 
 
 
-# In[76]:
 
 
 print(train_sentiment.columns)
 print(train_sentiment.head())
 
 
-# In[77]:
 
 
 imagesAtt=test_image.groupby(['PetID'])['metadata_annots_score','metadata_color_score',
@@ -1431,13 +1351,11 @@ c2 = np.setdiff1d(test_meta.PetID, imagesAtt.PetID)
 print(len(c2)/test_meta.shape[0])
 
 
-# In[78]:
 
 
 train.columns
 
 
-# In[79]:
 
 
 # 'trainWithImageDatameda.csv': contain images metadata
@@ -1458,7 +1376,6 @@ featuresImagesMeta=['Type', 'Age', 'Gender', 'MaturitySize', 'FurLength', 'Vacci
        'metadata_crop_conf']
 
 
-# In[80]:
 
 
 train[featuresImagesMeta].corrwith(train['AdoptionSpeed']).plot.bar(
@@ -1467,7 +1384,6 @@ train[featuresImagesMeta].corrwith(train['AdoptionSpeed']).plot.bar(
 train[featuresImagesMeta].hist(figsize=(15,15))
 
 
-# In[81]:
 
 
 #Logistics with imagesAtt
@@ -1516,7 +1432,6 @@ all_sample_title = 'Accuracy Score: {0}'.format(score)
 plt.title(all_sample_title, size = 15);
 
 
-# In[82]:
 
 
 # Basic Logistic Regression for sentiment and image metadata
@@ -1525,7 +1440,6 @@ print(train_sentiment.info())
 print(train_sentiment.head())
 
 
-# In[83]:
 
 
 featuresSent=train_sentiment.groupby(['PetID'])['sentiment_magnitude_sum',
@@ -1537,14 +1451,12 @@ print(len(imagesAtt))
 print(len(train)-len(featuresSent))
 
 
-# In[84]:
 
 
 train=train.reset_index()
 train
 
 
-# In[85]:
 
 
 import numpy as np
@@ -1554,54 +1466,46 @@ print(len(c1))
 np.savetxt("PetID_no_sentiment.csv", c1, delimiter=",", fmt='%s')
 
 
-# In[86]:
 
 
 print(len(featuresSent.PetID))
 print(featuresSent)
 
 
-# In[87]:
 
 
 print(len(have_sent.PetID))
 print(have_sent)
 
 
-# In[88]:
 
 
 have_sent=train[~train.PetID.isin(c1)]
 have_sent.to_csv('train_images_PetID_forSent.csv')
 
 
-# In[89]:
 
 
 have_sent
 
 
-# In[90]:
 
 
 have_sent.set_index('PetID')
 have_sent
 
 
-# In[91]:
 
 
 featuresSent
 
 
-# In[92]:
 
 
 from functools import reducefeaturesSent.set_index('PetID')
 featuresSent.to_csv('featureSent.csv')
 
 
-# In[93]:
 
 
 common_ID=np.intersect1d(featuresSent.PetID,have_sent.PetID)
@@ -1609,14 +1513,12 @@ common_ID
 print(len(common_ID))
 
 
-# In[94]:
 
 
 train_st=train[train.PetID.isin(common_ID)]
 print(train_st.shape[0])
 
 
-# In[95]:
 
 
 featuresSent.columns
@@ -1624,7 +1526,6 @@ featuresSent=featuresSent.set_index('PetID')
 featuresSent
 
 
-# In[96]:
 
 
 train_st.columns
@@ -1632,7 +1533,6 @@ train_st=train_st.set_index('PetID')
 train_st
 
 
-# In[97]:
 
 
 # Add columns for train_st
@@ -1647,14 +1547,12 @@ train_st=pd.read_csv(path+'train_images_PetID_forSent.csv')
 train_st.info()
 
 
-# In[98]:
 
 
 sent=pd.read_csv(path+'featureSent.csv')
 sent.info()
 
 
-# In[99]:
 
 
 common_ID=np.intersect1d(sent.PetID,train_st.PetID)
@@ -1662,33 +1560,28 @@ common_ID
 print(len(common_ID))
 
 
-# In[100]:
 
 
 train_st=train_st[train_st.PetID.isin(common_ID)]
 print(train_st.shape[0])
 
 
-# In[101]:
 
 
 sent.info()
 
 
-# In[102]:
 
 
 sent=sent.fillna(0)
 sent
 
 
-# In[103]:
 
 
 sent.columns
 
 
-# In[104]:
 
 
 test_st=train_st.sort_values(by=['PetID'])
@@ -1707,25 +1600,21 @@ train_st['sentiment_magnitude_std']=sent['sentiment_magnitude_std']
 train_st['sentiment_score_std']=sent['sentiment_score_std']
 
 
-# In[105]:
 
 
 train_st.to_csv('train_final.csv')
 
 
-# In[106]:
 
 
 print(train_st)
 
 
-# In[107]:
 
 
 train_st.columns
 
 
-# In[108]:
 
 
 sent_features=['Type', 'Age', 'Gender', 'MaturitySize', 'FurLength',
@@ -1743,7 +1632,6 @@ print(X.columns)
 print(y)
 
 
-# In[109]:
 
 
 # Correlation betwen target and other features
@@ -1753,13 +1641,11 @@ train_st[sent_features].corrwith(y).plot.bar(
 train_st[sent_features].hist(figsize=(15,15))
 
 
-# In[110]:
 
 
 print(X.info())
 
 
-# In[111]:
 
 
 import pandas as pd
@@ -1804,7 +1690,6 @@ all_sample_title = 'Accuracy Score: {0}'.format(score)
 plt.title(all_sample_title, size = 15);
 
 
-# In[112]:
 
 
 short_features=['metadata_annots_score', 'Type', 'Age', 'FurLength','Sterilized']
@@ -1845,7 +1730,6 @@ all_sample_title = 'Accuracy Score: {0}'.format(score)
 plt.title(all_sample_title, size = 15);
 
 
-# In[113]:
 
 
 # Importing the required packages 
@@ -1951,13 +1835,11 @@ plt.show()
 # submission_entropy.to_csv('samplesubmissionTreeEntropy.csv', index=False)
 
 
-# In[114]:
 
 
 train_st.shape[1]
 
 
-# In[115]:
 
 
 from sklearn.preprocessing import StandardScaler
@@ -1996,7 +1878,6 @@ for i in range(len(explained_variance)):
 # print(t)
 
 
-# In[116]:
 
 
 pca = PCA(n_components=22)
@@ -2006,7 +1887,6 @@ explained_variance = pca.explained_variance_ratio_
 print(explained_variance)
 
 
-# In[117]:
 
 
 # In this case we'll use random forest classification 
@@ -2022,7 +1902,6 @@ plt.scatter(y_pred,y_valid)
 plt.show()
 
 
-# In[118]:
 
 
 # META CODE
@@ -2057,7 +1936,6 @@ clf.fit(X, y)
 
 
 
-# In[119]:
 
 
 import xgboost as xgb
@@ -2071,7 +1949,6 @@ import matplotlib.pyplot as plt
 # https://evgenypogorelov.com/multiclass-xgb-shap.html
 
 
-# In[120]:
 
 
 train_meta=pd.read_csv(path+'train_meta.csv')
@@ -2094,14 +1971,12 @@ target=['AdoptionSpeed']
 # y=train_st[target]
 
 
-# In[121]:
 
 
 #Check for missing values
 print(test_meta.isna().sum()[test_meta.isna().sum()>0])
 
 
-# In[122]:
 
 
 # train_meta=pd.read_csv(path+'train_meta.csv')
@@ -2126,7 +2001,6 @@ train_image=train_image.set_index('PetID')
 train_sentiment=train_sentiment.set_index('PetID')
 
 
-# In[123]:
 
 
 print('train_meta.columns=',train_meta.columns)
@@ -2143,7 +2017,6 @@ print('test_sentiment.columns=',test_sentiment.columns)
 print('shape(test_sentiment.columns)=',test_sentiment.shape)
 
 
-# In[124]:
 
 
 #TRAIN: check PetID common for all sentiment and image
@@ -2154,7 +2027,6 @@ test=reduce(np.intersect1d, (test_meta.index, test_image.index, test_sentiment.i
 print('len(train)=',len(test),': ', len(test)/test_meta.shape[0])
 
 
-# In[125]:
 
 
 #Reduce the train and test dataset to get image metadata and sentiment data
@@ -2176,7 +2048,6 @@ print(train_meta.info())
 print(test_meta.info())
 
 
-# In[126]:
 
 
 #**********************FOR IMAGE**********************
@@ -2227,14 +2098,12 @@ test_meta['sentiment_magnitude_std']=test_sentiment['sentiment_magnitude_std']
 test_meta['sentiment_score_std']=test_sentiment['sentiment_score_std']
 
 
-# In[127]:
 
 
 print(train_meta.info())
 print(test_meta.info())
 
 
-# In[128]:
 
 
 train_meta.to_csv('final_train.csv',index=False)

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np # linear algebra
@@ -16,7 +15,6 @@ warnings.filterwarnings("ignore")
 # print(os.listdir("../input"))
 
 
-# In[2]:
 
 
 # print(os.listdir("../input"))
@@ -25,33 +23,28 @@ test = pd.read_csv('../input/test.csv')
 resources = pd.read_csv('../input/resources.csv')
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[3]:
 
 
 print("The size of the dataset:",train.shape)
 train.head()
 
 
-# In[4]:
 
 
 print(train.dtypes.value_counts())
 train.columns.dtype
 
 
-# In[5]:
 
 
 print(train.project_is_approved.value_counts())
@@ -59,13 +52,11 @@ df = train.project_is_approved.value_counts()
 print(100*df[1]/(df[0]+df[1]),"% of the projects are approved")
 
 
-# In[6]:
 
 
 print('The number of states present in the dataset:',train.school_state.value_counts().shape[0],'\n')
 
 
-# In[7]:
 
 
 state_df=train.school_state.value_counts()
@@ -79,7 +70,6 @@ plt.title('No. of projects across different states')
 plt.show()
 
 
-# In[8]:
 
 
 df=pd.crosstab(train.school_state,train.project_is_approved)
@@ -98,7 +88,6 @@ plt.legend((p1,p2),('Approved','Not Approved'))
 plt.show()
 
 
-# In[9]:
 
 
 df=pd.crosstab(train.teacher_prefix,train.project_is_approved)
@@ -117,13 +106,11 @@ plt.legend((p1,p2),('Approved','Not Approved'))
 plt.show()
 
 
-# In[10]:
 
 
 df['percent']
 
 
-# In[11]:
 
 
 df=pd.crosstab(train.project_grade_category,train.project_is_approved)
@@ -143,13 +130,11 @@ plt.legend((p1,p2,p3),('Approved','Not Approved','percent'))
 plt.show()
 
 
-# In[12]:
 
 
 df['percent']
 
 
-# In[13]:
 
 
 df=pd.crosstab(train.project_subject_categories,train.project_is_approved)
@@ -169,7 +154,6 @@ plt.legend((p1,p2),('Approved','Not Approved'))
 plt.show()
 
 
-# In[29]:
 
 
 import nltk
@@ -181,7 +165,6 @@ words = ' '.join(train.project_title.tolist())
 cleaned_word = " ".join([word for word in words.split() ])
 
 
-# In[52]:
 
 
 type(STOPWORDS)
@@ -190,7 +173,6 @@ STOPWORDS.add('Need')
 STOPWORDS.add('Learn')
 
 
-# In[53]:
 
 
 wordcloud = WordCloud(stopwords=STOPWORDS,
@@ -202,19 +184,16 @@ plt.axis('off')
 plt.show()
 
 
-# In[ ]:
 
 
 To be continued..
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 

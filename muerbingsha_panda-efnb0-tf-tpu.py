@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # Forked from
@@ -13,14 +12,12 @@ get_ipython().set_next_input('- WHY final cell of saving model would run forever
 get_ipython().set_next_input('- WHY add changes in the code, having to restart the machine to get the training running');get_ipython().run_line_magic('pinfo', 'running')
 
 
-# In[ ]:
 
 
 get_ipython().system('pip install efficientnet')
 import efficientnet.tfkeras as efn
 
 
-# In[ ]:
 
 
 import pandas as pd
@@ -42,7 +39,6 @@ print(tf.__version__)
 print(tf.keras.__version__)
 
 
-# In[ ]:
 
 
 AUTO = tf.data.experimental.AUTOTUNE
@@ -67,7 +63,6 @@ print("REPLICAS: ", strategy.num_replicas_in_sync)
 GCS_DS_PATH = KaggleDatasets().get_gcs_path('panda-16x128x128-tiles-data')
 
 
-# In[ ]:
 
 
 train_df = pd.read_csv('/kaggle/input/prostate-cancer-grade-assessment/train.csv')
@@ -75,7 +70,6 @@ print(train_df.shape)
 train_df.head()
 
 
-# In[ ]:
 
 
 msk = np.random.rand(len(train_df)) < 0.85
@@ -83,7 +77,6 @@ train = train_df[msk]
 valid = train_df[~msk]
 
 
-# In[ ]:
 
 
 S = set(train.image_id.values)
@@ -111,7 +104,6 @@ valid['isup_grade'] = val_labels
 S,D,train_imgs,val_imgs,train_labels,val_labels = [0]*6
 
 
-# In[ ]:
 
 
 print(train.shape) 
@@ -119,14 +111,12 @@ print(valid.shape)
 train.head()
 
 
-# In[ ]:
 
 
 train_paths = train["image_id"].apply(lambda x: GCS_DS_PATH + '/train/' + x).values
 valid_paths = valid["image_id"].apply(lambda x: GCS_DS_PATH + '/train/' + x).values
 
 
-# In[ ]:
 
 
 train_labels = pd.get_dummies(train['isup_grade']).astype('int32').values
@@ -136,7 +126,6 @@ print(train_labels.shape)
 print(valid_labels.shape)
 
 
-# In[ ]:
 
 
 BATCH_SIZE= 128 * strategy.num_replicas_in_sync
@@ -150,7 +139,6 @@ STEPS_PER_EPOCH = len(train)//BATCH_SIZE
 NUM_VALIDATION_IMAGES = len(valid)
 
 
-# In[ ]:
 
 
 # data augmentation @cdeotte kernel: https://www.kaggle.com/cdeotte/rotation-augmentation-gpu-tpu-0-96 and @dimitreoliveira https://www.kaggle.com/dimitreoliveira/flower-with-tpus-advanced-augmentation
@@ -284,7 +272,6 @@ def transform_zoom(image):
     return tf.reshape(d,[DIM,DIM,3])
 
 
-# In[ ]:
 
 
 def data_augment(filename, label):
@@ -334,7 +321,6 @@ def data_augment(filename, label):
     return image, label
 
 
-# In[ ]:
 
 
 def decode_image(filename, label=None, image_size=(img_size, img_size)):
@@ -348,7 +334,6 @@ def decode_image(filename, label=None, image_size=(img_size, img_size)):
         return image, label
 
 
-# In[ ]:
 
 
 train_dataset = (
@@ -362,7 +347,6 @@ train_dataset = (
     )
 
 
-# In[ ]:
 
 
 valid_dataset = (
@@ -375,7 +359,6 @@ valid_dataset = (
 )
 
 
-# In[ ]:
 
 
 def batch_to_numpy_images_and_labels(data):
@@ -440,13 +423,11 @@ def display_batch_of_images(databatch, predictions=None):
     plt.show()
 
 
-# In[ ]:
 
 
 display_batch_of_images(next(iter(train_dataset.unbatch().batch(5))))
 
 
-# In[ ]:
 
 
 LR_START = 0.00001
@@ -474,7 +455,6 @@ plt.plot(rng, y)
 print("Learning rate schedule: {:.3g} to {:.3g} to {:.3g}".format(y[0], max(y), y[-1]))
 
 
-# In[ ]:
 
 
 def get_model():
@@ -484,7 +464,6 @@ def get_model():
     return Model(inputs=base_model.input, outputs=predictions)
 
 
-# In[ ]:
 
 
 with strategy.scope():
@@ -515,7 +494,6 @@ with strategy.scope():
     loss_fn = tf.keras.losses.categorical_crossentropy
 
 
-# In[ ]:
 
 
 STEPS_PER_TPU_CALL = 1
@@ -553,14 +531,12 @@ def valid_step(data_iter):
         strategy.experimental_run_v2(valid_step_fn, next(data_iter))
 
 
-# In[ ]:
 
 
 def int_div_round_up(a, b):
     return (a + b - 1) // b
 
 
-# In[ ]:
 
 
 import time
@@ -645,7 +621,6 @@ optimized_ctl_training_time = time.time() - start_time
 print("OPTIMIZED CTL TRAINING TIME: {:0.1f}s".format(optimized_ctl_training_time))
 
 
-# In[ ]:
 
 
 model.save('ck.h5')

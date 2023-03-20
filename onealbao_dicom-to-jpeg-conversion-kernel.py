@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(os.listdir("../input/sample images"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 # Convert to JPEG2K via Pillow
@@ -44,7 +42,6 @@ for f in test_list:
 #   img_mem.save(outdir + f.replace('.dcm','.jp2'))
 
 
-# In[3]:
 
 
 # Convert to JPEG2K via imageio
@@ -67,7 +64,6 @@ for f in test_list:
 #   imageio.imwrite(outdir + f.replace('.dcm','.jp2'), img)
 
 
-# In[4]:
 
 
 # DCMTK 
@@ -82,7 +78,6 @@ To perform DCMTK, please use executable binary software "dcmj2pnm" and run (e.g.
 The create "*.jpg" file should be value lossless. Please do double check.  
 
 
-# In[5]:
 
 
 # Convert DICOM to PNG via openCV
@@ -103,7 +98,6 @@ for f in test_list:
     cv2.imwrite(outdir + f.replace('.dcm','.png'),img) # write png image
 
 
-# In[6]:
 
 
 # Convert to PNG via PIL 

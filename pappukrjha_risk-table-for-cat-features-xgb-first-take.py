@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import os
@@ -34,14 +32,12 @@ for file in os.listdir("../input/"):
     print('\n')
 
 
-# In[3]:
 
 
 df_train = pd.read_csv('../input/train.csv')
 df_test  = pd.read_csv('../input/test.csv')
 
 
-# In[4]:
 
 
 import matplotlib.pyplot as plt
@@ -54,7 +50,6 @@ plt.ylabel('y', fontsize=12)
 plt.show()
 
 
-# In[5]:
 
 
 ulimit = 180
@@ -66,7 +61,6 @@ plt.xlabel('y value', fontsize=12)
 plt.show()
 
 
-# In[6]:
 
 
 dtype_df = df_train.dtypes.reset_index()
@@ -74,7 +68,6 @@ dtype_df.columns = ["Count", "Column Type"]
 dtype_df.groupby("Column Type").aggregate('count').reset_index()
 
 
-# In[7]:
 
 
 missing_df = df_train.isnull().sum(axis=0).reset_index()
@@ -84,7 +77,6 @@ missing_df = missing_df.sort_values(by='missing_count')
 missing_df
 
 
-# In[8]:
 
 
 unique_values_dict = {}
@@ -100,7 +92,6 @@ for unique_val, columns in unique_values_dict.items():
     print("--------------------------------------------------")
 
 
-# In[9]:
 
 
 var_name = "X0"
@@ -113,7 +104,6 @@ plt.title("Distribution of y variable with "+var_name, fontsize=15)
 plt.show()
 
 
-# In[10]:
 
 
 var_name = "X2"
@@ -126,7 +116,6 @@ plt.title("Distribution of y variable with "+var_name, fontsize=15)
 plt.show()
 
 
-# In[11]:
 
 
 var_name = "X3"
@@ -139,7 +128,6 @@ plt.title("Distribution of y variable with "+var_name, fontsize=15)
 plt.show()
 
 
-# In[12]:
 
 
 var_name = "X4"
@@ -152,7 +140,6 @@ plt.title("Distribution of y variable with "+var_name, fontsize=15)
 plt.show()
 
 
-# In[13]:
 
 
 var_name = "X5"
@@ -165,7 +152,6 @@ plt.title("Distribution of y variable with "+var_name, fontsize=15)
 plt.show()
 
 
-# In[14]:
 
 
 var_name = "X6"
@@ -178,7 +164,6 @@ plt.title("Distribution of y variable with "+var_name, fontsize=15)
 plt.show()
 
 
-# In[15]:
 
 
 var_name = "X8"
@@ -191,7 +176,6 @@ plt.title("Distribution of y variable with "+var_name, fontsize=15)
 plt.show()
 
 
-# In[16]:
 
 
 str_columns = []
@@ -215,7 +199,6 @@ for x in str_columns:
     df_test = risk_score(df_test_r, df_test, x)
 
 
-# In[17]:
 
 
 import numpy
@@ -224,7 +207,6 @@ for x in df_train.columns:
     print(numpy.corrcoef(df_train[x],df_train['y'])[0,1])
 
 
-# In[18]:
 
 
 import matplotlib.pyplot as plt
@@ -264,7 +246,6 @@ print(pred_time.shape)
 pred_time.to_csv('xgb_out.csv', index = False)
 
 
-# In[19]:
 
 
 

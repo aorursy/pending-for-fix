@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import numpy as np 
@@ -20,14 +19,12 @@ import plotly.figure_factory as ff
 import openslide
 
 
-# In[ ]:
 
 
 PATH = "/kaggle/input/siim-isic-melanoma-classification/"
 get_ipython().system('ls {PATH}')
 
 
-# In[ ]:
 
 
 train = pd.read_csv(PATH+"train.csv")
@@ -35,19 +32,16 @@ test = pd.read_csv(PATH+"test.csv")
 sub = pd.read_csv(PATH+"sample_submission.csv")
 
 
-# In[ ]:
 
 
 train.head()
 
 
-# In[ ]:
 
 
 train.shape
 
 
-# In[ ]:
 
 
 print("unique images : ", len(train.image_name.unique()))
@@ -59,25 +53,21 @@ print("unique classes : ", len(train.benign_malignant.unique()))
 print("unique target : ", len(train.target.unique()))
 
 
-# In[ ]:
 
 
 train['diagnosis'].unique()
 
 
-# In[ ]:
 
 
 train['benign_malignant'].value_counts()
 
 
-# In[ ]:
 
 
 train['patient_id'].value_counts()
 
 
-# In[ ]:
 
 
 img_name = train["image_name"][0]
@@ -89,7 +79,6 @@ plt.imshow(np.array(img))
 plt.title(label)
 
 
-# In[ ]:
 
 
 img_name = train[train["benign_malignant"] == "malignant"]["image_name"].iloc[0]
@@ -101,13 +90,11 @@ plt.imshow(np.array(img))
 plt.title(label)
 
 
-# In[ ]:
 
 
 img.size
 
 
-# In[ ]:
 
 
 get_ipython().system('curl https://raw.githubusercontent.com/pytorch/xla/master/contrib/scripts/env-setup.py -o pytorch-xla-env-setup.py')
@@ -116,7 +103,6 @@ get_ipython().system('export XLA_USE_BF16=1')
 get_ipython().system('pip install -q torchviz')
 
 
-# In[ ]:
 
 
 import cv2
@@ -145,14 +131,12 @@ from torchvision.models import resnet18, densenet121, mobilenet_v2
 from albumentations import RandomRotate90, Flip, Compose, Normalize, RandomResizedCrop
 
 
-# In[ ]:
 
 
 np.random.seed(42)
 torch.manual_seed(42)
 
 
-# In[ ]:
 
 
 FOLDS = 8
@@ -172,7 +156,6 @@ VAL_BATCH_SIZE = 128
 DATA_PATH = '../input/siim-isic-melanoma-classification/'
 
 
-# In[ ]:
 
 
 TEST_DATA_PATH = DATA_PATH + 'test.csv'
@@ -182,7 +165,6 @@ TRAIN_IMG_PATH = RESIZED_PATH + '/jpeg/train/'
 SAMPLE_SUB_PATH = DATA_PATH + 'sample_submission.csv'
 
 
-# In[ ]:
 
 
 test_df = pd.read_csv(TEST_DATA_PATH)
@@ -190,7 +172,6 @@ train_df = pd.read_csv(TRAIN_DATA_PATH)
 sample_submission = pd.read_csv(SAMPLE_SUB_PATH)
 
 
-# In[ ]:
 
 
 class ISICataset(Dataset):
@@ -242,7 +223,6 @@ class ISICataset(Dataset):
             return FloatTensor(image)
 
 
-# In[ ]:
 
 
 class ResNetDetector(nn.Module):
@@ -269,7 +249,6 @@ class ResNetDetector(nn.Module):
         return torch.cat([isup_prob, gleason_prob_0, gleason_prob_1], axis=1)
 
 
-# In[ ]:
 
 
 model = ResNetDetector()
@@ -278,14 +257,12 @@ y = model(x)
 make_dot(y, params=dict(list(model.named_parameters()) + [('x', x)]))
 
 
-# In[ ]:
 
 
 del model, x, y
 gc.collect()
 
 
-# In[ ]:
 
 
 val_sets, train_sets = [], []
@@ -299,7 +276,6 @@ for fold in tqdm(range(FOLDS)):
     train_sets.append(pd.concat([train_df[:val_idx[0]], train_df[val_idx[1]:]]))
 
 
-# In[ ]:
 
 
 def cel(inp, targ):
@@ -312,7 +288,6 @@ def acc(inp, targ):
     return (inp_idx == targ_idx).float().sum(axis=0)/len(inp_idx)
 
 
-# In[ ]:
 
 
 def panda_cel(inp, targ):
@@ -328,7 +303,6 @@ def panda_acc(inp, targ):
     return [isup_accuracy, gleason_accuracy_0, gleason_accuracy_1]
 
 
-# In[ ]:
 
 
 def print_metric(data, fold, start, end, metric, typ):
@@ -350,7 +324,6 @@ def print_metric(data, fold, start, end, metric, typ):
     print(string + time)
 
 
-# In[ ]:
 
 
 def train(fold):
@@ -425,13 +398,11 @@ def train(fold):
     torch.save(network.state_dict(), MODEL_SAVE_PATH + "_" + str(fold + 1) + ".pt")
 
 
-# In[ ]:
 
 
 Parallel(n_jobs=FOLDS, backend="threading")(delayed(train)(i) for i in range(FOLDS))
 
 
-# In[ ]:
 
 
 

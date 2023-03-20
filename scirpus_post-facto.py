@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import math
@@ -11,7 +10,6 @@ from sklearn.metrics import log_loss
 from sklearn.preprocessing import StandardScaler
 
 
-# In[2]:
 
 
 def Aggregate(teamcompactresults1,
@@ -261,7 +259,6 @@ def Aggregate(teamcompactresults1,
 
 
 
-# In[3]:
 
 
 def GrabData():
@@ -393,13 +390,11 @@ def GrabData():
     return train, test
 
 
-# In[4]:
 
 
 ls ../input
 
 
-# In[5]:
 
 
 train, test = GrabData()
@@ -411,19 +406,16 @@ test.drop(['ID', 'Pred'], inplace=True, axis=1)
 test.fillna(-1, inplace=True)
 
 
-# In[6]:
 
 
 train.head()
 
 
-# In[7]:
 
 
 test.head()
 
 
-# In[8]:
 
 
 ss = StandardScaler()
@@ -431,25 +423,21 @@ train[train.columns[3:]] = np.round(ss.fit_transform(train[train.columns[3:]]), 
 train['target'] = trainlabels
 
 
-# In[9]:
 
 
 train.head()
 
 
-# In[10]:
 
 
 test.head()
 
 
-# In[11]:
 
 
 train[train.columns[3:]].to_csv('womensdata.csv',index=False)
 
 
-# In[12]:
 
 
 def Outputs(data):
@@ -481,7 +469,6 @@ def GP(data):
     return (GPIndividual1(data)+GPIndividual2(data)+GPIndividual3(data))/3.
 
 
-# In[13]:
 
 
 print(log_loss(train.target,GPIndividual1(train)))
@@ -490,7 +477,6 @@ print(log_loss(train.target,GPIndividual3(train)))
 print(log_loss(train.target,GP(train)))
 
 
-# In[14]:
 
 
 test[test.columns[3:]] = np.round(ss.transform(test[test.columns[3:]]), 6)
@@ -501,19 +487,16 @@ submission = pd.DataFrame({'ID': testids,
 submission.to_csv('submission.csv', index=False)
 
 
-# In[15]:
 
 
 submission.head()
 
 
-# In[16]:
 
 
 submission.shape
 
 
-# In[17]:
 
 
 

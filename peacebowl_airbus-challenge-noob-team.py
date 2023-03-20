@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 train = os.listdir("../input/train")
@@ -30,7 +28,6 @@ test = os.listdir("../input/test")
 print("Number of image files in the test dataset:", len(test))
 
 
-# In[ ]:
 
 
 train_df = pd.read_csv("../input/train_ship_segmentations.csv")
@@ -42,26 +39,22 @@ test_df = pd.read_csv("../input/test_ship_segmentations.csv")
 print("Test data:\n", test_df.head())
 
 
-# In[ ]:
 
 
 def rle_decode(mask_rle, shape=(768, 768)):
     pass
 
 
-# In[ ]:
 
 
 ImageId = 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 

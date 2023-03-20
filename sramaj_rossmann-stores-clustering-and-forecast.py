@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -25,7 +24,6 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 def read_files(train_fn, test_fn, store_fn):
@@ -36,25 +34,21 @@ def read_files(train_fn, test_fn, store_fn):
     return train, test, store
 
 
-# In[3]:
 
 
 train, test, store = read_files('../input/train.csv', '../input/test.csv', '../input/store.csv')
 
 
-# In[4]:
 
 
 train.head()
 
 
-# In[5]:
 
 
 train.query('Open == 1')[['Sales', 'Customers']].hist(bins=100, figsize=(10,4), xrot=45, sharey=True);
 
 
-# In[6]:
 
 
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharey=True)
@@ -70,19 +64,16 @@ fig.tight_layout()
 fig.show()
 
 
-# In[7]:
 
 
 train.groupby('Date')['Store'].size().plot(kind='line');
 
 
-# In[8]:
 
 
 **There are days in the training set where some stores are missing. Lets add those missing stores with Open flag as '0' and Customers and Sales values as '0'**
 
 
-# In[9]:
 
 
 def add_missing_dates(train, all_stores):
@@ -108,7 +99,6 @@ def add_missing_dates(train, all_stores):
     return train_m[['Store','DayOfWeek','Date','Sales','Customers','Open','Promo','StateHoliday','SchoolHoliday']]
 
 
-# In[10]:
 
 
 missing_train = add_missing_dates(train, set(store.Store))
@@ -116,7 +106,6 @@ train = pd.concat([train, missing_train])
 train.groupby('Date')['Store'].size().plot(kind='line');
 
 
-# In[11]:
 
 
 fig = plt.figure(figsize=(8,4))
@@ -129,7 +118,6 @@ for i in rand_stores:
 fig.autofmt_xdate() 
 
 
-# In[12]:
 
 
 
@@ -145,7 +133,6 @@ customers_pivot.columns = col_names
 customers_pivot.head()
 
 
-# In[13]:
 
 
 from sklearn import cluster
@@ -158,7 +145,6 @@ chart_df = train.set_index('Store').join(cl_df)[['Date', 'Customers', 'cluster']
 chart_df.cluster.value_counts().sort_index()
 
 
-# In[14]:
 
 
 
@@ -184,19 +170,16 @@ def plot_clusters(df, clu, xcol='Date', ycol='Customers',cluster_label='cluster'
     fig.autofmt_xdate()
 
 
-# In[15]:
 
 
 plot_clusters(chart_df, clu=cl)
 
 
-# In[16]:
 
 
 test.head()
 
 
-# In[17]:
 
 
 print ("Train features:")
@@ -206,7 +189,6 @@ print ("Test features:")
 print (test.isnull().any())
 
 
-# In[18]:
 
 
 print ("Train features:")
@@ -224,13 +206,11 @@ print ("\n")
 print (test.Promo.value_counts())
 
 
-# In[19]:
 
 
 test[test.Open.isnull()].DayOfWeek.value_counts().sort_index()
 
 
-# In[20]:
 
 
 def split_date(df, date_col):
@@ -249,19 +229,16 @@ test.StateHoliday  = test.StateHoliday.map({'0':'0', 'a':'1', 'b': '2', 'c':'3'}
 test.Open = test.Open.fillna(1)
 
 
-# In[21]:
 
 
 store.head()
 
 
-# In[22]:
 
 
 store.info()
 
 
-# In[23]:
 
 
 def myPinterval(x):
@@ -298,13 +275,11 @@ store = store.drop(['Promo2SinceWeek'], axis='columns')
 store.Promo2SinceDT = store.Promo2SinceDT.fillna(ifnulldt)
 
 
-# In[24]:
 
 
 store.info()
 
 
-# In[25]:
 
 
 train_df = train.set_index('Store').join(store.set_index('Store'), how='inner').reset_index()
@@ -321,7 +296,6 @@ test_df = test_df.join(dummies)
 test_df = test_df.drop(['Assortment', 'StoreType', 'StateHoliday','DayOfWeek'], axis=1)
 
 
-# In[26]:
 
 
 train_df = train_df.assign(days_since_comp = train_df['Date'] - train_df['CompetitionOpenSinceDT'])
@@ -350,7 +324,6 @@ train_df.drop(['CompetitionOpenSinceDT','Promo2SinceDT'], axis=1, inplace=True)
 test_df.drop(['CompetitionOpenSinceDT','Promo2SinceDT'], axis=1, inplace=True)
 
 
-# In[27]:
 
 
 def remove_promo_interval_flag(df):
@@ -381,14 +354,12 @@ test_df  = remove_promo_interval_flag(test_df)
 train_df.head()
 
 
-# In[28]:
 
 
 train_df = train_df.set_index(['Store', 'Date']).sort_index()
 test_df = test_df.set_index(['Store', 'Date']).sort_index()
 
 
-# In[29]:
 
 
 def create_model(store_list, clf):
@@ -436,7 +407,6 @@ def create_model(store_list, clf):
     return customer_score, customer_pred, customer_fimp, sales_score, sales_pred, sales_fimp, clf_dict
 
 
-# In[30]:
 
 
 from sklearn.ensemble import RandomForestRegressor
@@ -453,7 +423,6 @@ y1_score, y1_pred, y1_fimp, y2_score, y2_pred, y2_fimp, clf_dict = create_model(
 #model_result = pd.DataFrame({'Y1_true':y1[-100:].values.tolist(), 'y1_pred': np.array(y1_pred).flatten()}, index=y1[-100:].index.get_level_values(1))
 
 
-# In[31]:
 
 
 plt.figure(figsize=(8,3))
@@ -463,20 +432,17 @@ plt.ylim(0.5,1)
 plt.show()
 
 
-# In[32]:
 
 
 model_fimp = pd.DataFrame(np.array(y1_fimp), index=store_ix[0:600], columns=columns)
 model_fimp.mean().sort_values().plot(kind='barh', title='Feature Importance', figsize=(6,6));
 
 
-# In[33]:
 
 
 
 
 
-# In[33]:
 
 
 

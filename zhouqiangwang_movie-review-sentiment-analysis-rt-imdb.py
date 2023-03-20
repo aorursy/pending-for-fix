@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -28,7 +27,6 @@ from sklearn.multiclass import OneVsRestClassifier
 pd.set_option('max_colwidth',400)
 
 
-# In[2]:
 
 
 # train_tomato = pd.read_csv('../input/movie-review-sentiment-analysis-kernels-only/train.tsv', sep="\t")
@@ -37,77 +35,65 @@ test = pd.read_csv('../input/movie-review-sentiment-analysis-kernels-only/test.t
 sub = pd.read_csv('../input/movie-review-sentiment-analysis-kernels-only/sampleSubmission.csv', sep=",")
 
 
-# In[3]:
 
 
 train.tail(10)
 
 
-# In[4]:
 
 
 # train, test = train_test_split(data, test_size=66292, random_state=2)
 
 
-# In[5]:
 
 
 sub.shape
 
 
-# In[6]:
 
 
 sub.head(10)
 
 
-# In[7]:
 
 
 train.head(10)
 
 
-# In[8]:
 
 
 train.loc[train.SentenceId == 2]
 
 
-# In[9]:
 
 
 print('Average count of phrases per sentence in train is {0:.0f}.'.format(train.groupby('SentenceId')['Phrase'].count().mean()))
 print('Average count of phrases per sentence in test is {0:.0f}.'.format(test.groupby('SentenceId')['Phrase'].count().mean()))
 
 
-# In[10]:
 
 
 print('Number of phrases in train: {}. Number of sentences in train: {}.'.format(train.shape[0], len(train.SentenceId.unique())))
 print('Number of phrases in test: {}. Number of sentences in test: {}.'.format(test.shape[0], len(test.SentenceId.unique())))
 
 
-# In[11]:
 
 
 print('Average word length of phrases in train is {0:.0f}.'.format(np.mean(train['Phrase'].apply(lambda x: len(x.split())))))
 print('Average word length of phrases in test is {0:.0f}.'.format(np.mean(test['Phrase'].apply(lambda x: len(x.split())))))
 
 
-# In[12]:
 
 
 text = ' '.join(train.loc[train.Sentiment == 4, 'Phrase'].values)
 text_trigrams = [i for i in ngrams(text.split(), 3)]
 
 
-# In[13]:
 
 
 Counter(text_trigrams).most_common(30)
 
 
-# In[14]:
 
 
 text = ' '.join(train.loc[train.Sentiment == 4, 'Phrase'].values)
@@ -116,13 +102,11 @@ text_trigrams = [i for i in ngrams(text, 3)]
 Counter(text_trigrams).most_common(30)
 
 
-# In[15]:
 
 
 tokenizer = TweetTokenizer()
 
 
-# In[16]:
 
 
 vectorizer = TfidfVectorizer(ngram_range=(1, 2), tokenizer=tokenizer.tokenize)
@@ -132,40 +116,34 @@ train_vectorized = vectorizer.transform(train['Phrase'])
 test_vectorized = vectorizer.transform(test['Phrase'])
 
 
-# In[17]:
 
 
 full_text[1:10]
 
 
-# In[18]:
 
 
 y = train['Sentiment']
 
 
-# In[19]:
 
 
 # logreg = LogisticRegression()
 # ovr = OneVsRestClassifier(logreg)
 
 
-# In[20]:
 
 
 # %%time
 # ovr.fit(train_vectorized, y)
 
 
-# In[21]:
 
 
 # scores = cross_val_score(ovr, train_vectorized, y, scoring='accuracy', n_jobs=-1, cv=3)
 # print('Cross-validation mean accuracy {0:.2f}%, std {1:.2f}.'.format(np.mean(scores) * 100, np.std(scores) * 100))
 
 
-# In[22]:
 
 
 # %%time
@@ -174,14 +152,12 @@ y = train['Sentiment']
 # print('Cross-validation mean accuracy {0:.2f}%, std {1:.2f}.'.format(np.mean(scores) * 100, np.std(scores) * 100))
 
 
-# In[23]:
 
 
 # ovr.fit(train_vectorized, y);
 # svc.fit(train_vectorized, y);
 
 
-# In[24]:
 
 
 from keras.preprocessing.text import Tokenizer
@@ -203,14 +179,12 @@ get_ipython().run_line_magic('load_ext', 'tensorboard.notebook')
 get_ipython().run_line_magic('tensorboard', '--logdir logs')
 
 
-# In[25]:
 
 
 tk = Tokenizer(lower = True, filters='')
 tk.fit_on_texts(full_text)
 
 
-# In[26]:
 
 
 word_index = tk.word_index
@@ -222,7 +196,6 @@ for word, i in word_index.items():
 print (type(index_word))
 
 
-# In[27]:
 
 
 from gensim.models import Word2Vec
@@ -241,14 +214,12 @@ print(len(full_word_list))
 print(full_word_list[0])
 
 
-# In[28]:
 
 
 word2vec = Word2Vec(full_word_list, size=300, min_count=1)
 vocabulary = word2vec.wv.vocab
 
 
-# In[29]:
 
 
 v1 = word2vec.wv['movie']
@@ -261,14 +232,12 @@ sim_film = word2vec.wv.most_similar('film')
 print(sim_film)
 
 
-# In[30]:
 
 
 train_tokenized = tk.texts_to_sequences(train['Phrase'])
 test_tokenized = tk.texts_to_sequences(test['Phrase'])
 
 
-# In[31]:
 
 
 max_len = 50
@@ -276,20 +245,17 @@ X_train = pad_sequences(train_tokenized, maxlen = max_len)
 X_test = pad_sequences(test_tokenized, maxlen = max_len)
 
 
-# In[32]:
 
 
 # embedding_path = "../input/fasttext-crawl-300d-2m/crawl-300d-2M.vec"
 
 
-# In[33]:
 
 
 embed_size = 300
 max_features = 100000
 
 
-# In[34]:
 
 
 # def get_coefs(word,*arr): return word, np.asarray(arr, dtype='float32')
@@ -307,7 +273,6 @@ print(nb_words)
 # print(embedding_matrix)
 
 
-# In[35]:
 
 
 from sklearn.preprocessing import OneHotEncoder
@@ -315,13 +280,11 @@ ohe = OneHotEncoder(sparse=False)
 y_ohe = ohe.fit_transform(y.values.reshape(-1, 1))
 
 
-# In[36]:
 
 
 from keras.utils.vis_utils import plot_model
 
 
-# In[37]:
 
 
 def build_model1(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, kernel_size1=3, kernel_size2=2, dense_units=128, dr=0.1, conv_size=32):
@@ -379,39 +342,33 @@ def build_model1(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, kernel_size1=3, kern
     return model
 
 
-# In[38]:
 
 
 model1 = build_model1(lr = 1e-3, lr_d = 1e-10, units = 64, spatial_dr = 0.3, kernel_size1=3, kernel_size2=2, dense_units=32, dr=0.1, conv_size=32)
 
 
-# In[39]:
 
 
 ls ../working
 
 
-# In[40]:
 
 
 get_ipython().run_line_magic('load_ext', 'tensorboard.notebook')
 get_ipython().run_line_magic('tensorboard', '--logdir logs')
 
 
-# In[41]:
 
 
 model2 = build_model1(lr = 1e-3, lr_d = 1e-10, units = 128, spatial_dr = 0.5, kernel_size1=3, kernel_size2=2, dense_units=64, dr=0.2, conv_size=32)
 
 
-# In[42]:
 
 
 get_ipython().run_line_magic('load_ext', 'tensorboard.notebook')
 get_ipython().run_line_magic('tensorboard', '--logdir logs')
 
 
-# In[43]:
 
 
 def build_model2(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, kernel_size1=3, kernel_size2=2, dense_units=128, dr=0.1, conv_size=32):
@@ -471,46 +428,39 @@ def build_model2(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, kernel_size1=3, kern
     return model
 
 
-# In[44]:
 
 
 model3 = build_model2(lr = 1e-4, lr_d = 0, units = 64, spatial_dr = 0.5, kernel_size1=4, kernel_size2=3, dense_units=32, dr=0.1, conv_size=32)
 
 
-# In[45]:
 
 
 get_ipython().run_line_magic('load_ext', 'tensorboard.notebook')
 get_ipython().run_line_magic('tensorboard', '--logdir logs')
 
 
-# In[46]:
 
 
 model4 = build_model2(lr = 1e-3, lr_d = 0, units = 64, spatial_dr = 0.5, kernel_size1=3, kernel_size2=3, dense_units=64, dr=0.3, conv_size=32)
 
 
-# In[47]:
 
 
 get_ipython().run_line_magic('load_ext', 'tensorboard.notebook')
 get_ipython().run_line_magic('tensorboard', '--logdir logs')
 
 
-# In[48]:
 
 
 model5 = build_model2(lr = 1e-3, lr_d = 1e-7, units = 64, spatial_dr = 0.3, kernel_size1=3, kernel_size2=3, dense_units=64, dr=0.4, conv_size=64)
 
 
-# In[49]:
 
 
 get_ipython().run_line_magic('load_ext', 'tensorboard.notebook')
 get_ipython().run_line_magic('tensorboard', '--logdir logs')
 
 
-# In[50]:
 
 
 pred1 = model1.predict(X_test, batch_size = 1024, verbose = 1)
@@ -526,7 +476,6 @@ pred5 = model5.predict(X_test, batch_size = 1024, verbose = 1)
 pred += pred5
 
 
-# In[51]:
 
 
 print(pred1[0])
@@ -537,21 +486,18 @@ print(pred.shape)
 print(pred[0])
 
 
-# In[52]:
 
 
 predictions = np.round(np.argmax(pred, axis=1)).astype(int)
 print(predictions.shape)
 
 
-# In[53]:
 
 
 sub['Sentiment'] = predictions
 sub.to_csv("blend.csv", index=False)
 
 
-# In[54]:
 
 
 sub_result = pd.read_csv('./blend.csv', sep=",")

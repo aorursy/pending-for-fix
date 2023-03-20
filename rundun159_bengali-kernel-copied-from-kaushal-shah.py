@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -41,7 +40,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 train_df_ = pd.read_csv('/kaggle/input/bengaliai-cv19/train.csv')
@@ -50,31 +48,26 @@ class_map_df=pd.read_csv('/kaggle/input/bengaliai-cv19/class_map.csv')
 sample_sub_df=pd.read_csv('/kaggle/input/bengaliai-cv19/sample_submission.csv')
 
 
-# In[3]:
 
 
 train_df_.head()
 
 
-# In[4]:
 
 
 test_df_.head()
 
 
-# In[5]:
 
 
 sample_sub_df.head()
 
 
-# In[6]:
 
 
 class_map_df.head()
 
 
-# In[7]:
 
 
 print(f'Size of trainig Data: {train_df_.shape}')
@@ -82,14 +75,12 @@ print(f'Size of test Data : {test_df_.shape}')
 print(f'Size of class map : {class_map_df.shape}')
 
 
-# In[8]:
 
 
 HEIGHT = 236
 WIDTH = 236
 
 
-# In[9]:
 
 
 def get_n(df, field, n , top=True):
@@ -102,7 +93,6 @@ def get_n(df, field, n , top=True):
     return top_graphemes
 
 
-# In[10]:
 
 
 def image_from_char(char):
@@ -114,14 +104,12 @@ def image_from_char(char):
     return image
 
 
-# In[11]:
 
 
 train_df_.head()
 len(train_df_)
 
 
-# In[12]:
 
 
 print(f'Number of unique graheme roots : {train_df_["grapheme_root"].nunique()}')
@@ -130,50 +118,42 @@ print(f'Number of unique vowel diacritic : {train_df_["vowel_diacritic"].nunique
 print(f'Number of unique consonant diacritic : {train_df_["consonant_diacritic"].nunique()}')
 
 
-# In[13]:
 
 
 top_10_roots = get_n(train_df_,'grapheme_root',10)
 top_10_roots
 
 
-# In[14]:
 
 
 top_graphemes = train_df_.groupby(['grapheme_root']).size().reset_index(name='counts')['counts'].sort_values(ascending=not True)[:10]
 
 
-# In[15]:
 
 
 type(top_graphemes)
 
 
-# In[16]:
 
 
 top_graphemes.values
 
 
-# In[17]:
 
 
 len(train_df_)
 
 
-# In[18]:
 
 
 len(top_graphemes)
 
 
-# In[19]:
 
 
 top_graphemes.head()
 
 
-# In[20]:
 
 
 def get_n(df, field, n , top=True):
@@ -186,7 +166,6 @@ def get_n(df, field, n , top=True):
     return top_graphemes
 
 
-# In[21]:
 
 
 a = pd.DataFrame([('bird', 'Falconiformes', 389.0),
@@ -199,31 +178,26 @@ a = pd.DataFrame([('bird', 'Falconiformes', 389.0),
  
 
 
-# In[22]:
 
 
 a
 
 
-# In[23]:
 
 
 b=a.groupby(['class'])
 
 
-# In[24]:
 
 
 b.groups
 
 
-# In[25]:
 
 
 b.indices
 
 
-# In[26]:
 
 
 f,ax = plt.subplots(2,5,figsize=(16,8))
@@ -233,14 +207,12 @@ for i in range(10):
     ax[i].imshow(image_from_char(top_10_roots['component'].iloc[i]),cmap='Greys')
 
 
-# In[27]:
 
 
 bottom_10_roots = get_n(train_df_,'grapheme_root',10,False)
 bottom_10_roots
 
 
-# In[28]:
 
 
 f,ax = plt.subplots(2,5, figsize=(16,8))
@@ -250,14 +222,12 @@ for i in range(10):
     ax[i].imshow(image_from_char(bottom_10_roots['component'].iloc[i]),cmap='Greys')
 
 
-# In[29]:
 
 
 top_5_vowels = get_n(train_df_, 'vowel_diacritic',5)
 top_5_vowels
 
 
-# In[30]:
 
 
 f,ax = plt.subplots(1,5,figsize=(16,8))
@@ -267,14 +237,12 @@ for i in range(5):
     ax[i].imshow(image_from_char(top_5_vowels['component'].iloc[i]),cmap='Greys')
 
 
-# In[31]:
 
 
 top_5_consonants = get_n(train_df_,'consonant_diacritic',5)
 top_5_consonants
 
 
-# In[32]:
 
 
 f,ax = plt.subplots(1,5,figsize=(16,8))
@@ -284,26 +252,22 @@ for i in range(5):
     ax[i].imshow(image_from_char(top_5_consonants['component'].iloc[i]),cmap='Greys')
 
 
-# In[33]:
 
 
 train_df_ = train_df_.drop(['grapheme'],axis=1,inplace=False)
 
 
-# In[34]:
 
 
 train_df_[['grapheme_root','vowel_diacritic','consonant_diacritic']]=train_df_[['grapheme_root','vowel_diacritic','consonant_diacritic']].astype('uint8')
 
 
-# In[35]:
 
 
 IMG_SIZE=64
 N_CHANNELS=1
 
 
-# In[36]:
 
 
 def resize(df, size=64, need_progress_bar=True):
@@ -365,7 +329,6 @@ def resize(df, size=64, need_progress_bar=True):
     return resized
 
 
-# In[37]:
 
 
 def get_dummies(df):
@@ -375,7 +338,6 @@ def get_dummies(df):
     return pd.concat(cols,axis=1)
 
 
-# In[38]:
 
 
 inputs = Input(shape = (IMG_SIZE, IMG_SIZE, 1))
@@ -431,26 +393,22 @@ head_consonant = Dense(7, activation = 'softmax')(dense)
 model = Model(inputs=inputs, outputs=[head_root, head_vowel, head_consonant])
 
 
-# In[39]:
 
 
 model.summary()
 
 
-# In[40]:
 
 
 from keras.utils import plot_model
 plot_model(model, to_file='model.png')
 
 
-# In[41]:
 
 
 model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
 
 
-# In[42]:
 
 
 #set a learning annealer. Learning rate will be half after 3 epochs if accuracy is not increased
@@ -473,14 +431,12 @@ learning_rate_reduction_consonant = ReduceLROnPlateau(monitor='dense_5_accuracy'
                                                      min_lr=0.00001)
 
 
-# In[43]:
 
 
 batch_size=256
 epochs = 30
 
 
-# In[44]:
 
 
 class MultiOutputDataGenerator(keras.preprocessing.image.ImageDataGenerator):
@@ -517,14 +473,12 @@ class MultiOutputDataGenerator(keras.preprocessing.image.ImageDataGenerator):
             yield flowx, target_dict
 
 
-# In[45]:
 
 
 HEIGHT=137
 WIDTH=236
 
 
-# In[46]:
 
 
 histories=[]
@@ -601,7 +555,6 @@ for i in range(4):
     
 
 
-# In[ ]:
 
 
 

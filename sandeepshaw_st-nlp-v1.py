@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,13 +21,11 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import pandas as pd
 
 
-# In[3]:
 
 
 a=pd.read_csv("/kaggle/input/tweet-sentiment-extraction/train.csv")
@@ -36,7 +33,6 @@ b=pd.read_csv("/kaggle/input/tweet-sentiment-extraction/test.csv")
 c=pd.read_csv("/kaggle/input/tweet-sentiment-extraction/sample_submission.csv")
 
 
-# In[4]:
 
 
 a.head()
@@ -45,7 +41,6 @@ a['selected_text'][a['selected_text'].isnull()]='0'
 a.isnull().sum()
 
 
-# In[5]:
 
 
 def f(x):
@@ -78,37 +73,31 @@ train=outer_list
 train[:3]
 
 
-# In[6]:
 
 
 pip install pytorch-transformers
 
 
-# In[7]:
 
 
 pip install simpletransformers
 
 
-# In[8]:
 
 
 from simpletransformers.question_answering import QuestionAnsweringModel
 
 
-# In[9]:
 
 
 model=QuestionAnsweringModel('distilbert', 'distilbert-base-uncased-distilled-squad', use_cuda=True)
 
 
-# In[10]:
 
 
 train
 
 
-# In[11]:
 
 
 import os
@@ -122,19 +111,16 @@ with open('data/train.json', 'w') as f:
     f.close()
 
 
-# In[12]:
 
 
 type(train)
 
 
-# In[13]:
 
 
 train[:3]
 
 
-# In[14]:
 
 
 import os, sys, shutil
@@ -163,13 +149,11 @@ if USE_APEX:
                 from apex import amp
 
 
-# In[15]:
 
 
 model.train_model('data/train.json')
 
 
-# In[16]:
 
 
 #for test
@@ -195,13 +179,11 @@ for i in range(len(test)):
 outer_test[:3]
 
 
-# In[17]:
 
 
 test=outer_test
 
 
-# In[18]:
 
 
 with open('data/test.json', 'w') as f:
@@ -209,20 +191,17 @@ with open('data/test.json', 'w') as f:
     f.close()
 
 
-# In[19]:
 
 
 pred_df = model.predict(test)
 pred_df = pd.DataFrame.from_dict(pred_df)
 
 
-# In[20]:
 
 
 pred_df.head()
 
 
-# In[21]:
 
 
 c.head()
@@ -242,13 +221,11 @@ f.columns.values[0]=c.columns.values[0]
 f.columns.values[1]=c.columns.values[1]
 
 
-# In[22]:
 
 
 f.head()
 
 
-# In[23]:
 
 
 f.to_csv("submission.csv")

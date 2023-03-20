@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,7 +21,6 @@ for dirname, _, filenames in os.walk('/kaggle/input/'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import pandas as pd
@@ -30,7 +28,6 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-# In[3]:
 
 
 df = pd.read_csv('/kaggle/input/uisummerschool/Marketing.csv')
@@ -41,7 +38,6 @@ bb.plot(kind='bar')
 # marketing offline lebih banyak spendnya
 
 
-# In[4]:
 
 
 dfOffline = pd.read_csv('/kaggle/input/uisummerschool/Offline_sales.csv')
@@ -56,7 +52,6 @@ dd.plot(kind='bar')
 
 
 
-# In[5]:
 
 
 dfOnline = pd.read_csv('/kaggle/input/uisummerschool/Online_sales.csv', usecols=[5], names = ["b"],)

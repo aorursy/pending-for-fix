@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np 
@@ -17,7 +16,6 @@ from subprocess import check_output
 print(check_output(["ls", "../input"]).decode("utf8"))
 
 
-# In[2]:
 
 
 train_labels = pd.read_csv('../input/train_v2.csv')
@@ -26,7 +24,6 @@ encoded_labels = pd.concat([train_labels, dummies], axis=1)
 encoded_labels.head()
 
 
-# In[3]:
 
 
 y = encoded_labels.mean()
@@ -38,13 +35,11 @@ plt.yticks(fontsize=30)
 plt.show()
 
 
-# In[4]:
 
 
 get_ipython().run_cell_magic('time', '', "x_train_tif = []#np.array([])\n#x_train_tif = []\n\n#x_test = []#np.array([])\n\n\nfor idx, tags in tqdm(train_labels.values[:10000], miniters=1000):\n    #img_jpg = cv2.imread('../input/train-jpg/{}.jpg'.format(idx))\n    #x_train.append(cv2.resize(img_jpg, (32, 32)))\n    img_tif = cv2.imread('../input/train-tif-v2/{}.tif'.format(idx),-1)\n    x_train_tif.append(cv2.resize(img_tif,(32, 32)))\n    \n#for idx, tags in (train_labels.values[10000:20000]):\n#    img_jpg = cv2.imread('../input/train-jpg/{}.jpg'.format(idx))[:,:,1]\n#    x_test.append(cv2.resize(img_jpg, (64, 64)))\n    ")
 
 
-# In[5]:
 
 
 y_train = np.array(encoded_labels[encoded_labels.columns[-17:]][:10000])
@@ -55,7 +50,6 @@ print(x_train.shape)
 print(y_train.shape)
 
 
-# In[6]:
 
 
 import keras as k
@@ -82,7 +76,6 @@ model.compile(loss='binary_crossentropy', # We NEED binary here, since categoric
               metrics=['accuracy'])    
 
 
-# In[7]:
 
 
 from keras.preprocessing.image import ImageDataGenerator
@@ -92,7 +85,6 @@ datagen = ImageDataGenerator(featurewise_center=True, featurewise_std_normalizat
 datagen.fit(x_train)
 
 
-# In[8]:
 
 
 model.fit(x_train, y_train,
@@ -109,7 +101,6 @@ print(p_valid)
 print(fbeta_score(y_valid, np.array(p_valid) > 0.2, beta=2, average='samples'))
 
 
-# In[9]:
 
 
 batch_size = 16
@@ -150,7 +141,6 @@ model.fit_generator(
         validation_steps=800 // batch_size)
 
 
-# In[10]:
 
 
 from __future__ import division
@@ -174,7 +164,6 @@ from keras.regularizers import l2
 from keras import backend as K
 
 
-# In[11]:
 
 
 def _bn_relu(input):
@@ -337,7 +326,6 @@ def _get_block(identifier):
     return identifier
 
 
-# In[12]:
 
 
 class ResnetBuilder(object):
@@ -410,7 +398,6 @@ class ResnetBuilder(object):
         return ResnetBuilder.build(input_shape, num_outputs, bottleneck, [3, 8, 36, 3])
 
 
-# In[13]:
 
 
 resnet = ResnetBuilder.build_resnet_18([4,64,64], 17)
@@ -419,14 +406,12 @@ resnet.compile(loss='binary_crossentropy', # We NEED binary here, since categori
               metrics=['accuracy'])
 
 
-# In[14]:
 
 
 split = 35000
 x_train, x_valid, y_train, y_valid = x_train[:split], x_train[split:], y_train[:split], y_train[split:]
 
 
-# In[15]:
 
 
 resnet.fit(x_train, y_train,
@@ -443,19 +428,16 @@ print(p_valid)
 print(fbeta_score(y_valid, np.array(p_valid) > 0.2, beta=2, average='samples'))
 
 
-# In[16]:
 
 
 get_ipython().run_cell_magic('time', '', "x_test = []\nfor idx, tags in (train_labels.values[20000:21000,:,:,1]):\n    img_jpg = cv2.imread('../input/train-jpg/{}.jpg'.format(idx))\n    x_test.append(cv2.resize(img_jpg, (64, 64)))\nx_test = np.array(x_test)")
 
 
-# In[17]:
 
 
 get_ipython().run_cell_magic('time', '', 'y_test = np.array(encoded_labels.primary[20000:21000])')
 
 
-# In[18]:
 
 
 x_train_jpg = np.array(x_train_jpg)
@@ -467,13 +449,11 @@ y_primary_test = np.array(encoded_labels.primary[10000:20000])
 #y_primary = encoded_labels.primary[:10000]
 
 
-# In[19]:
 
 
 plt.hist(y_primary)
 
 
-# In[20]:
 
 
 data = np.fromfile('../input/train-jpg/',
@@ -483,7 +463,6 @@ data.shape
 data.reshape((50,1104,104))
 
 
-# In[21]:
 
 
 import mxnet as mx
@@ -492,7 +471,6 @@ train_iter = mx.io.NDArrayIter(x_train_jpg, y_primary_train, batch_size, shuffle
 val_iter = mx.io.NDArrayIter(x_test_jpg, y_primary_test, batch_size)
 
 
-# In[22]:
 
 
 data = mx.sym.var('data')
@@ -514,19 +492,16 @@ fc2 = mx.sym.FullyConnected(data=tanh3, num_hidden=1)
 lenet = mx.sym.SoftmaxOutput(data=fc2, name='softmax')
 
 
-# In[23]:
 
 
 a = train_iter.next()
 
 
-# In[24]:
 
 
 a.data
 
 
-# In[25]:
 
 
 data = mx.sym.var('data')
@@ -549,7 +524,6 @@ fc4  = mx.sym.FullyConnected(data=act3, num_hidden=1)
 mlp  = mx.sym.SoftmaxOutput(data=fc3, name='softmax')
 
 
-# In[26]:
 
 
 import logging
@@ -565,13 +539,11 @@ mlp_model.fit(train_iter,  # train data
               num_epoch=4)  # train for at most 10 dataset passes
 
 
-# In[27]:
 
 
 y_test.shape
 
 
-# In[28]:
 
 
 test_iter = mx.io.NDArrayIter(x_test, y_test, batch_size)
@@ -581,43 +553,36 @@ mlp_model.score(test_iter, acc)
 print(acc)
 
 
-# In[29]:
 
 
 
 
 
-# In[29]:
 
 
 x_train_tif[0].shape
 
 
-# In[30]:
 
 
 img_jpg = cv2.imread('../input/train-jpg/train_1000.jpg')
 
 
-# In[31]:
 
 
 img_jpg.shape
 
 
-# In[32]:
 
 
 img_tif = cv2.imread('../input/train-tif-v2/train_1000.tif', cv2.IMREAD_UNCHANGED)
 
 
-# In[33]:
 
 
 img.view()[0].shape
 
 
-# In[34]:
 
 
 img_tif_to_bgr = cv2.cvtColor(img_jpg, cv2.COLOR_RGB2BGR)
@@ -625,7 +590,6 @@ plt.imshow(img_tif[:,:,3])
 plt.axis('off')
 
 
-# In[35]:
 
 
 img_bgr = cv2.cvtColor(img_jpg, cv2.COLOR_RGB2BGR)
@@ -633,21 +597,18 @@ plt.imshow(img_bgr)
 plt.axis('off')
 
 
-# In[36]:
 
 
 plt.imshow(img_jpg)
 plt.axis('off')
 
 
-# In[37]:
 
 
 img_blur = cv2.GaussianBlur(img_bgr,(5,5),0)
 #ret3,th3 = cv2.threshold(blur,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
 
-# In[38]:
 
 
 titles = ['img_jpg','img_tif','img_bgr','img_blur']#,'TOZERO','TOZERO_INV']
@@ -663,7 +624,6 @@ for i in range(len(images)):
 plt.show()
 
 
-# In[39]:
 
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 
@@ -65,7 +64,6 @@ mergedall=pd.concat([merged_prior,merged_train,test])
 merged_prior=mergedall
 
 
-# In[ ]:
 
 
 def load_data_XG(FnlBinDailyData):
@@ -84,7 +82,6 @@ def load_data_XG(FnlBinDailyData):
     return D
 
 
-# In[ ]:
 
 
 def xgBoost(mydata,test,thresh):
@@ -174,7 +171,6 @@ def xgBoost(mydata,test,thresh):
     return test.order_id.unique(), d
 
 
-# In[ ]:
 
 
 #Sort by most active users in the test set
@@ -196,7 +192,6 @@ order_id_splits=pd.DataFrame(index=range(np.int((dfindexer.size-1)/10)+1),
                                       'g5','g6','g7','g8','g9'])
 
 
-# In[ ]:
 
 
 count=np.int(0)
@@ -231,7 +226,6 @@ aver_order_size=pd.DataFrame(index=range(merged_prior.user_id.nunique()), column
 idcount=np.int(0)
 
 
-# In[ ]:
 
 
 #Get the size of the dataframe fro the user_id I am modeling
@@ -254,7 +248,6 @@ def getlen(ids):
     return count
 
 
-# In[ ]:
 
 
 #Builds the dataframe with all the order history for the user_id we are trying to predict
@@ -341,7 +334,6 @@ def buildDf(ids):
     return df
 
 
-# In[ ]:
 
 
 #Puts it all together
@@ -362,7 +354,6 @@ def xg(splits,filename,thresh):
     preddf.to_csv(filename)
 
 
-# In[ ]:
 
 
 #Calls the function that puts it all together.
@@ -426,7 +417,6 @@ else:
     pd.concat([csv0,csv1,csv2,csv3,csv4]).to_csv(filenames[11])
 
 
-# In[ ]:
 
 
 

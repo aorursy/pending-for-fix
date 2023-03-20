@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -24,55 +23,47 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 train = pd.read_csv("../input/train.csv")
 train.head()
 
 
-# In[3]:
 
 
 train = train.sample(frac=.1)
 
 
-# In[4]:
 
 
 structures = pd.read_csv("../input/structures.csv")
 structures.head()
 
 
-# In[5]:
 
 
 mulliken = pd.read_csv("../input/mulliken_charges.csv")
 mulliken.head()
 
 
-# In[6]:
 
 
 potential_energy = pd.read_csv("../input/potential_energy.csv")
 potential_energy.head()
 
 
-# In[7]:
 
 
 magnetic_shielding = pd.read_csv("../input/magnetic_shielding_tensors.csv")
 magnetic_shielding.head()
 
 
-# In[8]:
 
 
 test = pd.read_csv("../input/test.csv")
 test.head()
 
 
-# In[9]:
 
 
 train = pd.merge(train, structures, 'inner', left_on=['molecule_name', 'atom_index_0'], right_on=['molecule_name', 'atom_index'] )
@@ -93,31 +84,26 @@ train = train.drop(['atom_index_x', 'atom_index_y'], 1)
 test = test.drop(['atom_index_x', 'atom_index_y'], 1)
 
 
-# In[10]:
 
 
 train.head()
 
 
-# In[11]:
 
 
 test.count()
 
 
-# In[12]:
 
 
 train[train.columns[:-1]] .nunique()
 
 
-# In[13]:
 
 
 train.isna().sum()
 
 
-# In[14]:
 
 
 fig, ax = plt.subplots(1,2 , figsize=(15,6))
@@ -132,14 +118,12 @@ plt.tight_layout()
 plt.show()
 
 
-# In[15]:
 
 
 liste_mol_train = train['molecule_name'].unique()
 len(test[test['molecule_name'].isin(liste_mol_train)])
 
 
-# In[16]:
 
 
 table = pd.pivot_table(train, 'scalar_coupling_constant', ['atom_1', 'atom_2', 'type'] ).reset_index()
@@ -148,19 +132,16 @@ submission = pd.merge(test, table, 'left', ['atom_1', 'atom_2', 'type'])
 table
 
 
-# In[17]:
 
 
 submission.head()
 
 
-# In[18]:
 
 
 submission['scalar_coupling_constant'].dropna().count()
 
 
-# In[19]:
 
 
 fig, ax = plt.subplots(1,2 , figsize=(15,6))
@@ -171,7 +152,6 @@ plt.tight_layout()
 plt.show()
 
 
-# In[20]:
 
 
 fig, ax = plt.subplots(1,2 , figsize=(15,6))
@@ -182,7 +162,6 @@ plt.tight_layout()
 plt.show()
 
 
-# In[21]:
 
 
 fig, ax = plt.subplots(1,2 , figsize=(15,6))
@@ -193,13 +172,11 @@ plt.tight_layout()
 plt.show()
 
 
-# In[22]:
 
 
 train.columns
 
 
-# In[23]:
 
 
 fig, ax = plt.subplots(1,3 , figsize=(15,6))
@@ -211,7 +188,6 @@ plt.tight_layout()
 plt.show()
 
 
-# In[24]:
 
 
 fig, ax = plt.subplots(1,3 , figsize=(15,6))
@@ -224,7 +200,6 @@ plt.tight_layout()
 plt.show()
 
 
-# In[25]:
 
 
 g=sns.FacetGrid(train, col="atom_y", height=4, aspect=1)
@@ -241,7 +216,6 @@ g.map(sns.distplot, "z_y", hist=False)
 plt.show()
 
 
-# In[26]:
 
 
 train.head()

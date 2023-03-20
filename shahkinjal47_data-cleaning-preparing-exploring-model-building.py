@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import os
@@ -47,7 +46,6 @@ train = load_ny_taxi_data("train")
 train = train.sample(n=1000000)
 
 
-# In[ ]:
 
 
 
@@ -59,7 +57,6 @@ print("Negative fare rows = " , sum(train["fare_amount"] < 0))
 print("0 fare rows = " , sum(train["fare_amount"] == 0))
 
 
-# In[ ]:
 
 
 #Data Cleaning
@@ -93,7 +90,6 @@ train = train[(train["dropoff_longitude"] > -75) & (train["dropoff_longitude"] <
 train = train[(train["passenger_count"] <= 6 ) & (train["passenger_count"] >= 1)]
 
 
-# In[ ]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
@@ -102,7 +98,6 @@ train.hist(bins=50,figsize=(15,15)) #Look at the histograms
 plt.show()
 
 
-# In[ ]:
 
 
 #Visualizing data
@@ -111,7 +106,6 @@ train.plot(kind="scatter", x="pickup_longitude", y="pickup_latitude", c="red", a
 train.plot(kind="scatter", x="dropoff_longitude", y="dropoff_latitude", c="blue", alpha=0.1)
 
 
-# In[ ]:
 
 
 #Dual axis plot
@@ -126,7 +120,6 @@ train.plot(kind="scatter", x="dropoff_longitude", y="dropoff_latitude", c="blue"
 # ax2.set_ylabel(train_sample["dropoff_latitude"], color='b')
 
 
-# In[ ]:
 
 
 #Look for correlations anmong variables
@@ -136,7 +129,6 @@ from pandas.tools.plotting import scatter_matrix
 scatter_matrix(train_sample,figsize=(12,8))
 
 
-# In[ ]:
 
 
 #Calculate distance and duration for given pickup and drop locations using Google's Distance Matrix API
@@ -166,7 +158,6 @@ scatter_matrix(train_sample,figsize=(12,8))
 # distance, duration = calc_dist_dur(train)
 
 
-# In[ ]:
 
 
 # Define function to calculate distance between two points by latitude and longitude
@@ -195,7 +186,6 @@ train['distance'] = distance(train.pickup_latitude.tolist(), train.pickup_longit
                              train.dropoff_latitude.tolist(), train.dropoff_longitude.tolist())
 
 
-# In[ ]:
 
 
 #Since we have distance now, let's see its relation with fare amount
@@ -207,7 +197,6 @@ train.plot(kind="scatter", x="distance", y="fare_amount", c="red", alpha=0.1)
 plt.show()
 
 
-# In[ ]:
 
 
 # Create three new variables for storing year,time and hour of pickup
@@ -218,13 +207,11 @@ train["time"] = train["pickup_datetime"].dt.time
 train["hour"] = train["pickup_datetime"].dt.hour
 
 
-# In[ ]:
 
 
 # train["weekday"].value_counts()
 
 
-# In[ ]:
 
 
 # Define Function to polulate new column "weekday" where 1 = weekday, 0 = weekend
@@ -242,7 +229,6 @@ train["weekday"] = 0
 train["weekday"] = weekday(train["pickup_datetime"])
 
 
-# In[ ]:
 
 
 train["hour"] = train["pickup_datetime"].dt.hour
@@ -251,7 +237,6 @@ plt.hist(train["hour"], bins=5)
 plt.show()
 
 
-# In[ ]:
 
 
 # Let's categorize time data into morning, afternoon, evening and night in new column "part_of_day"
@@ -305,7 +290,6 @@ train["part_of_day"] = assign_day_part(train["pickup_datetime"])
 train = train.drop(["time", "hour"], axis=1)
 
 
-# In[ ]:
 
 
 #Since we have distance and classification of weekday now, let's see the correlation
@@ -313,7 +297,6 @@ train = train.drop(["time", "hour"], axis=1)
 train.plot(kind="scatter", x="distance", y="fare_amount", c="red", alpha=0.1)
 
 
-# In[ ]:
 
 
 # REMOVE COMMENTS
@@ -325,7 +308,6 @@ train.plot(kind="scatter", x="distance", y="fare_amount", c="red", alpha=0.1)
 # print(train.corr()["fare_amount"])
 
 
-# In[ ]:
 
 
 # We can see negative correlation of fare amount with pickup and drop off latitude and 
@@ -352,7 +334,6 @@ plt.ylabel('pickup_latitude - dropoff_latidue')
 plt.title('log1p(fare_amount)');
 
 
-# In[ ]:
 
 
 # We can clearly see that direction has positive linear correlation with fare amount
@@ -371,14 +352,12 @@ def calculate_direction(d_lon, d_lat):
 train['direction'] = calculate_direction(train.diff_lon, train.diff_lat)
 
 
-# In[ ]:
 
 
 
 train.plot(kind="scatter", x="direction", y="fare_amount", c="blue", alpha=0.1)
 
 
-# In[ ]:
 
 
 # Convert categorical varibale "part_of_day" from to numerical value using sklearn LabelBinarizer
@@ -394,7 +373,6 @@ train = pd.merge(train, lb_results_df, left_index=True, right_index=True) #Merge
 train.drop(["part_of_day"], axis=1, inplace=True) # Dropping part_of_day variable
 
 
-# In[ ]:
 
 
 #Let us separate the response variable fare_amount before we standardize the training set
@@ -406,7 +384,6 @@ train.drop(["fare_amount"], axis=1, inplace=True)
 train_std = train.drop(["pickup_datetime"], axis=1)
 
 
-# In[ ]:
 
 
 # Feature Scaling - Let's standardize our attributes so that they are in the same scales
@@ -417,7 +394,6 @@ train_std = std_scaler.fit_transform(train_std)
 train_std
 
 
-# In[ ]:
 
 
 # Create and train a Linear Regression Model
@@ -430,7 +406,6 @@ lin_reg = LinearRegression()
 lin_reg.fit(train_prepared, train_labels)
 
 
-# In[ ]:
 
 
 #Let us test our preductions on first 3 rows
@@ -440,7 +415,6 @@ print("Predictions:\t", lin_reg.predict(some_data))
 print("Labels", list(some_labels))
 
 
-# In[ ]:
 
 
 # Measuring this linear regression model's RMSE on the whole training set
@@ -453,7 +427,6 @@ lin_rmse # We got RMSE of 4.964 which is not very good as mean of fare_amount is
 # prediction error of $5 is not acceptable
 
 
-# In[ ]:
 
 
 # Function to display model scores
@@ -464,7 +437,6 @@ def display_scores(scores):
     print("Standard deviation:", scores.std())
 
 
-# In[ ]:
 
 
 # Let's train a new DecisionTreeRegressor model and compare the rmse with earlier model
@@ -491,7 +463,6 @@ display_scores(rmse_scores)
 We get mean of 5.6 with SD of 0.35. The variation of $5.6+-0.35 is not a very good prediction model
 
 
-# In[ ]:
 
 
 # Checking score for Linear Regression model created earlier using cross-validation
@@ -505,7 +476,6 @@ display_scores(lin_reg_rmse_scores)
 #We get mean of 4.96 with sd of 0.24 which is better then DecisionTreeRegressor
 
 
-# In[ ]:
 
 
 # Let's train a RandomForestRegressor and check how well it fits the data
@@ -529,7 +499,6 @@ display_scores(rfg_rmse_scores) # We got mean error of 4.31 with sd of 0.18, not
                                 # than linear regression model
 
 
-# In[ ]:
 
 
 # Let us fine tune the RandomForestRegressor model
@@ -545,7 +514,6 @@ grid_search = GridSearchCV(forest_reg, param_grid, cv=5,
 grid_search.fit(train_prepared, train_labels)
 
 
-# In[ ]:
 
 
 print("Best parameters combination: ",grid_search.best_params_)
@@ -584,14 +552,12 @@ for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
 # 4.29509148366207 {'bootstrap': False, 'max_features': 4, 'n_estimators': 10}    
 
 
-# In[ ]:
 
 
 feature_importances = grid_search.best_estimator_.feature_importances_
 feature_importances
 
 
-# In[ ]:
 
 
 # Check the relative importance of each attribute for making accurate predictions
@@ -617,7 +583,6 @@ sorted(zip(feature_importances, attributes), reverse=True)
 #  (0.0018164761499410416, 'lateNight')]
 
 
-# In[ ]:
 
 
 # Let us try dropping some less useful features as per the output of last command
@@ -650,7 +615,6 @@ train_prepared = train_no_std.copy() # Adding removed features back
 # Standard deviation: 0.21881778766341559
 
 
-# In[ ]:
 
 
 # Let's test our module on the given test data
@@ -705,7 +669,6 @@ test.drop(["key"], axis=1, inplace=True)
 test_keys = test_keys.to_frame()
 
 
-# In[ ]:
 
 
 # Since training and test set have same variables now, we can run test data 
@@ -714,13 +677,11 @@ test_keys = test_keys.to_frame()
 test_fare_predictions = forest_reg.predict(test)
 
 
-# In[ ]:
 
 
 type(test_fare_predictions)
 
 
-# In[ ]:
 
 
 # Merge test data keys and predictions for kaggle submission
@@ -733,7 +694,6 @@ for i in range(len(test_keys)):
 test_keys = test_keys.round(2)
 
 
-# In[ ]:
 
 
 # This dataframe test_keys contains our final submission data. 

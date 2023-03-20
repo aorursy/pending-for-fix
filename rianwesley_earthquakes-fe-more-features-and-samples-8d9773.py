@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 
 
 
-# In[1]:
 
 
 import numpy as np
@@ -43,13 +41,11 @@ from scipy import stats
 from sklearn.kernel_ridge import KernelRidge
 
 
-# In[2]:
 
 
 get_ipython().run_cell_magic('time', '', "train = pd.read_csv('../input/train.csv', dtype={'acoustic_data': np.int16, 'time_to_failure': np.float32})")
 
 
-# In[3]:
 
 
 train_acoustic_data_small = train['acoustic_data'].values[::50]
@@ -70,7 +66,6 @@ del train_acoustic_data_small
 del train_time_to_failure_small
 
 
-# In[4]:
 
 
 # Create a training file with simple derived features
@@ -255,19 +250,16 @@ for segment in tqdm_notebook(range(segments)):
         X_tr.loc[segment, 'abs_max_roll_mean_' + str(windows)] = np.abs(x_roll_mean).max()
 
 
-# In[5]:
 
 
 print(f'{X_tr.shape[0]} samples in new train data and {X_tr.shape[1]} columns.')
 
 
-# In[6]:
 
 
 np.abs(X_tr.corrwith(y_tr['time_to_failure'])).sort_values(ascending=False).head(12)
 
 
-# In[7]:
 
 
 plt.figure(figsize=(44, 24))
@@ -285,7 +277,6 @@ for i, col in enumerate(cols):
     plt.grid(False)
 
 
-# In[8]:
 
 
 means_dict = {}
@@ -298,7 +289,6 @@ for col in X_tr.columns:
         means_dict[col] = mean_value
 
 
-# In[9]:
 
 
 scaler = StandardScaler()
@@ -306,7 +296,6 @@ scaler.fit(X_tr)
 X_train_scaled = pd.DataFrame(scaler.transform(X_tr), columns=X_tr.columns)
 
 
-# In[10]:
 
 
 submission = pd.read_csv('../input/sample_submission.csv', index_col='seg_id')
@@ -448,14 +437,12 @@ for col in X_test.columns:
 X_test_scaled = pd.DataFrame(scaler.transform(X_test), columns=X_test.columns)
 
 
-# In[11]:
 
 
 n_fold = 5
 folds = KFold(n_splits=n_fold, shuffle=True, random_state=11)
 
 
-# In[12]:
 
 
 def train_model(X=X_train_scaled, X_test=X_test_scaled, y=y_tr, params=None, folds=folds, model_type='lgb', plot_feature_importance=False, model=None):
@@ -541,7 +528,6 @@ def train_model(X=X_train_scaled, X_test=X_test_scaled, y=y_tr, params=None, fol
         return oof, prediction
 
 
-# In[13]:
 
 
 params = {'num_leaves': 128,
@@ -561,14 +547,12 @@ params = {'num_leaves': 128,
 oof_lgb, prediction_lgb, feature_importance = train_model(params=params, model_type='lgb', plot_feature_importance=True)
 
 
-# In[14]:
 
 
 top_cols = list(feature_importance[["feature", "importance"]].groupby("feature").mean().sort_values(
                 by="importance", ascending=False)[:50].index)
 
 
-# In[15]:
 
 
 # Taking less columns seriously decreases score.
@@ -576,13 +560,11 @@ top_cols = list(feature_importance[["feature", "importance"]].groupby("feature")
 # X_test_scaled = X_test_scaled[top_cols]
 
 
-# In[16]:
 
 
 oof_lgb, prediction_lgb, feature_importance = train_model(X=X_train_scaled, X_test=X_test_scaled, params=params, model_type='lgb', plot_feature_importance=True)
 
 
-# In[17]:
 
 
 xgb_params = {'eta': 0.03,
@@ -595,35 +577,30 @@ xgb_params = {'eta': 0.03,
 oof_xgb, prediction_xgb = train_model(X=X_train_scaled, X_test=X_test_scaled, params=xgb_params, model_type='xgb')
 
 
-# In[18]:
 
 
 model = NuSVR(gamma='scale', nu=0.9, C=10.0, tol=0.01)
 oof_svr, prediction_svr = train_model(X=X_train_scaled, X_test=X_test_scaled, params=None, model_type='sklearn', model=model)
 
 
-# In[19]:
 
 
 model = NuSVR(gamma='scale', nu=0.7, tol=0.01, C=1.0)
 oof_svr1, prediction_svr1 = train_model(X=X_train_scaled, X_test=X_test_scaled, params=None, model_type='sklearn', model=model)
 
 
-# In[20]:
 
 
 params = {'loss_function':'MAE'}
 oof_cat, prediction_cat = train_model(X=X_train_scaled, X_test=X_test_scaled, params=params, model_type='cat')
 
 
-# In[21]:
 
 
 model = KernelRidge(kernel='rbf', alpha=0.1, gamma=0.01)
 oof_r, prediction_r = train_model(X=X_train_scaled, X_test=X_test_scaled, params=None, model_type='sklearn', model=model)
 
 
-# In[22]:
 
 
 train_stack = np.vstack([oof_lgb, oof_xgb, oof_svr, oof_svr1, oof_r, oof_cat]).transpose()
@@ -632,13 +609,11 @@ test_stack = np.vstack([prediction_lgb, prediction_xgb, prediction_svr, predicti
 test_stack = pd.DataFrame(test_stack)
 
 
-# In[23]:
 
 
 oof_lgb_stack, prediction_lgb_stack, feature_importance = train_model(X=train_stack, X_test=test_stack, params=params, model_type='lgb', plot_feature_importance=True)
 
 
-# In[24]:
 
 
 plt.figure(figsize=(18, 8))
@@ -678,7 +653,6 @@ plt.legend(loc=(1, 0.5));
 plt.suptitle('Predictions vs actual');
 
 
-# In[25]:
 
 
 submission['time_to_failure'] = (prediction_lgb + prediction_xgb + prediction_svr + prediction_svr1 + prediction_cat + prediction_r) / 6
@@ -687,14 +661,12 @@ print(submission.head())
 submission.to_csv('submission.csv')
 
 
-# In[26]:
 
 
 X_tr.to_csv('train_features.csv', index=False)
 X_test.to_csv('test_features.csv', index=False)
 
 
-# In[27]:
 
 
 # From https://www.kaggle.com/rtatman/download-a-csv-file-from-a-kernel

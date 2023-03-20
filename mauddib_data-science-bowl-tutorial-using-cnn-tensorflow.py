@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -44,7 +43,6 @@ def make_df(train_path, test_path, img_size):
     return X_train, Y_train, X_test, sizes_test
 
 
-# In[2]:
 
 
 from keras.layers.convolutional import Conv2D, Conv2DTranspose
@@ -114,7 +112,6 @@ def Unet(img_size):
     return model
 
 
-# In[3]:
 
 
 from keras.preprocessing.image import ImageDataGenerator
@@ -147,7 +144,6 @@ def generator(xtr, xval, ytr, yval, batch_size):
     return train_generator, val_generator
 
 
-# In[4]:
 
 
 import tensorflow as tf
@@ -178,7 +174,6 @@ def bce_dice_loss(y_true, y_pred):
     return 0.5 * binary_crossentropy(y_true, y_pred) - dice_coef(y_true, y_pred)
 
 
-# In[5]:
 
 
 from skimage.morphology import label
@@ -199,7 +194,6 @@ def prob_to_rles(x, cutoff=0.5):
         yield rle_encoding(lab_img == i)
 
 
-# In[6]:
 
 
 import cv2

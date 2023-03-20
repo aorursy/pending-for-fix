@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # Input data files are available in the "../input/" directory.
@@ -15,7 +14,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 import glob
@@ -52,7 +50,6 @@ sns.set(style='white', context='notebook', palette='dark')
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[ ]:
 
 
 train_df = pd.read_csv('../input/aptos2019-blindness-detection/train.csv')
@@ -62,7 +59,6 @@ print(test_df.shape)
 train_df.head()
 
 
-# In[ ]:
 
 
 g = sns.countplot(train_df['diagnosis'])
@@ -70,7 +66,6 @@ sns.despine()
 train_df['diagnosis'].value_counts()
 
 
-# In[ ]:
 
 
 def display_samples(df, columns=2, rows=2):
@@ -91,14 +86,12 @@ def display_samples(df, columns=2, rows=2):
 display_samples(train_df)
 
 
-# In[ ]:
 
 
 orig_img = np.array(Image.open('../input/aptos2019-blindness-detection/test_images/351aba543dc8.png'))
 plt.imshow(orig_img)
 
 
-# In[ ]:
 
 
 import os
@@ -148,7 +141,6 @@ def generate_plot_pics(datagen,orig_img):
     plt.show()
 
 
-# In[ ]:
 
 
 ## rotation_range: Int. Degree range for random rotations.
@@ -156,7 +148,6 @@ datagen = ImageDataGenerator(rotation_range=30)
 generate_plot_pics(datagen,orig_img)
 
 
-# In[ ]:
 
 
 ## zoom_range: Float or [lower, upper]. Range for random zoom.
@@ -165,14 +156,12 @@ datagen = ImageDataGenerator(zoom_range=0.1)
 generate_plot_pics(datagen,orig_img)
 
 
-# In[ ]:
 
 
 datagen = ImageDataGenerator(vertical_flip=True)
 generate_plot_pics(datagen,orig_img)
 
 
-# In[ ]:
 
 
 def get_pad_width(im, new_shape, is_rgb=True):
@@ -192,7 +181,6 @@ def preprocess_image(image_path, desired_size=224): #choosing image size
     return im
 
 
-# In[ ]:
 
 
 N = train_df.shape[0]
@@ -204,7 +192,6 @@ for i, image_id in enumerate(tqdm(train_df['id_code'])):
     )
 
 
-# In[ ]:
 
 
 N = test_df.shape[0]
@@ -216,7 +203,6 @@ for i, image_id in enumerate(tqdm(test_df['id_code'])):
     )
 
 
-# In[ ]:
 
 
 #y_train = pd.get_dummies(train_df['diagnosis']).values
@@ -226,7 +212,6 @@ print(y_train.shape)
 #print(x_test.shape)
 
 
-# In[ ]:
 
 
 # #Creating multilabels (see https://arxiv.org/pdf/0704.1028.pdf)
@@ -240,7 +225,6 @@ print(y_train.shape)
 # print("Multilabel version:", y_train_multi.sum(axis=0))
 
 
-# In[ ]:
 
 
 #splitting data for train and validation 
@@ -250,7 +234,6 @@ x_train, x_val, y_train, y_val = train_test_split(
     random_state=8)
 
 
-# In[ ]:
 
 
 x_train = x_train / 255
@@ -258,7 +241,6 @@ x_val = x_val / 255
 #x_test = x_test / 255
 
 
-# In[ ]:
 
 
 def create_datagen():
@@ -274,7 +256,6 @@ def create_datagen():
 data_generator = create_datagen().flow(x_train, y_train, batch_size=30, seed=8)
 
 
-# In[ ]:
 
 
 batch_size = 30
@@ -283,7 +264,6 @@ epochs = 20
 input_shape = (224, 224, 3)
 
 
-# In[ ]:
 
 
 import keras
@@ -298,7 +278,6 @@ import h5py
 from keras.models import load_model
 
 
-# In[ ]:
 
 
 model_a = Sequential()
@@ -327,7 +306,6 @@ model_a.compile(loss='categorical_crossentropy',
 model_a.summary()
 
 
-# In[ ]:
 
 
 history = model_a.fit_generator(
@@ -341,7 +319,6 @@ history = model_a.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -366,7 +343,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_b = Sequential()
@@ -401,7 +377,6 @@ model_b.compile(loss='categorical_crossentropy',
 model_b.summary()
 
 
-# In[ ]:
 
 
 history = model_b.fit_generator(
@@ -415,7 +390,6 @@ history = model_b.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -440,7 +414,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_b = Sequential()
@@ -473,7 +446,6 @@ model_b.compile(loss='categorical_crossentropy',
 model_b.summary()
 
 
-# In[ ]:
 
 
 history = model_b.fit_generator(
@@ -487,7 +459,6 @@ history = model_b.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -512,7 +483,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_c = Sequential()
@@ -549,7 +519,6 @@ model_c.compile(loss='categorical_crossentropy',
 model_c.summary()
 
 
-# In[ ]:
 
 
 history = model_c.fit_generator(
@@ -563,7 +532,6 @@ history = model_c.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -588,7 +556,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_d = Sequential()
@@ -629,7 +596,6 @@ model_d.compile(loss='categorical_crossentropy',
 model_d.summary()
 
 
-# In[ ]:
 
 
 history = model_d.fit_generator(
@@ -643,7 +609,6 @@ history = model_d.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -668,7 +633,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_d = Sequential()
@@ -721,7 +685,6 @@ model_d.compile(loss='categorical_crossentropy',
 model_d.summary()
 
 
-# In[ ]:
 
 
 history = model_d.fit_generator(
@@ -735,7 +698,6 @@ history = model_d.fit_generator(
 )
 
 
-# In[ ]:
 
 
 model_1a = Sequential()
@@ -756,7 +718,6 @@ model_1a.compile(loss='categorical_crossentropy',
 model_1a.summary()
 
 
-# In[ ]:
 
 
 history = model_1a.fit_generator(
@@ -770,7 +731,6 @@ history = model_1a.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -795,7 +755,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_1b = Sequential()
@@ -815,7 +774,6 @@ model_1b.compile(loss='categorical_crossentropy',
 model_1b.summary()
 
 
-# In[ ]:
 
 
 history = model_1b.fit_generator(
@@ -829,7 +787,6 @@ history = model_1b.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -854,7 +811,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_1c = Sequential()
@@ -875,7 +831,6 @@ model_1c.compile(loss='categorical_crossentropy',
 model_1c.summary()
 
 
-# In[ ]:
 
 
 history = model_1c.fit_generator(
@@ -889,7 +844,6 @@ history = model_1c.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -914,7 +868,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_1d = Sequential()
@@ -935,7 +888,6 @@ model_1d.compile(loss='categorical_crossentropy',
 model_1d.summary()
 
 
-# In[ ]:
 
 
 history = model_1d.fit_generator(
@@ -949,7 +901,6 @@ history = model_1d.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -974,7 +925,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_2a = Sequential()
@@ -999,7 +949,6 @@ model_2a.compile(loss='categorical_crossentropy',
 model_2a.summary()
 
 
-# In[ ]:
 
 
 history = model_2a.fit_generator(
@@ -1013,7 +962,6 @@ history = model_2a.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1038,7 +986,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_2a2 = Sequential()
@@ -1062,7 +1009,6 @@ model_2a2.compile(loss='categorical_crossentropy',
 model_2a2.summary()
 
 
-# In[ ]:
 
 
 history = model_2a2.fit_generator(
@@ -1076,7 +1022,6 @@ history = model_2a2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1101,7 +1046,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_2b = Sequential()
@@ -1126,7 +1070,6 @@ model_2b.compile(loss='categorical_crossentropy',
 model_2b.summary()
 
 
-# In[ ]:
 
 
 history = model_2b.fit_generator(
@@ -1140,7 +1083,6 @@ history = model_2b.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1165,7 +1107,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_2b2 = Sequential()
@@ -1189,7 +1130,6 @@ model_2b2.compile(loss='categorical_crossentropy',
 model_2b2.summary()
 
 
-# In[ ]:
 
 
 history = model_2b2.fit_generator(
@@ -1203,7 +1143,6 @@ history = model_2b2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1228,7 +1167,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_2c = Sequential()
@@ -1253,7 +1191,6 @@ model_2c.compile(loss='categorical_crossentropy',
 model_2c.summary()
 
 
-# In[ ]:
 
 
 history = model_2c.fit_generator(
@@ -1267,7 +1204,6 @@ history = model_2c.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1292,7 +1228,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_2c2 = Sequential()
@@ -1317,7 +1252,6 @@ model_2c2.compile(loss='categorical_crossentropy',
 model_2c2.summary()
 
 
-# In[ ]:
 
 
 history = model_2c2.fit_generator(
@@ -1331,7 +1265,6 @@ history = model_2c2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1356,7 +1289,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_2d = Sequential()
@@ -1381,7 +1313,6 @@ model_2d.compile(loss='categorical_crossentropy',
 model_2d.summary()
 
 
-# In[ ]:
 
 
 history = model_2d.fit_generator(
@@ -1395,7 +1326,6 @@ history = model_2d.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1420,7 +1350,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_2d2 = Sequential()
@@ -1444,7 +1373,6 @@ model_2d2.compile(loss='categorical_crossentropy',
 model_2d2.summary()
 
 
-# In[ ]:
 
 
 history = model_2d2.fit_generator(
@@ -1458,7 +1386,6 @@ history = model_2d2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1483,7 +1410,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_3a = Sequential()
@@ -1512,7 +1438,6 @@ model_3a.compile(loss='categorical_crossentropy',
 model_3a.summary()
 
 
-# In[ ]:
 
 
 history = model_3a.fit_generator(
@@ -1526,7 +1451,6 @@ history = model_3a.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1551,7 +1475,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_3a2 = Sequential()
@@ -1579,7 +1502,6 @@ model_3a2.compile(loss='categorical_crossentropy',
 model_3a2.summary()
 
 
-# In[ ]:
 
 
 history = model_3a2.fit_generator(
@@ -1593,7 +1515,6 @@ history = model_3a2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1618,7 +1539,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_3b = Sequential()
@@ -1647,7 +1567,6 @@ model_3b.compile(loss='categorical_crossentropy',
 model_3b.summary()
 
 
-# In[ ]:
 
 
 history = model_3b.fit_generator(
@@ -1661,7 +1580,6 @@ history = model_3b.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1686,7 +1604,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_3b2 = Sequential()
@@ -1714,7 +1631,6 @@ model_3b2.compile(loss='categorical_crossentropy',
 model_3b2.summary()
 
 
-# In[ ]:
 
 
 history = model_3b2.fit_generator(
@@ -1728,7 +1644,6 @@ history = model_3b2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1753,7 +1668,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_3c = Sequential()
@@ -1782,7 +1696,6 @@ model_3c.compile(loss='categorical_crossentropy',
 model_3c.summary()
 
 
-# In[ ]:
 
 
 history = model_3c.fit_generator(
@@ -1796,7 +1709,6 @@ history = model_3c.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1821,7 +1733,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_3c2 = Sequential()
@@ -1849,7 +1760,6 @@ model_3c2.compile(loss='categorical_crossentropy',
 model_3c2.summary()
 
 
-# In[ ]:
 
 
 history = model_3c2.fit_generator(
@@ -1863,7 +1773,6 @@ history = model_3c2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1888,7 +1797,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_3d = Sequential()
@@ -1917,7 +1825,6 @@ model_3d.compile(loss='categorical_crossentropy',
 model_3d.summary()
 
 
-# In[ ]:
 
 
 history = model_3d.fit_generator(
@@ -1931,7 +1838,6 @@ history = model_3d.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -1956,7 +1862,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_3d2 = Sequential()
@@ -1984,7 +1889,6 @@ model_3d2.compile(loss='categorical_crossentropy',
 model_3d2.summary()
 
 
-# In[ ]:
 
 
 history = model_3d2.fit_generator(
@@ -1998,7 +1902,6 @@ history = model_3d2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -2023,7 +1926,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_4a = Sequential()
@@ -2055,7 +1957,6 @@ model_4a.compile(loss='categorical_crossentropy',
 model_4a.summary()
 
 
-# In[ ]:
 
 
 history = model_4a.fit_generator(
@@ -2069,7 +1970,6 @@ history = model_4a.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -2094,7 +1994,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_4a2 = Sequential()
@@ -2125,7 +2024,6 @@ model_4a2.compile(loss='categorical_crossentropy',
 model_4a2.summary()
 
 
-# In[ ]:
 
 
 history = model_4a2.fit_generator(
@@ -2139,7 +2037,6 @@ history = model_4a2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -2164,7 +2061,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_4b = Sequential()
@@ -2196,7 +2092,6 @@ model_4b.compile(loss='categorical_crossentropy',
 model_4b.summary()
 
 
-# In[ ]:
 
 
 history = model_4b.fit_generator(
@@ -2210,7 +2105,6 @@ history = model_4b.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -2235,7 +2129,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_4b2 = Sequential()
@@ -2266,7 +2159,6 @@ model_4b2.compile(loss='categorical_crossentropy',
 model_4b2.summary()
 
 
-# In[ ]:
 
 
 history = model_4b2.fit_generator(
@@ -2280,7 +2172,6 @@ history = model_4b2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -2305,7 +2196,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_4c = Sequential()
@@ -2337,7 +2227,6 @@ model_4c.compile(loss='categorical_crossentropy',
 model_4c.summary()
 
 
-# In[ ]:
 
 
 history = model_4c.fit_generator(
@@ -2351,7 +2240,6 @@ history = model_4c.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -2376,7 +2264,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_4c2 = Sequential()
@@ -2407,7 +2294,6 @@ model_4c2.compile(loss='categorical_crossentropy',
 model_4c2.summary()
 
 
-# In[ ]:
 
 
 history = model_4c2.fit_generator(
@@ -2421,7 +2307,6 @@ history = model_4c2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -2446,7 +2331,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_4d = Sequential()
@@ -2479,7 +2363,6 @@ model_4d.compile(loss='categorical_crossentropy',
 model_4d.summary()
 
 
-# In[ ]:
 
 
 history = model_4d.fit_generator(
@@ -2493,7 +2376,6 @@ history = model_4d.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -2518,7 +2400,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_4d2 = Sequential()
@@ -2550,7 +2431,6 @@ model_4d2.compile(loss='categorical_crossentropy',
 model_4d2.summary()
 
 
-# In[ ]:
 
 
 history = model_4d2.fit_generator(
@@ -2564,7 +2444,6 @@ history = model_4d2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -2589,7 +2468,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_5a = Sequential()
@@ -2621,7 +2499,6 @@ model_5a.compile(loss='categorical_crossentropy',
 model_5a.summary()
 
 
-# In[ ]:
 
 
 history = model_5a.fit_generator(
@@ -2635,7 +2512,6 @@ history = model_5a.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -2660,7 +2536,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_5a2 = Sequential()
@@ -2691,7 +2566,6 @@ model_5a2.compile(loss='categorical_crossentropy',
 model_5a2.summary()
 
 
-# In[ ]:
 
 
 history = model_5a2.fit_generator(
@@ -2705,7 +2579,6 @@ history = model_5a2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -2730,7 +2603,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_5b = Sequential()
@@ -2762,7 +2634,6 @@ model_5b.compile(loss='categorical_crossentropy',
 model_5b.summary()
 
 
-# In[ ]:
 
 
 history = model_5b.fit_generator(
@@ -2776,7 +2647,6 @@ history = model_5b.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -2801,7 +2671,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_5b2 = Sequential()
@@ -2832,7 +2701,6 @@ model_5b2.compile(loss='categorical_crossentropy',
 model_5b2.summary()
 
 
-# In[ ]:
 
 
 history = model_5b2.fit_generator(
@@ -2846,7 +2714,6 @@ history = model_5b2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -2871,7 +2738,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_5c = Sequential()
@@ -2903,7 +2769,6 @@ model_5c.compile(loss='categorical_crossentropy',
 model_5c.summary()
 
 
-# In[ ]:
 
 
 history = model_5c.fit_generator(
@@ -2917,7 +2782,6 @@ history = model_5c.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -2942,7 +2806,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_5c2 = Sequential()
@@ -2973,7 +2836,6 @@ model_5c2.compile(loss='categorical_crossentropy',
 model_5c2.summary()
 
 
-# In[ ]:
 
 
 history = model_5c2.fit_generator(
@@ -2987,7 +2849,6 @@ history = model_5c2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -3012,7 +2873,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_5d = Sequential()
@@ -3044,7 +2904,6 @@ model_5d.compile(loss='categorical_crossentropy',
 model_5d.summary()
 
 
-# In[ ]:
 
 
 history = model_5d.fit_generator(
@@ -3058,7 +2917,6 @@ history = model_5d.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -3083,7 +2941,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_5d2 = Sequential()
@@ -3114,7 +2971,6 @@ model_5d2.compile(loss='categorical_crossentropy',
 model_5d2.summary()
 
 
-# In[ ]:
 
 
 history = model_5d2.fit_generator(
@@ -3128,7 +2984,6 @@ history = model_5d2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -3153,7 +3008,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_6a = Sequential()
@@ -3185,7 +3039,6 @@ model_6a.compile(loss='categorical_crossentropy',
 model_6a.summary()
 
 
-# In[ ]:
 
 
 history = model_6a.fit_generator(
@@ -3199,7 +3052,6 @@ history = model_6a.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -3224,7 +3076,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_6a2 = Sequential()
@@ -3255,7 +3106,6 @@ model_6a2.compile(loss='categorical_crossentropy',
 model_6a2.summary()
 
 
-# In[ ]:
 
 
 history = model_6a2.fit_generator(
@@ -3269,7 +3119,6 @@ history = model_6a2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -3294,7 +3143,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_6b = Sequential()
@@ -3327,7 +3175,6 @@ model_6b.compile(loss='categorical_crossentropy',
 model_6b.summary()
 
 
-# In[ ]:
 
 
 history = model_6b.fit_generator(
@@ -3341,7 +3188,6 @@ history = model_6b.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -3366,7 +3212,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_6b2 = Sequential()
@@ -3397,7 +3242,6 @@ model_6b2.compile(loss='categorical_crossentropy',
 model_6b2.summary()
 
 
-# In[ ]:
 
 
 history = model_6b2.fit_generator(
@@ -3411,7 +3255,6 @@ history = model_6b2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -3436,7 +3279,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_6c = Sequential()
@@ -3468,7 +3310,6 @@ model_6c.compile(loss='categorical_crossentropy',
 model_6c.summary()
 
 
-# In[ ]:
 
 
 history = model_6c.fit_generator(
@@ -3482,7 +3323,6 @@ history = model_6c.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -3507,7 +3347,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_6c2 = Sequential()
@@ -3538,7 +3377,6 @@ model_6c2.compile(loss='categorical_crossentropy',
 model_6c2.summary()
 
 
-# In[ ]:
 
 
 history = model_6c2.fit_generator(
@@ -3552,7 +3390,6 @@ history = model_6c2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -3577,7 +3414,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_6d = Sequential()
@@ -3609,7 +3445,6 @@ model_6d.compile(loss='categorical_crossentropy',
 model_6d.summary()
 
 
-# In[ ]:
 
 
 history = model_6d.fit_generator(
@@ -3623,7 +3458,6 @@ history = model_6d.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -3648,7 +3482,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_6d2 = Sequential()
@@ -3679,7 +3512,6 @@ model_6d2.compile(loss='categorical_crossentropy',
 model_6d2.summary()
 
 
-# In[ ]:
 
 
 history = model_6d2.fit_generator(
@@ -3693,7 +3525,6 @@ history = model_6d2.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -3718,7 +3549,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_k33 = Sequential()
@@ -3751,7 +3581,6 @@ model_k33.compile(loss='categorical_crossentropy',
 model_k33.summary()
 
 
-# In[ ]:
 
 
 history = model_k33.fit_generator(
@@ -3765,7 +3594,6 @@ history = model_k33.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -3790,7 +3618,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_k55 = Sequential()
@@ -3823,7 +3650,6 @@ model_k55.compile(loss='categorical_crossentropy',
 model_k55.summary()
 
 
-# In[ ]:
 
 
 history = model_k55.fit_generator(
@@ -3837,7 +3663,6 @@ history = model_k55.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -3862,7 +3687,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_k77 = Sequential()
@@ -3895,7 +3719,6 @@ model_k77.compile(loss='categorical_crossentropy',
 model_k77.summary()
 
 
-# In[ ]:
 
 
 history = model_k77.fit_generator(
@@ -3909,7 +3732,6 @@ history = model_k77.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -3934,7 +3756,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 batch_size = 30
@@ -3943,7 +3764,6 @@ epochs = 50
 input_shape = (224, 224, 3)
 
 
-# In[ ]:
 
 
 model_e50 = Sequential()
@@ -3976,7 +3796,6 @@ model_e50.compile(loss='categorical_crossentropy',
 model_e50.summary()
 
 
-# In[ ]:
 
 
 history = model_e50.fit_generator(
@@ -3990,7 +3809,6 @@ history = model_e50.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -4015,7 +3833,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_bn = Sequential()
@@ -4055,7 +3872,6 @@ model_bn.compile(loss='categorical_crossentropy',
 model_bn.summary()
 
 
-# In[ ]:
 
 
 history = model_bn.fit_generator(
@@ -4069,7 +3885,6 @@ history = model_bn.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -4094,13 +3909,11 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 keras.optimizers.Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, amsgrad=False)
 
 
-# In[ ]:
 
 
 model_drop = Sequential()
@@ -4136,7 +3949,6 @@ model_drop.compile(loss='categorical_crossentropy',
 #model_drop.summary()
 
 
-# In[ ]:
 
 
 history = model_drop.fit_generator(
@@ -4150,7 +3962,6 @@ history = model_drop.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -4175,7 +3986,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_bdrop = Sequential()
@@ -4213,7 +4023,6 @@ model_bdrop.compile(loss='categorical_crossentropy',
 model_bdrop.summary()
 
 
-# In[ ]:
 
 
 history = model_bdrop.fit_generator(
@@ -4227,7 +4036,6 @@ history = model_bdrop.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -4252,7 +4060,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 model_base = Sequential()
@@ -4286,7 +4093,6 @@ model_base.compile(loss='categorical_crossentropy',
 model_base.summary()
 
 
-# In[ ]:
 
 
 history = model_base.fit_generator(
@@ -4300,7 +4106,6 @@ history = model_base.fit_generator(
 )
 
 
-# In[ ]:
 
 
 batch_size = 30
@@ -4309,7 +4114,6 @@ epochs = 20
 input_shape = (224, 224, 3)
 
 
-# In[ ]:
 
 
 from keras.applications import VGG16
@@ -4319,7 +4123,6 @@ vgg16_base = VGG16(weights = 'imagenet', include_top = False, input_shape = inpu
 vgg16_base.summary()
 
 
-# In[ ]:
 
 
 from keras import models
@@ -4335,7 +4138,6 @@ model.add(layers.Dense(5, activation='softmax'))
 model.summary()
 
 
-# In[ ]:
 
 
 from keras import models
@@ -4350,7 +4152,6 @@ vgg16_model.summary()
     
 
 
-# In[ ]:
 
 
 print('This is the number of trainable weights '
@@ -4361,7 +4162,6 @@ print('This is the number of trainable weights '
 'after freezing the conv base:', len(vgg16_model.trainable_weights))
 
 
-# In[ ]:
 
 
 vgg16_model.compile(loss='categorical_crossentropy',
@@ -4369,7 +4169,6 @@ vgg16_model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 
-# In[ ]:
 
 
 history = vgg16_model.fit_generator(
@@ -4383,7 +4182,6 @@ history = vgg16_model.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -4408,7 +4206,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 vgg16_base.trainable = True
@@ -4422,7 +4219,6 @@ for layer in vgg16_base.layers:
         layer.trainable = False
 
 
-# In[ ]:
 
 
 vgg16_base.trainable = True
@@ -4436,7 +4232,6 @@ for layer in vgg16_base.layers:
         layer.trainable = False
 
 
-# In[ ]:
 
 
 vgg16_model.compile(loss='categorical_crossentropy',
@@ -4444,7 +4239,6 @@ vgg16_model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 
-# In[ ]:
 
 
 batch_size = 30
@@ -4453,7 +4247,6 @@ epochs = 20
 input_shape = (224, 224, 3)
 
 
-# In[ ]:
 
 
 history = vgg16_model.fit_generator(
@@ -4467,7 +4260,6 @@ history = vgg16_model.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -4492,7 +4284,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 batch_size = 30
@@ -4501,7 +4292,6 @@ epochs = 30
 input_shape = (224, 224, 3)
 
 
-# In[ ]:
 
 
 from keras.applications import ResNet50
@@ -4511,7 +4301,6 @@ resnet50_base = ResNet50(weights = 'imagenet', include_top = False, input_shape 
 resnet50_base.summary()
 
 
-# In[ ]:
 
 
 from keras import models
@@ -4527,7 +4316,6 @@ resnet50_60_model.add(layers.Dense(5, activation='softmax'))
 resnet50_60_model.summary()
 
 
-# In[ ]:
 
 
 from keras import models
@@ -4541,7 +4329,6 @@ resnet50_model.add(layers.Dense(5, activation='softmax'))
 resnet50_model.summary()
 
 
-# In[ ]:
 
 
 print('This is the number of trainable weights '
@@ -4552,7 +4339,6 @@ print('This is the number of trainable weights '
 'after freezing the conv base:', len(resnet50_60_model.trainable_weights))
 
 
-# In[ ]:
 
 
 resnet50_60_model.compile(loss='categorical_crossentropy',
@@ -4560,7 +4346,6 @@ resnet50_60_model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 
-# In[ ]:
 
 
 history = resnet50_60_model.fit_generator(
@@ -4574,7 +4359,6 @@ history = resnet50_60_model.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -4599,7 +4383,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 conv_base.trainable = True
@@ -4613,7 +4396,6 @@ for layer in conv_base.layers:
         layer.trainable = False
 
 
-# In[ ]:
 
 
 resnet50_base.trainable = True
@@ -4627,7 +4409,6 @@ for layer in resnet50_base.layers:
         layer.trainable = False
 
 
-# In[ ]:
 
 
 resnet50_60_model.compile(loss='categorical_crossentropy',
@@ -4635,7 +4416,6 @@ resnet50_60_model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 
-# In[ ]:
 
 
 batch_size = 30
@@ -4644,7 +4424,6 @@ epochs = 50
 input_shape = (224, 224, 3)
 
 
-# In[ ]:
 
 
 history = resnet50_60_model.fit_generator(
@@ -4658,7 +4437,6 @@ history = resnet50_60_model.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -4683,7 +4461,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 from tensorflow.keras.models import load_model
@@ -4691,7 +4468,6 @@ from tensorflow.keras.models import load_model
 resnet50_60_model.save('/kaggle/working/resnet50_model.h5') 
 
 
-# In[ ]:
 
 
 batch_size = 30
@@ -4700,7 +4476,6 @@ epochs = 20
 input_shape = (224, 224, 3)
 
 
-# In[ ]:
 
 
 from keras.applications import Xception
@@ -4710,7 +4485,6 @@ xception_base = Xception(weights = 'imagenet', include_top = False, input_shape 
 xception_base.summary()
 
 
-# In[ ]:
 
 
 from keras import models
@@ -4726,7 +4500,6 @@ model.add(layers.Dense(5, activation='softmax'))
 model.summary()
 
 
-# In[ ]:
 
 
 from keras import models
@@ -4740,7 +4513,6 @@ xception_model.add(layers.Dense(5, activation='softmax'))
 xception_model.summary()
 
 
-# In[ ]:
 
 
 print('This is the number of trainable weights '
@@ -4751,7 +4523,6 @@ print('This is the number of trainable weights '
 'after freezing the conv base:', len(xception_model.trainable_weights))
 
 
-# In[ ]:
 
 
 xception_model.compile(loss='categorical_crossentropy',
@@ -4759,7 +4530,6 @@ xception_model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 
-# In[ ]:
 
 
 history = xception_model.fit_generator(
@@ -4773,7 +4543,6 @@ history = xception_model.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -4798,7 +4567,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 conv_base.trainable = True
@@ -4812,7 +4580,6 @@ for layer in conv_base.layers:
         layer.trainable = False
 
 
-# In[ ]:
 
 
 xception_base.trainable = True
@@ -4826,7 +4593,6 @@ for layer in xception_base.layers:
         layer.trainable = False
 
 
-# In[ ]:
 
 
 xception_model.compile(loss='categorical_crossentropy',
@@ -4834,7 +4600,6 @@ xception_model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 
-# In[ ]:
 
 
 batch_size = 30
@@ -4843,7 +4608,6 @@ epochs = 50
 input_shape = (224, 224, 3)
 
 
-# In[ ]:
 
 
 history = xception_model.fit_generator(
@@ -4857,7 +4621,6 @@ history = xception_model.fit_generator(
 )
 
 
-# In[ ]:
 
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
@@ -4882,7 +4645,6 @@ ax2.set_title('Loss')
 l2 = ax2.legend(loc="best")
 
 
-# In[ ]:
 
 
 from tensorflow.keras.models import load_model
@@ -4892,7 +4654,6 @@ resnet50_model.save('/kaggle/working/resnet50_model.h5')
 xception_model.save('/kaggle/working/xception_model.h5')
 
 
-# In[ ]:
 
 
 # cannot easily visualize filters lower down
@@ -4923,20 +4684,17 @@ for i in range(n_filters):
 pyplot.show()
 
 
-# In[ ]:
 
 
 kaggle(/input/aptos2019-blindness-detection/test_images/351aba543dc8.png)
 
 
-# In[ ]:
 
 
 img_array = np.array(Image.open('../input/aptos2019-blindness-detection/test_images/351aba543dc8.png'))
 plt.imshow(img_array)
 
 
-# In[ ]:
 
 
 # visualize feature maps output from each block in the vgg model

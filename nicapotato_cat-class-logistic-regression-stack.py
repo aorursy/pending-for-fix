@@ -1,20 +1,17 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 pip install --upgrade scikit-learn
 
 
-# In[2]:
 
 
 import sklearn
 print(sklearn.__version__)
 
 
-# In[3]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -35,7 +32,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[4]:
 
 
 from sklearn.experimental import enable_hist_gradient_boosting  # noqa
@@ -75,7 +71,6 @@ def timer(name):
     print('\n[{}] done in {} Minutes'.format(name, round((time.time() - t0)/60,2)))
 
 
-# In[5]:
 
 
 seed = 50
@@ -87,7 +82,6 @@ else:
     nrow = None
 
 
-# In[6]:
 
 
 with timer("Load"):
@@ -107,7 +101,6 @@ with timer("Load"):
     del train, test, submission_df
 
 
-# In[7]:
 
 
 with timer("FE 1"):
@@ -149,7 +142,6 @@ with timer("FE 1"):
     ohc1=oh1.sparse.to_coo()
 
 
-# In[8]:
 
 
 from sklearn.base import TransformerMixin
@@ -188,7 +180,6 @@ class ThermometerEncoder(TransformerMixin):
         return result
 
 
-# In[9]:
 
 
 other_classes = ["NAN", 'xor']
@@ -211,7 +202,6 @@ with timer("Thermometer Encoder"):
         thermos.append(enc.fit_transform(df[col]))
 
 
-# In[10]:
 
 
 ohc=scipy.sparse.hstack([ohc1] + thermos).tocsr()
@@ -226,13 +216,11 @@ print(test.shape)
 del ohc; gc.collect()
 
 
-# In[11]:
 
 
 LogisticRegression().get_params()
 
 
-# In[12]:
 
 
 scoring = "roc_auc"
@@ -319,7 +307,6 @@ plt.tight_layout(pad=3)
 plt.show()
 
 
-# In[13]:
 
 
 results_pd = pd.DataFrame(results).T.reset_index()
@@ -333,7 +320,6 @@ results_pd = pd.concat(
 display(results_pd)
 
 
-# In[14]:
 
 
 with timer("Submission"):
@@ -342,13 +328,11 @@ with timer("Submission"):
     pd.DataFrame({'id': testdex, 'target': fold_preds[:,2]}).to_csv(estimators[1][0] + '_oof_submission.csv', index=False)
 
 
-# In[15]:
 
 
 print("Notebook Runtime: %0.2f Hours"%((time.time() - notebookstart)/60/60))
 
 
-# In[ ]:
 
 
 

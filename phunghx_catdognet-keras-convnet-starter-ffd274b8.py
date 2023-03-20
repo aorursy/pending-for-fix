@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import os, cv2, random
@@ -20,7 +19,6 @@ from keras.callbacks import ModelCheckpoint, Callback, EarlyStopping
 from keras.utils import np_utils
 
 
-# In[2]:
 
 
 TRAIN_DIR = '../input/train/'
@@ -65,7 +63,6 @@ print("Train shape: {}".format(train.shape))
 print("Test shape: {}".format(test.shape))
 
 
-# In[3]:
 
 
 labels = []
@@ -79,7 +76,6 @@ sns.countplot(labels)
 sns.plt.title('Cats and Dogs')
 
 
-# In[4]:
 
 
 def show_cats_and_dogs(idx):
@@ -94,7 +90,6 @@ for idx in range(0,3):
     show_cats_and_dogs(idx)
 
 
-# In[5]:
 
 
 dog_avg = np.array([dog[0].T for i, dog in enumerate(train) if labels[i]==1]).mean(axis=0)
@@ -102,13 +97,11 @@ plt.imshow(dog_avg)
 plt.title('Your Average Dog')
 
 
-# In[6]:
 
 
 
 
 
-# In[6]:
 
 
 cat_avg = np.array([cat[0].T for i, cat in enumerate(train) if labels[i]==0]).mean(axis=0)
@@ -116,7 +109,6 @@ plt.imshow(cat_avg)
 plt.title('Your Average Cat')
 
 
-# In[7]:
 
 
 from keras.optimizers import SGD
@@ -124,14 +116,12 @@ optimizer = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
 
 
-# In[8]:
 
 
 import os
 os.environ['KERAS_BACKEND'] = 'Theano'
 
 
-# In[9]:
 
 
 #optimizer = RMSprop(lr=1e-4)
@@ -179,7 +169,6 @@ def catdog():
 model = catdog()
 
 
-# In[10]:
 
 
 nb_epoch = 
@@ -210,7 +199,6 @@ def run_catdog():
 predictions, history = run_catdog()
 
 
-# In[11]:
 
 
 loss = history.losses
@@ -226,7 +214,6 @@ plt.legend()
 plt.show()
 
 
-# In[12]:
 
 
 for i in range(0,10):

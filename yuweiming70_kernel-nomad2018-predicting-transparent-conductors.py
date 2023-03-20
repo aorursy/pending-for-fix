@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[111]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,7 +22,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[112]:
 
 
 train = pd.read_csv("../input/train.csv")
@@ -31,25 +29,21 @@ test = pd.read_csv("../input/test.csv")
 train.head()
 
 
-# In[113]:
 
 
 test.head()
 
 
-# In[114]:
 
 
 train.info()
 
 
-# In[115]:
 
 
 test.info()
 
 
-# In[116]:
 
 
 col = ("spacegroup","number_of_total_atoms","percent_atom_al","percent_atom_ga","percent_atom_in","lattice_vector_1_ang","lattice_vector_2_ang",
@@ -68,13 +62,11 @@ train_y = train_y[400:,:]
 print(train_x.shape,train_y.shape,test_x.shape,cv_x.shape,cv_y.shape)
 
 
-# In[117]:
 
 
 print(train_x[0:2])
 
 
-# In[118]:
 
 
 from keras import backend as K
@@ -82,7 +74,6 @@ def my_loss(y_true,y_pred):
     return K.sqrt(K.mean(K.square(K.log(y_true+1)-K.log(y_pred+1))))
 
 
-# In[ ]:
 
 
 for i in range(1):
@@ -104,7 +95,6 @@ for i in range(1):
     print("在cv集合上的结果：",score)
 
 
-# In[120]:
 
 
 pred = model.predict(test_x)
@@ -113,13 +103,11 @@ for i in range(pred.shape[0]):
     print(pred[i,0],pred[i,1])
 
 
-# In[ ]:
 
 
 
 
 
-# In[121]:
 
 
 answer[]

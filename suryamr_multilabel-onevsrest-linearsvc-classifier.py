@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np # linear algebra 
@@ -164,7 +163,6 @@ print("Accuracy:",metrics.accuracy_score(YTEST, PREDI))
 
 
 
-# In[2]:
 
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -32,13 +31,11 @@ import warnings
 warnings.simplefilter("ignore", category=DeprecationWarning)
 
 
-# In[ ]:
 
 
 os.listdir('../input/')
 
 
-# In[ ]:
 
 
 train_df=pd.read_csv('../input/train.csv')
@@ -46,13 +43,11 @@ train_df=pd.read_csv('../input/train.csv')
 train_df.head()
 
 
-# In[ ]:
 
 
 train_df.columns
 
 
-# In[ ]:
 
 
 # Random image
@@ -63,7 +58,6 @@ import random
 Image(filename='../input/train/'+random.choice(train_df.Image))
 
 
-# In[ ]:
 
 
 def
@@ -80,7 +74,6 @@ for fig in train_df['Image']:
 return X_train
 
 
-# In[ ]:
 
 
 def prepareImage(data,n,datset):
@@ -103,20 +96,17 @@ def prepareImage(data,n,datset):
    
 
 
-# In[ ]:
 
 
 X = prepareImage(train_df, train_df.shape[0], "train")
 X /= 255
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 def prepare_labels(y):
@@ -133,19 +123,16 @@ def prepare_labels(y):
     return y,label_encoder
 
 
-# In[ ]:
 
 
 y,label_encoder=prepare_labels(train_df['Id'])
 
 
-# In[ ]:
 
 
 y.shape
 
 
-# In[ ]:
 
 
 # CNN architecture 
@@ -174,21 +161,18 @@ model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accurac
 model.summary()
 
 
-# In[ ]:
 
 
 history=model.fit(X,y,epochs=15,batch_size=100,verbose=1)
 gc.collect()
 
 
-# In[ ]:
 
 
 import gc
 gc.collect()
 
 
-# In[ ]:
 
 
 plt.plot(history.history['acc'])
@@ -198,14 +182,12 @@ plt.xlabel('Epoch')
 plt.show()
 
 
-# In[ ]:
 
 
 test = os.listdir("../input/test/")
 print(len(test))
 
 
-# In[ ]:
 
 
 col = ['Image']
@@ -213,27 +195,23 @@ test_df = pd.DataFrame(test, columns=col)
 test_df['Id'] = ''
 
 
-# In[ ]:
 
 
 X = prepareImage(test_df, test_df.shape[0], "test")
 X /= 255
 
 
-# In[ ]:
 
 
 predictions = model.predict(np.array(X), verbose=1)
 
 
-# In[ ]:
 
 
 for i, pred in enumerate(predictions):
     test_df.loc[i, 'Id'] = ' '.join(label_encoder.inverse_transform(pred.argsort()[-5:][::-1]))
 
 
-# In[ ]:
 
 
 test_df.head(10)

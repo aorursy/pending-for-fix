@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -17,7 +16,6 @@ from sklearn import preprocessing
 from sklearn.metrics import confusion_matrix
 
 
-# In[2]:
 
 
 path_input = "../Data/"
@@ -26,14 +24,12 @@ datasetname = "dataset.csv"
 finalcsv = "Submission.csv"
 
 
-# In[3]:
 
 
 data_orig = pd.read_csv(path_input + datasetname)
 data = data_orig
 
 
-# In[4]:
 
 
 #splitting data into features (X) and target values (y)
@@ -41,7 +37,6 @@ y = pd.DataFrame(data['Class'], columns = ['Class'])
 X = data.loc[:, data.columns != 'Class']
 
 
-# In[5]:
 
 
 #drop the id values from the features
@@ -50,7 +45,6 @@ ids = X['id']
 X = X.drop(columns=['id'])
 
 
-# In[6]:
 
 
 #Handling multiple representations of unique values in columns
@@ -61,7 +55,6 @@ X['Plotsize'] = X['Plotsize'].replace('me', 'ME')
 X['Plotsize'] = X['Plotsize'].replace('sm', 'SM')
 
 
-# In[7]:
 
 
 #label encoding discrete value features
@@ -72,7 +65,6 @@ for col in encode_cols:
     X[col] = le.fit_transform(X[col].astype(str))
 
 
-# In[8]:
 
 
 #Removing nan values
@@ -89,7 +81,6 @@ for col in mode_cols:
     X[col] = X[col].fillna(X[col].mode())
 
 
-# In[9]:
 
 
 #Plotting the correlation matrix for the continuous variables
@@ -100,14 +91,12 @@ sns.heatmap(corr, mask=np.zeros_like(corr, dtype=np.bool), cmap=sns.diverging_pa
             square=True, ax=ax, annot = True);
 
 
-# In[10]:
 
 
 #Storing columns to drop based on high correlation
 todrop = ['Monthly Period', 'Credit1', 'InstallmentCredit']
 
 
-# In[11]:
 
 
 #Using Gradient Boosting Classifier to find feature importance
@@ -124,7 +113,6 @@ dfimp = pd.DataFrame(sfimp, columns = ['Features', 'Importance'])
 #print(dfimp)
 
 
-# In[12]:
 
 
 #adding columns to drop based on feature importance
@@ -133,7 +121,6 @@ todrop.extend(['InstallmentRate', 'Plan', 'Sponsors', 'Account1', 'Motive', 'Gen
           'Expatriate', 'Phone'])
 
 
-# In[13]:
 
 
 #Performing one hot encoding on necessary columns
@@ -142,7 +129,6 @@ data1 = pd.get_dummies(X, columns = toencode)
 X = data1
 
 
-# In[14]:
 
 
 #Adding one hot encoded columns to drop based on if they have less than 5% of ones
@@ -151,14 +137,12 @@ for col in list(set(X.columns) - set(continuous_vars) - set(todrop)):
         todrop.append(col)      
 
 
-# In[15]:
 
 
 #Dropping all columns not required
 X = X.drop(columns=todrop)
 
 
-# In[16]:
 
 
 #Scaling Continuous variable columns
@@ -171,7 +155,6 @@ X = X.drop(columns=list(set(toscale) - set(todrop)))
 X = pd.concat((X, X_scaled), axis = 1)
 
 
-# In[17]:
 
 
 #pca = PCA()
@@ -179,7 +162,6 @@ X = pd.concat((X, X_scaled), axis = 1)
 #pca.explained_variance_ratio_
 
 
-# In[18]:
 
 
 #Performing PCA to plot the clustering
@@ -188,7 +170,6 @@ pca1.fit(X)
 T1 = pca1.transform(X)
 
 
-# In[19]:
 
 
 def plot_confusion_matrix(y_true, y_pred, classes,
@@ -246,7 +227,6 @@ def plot_confusion_matrix(y_true, y_pred, classes,
     return ax
 
 
-# In[20]:
 
 
 def runmodel(model, X, y, title, T1):
@@ -266,7 +246,6 @@ def runmodel(model, X, y, title, T1):
     return pred
 
 
-# In[21]:
 
 
 def replace_calculate(newlabel0, newlabel1, newlabel2, pred,y, title):
@@ -284,57 +263,48 @@ def replace_calculate(newlabel0, newlabel1, newlabel2, pred,y, title):
     return p
 
 
-# In[22]:
 
 
 pred = runmodel(AgglomerativeClustering(n_clusters=3, affinity="euclidean", linkage = "ward"), X, y, 'Agglomerative Clustering', T1)
 
 
-# In[23]:
 
 
 p = replace_calculate(2,1,0, pred, y, 'Agglomerative Clustering')
 
 
-# In[24]:
 
 
 #pred = runmodel(KMeans(n_clusters=3, n_init=30), X, y, 'KMeans', T1)
 
 
-# In[25]:
 
 
 #p = replace_calculate(0,1,2, pred, y, 'KMeans')
 
 
-# In[26]:
 
 
 #pred = runmodel(DBSCAN(), X, y, 'DBSCAN', T1)
 
 
-# In[27]:
 
 
 #pred = runmodel(Birch(n_clusters=3, branching_factor=10, threshold=0.5), X, y, 'Birch', T1)
 
 
-# In[28]:
 
 
 final = pd.concat((ids, p), axis = 1)
 final = final.iloc[175:,:] 
 
 
-# In[29]:
 
 
 #Writing result to Submission.csv in output folder
 final.to_csv(path_output + finalcsv, index=False)
 
 
-# In[30]:
 
 
 from IPython.display import HTML

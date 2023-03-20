@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 train = pd.read_csv("../input/train.csv")
@@ -29,26 +27,22 @@ print("Train shape : ",train.shape)
 print("Test shape : ",test.shape)
 
 
-# In[3]:
 
 
 train.head()
 
 
-# In[4]:
 
 
 import nltk
 
 
-# In[5]:
 
 
 from tensorflow.python.keras.preprocessing.text import Tokenizer
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
 
 
-# In[6]:
 
 
 import string
@@ -69,13 +63,11 @@ for line in lines:
     question_lines.append(words)
 
 
-# In[7]:
 
 
 len(question_lines)
 
 
-# In[8]:
 
 
 max_length = 100
@@ -83,45 +75,38 @@ EMBEDDING_DIM = 300
 max_features = 50000
 
 
-# In[9]:
 
 
 import gensim
 
 
-# In[10]:
 
 
 pip install paramiko
 
 
-# In[11]:
 
 
 model = gensim.models.Word2Vec(sentences=question_lines,size=EMBEDDING_DIM,window=5,workers=4,min_count=1)
 words = list(model.wv.vocab)
 
 
-# In[12]:
 
 
 len(words)
 
 
-# In[13]:
 
 
 model.wv.most_similar('hate')
 
 
-# In[14]:
 
 
 filename = 'quora_embedding_word2vec.text'
 model.wv.save_word2vec_format(filename,binary=False)
 
 
-# In[15]:
 
 
 import os
@@ -136,7 +121,6 @@ for line in f:
 f.close()
 
 
-# In[16]:
 
 
 tokenizer_obj = Tokenizer()
@@ -151,7 +135,6 @@ print(question_pad.shape)
 print(target.shape)
 
 
-# In[17]:
 
 
 num_words = len(word_index)+1
@@ -164,7 +147,6 @@ for word, i in word_index.items():
         embedding_matrix[i] = embedding_vector
 
 
-# In[18]:
 
 
 from keras.models import Sequential
@@ -179,7 +161,6 @@ model1.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
 print(model1.summary())
 
 
-# In[19]:
 
 
 VALIDATION_SPLIT = 0.2
@@ -196,26 +177,22 @@ X_test_pad = question_pad[-num_validation_samples:]
 y_test = target[-num_validation_samples:]
 
 
-# In[20]:
 
 
 from keras.callbacks import EarlyStopping
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1)
 
 
-# In[21]:
 
 
 model1.fit(X_train_pad,y_train,batch_size=128,epochs=25,validation_data=(X_test_pad,y_test),verbose=1,callbacks=[es])
 
 
-# In[22]:
 
 
 test.head()
 
 
-# In[23]:
 
 
 question_lines_test = list()
@@ -232,13 +209,11 @@ for line in lines_test:
     question_lines_test.append(words)
 
 
-# In[24]:
 
 
 len(question_lines_test)
 
 
-# In[25]:
 
 
 tokenizer_obj = Tokenizer()
@@ -251,13 +226,11 @@ question_pad_test = pad_sequences(sequences_test,maxlen=max_length)
 print(question_pad_test.shape)
 
 
-# In[26]:
 
 
 target_test = model1.predict(question_pad_test)
 
 
-# In[27]:
 
 
 target_test = (target_test>0.35).astype(int)

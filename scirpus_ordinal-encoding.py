@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -12,13 +11,11 @@ import matplotlib.pyplot as plt
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[2]:
 
 
 ls ../input
 
 
-# In[3]:
 
 
 def OrdinalConverter(d):
@@ -33,19 +30,16 @@ def OrdinalConverter(d):
     return a1*52+a2
 
 
-# In[4]:
 
 
 df_train = pd.read_csv('../input/cat-in-the-dat-ii/train.csv')
 
 
-# In[5]:
 
 
 df_train.ord_5.unique()
 
 
-# In[6]:
 
 
 df_train = df_train.set_index('id')
@@ -53,7 +47,6 @@ y_train = df_train.target
 del df_train['target']
 
 
-# In[7]:
 
 
 ord_0_mapping = {1 : 0, 2 : 1, 3 : 2}
@@ -70,14 +63,12 @@ for c in otherordinals:
 
 
 
-# In[8]:
 
 
 df_train['real_right_'+c] = df_train[[c]].apply(lambda a: OrdinalConverter(a[c][:1]) if not pd.isnull(a[c]) else np.nan,axis=1)
 df_train['real_left_'+c] = df_train[[c]].apply(lambda a: OrdinalConverter(a[c][1:]) if not pd.isnull(a[c]) else np.nan,axis=1)
 
 
-# In[9]:
 
 
 realordinals = [c for c in df_train.columns if 'real_' in c]

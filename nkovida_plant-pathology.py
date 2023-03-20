@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,13 +21,11 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 get_ipython().system('pip install -q efficientnet')
 
 
-# In[ ]:
 
 
 import cv2
@@ -69,7 +66,6 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-# In[ ]:
 
 
 EPOCHS = 20
@@ -84,19 +80,16 @@ test_data = pd.read_csv(TEST_PATH)
 train_data = pd.read_csv(TRAIN_PATH)
 
 
-# In[ ]:
 
 
 train_data.head()
 
 
-# In[ ]:
 
 
 test_data.head()
 
 
-# In[ ]:
 
 
 def load_image(image_id):
@@ -107,14 +100,12 @@ def load_image(image_id):
 train_images = train_data["image_id"][:SAMPLE_LEN].progress_apply(load_image)
 
 
-# In[ ]:
 
 
 fig = px.imshow(cv2.resize(train_images[0], (205, 136)))
 fig.show()
 
 
-# In[ ]:
 
 
 AUTO = tf.data.experimental.AUTOTUNE
@@ -128,7 +119,6 @@ BATCH_SIZE = 16 * strategy.num_replicas_in_sync
 GCS_DS_PATH = KaggleDatasets().get_gcs_path()
 
 
-# In[ ]:
 
 
 def format_path(st):
@@ -141,7 +131,6 @@ train_labels = np.float32(train_data.loc[:, 'healthy':'scab'].values)
 train_paths, valid_paths, train_labels, valid_labels =train_test_split(train_paths, train_labels, test_size=0.15, random_state=2020)
 
 
-# In[ ]:
 
 
 def decode_image(filename, label=None, image_size=(512, 512)):
@@ -165,7 +154,6 @@ def data_augment(image, label=None):
         return image, label
 
 
-# In[ ]:
 
 
 train_dataset = (
@@ -196,7 +184,6 @@ test_dataset = (
 )
 
 
-# In[ ]:
 
 
 def build_lrfn(lr_start=0.00001, lr_max=0.00005, 
@@ -215,7 +202,6 @@ def build_lrfn(lr_start=0.00001, lr_max=0.00005,
     return lrfn
 
 
-# In[ ]:
 
 
 lrfn = build_lrfn()
@@ -223,7 +209,6 @@ STEPS_PER_EPOCH = train_labels.shape[0] // BATCH_SIZE
 lr_schedule = tf.keras.callbacks.LearningRateScheduler(lrfn, verbose=1)
 
 
-# In[ ]:
 
 
 with strategy.scope():
@@ -240,7 +225,6 @@ with strategy.scope():
     model.summary()
 
 
-# In[ ]:
 
 
 history = model.fit(train_dataset,
@@ -250,7 +234,6 @@ history = model.fit(train_dataset,
                     validation_data=valid_dataset)
 
 
-# In[ ]:
 
 
 def display_training_curves(training, validation, yaxis):
@@ -275,7 +258,6 @@ def display_training_curves(training, validation, yaxis):
     fig.show()
 
 
-# In[ ]:
 
 
 display_training_curves(
@@ -284,7 +266,6 @@ display_training_curves(
     'accuracy')
 
 
-# In[ ]:
 
 
 probs_dnn = model.predict(test_dataset, verbose=1)
@@ -293,7 +274,6 @@ sub.to_csv('submission_dnn.csv', index=False)
 sub.head()
 
 
-# In[ ]:
 
 
 with strategy.scope():
@@ -312,7 +292,6 @@ with strategy.scope():
     model.summary()
 
 
-# In[ ]:
 
 
 history = model.fit(train_dataset,
@@ -322,7 +301,6 @@ history = model.fit(train_dataset,
                     validation_data=valid_dataset)
 
 
-# In[ ]:
 
 
 We get an accuracy of 97% with EffiecientNet

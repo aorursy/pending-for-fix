@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,38 +22,32 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[2]:
 
 
 train=pd.read_csv('../input/siim-isic-melanoma-classification/train.csv')
 test=pd.read_csv('../input/siim-isic-melanoma-classification/test.csv')
 
 
-# In[3]:
 
 
 train.shape
 
 
-# In[4]:
 
 
 train.head()
 
 
-# In[5]:
 
 
 train.isnull().sum()
 
 
-# In[6]:
 
 
 (train.isnull().sum()/len(train.index))*100
 
 
-# In[7]:
 
 
 # Dropping rows having null values
@@ -62,62 +55,52 @@ train.isnull().sum()
 train=train.dropna(axis=0).reset_index(drop=True)
 
 
-# In[8]:
 
 
 (train.isnull().sum()/len(train.index))*100
 
 
-# In[9]:
 
 
 train['image_name']=train['image_name'].apply(lambda x:x+'.jpg')
 
 
-# In[10]:
 
 
 test['image_name']=test['image_name'].apply(lambda x:x+'.jpg')
 
 
-# In[11]:
 
 
 sample_df=pd.read_csv('../input/siim-isic-melanoma-classification/sample_submission.csv')
 
 
-# In[12]:
 
 
 sample_df.head()
 
 
-# In[13]:
 
 
 train.target.value_counts()
 
 
-# In[14]:
 
 
 train.target.unique()
 
 
-# In[15]:
 
 
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-# In[16]:
 
 
 sns.countplot(train.target)
 
 
-# In[17]:
 
 
 # import seaborn as sns
@@ -133,7 +116,6 @@ sns.countplot(train.target)
 # from keras.models import load_model
 
 
-# In[18]:
 
 
 # importing few important libraries for pre-processing,generator and model building
@@ -149,7 +131,6 @@ from tensorflow.keras import backend as K
 from tensorflow.keras.models import load_model
 
 
-# In[19]:
 
 
 
@@ -163,19 +144,16 @@ K.set_image_data_format('channels_last')
 K.set_learning_phase
 
 
-# In[20]:
 
 
 import os
 
 
-# In[21]:
 
 
 from tensorflow.keras.applications.resnet50  import ResNet50
 
 
-# In[22]:
 
 
 def checkLeakage(df1,df2,patient):
@@ -193,13 +171,11 @@ def checkLeakage(df1,df2,patient):
     return leakage
 
 
-# In[23]:
 
 
 checkLeakage(train,test,'patient_id')
 
 
-# In[24]:
 
 
 def train_val_generator(df, image_dir, x_col, y_cols, shuffle=True, batch_size=8, seed=1, target_w = 240, target_h = 240):
@@ -246,19 +222,16 @@ def train_val_generator(df, image_dir, x_col, y_cols, shuffle=True, batch_size=8
     
 
 
-# In[25]:
 
 
 IMAGE_DIR = "../input/siim-isic-melanoma-classification/jpeg/train"
 
 
-# In[26]:
 
 
 os.makedirs('saved_models_noFold')
 
 
-# In[27]:
 
 
 def get_model():
@@ -285,13 +258,11 @@ def get_model():
     return model
 
 
-# In[28]:
 
 
 get_model()
 
 
-# In[29]:
 
 
 # Creating a function control gradient descent rate
@@ -311,55 +282,46 @@ def lr_schedule(epoch):
     return lr
 
 
-# In[30]:
 
 
 from sklearn.utils import class_weight
 
 
-# In[31]:
 
 
 train_data,valid_data=train_val_generator(train, IMAGE_DIR, "image_name", 'target')
 
 
-# In[32]:
 
 
 train_data.labels
 
 
-# In[33]:
 
 
 class_weights = class_weight.compute_class_weight('balanced',np.unique(train_data.labels),train_data.labels)
 
 
-# In[34]:
 
 
 class_weights_map={0:class_weights[0],1:class_weights[1]}
 
 
-# In[35]:
 
 
 class_weight_map={}
 
 
-# In[36]:
 
 
 import tensorflow
 
 
-# In[37]:
 
 
 import math
 
 
-# In[38]:
 
 
 # get model
@@ -377,7 +339,6 @@ model.compile(loss='binary_crossentropy',optimizer ='sgd',metrics=[tf.keras.metr
 model.summary()
 
 
-# In[39]:
 
 
 
@@ -401,13 +362,11 @@ history = model.fit_generator(train_data,
                               epochs =10)
 
 
-# In[40]:
 
 
 model.load_weights("saved_models_noFold.h5")
 
 
-# In[41]:
 
 
 # Writing test generator
@@ -435,139 +394,116 @@ def test_generator(df,image_dir, x_col, shuffle=False, seed=1, target_w = 240, t
         return test_generator
 
 
-# In[42]:
 
 
 test_path='../input/siim-isic-melanoma-classification/jpeg/test'
 
 
-# In[43]:
 
 
 test.head()
 
 
-# In[44]:
 
 
 test_gen=test_generator(test,test_path, "image_name",target_w = 240, target_h = 240)
 
 
-# In[45]:
 
 
 # type(test_gen)
 
 
-# In[46]:
 
 
 predicted_vals = model.predict_generator(test_gen,verbose=1)
 
 
-# In[47]:
 
 
 test.shape
 
 
-# In[48]:
 
 
 len(predicted_vals)
 
 
-# In[49]:
 
 
 l=test['image_name'].apply(lambda x:x.split('.jpg'))
 
 
-# In[50]:
 
 
 img=[im[0] for im in l]
 
 
-# In[51]:
 
 
 img.index
 
 
-# In[52]:
 
 
 img
 
 
-# In[53]:
 
 
 test_sub=test['image_name']
 
 
-# In[ ]:
 
 
 
 
 
-# In[54]:
 
 
 img
 
 
-# In[55]:
 
 
 submission_df=pd.DataFrame({'image_name':img})
 
 
-# In[56]:
 
 
 submission_df.head()
 
 
-# In[57]:
 
 
 submission_df['target']=predicted_vals
 
 
-# In[58]:
 
 
 submission_df.to_csv('submission.csv', index=False)
 
 
-# In[59]:
 
 
 get_ipython().system('ls -ltr')
 
 
-# In[60]:
 
 
 sample_df.head()
 
 
-# In[61]:
 
 
 test_sub['target']=pd.DataFrame(data=predicted_vals)
 
 
-# In[62]:
 
 
 test_sub.head()
 
 
-# In[63]:
 
 
 predicted_class_indices = np.argmax(predicted_vals, axis=1)
@@ -578,7 +514,6 @@ test_df['target'] = pd.DataFrame(data=predictions)
 # submission_df.to_csv('submission.csv', index=False)
 
 
-# In[64]:
 
 
 # Compile the model
@@ -607,7 +542,6 @@ test_df['target'] = pd.DataFrame(data=predictions)
 	
 
 
-# In[65]:
 
 
 # Implementing stratified K-fold for best model
@@ -615,7 +549,6 @@ test_df['target'] = pd.DataFrame(data=predictions)
 from sklearn.model_selection import StratifiedKFold
 
 
-# In[66]:
 
 
 X =train.loc[:, ~train.columns.isin(['target'])].copy()
@@ -624,75 +557,63 @@ skf = StratifiedKFold(n_splits=10,shuffle=False)
 skf.get_n_splits(X, y)
 
 
-# In[67]:
 
 
 X.index
 
 
-# In[68]:
 
 
 y.index
 
 
-# In[69]:
 
 
 print(skf)
 
 
-# In[70]:
 
 
 X.head()
 
 
-# In[71]:
 
 
 y.value_counts()
 
 
-# In[72]:
 
 
 import os
 
 
-# In[73]:
 
 
 os.makedirs('saved_models')
 
 
-# In[74]:
 
 
 get_ipython().system('cd ../../outputs/saved_models')
 # ../input/siim-isic-melanoma-classification
 
 
-# In[75]:
 
 
 get_ipython().system('ls -ltr')
 
 
-# In[76]:
 
 
 get_ipython().system('cd saved_models')
 
 
-# In[77]:
 
 
 get_ipython().system('ls -ltr')
 get_ipython().system('pwd')
 
 
-# In[78]:
 
 
 # create the base pre-trained model
@@ -719,7 +640,6 @@ K.set_image_data_format('channels_last')
 K.set_learning_phase
 
 
-# In[79]:
 
 
 from tensorflow.keras.applications.resnet50  import ResNet50
@@ -727,19 +647,16 @@ from tensorflow.keras.applications.resnet50  import ResNet50
 # from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
 
 
-# In[80]:
 
 
 from tensorflow.keras import backend
 
 
-# In[81]:
 
 
 tf.keras.applications.ResNet50
 
 
-# In[82]:
 
 
 
@@ -767,13 +684,11 @@ def get_model():
     return model
 
 
-# In[83]:
 
 
 model=get_model()
 
 
-# In[84]:
 
 
 # Writing function so that we speed up training 
@@ -781,13 +696,11 @@ model=get_model()
 # As the loss decreases we will reduce the learning rate
 
 
-# In[85]:
 
 
 from sklearn.utils import class_weight
 
 
-# In[86]:
 
 
 VALIDATION_ACCURACY = []
@@ -797,13 +710,11 @@ save_dir = 'saved_models'
 fold_var = 1
 
 
-# In[ ]:
 
 
 
 
 
-# In[87]:
 
 
 image_generator = ImageDataGenerator(
@@ -813,25 +724,21 @@ image_generator = ImageDataGenerator(
             shear_range=0.2)
 
 
-# In[88]:
 
 
 import keras
 
 
-# In[89]:
 
 
 train.shape
 
 
-# In[90]:
 
 
 import math
 
 
-# In[91]:
 
 
 for train_index, val_index in skf.split(X, y):
@@ -896,13 +803,11 @@ for train_index, val_index in skf.split(X, y):
     
 
 
-# In[92]:
 
 
 train_generator,valid_generator =train_val_generator(train, IMAGE_DIR, "image_name", 'target')
 
 
-# In[93]:
 
 
 
@@ -910,13 +815,11 @@ x, y = train_generator.__getitem__(0)
 plt.imshow(x[0]);
 
 
-# In[94]:
 
 
 import glob
 
 
-# In[95]:
 
 
 # print(glob.glob("../input/siim-isic-melanoma-classification/jpeg/train/*.jpg"))
@@ -944,7 +847,6 @@ def compute_class_freqs(labels):
     return positive_frequencies, negative_frequencies
 
 
-# In[96]:
 
 
 # Function to get weight loss which we will be used for training model
@@ -958,7 +860,6 @@ def get_weighted_loss(pos_weights,neg_weight,epsilon=1e-7):
     return weighted_loss
 
 
-# In[97]:
 
 
 # create the base pre-trained model
@@ -985,7 +886,6 @@ K.set_image_data_format('channels_last')
 K.set_learning_phase
 
 
-# In[98]:
 
 
 from keras.applications import ResNet50
@@ -993,13 +893,11 @@ from keras.applications import ResNet50
 # from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
 
 
-# In[99]:
 
 
 # ! wget https://storage.googleapis.com/tensorflow/keras-applications/resnet/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
 
 
-# In[100]:
 
 
 
@@ -1027,26 +925,22 @@ def get_model():
     return model
 
 
-# In[101]:
 
 
 set(train_generator.labels)
 
 
-# In[102]:
 
 
 freq_pos, freq_neg = compute_class_freqs(train_generator.labels)
 freq_pos
 
 
-# In[103]:
 
 
 freq_neg
 
 
-# In[104]:
 
 
 pos_weights = freq_neg
@@ -1055,19 +949,16 @@ pos_contribution = freq_pos * pos_weights
 neg_contribution = freq_neg * neg_weights
 
 
-# In[105]:
 
 
 pos_weights
 
 
-# In[106]:
 
 
 from sklearn.utils import class_weight
 
 
-# In[107]:
 
 
 class_weights = class_weight.compute_class_weight('balanced',
@@ -1075,32 +966,27 @@ class_weights = class_weight.compute_class_weight('balanced',
                                                  train_generator.labels)
 
 
-# In[108]:
 
 
 class_weights
 
 
-# In[109]:
 
 
 class_weights={0:class_weights[0],1:class_weights[1]}
 
 
-# In[110]:
 
 
 # y_pred_1  = K.constant(pos_weights*np.array(train['target']).reshape(33126,1))
 
 
-# In[111]:
 
 
 
 # y_pred_2  = K.constant(neg_weights*np.array(train['target']).reshape(33126,1))
 
 
-# In[112]:
 
 
 # data = pd.DataFrame({"Class": labels, "Label": "Positive", "Value": freq_pos})
@@ -1109,7 +995,6 @@ class_weights={0:class_weights[0],1:class_weights[1]}
 # f = sns.barplot(x="Class", y="Value", hue="Label" ,data=data)
 
 
-# In[113]:
 
 
 # get model
@@ -1125,7 +1010,6 @@ model.compile(loss='binary_crossentropy',optimizer ='sgd',metrics=['accuracy'])
 model.summary()
 
 
-# In[114]:
 
 
 history = model.fit_generator(train_generator, 
@@ -1134,7 +1018,6 @@ history = model.fit_generator(train_generator,
                               epochs =10)
 
 
-# In[115]:
 
 
 plt.plot(history.history['loss'])

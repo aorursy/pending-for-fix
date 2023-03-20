@@ -1,20 +1,17 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 from google.colab import drive
 drive.mount('/content/drive')
 
 
-# In[2]:
 
 
 cd /content/drive/My Drive/ship/
 
 
-# In[3]:
 
 
 BATCH_SIZE = 48
@@ -33,7 +30,6 @@ MAX_TRAIN_EPOCHS = 15
 AUGMENT_BRIGHTNESS = False
 
 
-# In[4]:
 
 
 import os
@@ -111,7 +107,6 @@ def masks_as_color(in_mask_list):
     return all_masks
 
 
-# In[5]:
 
 
 masks = pd.read_csv(os.path.join('/content/drive/My Drive/ship/', 'train_ship_segmentations_v2.csv'))
@@ -121,7 +116,6 @@ print((~not_empty).sum(), 'empty images in', masks.ImageId.nunique(), 'total ima
 masks.head()
 
 
-# In[6]:
 
 
 fig, (ax1, ax2, ax3, ax4) = plt.subplots(1, 4, figsize = (16, 5))
@@ -145,7 +139,6 @@ print('Check Decoding->Encoding',
 print(np.sum(img_0 - img_1), 'error')
 
 
-# In[7]:
 
 
 masks['ships'] = masks['EncodedPixels'].map(lambda c_row: 1 if isinstance(c_row, str) else 0)
@@ -162,13 +155,11 @@ masks.drop(['ships'], axis=1, inplace=True)
 unique_img_ids.sample(7)
 
 
-# In[8]:
 
 
 unique_img_ids['ships'].hist(bins=unique_img_ids['ships'].max())
 
 
-# In[9]:
 
 
 SAMPLES_PER_GROUP = 2000
@@ -177,7 +168,6 @@ balanced_train_df['ships'].hist(bins=balanced_train_df['ships'].max()+1)
 print(balanced_train_df.shape[0], 'masks')
 
 
-# In[10]:
 
 
 from sklearn.model_selection import train_test_split
@@ -190,7 +180,6 @@ print(train_df.shape[0], 'training masks')
 print(valid_df.shape[0], 'validation masks')
 
 
-# In[11]:
 
 
 def make_image_gen(in_df, batch_size = BATCH_SIZE):
@@ -213,7 +202,6 @@ def make_image_gen(in_df, batch_size = BATCH_SIZE):
                 out_rgb, out_mask=[], []
 
 
-# In[12]:
 
 
 train_gen = make_image_gen(train_df)
@@ -222,7 +210,6 @@ print('x', train_x.shape, train_x.min(), train_x.max())
 print('y', train_y.shape, train_y.min(), train_y.max())
 
 
-# In[13]:
 
 
 fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize = (30, 10))
@@ -238,13 +225,11 @@ ax3.set_title('Outlined Ships')
 fig.savefig('overview.png')
 
 
-# In[14]:
 
 
 get_ipython().run_cell_magic('time', '', 'valid_x, valid_y = next(make_image_gen(valid_df, VALID_IMG_COUNT))\nprint(valid_x.shape, valid_y.shape)')
 
 
-# In[15]:
 
 
 from keras.preprocessing.image import ImageDataGenerator
@@ -285,7 +270,6 @@ def create_aug_gen(in_gen, seed = None):
         yield next(g_x)/255.0, next(g_y)
 
 
-# In[16]:
 
 
 cur_gen = create_aug_gen(train_gen)
@@ -302,13 +286,11 @@ ax2.imshow(montage(t_y[:, :, :, 0]), cmap='gray_r')
 ax2.set_title('ships')
 
 
-# In[17]:
 
 
 gc.collect()
 
 
-# In[18]:
 
 
 from keras import models, layers
@@ -383,7 +365,6 @@ seg_model = models.Model(inputs=[input_img], outputs=[d])
 seg_model.summary()
 
 
-# In[19]:
 
 
 import keras.backend as K
@@ -421,7 +402,6 @@ def iou_coef(y_true, y_pred, smooth=1.):
 #    return -K.mean( (intersection + eps) / (union + eps), axis=0)
 
 
-# In[20]:
 
 
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, EarlyStopping, ReduceLROnPlateau
@@ -439,7 +419,6 @@ early = EarlyStopping(monitor="val_loss", mode="min", verbose=2,
 callbacks_list = [checkpoint, early, reduceLROnPlat]
 
 
-# In[21]:
 
 
 def fit():
@@ -463,7 +442,6 @@ loss_history = fit()
 #        break
 
 
-# In[22]:
 
 
 def show_loss(loss_history):
@@ -488,21 +466,18 @@ def show_loss(loss_history):
 show_loss(loss_history)
 
 
-# In[23]:
 
 
 seg_model.load_weights(weight_path)
 seg_model.save('seg_model.h5')
 
 
-# In[24]:
 
 
 pred_y = seg_model.predict(valid_x)
 print(pred_y.shape, pred_y.min(axis=0).max(), pred_y.max(axis=0).min(), pred_y.mean())
 
 
-# In[25]:
 
 
 fig, ax = plt.subplots(1, 1, figsize = (6, 6))
@@ -511,7 +486,6 @@ ax.set_xlim(0, 1)
 ax.set_yscale('log', nonposy='clip')
 
 
-# In[26]:
 
 
 if IMG_SCALING is not None:
@@ -524,7 +498,6 @@ else:
 fullres_model.save('fullres_model.h5')
 
 
-# In[27]:
 
 
 def raw_prediction(img, path=test_image_dir):

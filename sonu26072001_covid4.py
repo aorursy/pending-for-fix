@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,25 +21,21 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 df = pd.read_csv("/kaggle/input/covid19-global-forecasting-week-4/train.csv")
 
 
-# In[3]:
 
 
 df.head()
 
 
-# In[4]:
 
 
 len(df['Province_State'].unique())
 
 
-# In[5]:
 
 
 def create_features(df):
@@ -53,7 +48,6 @@ def create_features(df):
     return df
 
 
-# In[6]:
 
 
 def categoricalToInteger(df):
@@ -66,115 +60,96 @@ def categoricalToInteger(df):
     return df
 
 
-# In[ ]:
 
 
 
 
 
-# In[7]:
 
 
 df.columns
 
 
-# In[8]:
 
 
 df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
 
 
-# In[9]:
 
 
 df = create_features(df)
 
 
-# In[10]:
 
 
 df.head()
 
 
-# In[11]:
 
 
 df['Country_Region'].value_counts(sort=False)
 
 
-# In[12]:
 
 
 df = categoricalToInteger(df)
 
 
-# In[13]:
 
 
 df.head()
 
 
-# In[14]:
 
 
 df.head()
 
 
-# In[ ]:
 
 
 
 
 
-# In[15]:
 
 
 df
 
 
-# In[16]:
 
 
 df_test = pd.read_csv('/kaggle/input/covid19-global-forecasting-week-4/test.csv')
 
 
-# In[17]:
 
 
 len(df)
 
 
-# In[18]:
 
 
 df_test['Date'] = pd.to_datetime(df_test['Date'], errors='coerce')
 
 
-# In[19]:
 
 
 df_test=create_features(df_test)
 
 
-# In[20]:
 
 
 df_test
 
 
-# In[21]:
 
 
 df_test = categoricalToInteger(df_test)
 
 
-# In[22]:
 
 
 df_test.head()
 
 
-# In[23]:
 
 
 from sklearn.metrics import mean_squared_log_error
@@ -203,75 +178,63 @@ for country in df.Country_Region.unique():
         preds.append([s,pred_1,pred_2])
 
 
-# In[24]:
 
 
 len(preds)
 
 
-# In[25]:
 
 
 preds[0]
 
 
-# In[26]:
 
 
 preds_ = np.array(preds)
 
 
-# In[27]:
 
 
 preds_.shape
 
 
-# In[28]:
 
 
 preds_1 = preds_.reshape(3,313*43)
 
 
-# In[29]:
 
 
 preds_1[0] = preds_1[0].astype(np.int64)
 preds_1[0][0:10]
 
 
-# In[30]:
 
 
 preds_1[0].dtype
 
 
-# In[31]:
 
 
 for i in range(313):
     if preds_[i][0]
 
 
-# In[32]:
 
 
 preds[0][0]
 
 
-# In[33]:
 
 
 preds_1[0] = preds_1[0].astype(int)
 
 
-# In[34]:
 
 
 len(np.unique(preds_1[0].astype(int)))
 
 
-# In[35]:
 
 
 submission = []
@@ -312,20 +275,17 @@ for country in df_train.Country_Region.unique():
             submission.append(d)
 
 
-# In[36]:
 
 
 submission
 
 
-# In[37]:
 
 
 df_submit = pd.DataFrame(submission)
 df_submit.to_csv(r'submission.csv', index=False)
 
 
-# In[ ]:
 
 
 

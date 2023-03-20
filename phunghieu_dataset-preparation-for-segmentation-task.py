@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 DATASET_DIR = '/kaggle/input/understanding_cloud_organization/'
@@ -13,7 +12,6 @@ NUM_VAL_SAMPLES = 20 # The number of val samples used for visualization
 COLORS = ['b', 'g', 'r', 'm'] # Color of each class
 
 
-# In[2]:
 
 
 import pandas as pd
@@ -30,20 +28,17 @@ from sklearn.model_selection import train_test_split
 from tqdm import tqdm_notebook
 
 
-# In[3]:
 
 
 df = pd.read_csv(os.path.join(DATASET_DIR, 'train.csv'))
 
 
-# In[4]:
 
 
 df['Image'] = df['Image_Label'].map(lambda x: x.split('_')[0])
 df['HavingDefection'] = df['EncodedPixels'].map(lambda x: 0 if x is np.nan else 1)
 
 
-# In[5]:
 
 
 image_col = np.array(df['Image'])
@@ -60,7 +55,6 @@ print('Gravel: {} images'.format(num_img_gravel))
 print('Sugar: {} images'.format(num_img_sugar))
 
 
-# In[6]:
 
 
 def plot_figures(
@@ -108,7 +102,6 @@ def plot_figures(
     plt.show()
 
 
-# In[7]:
 
 
 print('[THE WHOLE DATASET]')
@@ -138,19 +131,16 @@ plot_figures(
 )
 
 
-# In[8]:
 
 
 annotations = np.array(df['EncodedPixels']).reshape(-1, 4)
 
 
-# In[9]:
 
 
 X_train, X_val, y_train, y_val = train_test_split(image_files, annotations, test_size=TEST_SIZE, random_state=RANDOM_STATE)
 
 
-# In[10]:
 
 
 print('X_train:', X_train.shape)
@@ -159,7 +149,6 @@ print('X_val:', X_val.shape)
 print('y_val', y_val.shape)
 
 
-# In[11]:
 
 
 print('[TRAINING SET]')
@@ -194,7 +183,6 @@ plot_figures(
 )
 
 
-# In[12]:
 
 
 print('[VALIDATION SET]')
@@ -229,7 +217,6 @@ plot_figures(
 )
 
 
-# In[13]:
 
 
 def rle2mask(mask_rle, shape=(2100, 1400)):
@@ -249,7 +236,6 @@ def rle2mask(mask_rle, shape=(2100, 1400)):
     return img.reshape(shape).T
 
 
-# In[14]:
 
 
 def show_samples(samples):
@@ -277,7 +263,6 @@ def show_samples(samples):
         plt.show()
 
 
-# In[15]:
 
 
 train_pairs = np.array(list(zip(X_train, y_train)))
@@ -286,7 +271,6 @@ train_samples = train_pairs[np.random.choice(train_pairs.shape[0], NUM_TRAIN_SAM
 show_samples(train_samples)
 
 
-# In[16]:
 
 
 val_pairs = np.array(list(zip(X_val, y_val)))
@@ -295,14 +279,12 @@ val_samples = val_pairs[np.random.choice(val_pairs.shape[0], NUM_VAL_SAMPLES, re
 show_samples(val_samples)
 
 
-# In[17]:
 
 
 get_ipython().system('mkdir ../train_images')
 get_ipython().system('mkdir ../val_images')
 
 
-# In[18]:
 
 
 for image_file in tqdm_notebook(X_train):
@@ -316,39 +298,33 @@ for image_file in tqdm_notebook(X_val):
     copyfile(src, dst)
 
 
-# In[19]:
 
 
 get_ipython().system('apt install zip')
 
 
-# In[20]:
 
 
 cd ../
 
 
-# In[21]:
 
 
 get_ipython().system('zip -r -m -1 -q working/train_images.zip train_images')
 get_ipython().system('zip -r -m -1 -q working/val_images.zip val_images')
 
 
-# In[22]:
 
 
 cd working
 
 
-# In[23]:
 
 
 y_train = y_train.reshape(-1)
 y_val = y_val.reshape(-1)
 
 
-# In[24]:
 
 
 X_train = np.repeat(X_train, 4)
@@ -366,7 +342,6 @@ X_train = X_train.reshape(-1)
 X_val = X_val.reshape(-1)
 
 
-# In[25]:
 
 
 train_set = {

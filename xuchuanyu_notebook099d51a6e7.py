@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -22,13 +21,11 @@ id_test = test.id
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 test.columns[1:100]
 
 
-# In[3]:
 
 
 y_train = np.log(train["price_doc"])
@@ -51,7 +48,6 @@ for c in x_test.columns:
         x_test[c] = lbl.transform(list(x_test[c].values))
 
 
-# In[4]:
 
 
 xgb_params = {
@@ -68,7 +64,6 @@ dtrain = xgb.DMatrix(x_train, y_train)
 dtest = xgb.DMatrix(x_test)
 
 
-# In[5]:
 
 
 cv_output = xgb.cv(xgb_params, dtrain, num_boost_round=1000, early_stopping_rounds=20,
@@ -76,7 +71,6 @@ cv_output = xgb.cv(xgb_params, dtrain, num_boost_round=1000, early_stopping_roun
 cv_output[['train-rmse-mean', 'test-rmse-mean']].plot()
 
 
-# In[6]:
 
 
 num_boost_rounds = len(cv_output)
@@ -85,13 +79,11 @@ fig, ax = plt.subplots(1, 1, figsize=(8, 13))
 xgb.plot_importance(model, max_num_features=50, height=0.5, ax=ax)
 
 
-# In[7]:
 
 
 importance = model.get_fscore()
 
 
-# In[8]:
 
 
 y_predict = model.predict(dtest)

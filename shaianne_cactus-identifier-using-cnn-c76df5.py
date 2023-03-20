@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # Importar bibliotecas 
@@ -18,20 +17,17 @@ from keras.callbacks import EarlyStopping
 from keras import optimizers
 
 
-# In[2]:
 
 
 print(os.listdir("../input"))
 
 
-# In[3]:
 
 
 train_path='../input/train/train'
 test_path='../input/test/test'
 
 
-# In[4]:
 
 
 label_train=pd.read_csv("../input/train.csv")
@@ -41,7 +37,6 @@ label_train=label_train.sort_values(by=['id'])
 print(label_train.head(10))
 
 
-# In[5]:
 
 
 # criar 2 matrizes distintas, uma para ids e outra para labels
@@ -49,13 +44,11 @@ ids=label_train['id'].values
 labels=label_train['has_cactus'].values
 
 
-# In[6]:
 
 
 print(ids)
 
 
-# In[7]:
 
 
 train=[]
@@ -68,7 +61,6 @@ for index,imagem in enumerate(sorted(os.listdir(train_path))):
     train.append([np.array(frame),labels[index]])
 
 
-# In[8]:
 
 
 train=np.array(train)
@@ -86,7 +78,6 @@ X=X/255
 train=train/255
 
 
-# In[9]:
 
 
 plt.figure(figsize = (8,8))
@@ -105,13 +96,11 @@ plt.suptitle("Primeiras imagems ",fontsize=8)
 plt.show()
 
 
-# In[10]:
 
 
 Preparando os dados de Teste
 
 
-# In[11]:
 
 
 #Preparando os dados de Teste
@@ -130,7 +119,6 @@ for index, imagem in enumerate(os.listdir(test_path)):
     test_viz.append([np.array(frame),index])
 
 
-# In[12]:
 
 
 X_test=np.array(X_test)
@@ -156,7 +144,6 @@ test_viz=test_viz/255
 # plt.show()
 
 
-# In[13]:
 
 
 # Plotar as primeiras 25 imagens no Conjunto de teste
@@ -171,7 +158,6 @@ plt.suptitle("Primeiras imagems ",fontsize=8)
 plt.show()
 
 
-# In[14]:
 
 
 def convulacional():
@@ -209,7 +195,6 @@ def convulacional():
   return modelo 
 
 
-# In[15]:
 
 
 # treinamento do modelo
@@ -222,7 +207,6 @@ modelo.compile(loss="binary_crossentropy",optimizer="adam",metrics=["accuracy"])
 modelo.summary()
 
 
-# In[16]:
 
 
 # inicio do processo 
@@ -243,7 +227,6 @@ fim_processo = fim-inicio
 print("Treinamento concluído em% d minutos e% d segundos" %(fim_processo/60,fim_processo*60))
 
 
-# In[17]:
 
 
 acc=historico.history['acc']
@@ -252,7 +235,6 @@ loss=historico.history['loss']
 val_loss=historico.history['val_loss']
 
 
-# In[18]:
 
 
 plt.plot(acc)
@@ -264,7 +246,6 @@ plt.legend(['Train','Validation'])
 plt.show()
 
 
-# In[19]:
 
 
 plt.plot(loss)
@@ -276,7 +257,6 @@ plt.legend(['Train','Validation'])
 plt.show()
 
 
-# In[20]:
 
 
 plt.figure()
@@ -289,7 +269,6 @@ plt.legend(['train', 'test'], loc='upper left')
 plt.show()
 
 
-# In[21]:
 
 
 result = modelo.evaluate(X, Y, batch_size=32)

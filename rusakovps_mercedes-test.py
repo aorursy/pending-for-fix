@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 #origin code: https://www.kaggle.com/hakeem/stacked-then-averaged-models-0-5697/code
@@ -15,7 +14,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 import numpy as np
@@ -36,7 +34,6 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.metrics import r2_score
 
 
-# In[ ]:
 
 
 class StackingEstimator(BaseEstimator, TransformerMixin):
@@ -60,7 +57,6 @@ class StackingEstimator(BaseEstimator, TransformerMixin):
         return X_transformed
 
 
-# In[ ]:
 
 
 train = pd.read_csv('../input/train.csv')
@@ -75,7 +71,6 @@ for c in train.columns:
 print(train.head())
 
 
-# In[ ]:
 
 
 n_comp = 12
@@ -87,7 +82,6 @@ tsvd_results_test = tsvd.transform(test)
 pd.DataFrame(tsvd_results_test).head()
 
 
-# In[ ]:
 
 
 # PCA
@@ -97,7 +91,6 @@ pca2_results_test = pca.transform(test)
 pd.DataFrame(pca2_results_test).head()
 
 
-# In[ ]:
 
 
 # ICA
@@ -107,7 +100,6 @@ ica2_results_test = ica.transform(test)
 pd.DataFrame(ica2_results_test).head()
 
 
-# In[ ]:
 
 
 # GRP
@@ -117,7 +109,6 @@ grp_results_test = grp.transform(test)
 pd.DataFrame(grp_results_test).head()
 
 
-# In[ ]:
 
 
 # SRP
@@ -127,7 +118,6 @@ srp_results_test = srp.transform(test)
 pd.DataFrame(srp_results_test).head()
 
 
-# In[ ]:
 
 
 #save columns list before adding the decomposition components
@@ -153,7 +143,6 @@ for i in range(1, n_comp + 1):
 test.head()
 
 
-# In[ ]:
 
 
 y_train = train['y'].values
@@ -187,7 +176,6 @@ model = xgb.train(dict(xgb_params, silent=0), dtrain, num_boost_round=num_boost_
 y_pred = model.predict(dtest)
 
 
-# In[ ]:
 
 
 sub = pd.DataFrame()
@@ -196,25 +184,21 @@ sub['y'] = y_pred
 sub.to_csv('y_pred1.csv', index=False)
 
 
-# In[ ]:
 
 
 pd.DataFrame(y_pred).to_csv('pred1.csv')
 
 
-# In[ ]:
 
 
 import kaggle
 
 
-# In[ ]:
 
 
 kaggle competitions submit -c mercedes-benz-greener-manufacturing -f pred1.csv -m "Message"
 
 
-# In[ ]:
 
 
 '''Train the stacked models then predict the test data'''
@@ -232,7 +216,6 @@ results = stacked_pipeline.predict(finaltestset)
 results
 
 
-# In[ ]:
 
 
 '''R2 Score on the entire Train data when averaging'''
@@ -251,7 +234,6 @@ sub.to_csv('stacked-models.csv', index=False)
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 

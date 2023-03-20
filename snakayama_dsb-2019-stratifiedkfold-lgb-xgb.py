@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -43,7 +42,6 @@ from functools import partial
 pd.set_option('display.max_columns', 1000)
 
 
-# In[2]:
 
 
 import random
@@ -93,7 +91,6 @@ def stratified_group_k_fold(X, y, groups, k, seed=None):
         yield train_indices, test_indices
 
 
-# In[3]:
 
 
 def eval_qwk_lgb_regr(y_true, y_pred):
@@ -126,7 +123,6 @@ def eval_qwk_lgb_regr(y_true, y_pred):
     return 'cappa', cohen_kappa_score(y_true, y_pred, weights='quadratic'), True
 
 
-# In[4]:
 
 
 def cohenkappa(ypred, y):
@@ -136,7 +132,6 @@ def cohenkappa(ypred, y):
     return "cappa", loss, True
 
 
-# In[5]:
 
 
 def read_data():
@@ -162,7 +157,6 @@ def read_data():
     return train, test, train_labels, specs, sample_submission
 
 
-# In[6]:
 
 
 def encode_title(train, test, train_labels):
@@ -201,7 +195,6 @@ def encode_title(train, test, train_labels):
     return train, test, train_labels, win_code, list_of_user_activities, list_of_event_code, activities_labels, assess_titles, list_of_event_id, all_title_event_code
 
 
-# In[7]:
 
 
 clip_time = {'Welcome to Lost Lagoon!':19,'Tree Top City - Level 1':17,'Ordering Spheres':61, 'Costume Box':61,
@@ -211,7 +204,6 @@ clip_time = {'Welcome to Lost Lagoon!':19,'Tree Top City - Level 1':17,'Ordering
         'Heavy, Heavier, Heaviest':61}
 
 
-# In[8]:
 
 
 def cnt_miss(df):
@@ -223,7 +215,6 @@ def cnt_miss(df):
     return cnt
 
 
-# In[9]:
 
 
 # this is the function that convert the raw data into processed features
@@ -456,7 +447,6 @@ def get_data(user_sample, test_set=False):
     return all_assessments
 
 
-# In[10]:
 
 
 def get_train_and_test(train, test):
@@ -473,7 +463,6 @@ def get_train_and_test(train, test):
     return reduce_train, reduce_test, categoricals
 
 
-# In[11]:
 
 
 class Base_Model(object):
@@ -528,7 +517,6 @@ class Base_Model(object):
         return y_pred, loss_score, model,oof_pred
 
 
-# In[12]:
 
 
 class Lgb_Model(Base_Model):
@@ -559,7 +547,6 @@ class Lgb_Model(Base_Model):
         return params
 
 
-# In[13]:
 
 
 class Xgb_Model(Base_Model):
@@ -592,7 +579,6 @@ class Xgb_Model(Base_Model):
         return params
 
 
-# In[14]:
 
 
 class Catb_Model(Base_Model):
@@ -629,7 +615,6 @@ class Catb_Model(Base_Model):
         return params
 
 
-# In[15]:
 
 
 import tensorflow as tf
@@ -695,7 +680,6 @@ class Nn_Model(Base_Model):
         return None
 
 
-# In[16]:
 
 
 from random import choice
@@ -777,7 +761,6 @@ class Cnn_Model(Base_Model):
         return None
 
 
-# In[17]:
 
 
 # read data
@@ -790,7 +773,6 @@ reduce_train.columns = ["".join (c if c.isalnum() else "_" for c in str(x)) for 
 reduce_test.columns = ["".join (c if c.isalnum() else "_" for c in str(x)) for x in reduce_test.columns]
 
 
-# In[18]:
 
 
 # call feature engineering function
@@ -798,7 +780,6 @@ features = reduce_train.loc[(reduce_train.sum(axis=1) != 0), (reduce_train.sum(a
 features = [x for x in features if x not in ['accuracy_group', 'installation_id']]
 
 
-# In[19]:
 
 
 counter = 0
@@ -813,7 +794,6 @@ to_remove = []
 #                 print('{}: FEAT_A: {} FEAT_B: {} - Correlation: {}'.format(counter, feat_a, feat_b, c))
 
 
-# In[20]:
 
 
 to_exclude = [] 
@@ -837,14 +817,12 @@ ajusted_test = reduce_test.copy()
 #             print(feature, train_mean, test_mean)
 
 
-# In[21]:
 
 
 features = [x for x in features if x not in (to_exclude + to_remove)]
 reduce_train[features].shape
 
 
-# In[22]:
 
 
 # for train_idx, valid_idx in tqdm(stratified_group_k_fold(reduce_train, reduce_train['accuracy_group'].values.astype(np.int8), train_gid, k=5)):
@@ -852,7 +830,6 @@ reduce_train[features].shape
 #     print(valid_idx)
 
 
-# In[23]:
 
 
 # cat_model = Catb_Model(reduce_train, ajusted_test, features, categoricals=categoricals)
@@ -860,7 +837,6 @@ lgb_model = Lgb_Model(reduce_train, ajusted_test, features, categoricals=categor
 xgb_model = Xgb_Model(reduce_train, ajusted_test, features, categoricals=categoricals)
 
 
-# In[24]:
 
 
 # print("CAT_QWK = ", eval_qwk_lgb_regr(reduce_train['accuracy_group'].values, cat_model.oof_pred)[1])
@@ -868,7 +844,6 @@ print("LGB_QWK = ", eval_qwk_lgb_regr(reduce_train['accuracy_group'].values, lgb
 print("XGB_QWK = ", eval_qwk_lgb_regr(reduce_train['accuracy_group'].values, xgb_model.oof_pred)[1])
 
 
-# In[25]:
 
 
 import scipy as sp
@@ -917,7 +892,6 @@ def histogram(ratings, min_rating=None, max_rating=None):
     return hist_ratings
 
 
-# In[26]:
 
 
 def quadratic_weighted_kappa(y, y_pred):
@@ -971,7 +945,6 @@ def quadratic_weighted_kappa(y, y_pred):
     return (1.0 - numerator / denominator)
 
 
-# In[27]:
 
 
 def rounder(y, thresholds=[0.5, 1.5, 2.5]):
@@ -1026,7 +999,6 @@ def to_bins(x, borders):
     return len(borders)
 
 
-# In[28]:
 
 
 best_qwk = 0
@@ -1058,13 +1030,11 @@ for weight in tqdm(np.arange(0, 1.01, 0.1)):
 print(best_weight, best_qwk)
 
 
-# In[29]:
 
 
 print("STACK_QWK = ", eval_qwk_lgb_regr(reduce_train['accuracy_group'].values, best_train_predictions)
 
 
-# In[30]:
 
 
 sample_submission['accuracy_group'] = best_test_predictions.astype(int)
@@ -1072,13 +1042,11 @@ sample_submission.to_csv('submission.csv', index=False)
 sample_submission['accuracy_group'].value_counts(normalize=True)
 
 
-# In[31]:
 
 
 sample_submission
 
 
-# In[ ]:
 
 
 

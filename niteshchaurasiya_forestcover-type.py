@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 pip install chart_studio
 
 
-# In[2]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
@@ -43,7 +41,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
         print(os.path.join(dirname, filename))
 
 
-# In[3]:
 
 
 train = pd.read_csv('/kaggle/input/forest-cover-type-kernels-only/train.csv.zip')
@@ -52,68 +49,57 @@ sam_submit = pd.read_csv('/kaggle/input/forest-cover-type-kernels-only/sample_su
 df = train.copy()
 
 
-# In[4]:
 
 
 train.describe().T
 
 
-# In[5]:
 
 
 train.shape,test.shape
 
 
-# In[6]:
 
 
 df.drop(['Id','Soil_Type7','Soil_Type15'],axis = 1,inplace = True)
 test.drop(['Id','Soil_Type7','Soil_Type15'],axis = 1,inplace = True)
 
 
-# In[7]:
 
 
 df.Elevation.iplot(kind = 'hist',bins = 40,linecolor = 'black',xTitle = 'Elevation',yTitle = 'count',title = 'Elevation distributions')
 
 
-# In[8]:
 
 
 df.Aspect.iplot(kind = 'hist',linecolor = 'black',title = 'Aspect Distribution')
 
 
-# In[9]:
 
 
 df.Slope.iplot(kind = 'hist',linecolor = 'black',title = 'Slope distribution')
 
 
-# In[10]:
 
 
 df.Vertical_Distance_To_Hydrology.iplot(kind = 'hist',linecolor = 'black',xTitle='Vertical Distance to Hydrology',yTitle='Count')
 
 
-# In[11]:
 
 
 df.Horizontal_Distance_To_Hydrology.iplot(kind = 'hist',linecolor = 'black',xTitle='Horizontal_Distance_To_Hydrology',yTitle='count')
 
 
-# In[12]:
 
 
 df.Horizontal_Distance_To_Fire_Points.iplot(kind = 'hist',linecolor = 'black',xTitle='Horizontal_Distance_To_Fire_Points',yTitle='count')
 
 
-# In[13]:
 
 
 df.Horizontal_Distance_To_Roadways.iplot(kind = 'hist',linecolor = 'black',xTitle='Horizontal_Distance_To_Roadways',yTitle='count')
 
 
-# In[14]:
 
 
 fig = go.Figure().add_trace(go.Histogram(x = df.Hillshade_3pm,name = 'Hillshade_3pm'))
@@ -121,65 +107,55 @@ fig.add_trace(go.Histogram(x = df.Hillshade_Noon,name = 'Hillshade_noon'))
 fig.add_trace(go.Histogram(x = df.Hillshade_9am,name = 'Hillshade_9am'))
 
 
-# In[15]:
 
 
 sns.countplot(df.Wilderness_Area1)
 plt.show()
 
 
-# In[16]:
 
 
 sns.countplot(df.Wilderness_Area2)
 plt.show()
 
 
-# In[17]:
 
 
 sns.countplot(df.Wilderness_Area3)
 plt.show()
 
 
-# In[18]:
 
 
 sns.countplot(df.Wilderness_Area4)
 plt.show()
 
 
-# In[19]:
 
 
 w1 = df.Wilderness_Area1.value_counts().to_dict()
 
 
-# In[20]:
 
 
 w1[1] = 'Wild_area1'
 
 
-# In[21]:
 
 
 w1[0] = '0'
 
 
-# In[22]:
 
 
 df.Wilderness_Area1 = df.Wilderness_Area1.map(w1)
 
 
-# In[23]:
 
 
 df.Wilderness_Area1.value_counts()
 
 
-# In[24]:
 
 
 w2 = df.Wilderness_Area2.value_counts().to_dict()
@@ -189,7 +165,6 @@ df.Wilderness_Area2 = df.Wilderness_Area2.map(w2)
 df.Wilderness_Area2.value_counts()
 
 
-# In[25]:
 
 
 w3 = df.Wilderness_Area3.value_counts().to_dict()
@@ -199,7 +174,6 @@ df.Wilderness_Area3 = df.Wilderness_Area3.map(w3)
 df.Wilderness_Area3.value_counts()
 
 
-# In[26]:
 
 
 w4 = df.Wilderness_Area4.value_counts().to_dict()
@@ -209,19 +183,16 @@ df.Wilderness_Area4 = df.Wilderness_Area4.map(w4)
 df.Wilderness_Area4.value_counts()
 
 
-# In[27]:
 
 
 df['Wild_area'] = df[['Wilderness_Area1', 'Wilderness_Area2','Wilderness_Area3','Wilderness_Area4']].apply(lambda x: ''.join(x), axis = 1) 
 
 
-# In[28]:
 
 
 df.drop(['Wilderness_Area1','Wilderness_Area2','Wilderness_Area3','Wilderness_Area4'],axis = 1,inplace = True)
 
 
-# In[29]:
 
 
 def decode(df,column):
@@ -232,7 +203,6 @@ def decode(df,column):
     return df
 
 
-# In[30]:
 
 
 columns = ['Soil_Type1','Soil_Type2','Soil_Type3','Soil_Type4','Soil_Type5','Soil_Type6','Soil_Type8'
@@ -242,33 +212,28 @@ columns = ['Soil_Type1','Soil_Type2','Soil_Type3','Soil_Type4','Soil_Type5','Soi
            ,'Soil_Type34','Soil_Type35','Soil_Type36','Soil_Type37','Soil_Type38','Soil_Type39','Soil_Type40']
 
 
-# In[31]:
 
 
 for i in columns:
     df = decode(df,i)
 
 
-# In[32]:
 
 
 df['soil_type'] = df[columns].apply(lambda x: ''.join(x), axis = 1) 
 
 
-# In[33]:
 
 
 df_frequency_map = df.Wild_area.value_counts().to_dict()
 df.Wild_area = df.Wild_area.map(df_frequency_map)
 
 
-# In[34]:
 
 
 df.Wild_area = df.Wild_area/15120*100
 
 
-# In[35]:
 
 
 df_frequency_map = df.soil_type.value_counts().to_dict()
@@ -276,31 +241,26 @@ df.soil_type = df.soil_type.map(df_frequency_map)
 df.soil_type = df.soil_type/15120*100
 
 
-# In[36]:
 
 
 df.drop(columns,axis = 1,inplace = True)
 
 
-# In[37]:
 
 
 df.head().T
 
 
-# In[38]:
 
 
 df.info()
 
 
-# In[39]:
 
 
 corrs = df.corr()
 
 
-# In[40]:
 
 
 plt.figure(figsize=(10,10))
@@ -308,20 +268,17 @@ sns.heatmap(corrs,annot = True,linewidths=0.25,linecolor='white',cmap='terrain')
 plt.show()
 
 
-# In[41]:
 
 
 y = df.Cover_Type
 df.drop('Cover_Type',axis = 1,inplace = True)
 
 
-# In[42]:
 
 
 test.head().T
 
 
-# In[43]:
 
 
 w1 = test.Wilderness_Area1.value_counts().to_dict()
@@ -349,45 +306,38 @@ test.Wilderness_Area4 = test.Wilderness_Area4.map(w4)
 test.Wilderness_Area4.value_counts()
 
 
-# In[44]:
 
 
 test['Wild_area'] = test[['Wilderness_Area1', 'Wilderness_Area2','Wilderness_Area3','Wilderness_Area4']].apply(lambda x: ''.join(x), axis = 1) 
 
 
-# In[45]:
 
 
 test.drop(['Wilderness_Area1','Wilderness_Area2','Wilderness_Area3','Wilderness_Area4'],axis = 1,inplace = True)
 
 
-# In[46]:
 
 
 for i in columns:
     test = decode(test,i)
 
 
-# In[47]:
 
 
 test['soil_type'] = test[columns].apply(lambda x: ''.join(x), axis = 1) 
 
 
-# In[48]:
 
 
 frequency_map = test.Wild_area.value_counts().to_dict()
 test.Wild_area = test.Wild_area.map(frequency_map)
 
 
-# In[49]:
 
 
 test.Wild_area = test.Wild_area/565892*100
 
 
-# In[50]:
 
 
 test_frequency_map = test.soil_type.value_counts().to_dict()
@@ -395,19 +345,16 @@ test.soil_type = test.soil_type.map(test_frequency_map)
 test.soil_type = test.soil_type/565892*100
 
 
-# In[51]:
 
 
 test.drop(columns,axis = 1,inplace =True)
 
 
-# In[52]:
 
 
 test.head()
 
 
-# In[53]:
 
 
 #####################################Train Data ################################################
@@ -445,7 +392,6 @@ test['Mean_Amenities']=(test.Horizontal_Distance_To_Fire_Points + test.Horizonta
 test['Mean_Fire_Hyd']=(test.Horizontal_Distance_To_Fire_Points + test.Horizontal_Distance_To_Hydrology) / 2
 
 
-# In[54]:
 
 
 from sklearn.ensemble import ExtraTreesClassifier
@@ -454,7 +400,6 @@ etc.fit(df,y)
 sub = pd.DataFrame({"Id": sam_submit['Id'],"Cover_Type": etc.predict(test)})
 
 
-# In[55]:
 
 
 from catboost import CatBoostClassifier
@@ -462,45 +407,38 @@ catclf = CatBoostClassifier(random_state=42)
 catclf.fit(df,y)
 
 
-# In[56]:
 
 
 train_predict = catclf.predict(df)
 accuracy_score(y,train_predict)
 
 
-# In[57]:
 
 
 from sklearn.metrics import confusion_matrix
 confusion_matrix(y,train_predict)
 
 
-# In[58]:
 
 
 test_pred = catclf.predict(test)
 
 
-# In[59]:
 
 
 test_pred = test_pred.ravel()
 
 
-# In[60]:
 
 
 test_pred.shape
 
 
-# In[61]:
 
 
 sub = pd.DataFrame({"Id": sam_submit['Id'],"Cover_Type": test_pred})
 
 
-# In[62]:
 
 
 sub.to_csv("submission.csv", index=False) 

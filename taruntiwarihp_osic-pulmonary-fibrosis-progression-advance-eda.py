@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,14 +22,12 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[ ]:
 
 
 from IPython.display import HTML
 HTML('<center><iframe width="560" height="315" src="https://www.youtube.com/embed/AfK9LPNj-Zo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>')
 
 
-# In[ ]:
 
 
 import os
@@ -71,14 +68,12 @@ plt.style.use('fivethirtyeight')
 plt.show()
 
 
-# In[ ]:
 
 
 # List files available
 list(os.listdir("../input/osic-pulmonary-fibrosis-progression"))
 
 
-# In[ ]:
 
 
 IMAGE_PATH = "../input/osic-pulmonary-fibrosis-progressiont/"
@@ -90,13 +85,11 @@ print(Fore.YELLOW + 'Training data shape: ',Style.RESET_ALL,train_df.shape)
 train_df.head(5)
 
 
-# In[ ]:
 
 
 train_df.groupby(['SmokingStatus']).count()['Sex'].to_frame()
 
 
-# In[ ]:
 
 
 # Null values and Data types
@@ -107,19 +100,16 @@ print(Fore.BLUE + 'Test Set !!',Style.RESET_ALL)
 print(test_df.info())
 
 
-# In[ ]:
 
 
 train_df.isnull().sum()
 
 
-# In[ ]:
 
 
 test_df.isnull().sum()
 
 
-# In[ ]:
 
 
 # Total number of Patient in the dataset(train+test)
@@ -128,13 +118,11 @@ print(Fore.YELLOW +"Total Patients in Train set: ",Style.RESET_ALL,train_df['Pat
 print(Fore.BLUE +"Total Patients in Test set: ",Style.RESET_ALL,test_df['Patient'].count())
 
 
-# In[ ]:
 
 
 print(Fore.YELLOW + "The total patient ids are",Style.RESET_ALL,f"{train_df['Patient'].count()},", Fore.BLUE + "from those the unique ids are", Style.RESET_ALL, f"{train_df['Patient'].value_counts().shape[0]}.")
 
 
-# In[ ]:
 
 
 train_patient_ids = set(train_df['Patient'].unique())
@@ -143,7 +131,6 @@ test_patient_ids = set(test_df['Patient'].unique())
 train_patient_ids.intersection(test_patient_ids)
 
 
-# In[ ]:
 
 
 columns = train_df.keys()
@@ -151,32 +138,27 @@ columns = list(columns)
 print(columns)
 
 
-# In[ ]:
 
 
 train_df['Patient'].value_counts().max()
 
 
-# In[ ]:
 
 
 test_df['Patient'].value_counts().max()
 
 
-# In[ ]:
 
 
 np.quantile(train_df['Patient'].value_counts(), 0.75) - np.quantile(test_df['Patient'].value_counts(), 0.25)
 
 
-# In[ ]:
 
 
 print(np.quantile(train_df['Patient'].value_counts(), 0.95))
 print(np.quantile(test_df['Patient'].value_counts(), 0.95))
 
 
-# In[ ]:
 
 
 files = folders = 0
@@ -191,7 +173,6 @@ for _, dirnames, filenames in os.walk(path):
 print(Fore.YELLOW +f'{files:,}',Style.RESET_ALL,"files/images, " + Fore.BLUE + f'{folders:,}',Style.RESET_ALL ,'folders/patients')
 
 
-# In[ ]:
 
 
 files = []
@@ -204,14 +185,12 @@ print(Fore.BLUE +f'{round(np.max(files)):,}',Style.RESET_ALL, 'max files/images 
 print(Fore.GREEN +f'{round(np.min(files)):,}',Style.RESET_ALL,'min files/images per patient')
 
 
-# In[ ]:
 
 
 patient_df = train_df[['Patient', 'Age', 'Sex', 'SmokingStatus']].drop_duplicates()
 patient_df.head()
 
 
-# In[ ]:
 
 
 # Creating unique patient lists and their properties. 
@@ -241,13 +220,11 @@ print(patient_df.info())
 patient_df.head()
 
 
-# In[ ]:
 
 
 patient_df['SmokingStatus'].value_counts()
 
 
-# In[ ]:
 
 
 patient_df['SmokingStatus'].value_counts().iplot(kind='bar',
@@ -261,13 +238,11 @@ patient_df['SmokingStatus'].value_counts().iplot(kind='bar',
                                               title='Distribution of the SmokingStatus column in the Unique Patient Set')
 
 
-# In[ ]:
 
 
 train_df['Weeks'].value_counts().head()
 
 
-# In[ ]:
 
 
 train_df['Weeks'].value_counts().iplot(kind='barh',
@@ -281,7 +256,6 @@ train_df['Weeks'].value_counts().iplot(kind='barh',
                                       title='Distribution of the Weeks in the training set')
 
 
-# In[ ]:
 
 
 train_df['Weeks'].iplot(kind='hist',
@@ -296,20 +270,17 @@ train_df['Weeks'].iplot(kind='hist',
                               title='Distribution of the Weeks in the training set')
 
 
-# In[ ]:
 
 
 fig = px.scatter(train_df, x="Weeks", y="Age", color='Sex')
 fig.show()
 
 
-# In[ ]:
 
 
 train_df['FVC'].value_counts()
 
 
-# In[ ]:
 
 
 train_df['FVC'].iplot(kind='hist',
@@ -322,34 +293,29 @@ train_df['FVC'].iplot(kind='hist',
                       title='Distribution of the FVC in the training set')
 
 
-# In[ ]:
 
 
 fig = px.scatter(train_df, x="FVC", y="Percent", color='Age')
 fig.show()
 
 
-# In[ ]:
 
 
 FVC seems to related Percent linearly. Makes sense as both terms are proportional.
 
 
-# In[ ]:
 
 
 fig = px.scatter(train_df, x="FVC", y="Age", color='Sex')
 fig.show()
 
 
-# In[ ]:
 
 
 fig = px.scatter(train_df, x="FVC", y="Weeks", color='SmokingStatus')
 fig.show()
 
 
-# In[ ]:
 
 
 patient = train_df[train_df.Patient == 'ID00228637202259965313869']
@@ -357,19 +323,16 @@ fig = px.line(patient, x="Weeks", y="FVC", color='SmokingStatus')
 fig.show()
 
 
-# In[ ]:
 
 
 train_df['Percent'].value_counts()
 
 
-# In[ ]:
 
 
 train_df['Percent'].iplot(kind='hist',bins=30,color='blue',xTitle='Percent distribution',yTitle='Count')
 
 
-# In[ ]:
 
 
 df = train_df
@@ -378,7 +341,6 @@ fig = px.violin(df, y='Percent', x='SmokingStatus', box=True, color='Sex', point
 fig.show()
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(16, 6))
@@ -389,14 +351,12 @@ ax.set_title(label = 'Distribution of Smoking Status Over Percentage', fontsize 
 plt.show()
 
 
-# In[ ]:
 
 
 fig = px.scatter(train_df, x="Age", y="Percent", color='SmokingStatus')
 fig.show()
 
 
-# In[ ]:
 
 
 patient = train_df[train_df.Patient == 'ID00228637202259965313869']
@@ -404,7 +364,6 @@ fig = px.line(patient, x="Weeks", y="Percent", color='SmokingStatus')
 fig.show()
 
 
-# In[ ]:
 
 
 patient = train_df[train_df.Patient == 'ID00228637202259965313869']
@@ -412,19 +371,16 @@ fig = px.line(patient, x="Weeks", y="Percent", color='SmokingStatus')
 fig.show()
 
 
-# In[ ]:
 
 
 patient_df['Age'].iplot(kind='hist',bins=30,color='red',xTitle='Ages of distribution',yTitle='Count')
 
 
-# In[ ]:
 
 
 patient_df['SmokingStatus'].value_counts()
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(16, 6))
@@ -436,7 +392,6 @@ sns.kdeplot(patient_df.loc[patient_df['SmokingStatus'] == 'Currently smokes', 'A
 plt.xlabel('Age (years)'); plt.ylabel('Density'); plt.title('Distribution of Ages');
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(16, 6))
@@ -447,7 +402,6 @@ ax.set_title(label = 'Distribution of Smokers over Age', fontsize = 20)
 plt.show()
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(16, 6))
@@ -456,13 +410,11 @@ sns.kdeplot(patient_df.loc[patient_df['Sex'] == 'Female', 'Age'], label = 'Femal
 plt.xlabel('Age (years)'); plt.ylabel('Density'); plt.title('Distribution of Ages');
 
 
-# In[ ]:
 
 
 patient_df['Sex'].value_counts()
 
 
-# In[ ]:
 
 
 patient_df['Sex'].value_counts().iplot(kind='bar',
@@ -476,7 +428,6 @@ patient_df['Sex'].value_counts().iplot(kind='bar',
                                           title='Distribution of the Sex column in Patient Dataframe')
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(16, 6))
@@ -492,14 +443,12 @@ plt.title('Gender split by SmokingStatus', fontsize=16)
 sns.despine(left=True, bottom=True);
 
 
-# In[ ]:
 
 
 fig = px.box(patient_df, x="Sex", y="Age", points="all")
 fig.show()
 
 
-# In[ ]:
 
 
 # Extract patient id's for the training set
@@ -523,7 +472,6 @@ print(Fore.CYAN + 'These patients are in both the training and test datasets:', 
 print(f'{patient_overlap}')
 
 
-# In[ ]:
 
 
 corrmat = train_df.corr() 
@@ -531,13 +479,11 @@ f, ax = plt.subplots(figsize =(9, 8))
 sns.heatmap(corrmat, ax = ax, cmap = 'RdYlBu_r', linewidths = 0.5) 
 
 
-# In[ ]:
 
 
 # 6. <a id='visual'>Visualising Images : DECOM 🗺️</a>  
 
 
-# In[ ]:
 
 
 print(Fore.YELLOW + 'Train .dcm number of images:',Style.RESET_ALL, len(list(os.listdir('../input/osic-pulmonary-fibrosis-progression/train'))), '\n' +
@@ -546,7 +492,6 @@ print(Fore.YELLOW + 'Train .dcm number of images:',Style.RESET_ALL, len(list(os.
       'There is the same number of images as in train/ test .csv datasets')
 
 
-# In[ ]:
 
 
 def plot_pixel_array(dataset, figsize=(5,5)):
@@ -556,7 +501,6 @@ def plot_pixel_array(dataset, figsize=(5,5)):
     plt.show()
 
 
-# In[ ]:
 
 
 # https://www.kaggle.com/schlerp/getting-to-know-dicom-and-the-data
@@ -589,7 +533,6 @@ for file_path in glob.glob('../input/osic-pulmonary-fibrosis-progression/train/*
     break # Comment this out to see all
 
 
-# In[ ]:
 
 
 imdir = "/kaggle/input/osic-pulmonary-fibrosis-progression/train/ID00123637202217151272140"
@@ -608,7 +551,6 @@ for i in range(1, columns*rows +1):
 plt.show()
 
 
-# In[ ]:
 
 
 imdir = "/kaggle/input/osic-pulmonary-fibrosis-progression/train/ID00123637202217151272140"
@@ -627,7 +569,6 @@ for i in range(1, columns*rows +1):
 plt.show()
 
 
-# In[ ]:
 
 
 apply_resample = False
@@ -646,7 +587,6 @@ def load_scan(path):
     return slices
 
 
-# In[ ]:
 
 
 def load_scan(path):
@@ -663,7 +603,6 @@ def load_scan(path):
     return slices
 
 
-# In[ ]:
 
 
 def get_pixels_hu(slices):
@@ -691,7 +630,6 @@ def get_pixels_hu(slices):
     return np.array(image, dtype=np.int16)
 
 
-# In[ ]:
 
 
 def set_lungwin(img, hu=[-1200., 600.]):
@@ -703,14 +641,12 @@ def set_lungwin(img, hu=[-1200., 600.]):
     return newimg
 
 
-# In[ ]:
 
 
 scans = load_scan('../input/osic-pulmonary-fibrosis-progression/train/ID00007637202177411956430/')
 scan_array = set_lungwin(get_pixels_hu(scans))
 
 
-# In[ ]:
 
 
 # Resample to 1mm (An optional step, it may not be relevant to this competition because of the large slice thickness on the z axis)
@@ -730,7 +666,6 @@ if apply_resample:
     scan_array_resample = resample(scan_array, np.array(np.array([spacing_z, *scans[0].PixelSpacing])), np.array([1.,1.,1.]))[0]
 
 
-# In[ ]:
 
 
 import imageio
@@ -740,7 +675,6 @@ imageio.mimsave("/tmp/gif.gif", scan_array, duration=0.0001)
 Image(filename="/tmp/gif.gif", format='png')
 
 
-# In[ ]:
 
 
 import matplotlib.animation as animation
@@ -757,19 +691,16 @@ ani = animation.ArtistAnimation(fig, ims, interval=100, blit=False,
                                 repeat_delay=1000)
 
 
-# In[ ]:
 
 
 HTML(ani.to_jshtml())
 
 
-# In[ ]:
 
 
 HTML(ani.to_html5_video())
 
 
-# In[ ]:
 
 
 def extract_dicom_meta_data(filename: str) -> Dict:
@@ -807,7 +738,6 @@ def extract_dicom_meta_data(filename: str) -> Dict:
     return row
 
 
-# In[ ]:
 
 
 train_image_path = '/kaggle/input/osic-pulmonary-fibrosis-progression/train'
@@ -821,7 +751,6 @@ for filename in tqdm.tqdm(train_image_files):
         continue
 
 
-# In[ ]:
 
 
 # Convert to a pd.DataFrame from dict
@@ -829,7 +758,6 @@ meta_data_df = pd.DataFrame.from_dict(meta_data_df)
 meta_data_df.head()
 
 
-# In[ ]:
 
 
 # source: https://www.kaggle.com/c/siim-isic-melanoma-classification/discussion/154658
@@ -906,44 +834,37 @@ def extract_DICOM_attributes(folder):
     return df
 
 
-# In[ ]:
 
 
 extract_DICOM_attributes('train')
 
 
-# In[ ]:
 
 
 import pandas_profiling as pdp
 
 
-# In[ ]:
 
 
 train_df = pd.read_csv('../input/osic-pulmonary-fibrosis-progression/train.csv')
 test_df = pd.read_csv('../input/osic-pulmonary-fibrosis-progression/test.csv')
 
 
-# In[ ]:
 
 
 profile_train_df = pdp.ProfileReport(train_df)
 
 
-# In[ ]:
 
 
 profile_train_df
 
 
-# In[ ]:
 
 
 profile_test_df = pdp.ProfileReport(test_df)
 
 
-# In[ ]:
 
 
 profile_test_df

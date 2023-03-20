@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 cd /kaggle/input/
 
 
-# In[2]:
 
 
 # Input data files are available in the "../input/" directory.
@@ -31,55 +29,46 @@ from keras.utils.np_utils import to_categorical
 from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard,EarlyStopping
 
 
-# In[3]:
 
 
 weights_path = '/kaggle/i/tgs_Salt.h5'
 
 
-# In[4]:
 
 
 checkpoint_path = '/kaggle/i/tgs_salt_unet.h5'
 
 
-# In[5]:
 
 
 os.mkdir('/kaggle/i')
 
 
-# In[6]:
 
 
 cd /kaggle/
 
 
-# In[7]:
 
 
 ls
 
 
-# In[8]:
 
 
 cd /kaggle/i/
 
 
-# In[9]:
 
 
 ls
 
 
-# In[10]:
 
 
 weights_path
 
 
-# In[11]:
 
 
 img_width, img_height = 128,128
@@ -87,7 +76,6 @@ epochs = 1
 batch_size = 20
 
 
-# In[12]:
 
 
 input_dir  = '/kaggle/input/'
@@ -98,59 +86,50 @@ test_dir = input_dir + 'test/'
 test_img_dir = test_dir + 'images/'
 
 
-# In[13]:
 
 
 data_files = os.listdir(input_dir)
 print('data_files in the directory', data_files)
 
 
-# In[14]:
 
 
 train_data = os.listdir(train_dir)
 
 
-# In[15]:
 
 
 train_data
 
 
-# In[16]:
 
 
 test_data = os.listdir(test_dir)
 
 
-# In[17]:
 
 
 test_data
 
 
-# In[18]:
 
 
 train_data_images = os.listdir(train_img_dir)
 print('No. of images in train data:',len(train_data_images))
 
 
-# In[19]:
 
 
 train_data_masks = os.listdir(train_masks_dir)
 print('No. of masks in train data:',len(train_data_masks))
 
 
-# In[20]:
 
 
 test_data_images = os.listdir(test_img_dir)
 print('No. of images in test data:',len(test_data_images))
 
 
-# In[21]:
 
 
 #Display images and mask
@@ -168,13 +147,11 @@ def image_and_mask():
     plt.title('Mask'+' '+img_name + ' ' + str(mask.shape))
 
 
-# In[22]:
 
 
 image_and_mask()
 
 
-# In[23]:
 
 
 #load csv files
@@ -183,7 +160,6 @@ print(len(train_csv))
 train_csv.head()
 
 
-# In[24]:
 
 
 #tells the depth at which salt is present, for all train and test images
@@ -192,7 +168,6 @@ print(len(depths_csv))
 depths_csv.head()
 
 
-# In[25]:
 
 
 training_df = train_csv.join(depths_csv)
@@ -200,38 +175,32 @@ print(len(training_df))
 training_df.head()
 
 
-# In[26]:
 
 
 depths_csv.index
 
 
-# In[27]:
 
 
 print(sum(depths_csv.index.isin(train_csv.index)))
 depths_csv.index.isin(train_csv.index)
 
 
-# In[28]:
 
 
 len(depths_csv.index.isin(train_csv.index))
 
 
-# In[29]:
 
 
 ~depths_csv.index.isin(train_csv.index)
 
 
-# In[30]:
 
 
 len(~depths_csv.index.isin(train_csv.index))
 
 
-# In[31]:
 
 
 testing_df = depths_csv[~depths_csv.index.isin(train_csv.index)]
@@ -239,7 +208,6 @@ print(len(testing_df))
 testing_df.head()
 
 
-# In[32]:
 
 
 #Exploring one image
@@ -249,13 +217,11 @@ print(idx)
 print(im.shape)
 
 
-# In[33]:
 
 
 im[22,0,:][0] == im[22,0,:][1] == im[22,0,:][2]
 
 
-# In[34]:
 
 
 #To check whether all channels have same values are not
@@ -269,7 +235,6 @@ if sum1==0:
     print('All channels have same pixel values')
 
 
-# In[35]:
 
 
 #load images and masks and reshape to 128*128
@@ -277,26 +242,22 @@ x = np.array([resize(cv2.imread(i)[:,:,0]/255, (128,128,1), mode = 'constant',pr
 y = np.array([resize(cv2.imread(i)[:,:,0]/255, (128,128,1), mode = 'constant',preserve_range = True) for i in glob.glob(train_masks_dir + '*.png') if cv2.imread(i).shape[0] != 128])    
 
 
-# In[36]:
 
 
 x[0].shape
 
 
-# In[37]:
 
 
 y[0].shape
 
 
-# In[38]:
 
 
 print(x.shape)
 print(y.shape)
 
 
-# In[39]:
 
 
 #unet
@@ -344,7 +305,6 @@ def UNet():
     return model
 
 
-# In[40]:
 
 
 def train():
@@ -357,85 +317,71 @@ def train():
     return model
 
 
-# In[41]:
 
 
 trained_model = train()
 
 
-# In[42]:
 
 
 x_test = np.array([resize(cv2.imread(i)[:,:,0]/255, (128,128,1), mode = 'constant',preserve_range = True) for i in glob.glob(test_img_dir + '*.png') if cv2.imread(i).shape[0] != 128])
 
 
-# In[43]:
 
 
 preds = trained_model.predict(x_test)
 
 
-# In[44]:
 
 
 preds.shape
 
 
-# In[45]:
 
 
 x = preds[0]
 
 
-# In[46]:
 
 
 x.shape
 
 
-# In[47]:
 
 
 plt.imshow(np.resize(x,(128,128)), cmap = 'gray')
 
 
-# In[48]:
 
 
 np.unique(np.resize(x,(128,128)))
 
 
-# In[49]:
 
 
 y = (x>0.5)*1 #multiplying boolean array with 1
 
 
-# In[50]:
 
 
 np.unique(y)
 
 
-# In[51]:
 
 
 y.shape
 
 
-# In[52]:
 
 
 plt.imshow(np.resize(y, (101,101)), cmap = 'gray')
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 

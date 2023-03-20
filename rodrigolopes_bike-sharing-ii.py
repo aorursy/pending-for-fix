@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,7 +21,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 # Importando os Arquivos
@@ -32,7 +30,6 @@ test = pd.read_csv('/kaggle/input/bike-sharing-demand/test.csv')
 df.shape, test.shape
 
 
-# In[3]:
 
 
 #Verificando o datafreime de treino
@@ -40,13 +37,11 @@ df.shape, test.shape
 df.info()
 
 
-# In[4]:
 
 
 test.info()
 
 
-# In[5]:
 
 
 #Realizando a transformação dos Dados
@@ -55,7 +50,6 @@ test.info()
 df['count']=np.log(df['count'])
 
 
-# In[6]:
 
 
 #unindo os dataframe
@@ -63,7 +57,6 @@ df['count']=np.log(df['count'])
 df = df.append(test)
 
 
-# In[7]:
 
 
 #Convertendo a coluna datetime
@@ -71,7 +64,6 @@ df = df.append(test)
 df['datetime']=pd.to_datetime(df['datetime'])
 
 
-# In[8]:
 
 
 #Criando colunas derivadas da coluna datetime
@@ -83,7 +75,6 @@ df['hour']=df['datetime'].dt.hour
 df['dayofweek']=df['datetime'].dt.dayofweek
 
 
-# In[9]:
 
 
 # Separando os dataframes de teste, treino e validação
@@ -92,7 +83,6 @@ df['dayofweek']=df['datetime'].dt.dayofweek
 test=df[df['count'].isnull()]
 
 
-# In[10]:
 
 
 #Agora os dados de treino
@@ -100,14 +90,12 @@ test=df[df['count'].isnull()]
 df=df[~df['count'].isnull()] # Comando ""~"" significa a negativa booleana
 
 
-# In[11]:
 
 
 #Verificando os tamanhos
 df.shape, test.shape
 
 
-# In[12]:
 
 
 #Dividindo o dataframe de treino
@@ -117,7 +105,6 @@ df.shape, test.shape
 from sklearn.model_selection import train_test_split
 
 
-# In[13]:
 
 
 #Dividir a base de treino
@@ -125,14 +112,12 @@ from sklearn.model_selection import train_test_split
 train, valid = train_test_split(df, random_state=42)
 
 
-# In[14]:
 
 
 #Verificando os tamanhos 
 train.shape,valid.shape
 
 
-# In[15]:
 
 
 #selecionar as colunas que usaremos como entrada
@@ -144,7 +129,6 @@ removed_cols = ['casual','registered','count','datetime']
 feats = [c for c in train.columns if c not in removed_cols]
 
 
-# In[16]:
 
 
 #importando o mopdelo Random Foreste
@@ -152,7 +136,6 @@ feats = [c for c in train.columns if c not in removed_cols]
 from sklearn.ensemble import RandomForestRegressor
 
 
-# In[17]:
 
 
 #instanciar o modelo rando state = 42 galhos 
@@ -160,35 +143,30 @@ from sklearn.ensemble import RandomForestRegressor
 rf=RandomForestRegressor(random_state=42, n_jobs=-1)
 
 
-# In[18]:
 
 
 #Treinando o modelo - informar as entradas e saídas
 rf.fit(train[feats], train['count'])
 
 
-# In[19]:
 
 
 #Fazendo previsões em cima dos dados de valição
 preds = rf.predict(valid[feats])
 
 
-# In[20]:
 
 
 #Verificando as previsoes
 preds
 
 
-# In[21]:
 
 
 #Verificando o real
 valid['count'].head(3)
 
 
-# In[22]:
 
 
 #Verificando o modelo com relação a métrica
@@ -197,14 +175,12 @@ valid['count'].head(3)
 from sklearn.metrics import mean_squared_error
 
 
-# In[23]:
 
 
 #Aplicando a metrica
 mean_squared_error(valid['count'],preds)**(1/2)
 
 
-# In[24]:
 
 
 #Previsão com base nos dados de treino
@@ -214,7 +190,6 @@ train_preds = rf.predict(train[feats])
 mean_squared_error(train['count'],train_preds)**(1/2)
 
 
-# In[25]:
 
 
 #Gerando as previsões para envio ao kaggle
@@ -222,21 +197,18 @@ mean_squared_error(train['count'],train_preds)**(1/2)
 test['count']=np.exp(rf.predict(test[feats]))
 
 
-# In[26]:
 
 
 #Visualizando o arquivo para envio
 test[test['datetime',]
 
 
-# In[27]:
 
 
 #Gerando o arquivo
 test[['datetime','count']].to_csv('rf.csv', index=False)
 
 
-# In[ ]:
 
 
 

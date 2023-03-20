@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 #codes from Rodrigo Lima  @rodrigolima82
@@ -9,7 +8,6 @@ from IPython.display import Image
 Image(url = 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR80B1-ealrPRrFhoJNri_GfULKGbbSIZHBkltJIqLE4afweR2X&usqp=CAU',width=400,height=400)
 
 
-# In[2]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -37,14 +35,12 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[3]:
 
 
 df = pd.read_csv('/kaggle/input/trec-covid-information-retrieval/CORD-19/CORD-19/metadata.csv')
 df.head()
 
 
-# In[4]:
 
 
 title = df.copy()
@@ -53,19 +49,16 @@ title['title'] = title['title'].str.replace('[^a-zA-Z]', ' ', regex=True)
 title['title'] = title['title'].str.lower()
 
 
-# In[5]:
 
 
 title['keyword_biomarker'] = title['title'].str.find('biomarker')
 
 
-# In[6]:
 
 
 title.head()
 
 
-# In[7]:
 
 
 #codes from Rodrigo Lima  @rodrigolima82
@@ -73,14 +66,12 @@ from IPython.display import Image
 Image(url = 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRrwtPS-Yst8VfH_BazvJYgaRWfp_tctzl4pTCoMpPH6S-Dzj5s&usqp=CAU',width=400,height=400)
 
 
-# In[8]:
 
 
 included_biomarker = title.loc[title['keyword_biomarker'] != -1]
 included_biomarker
 
 
-# In[9]:
 
 
 #codes from Rodrigo Lima  @rodrigolima82
@@ -88,7 +79,6 @@ from IPython.display import Image
 Image(url = 'https://media.springernature.com/lw685/springer-static/image/art%3A10.1038%2Fs42256-020-0180-7/MediaObjects/42256_2020_180_Fig3_HTML.png?as=webp',width=400,height=400)
 
 
-# In[10]:
 
 
 import json
@@ -98,7 +88,6 @@ with open(file_path) as json_file:
 json_file
 
 
-# In[11]:
 
 
 import json
@@ -108,14 +97,12 @@ with open(file_path) as json_file:
 json_file
 
 
-# In[12]:
 
 
 biomarker = pd.read_csv('../input/cusersmarildownloadstcellcsv/TCell.csv', sep=';')
 biomarker
 
 
-# In[13]:
 
 
 fig = go.Figure();
@@ -142,19 +129,16 @@ fig.update_layout(autosize=False, width=1000,height=700, legend_orientation="h")
 fig.show();
 
 
-# In[14]:
 
 
 get_ipython().system('pip install chart_studio')
 
 
-# In[15]:
 
 
 pip install bubbly
 
 
-# In[16]:
 
 
 from bubbly.bubbly import bubbleplot 
@@ -169,7 +153,6 @@ figure = bubbleplot(dataset=biomarker, x_column='cd4', y_column='study_id',
 iplot(figure, config={'scrollzoom': True})
 
 
-# In[17]:
 
 
 ax = biomarker.plot(figsize=(15,8), title='CD4 Lymphocyte Study')
@@ -177,25 +160,21 @@ ax.set_xlabel('age_at_enrollment, sex, dm, htn')
 ax.set_ylabel('study_id')
 
 
-# In[18]:
 
 
 biomarker.iloc[0]
 
 
-# In[19]:
 
 
 biomarker.plot.hist()
 
 
-# In[20]:
 
 
 biomarker.plot.scatter(x = 'study_id', y = 'cd4', c = 'htn', s = 190)
 
 
-# In[21]:
 
 
 #plt.style.use('dark_background')
@@ -206,27 +185,23 @@ plt.yticks(rotation=45)
 plt.show()
 
 
-# In[22]:
 
 
 corr = biomarker.corr(method='pearson')
 sns.heatmap(corr)
 
 
-# In[23]:
 
 
 biomarker_grp = biomarker.groupby(["study_id","age_at_enrollment"])[["dm","htn","pcp", "chronic_heart_disease", "ART_use", "tb", "cd4"]].sum().reset_index()
 biomarker_grp.head()
 
 
-# In[24]:
 
 
 biomarker_grp.diff().hist(color = 'b', alpha = 0.1, figsize=(10,10))
 
 
-# In[25]:
 
 
 #codes from Rodrigo Lima  @rodrigolima82

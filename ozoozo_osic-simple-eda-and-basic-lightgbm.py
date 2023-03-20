@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np # linear algebra
@@ -21,19 +20,16 @@ import cv2
 path = "/kaggle/input/osic-pulmonary-fibrosis-progression/"
 
 
-# In[2]:
 
 
 ls /kaggle/input/osic-pulmonary-fibrosis-progression/
 
 
-# In[3]:
 
 
 ls /kaggle/input/osic-pulmonary-fibrosis-progression/train/ID00007637202177411956430
 
 
-# In[4]:
 
 
 train_df  = pd.read_csv(path + "train.csv")
@@ -41,31 +37,26 @@ test_df = pd.read_csv(path + "test.csv")
 subm = pd.read_csv(path + "sample_submission.csv")
 
 
-# In[5]:
 
 
 train_df
 
 
-# In[6]:
 
 
 train_df.Patient.nunique()
 
 
-# In[7]:
 
 
 train_df.Weeks.max()
 
 
-# In[8]:
 
 
 train_df.Weeks.min()
 
 
-# In[9]:
 
 
 fig, ax = plt.subplots(1,1)
@@ -74,7 +65,6 @@ sns.distplot(train_df[train_df["Weeks"].notna()]["Weeks"], ax=ax, color="#2222EE
 ax.set_title("distribution of weeks in train");
 
 
-# In[10]:
 
 
 fig, ax = plt.subplots(1,1)
@@ -83,7 +73,6 @@ sns.distplot(train_df[train_df["FVC"].notna()]["FVC"], ax=ax, color="#22EE22")
 ax.set_title("distribution of FVC in train");
 
 
-# In[11]:
 
 
 fig, ax = plt.subplots(1,1)
@@ -92,7 +81,6 @@ sns.distplot(train_df[train_df["Percent"].notna()]["Percent"], ax=ax, color="#EE
 ax.set_title("distribution of Percent in train");
 
 
-# In[12]:
 
 
 fig, ax = plt.subplots(1,1)
@@ -101,43 +89,36 @@ sns.distplot(train_df[train_df["Age"].notna()]["Age"], ax=ax, color="#992299")
 ax.set_title("distribution of Age in train");
 
 
-# In[13]:
 
 
 train_df.Sex.value_counts()
 
 
-# In[14]:
 
 
 train_df.Sex.value_counts(normalize=True)
 
 
-# In[15]:
 
 
 train_df.groupby("Patient")["Sex"].first().value_counts(normalize=True)
 
 
-# In[16]:
 
 
 train_df["SmokingStatus"].value_counts()
 
 
-# In[17]:
 
 
 train_df["SmokingStatus"].value_counts(normalize=True)
 
 
-# In[18]:
 
 
 test_df
 
 
-# In[19]:
 
 
 def merge_subm_test(subm,test_df):
@@ -152,37 +133,31 @@ def merge_subm_test(subm,test_df):
 test_df = merge_subm_test(subm,test_df)
 
 
-# In[20]:
 
 
 test_df
 
 
-# In[21]:
 
 
 test_df.groupby(["Patient"])["Weeks"].count()
 
 
-# In[22]:
 
 
 test_df.groupby(["Patient"])["Week"].first()
 
 
-# In[23]:
 
 
 test_df.groupby(["Patient"])["Week"].last()
 
 
-# In[24]:
 
 
 ls /kaggle/input/osic-pulmonary-fibrosis-progression/train/ID00007637202177411956430/
 
 
-# In[25]:
 
 
 fig, axs = plt.subplots(5, 6,figsize=(20,20))
@@ -192,13 +167,11 @@ for n in range(0,30):
     axs[int(n/6),np.mod(n,6)].imshow(image.pixel_array);
 
 
-# In[26]:
 
 
 ls /kaggle/input/osic-pulmonary-fibrosis-progression/test/ID00419637202311204720264/
 
 
-# In[27]:
 
 
 fig, axs = plt.subplots(5, 6,figsize=(20,20))
@@ -208,7 +181,6 @@ for n in range(0,28):
     axs[int(n/6),np.mod(n,6)].imshow(image.pixel_array);
 
 
-# In[28]:
 
 
 train_df  = pd.read_csv(path + "train.csv")
@@ -216,7 +188,6 @@ test_df = pd.read_csv(path + "test.csv")
 subm = pd.read_csv(path + "sample_submission.csv")
 
 
-# In[29]:
 
 
 def proc_df(df):
@@ -231,7 +202,6 @@ def proc_df(df):
 train_df = proc_df(train_df)
 
 
-# In[30]:
 
 
 def proc_train(df):
@@ -258,13 +228,11 @@ def proc_train(df):
     return df_final.reset_index(drop=True)
 
 
-# In[31]:
 
 
 train_df = proc_train(train_df)
 
 
-# In[32]:
 
 
 a = subm['Patient_Week'].str.split("_", expand=True)
@@ -289,7 +257,6 @@ test_df['week_diff'] = test_df['base_Week'] - test_df['Weeks']
 test_df
 
 
-# In[33]:
 
 
 train_df = train_df.drop(set(train_df.columns)-set(test_df.columns)-{'FVC', 'Percent'}, axis=1)
@@ -300,19 +267,16 @@ y = train_df["FVC"]
 test = test_df.drop(["Patient"], axis=1)
 
 
-# In[34]:
 
 
 X
 
 
-# In[35]:
 
 
 test
 
 
-# In[36]:
 
 
 num_fold = 5
@@ -401,7 +365,6 @@ def get_lgbm_pred(X, y, test, param_choice):
     return pred[0]/num_fold, pred_val
 
 
-# In[37]:
 
 
 pred_FVC_te, pred_FVC_tr = get_lgbm_pred(X, y, test, "normal")
@@ -413,7 +376,6 @@ pred_conf_tr = pred_FVC_tr_q2 - pred_FVC_tr_q1
 pred_conf_te = pred_FVC_te_q2 - pred_FVC_te_q1
 
 
-# In[38]:
 
 
 def metric(confidence, fvc, pred_fvc):
@@ -436,7 +398,6 @@ score = calc_score(pred_conf_tr, train_df.FVC.values, pred_FVC_tr)
 print(score)
 
 
-# In[39]:
 
 
 subm["FVC"] = pred_FVC_te
@@ -444,7 +405,6 @@ subm["Confidence"] = pred_conf_te
 subm.to_csv("submission.csv", index=False)
 
 
-# In[40]:
 
 
 subm

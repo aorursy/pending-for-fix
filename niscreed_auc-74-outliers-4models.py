@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 #####################################
@@ -53,7 +52,6 @@ print('The project is set up.')
 print('OPTION || SCALER = {}, DUMMIES = {}, GRAFS = {}, MAX = {}, OUTLIER = {}.'.format(STANDARD_SCALER, DUMMIES, GRAFS, MAX, OUTLIERS))
 
 
-# In[2]:
 
 
 df_train = pd.read_csv(train_set, index_col='id')
@@ -71,7 +69,6 @@ print("Now, I have a set composed by {}.".format(df.shape))
 df.head(5)
 
 
-# In[3]:
 
 
 if(GRAFS):
@@ -86,7 +83,6 @@ if(GRAFS):
     plt.show()
 
 
-# In[4]:
 
 
 bins = ['bin_0', 'bin_1', 'bin_2', 'bin_3', 'bin_4']
@@ -118,7 +114,6 @@ if(GRAFS) :
         plt.show()
 
 
-# In[5]:
 
 
 all_names =  ['nom_0', 'nom_1', 'nom_2', 'nom_3', 'nom_4', "nom_5", "nom_6", "nom_7", "nom_8", "nom_9"]   
@@ -147,7 +142,6 @@ if(GRAFS) :
         plt.show()
 
 
-# In[6]:
 
 
 ordinal_categories = ['ord_0', 'ord_1', 'ord_2', 'ord_3', 'ord_4', 'ord_5'] # Too many values in ord_5
@@ -178,7 +172,6 @@ if(GRAFS) :
         plt.show()
 
 
-# In[7]:
 
 
 datetime_categories = ['day', "month"] 
@@ -204,19 +197,16 @@ if(GRAFS) :
         plt.show()
 
 
-# In[8]:
 
 
 get_ipython().run_cell_magic('time', '', 'if(STANDARD_SCALER) :\n    print(\'Normalizing the data with scaler.\')\n    scaler = StandardScaler()\n    df[df.columns] = scaler.fit_transform(df[df.columns])\nif(DUMMIES) :\n    print(\'Normalizing the data with dummies.\')\n    columns_to_keep = [\'bin_0\', \'bin_1\', \'bin_2\',  \'bin_3\', \'bin_4\', \'nom_5\', \'nom_6\', \'nom_7\', \'nom_8\',\'nom_9\']\n    df_tokeep = df[columns_to_keep]\n    df = df.drop(columns_to_keep, axis=1)\n    \n    for col in df.columns : \n        train = pd.get_dummies(df[col])\n        for column in train.columns : \n            df_tokeep[str(col)+\'_\'+str(column)] = train[column]\n    df = df_tokeep.copy()\ndf_train = df[:n_rows]\ndf_test = df[n_rows:]\nif(OUTLIERS) : # 1 on 23 -> 36% outliers / 3 on 23 -> >1%%\n    print("Detecting outliers")\n    start_time = time.time()\n    threshold = 1.5 \n    nb_detect = 3\n    Q1 = df_train.quantile(0.25)\n    Q3 = df_train.quantile(0.75)\n    IQR = Q3 - Q1\n    outliers = []\n    outlier_matrix = (df_train < (Q1 - threshold * IQR)) |(df_train > (Q3 + threshold * IQR))\n    for index_row, row in outlier_matrix.iterrows() :\n        cmpt = 0\n        for item in row : \n            if(item==True) : \n                cmpt += 1 \n                if(index_row not in outliers and cmpt>=nb_detect) :\n                    outliers.append(index_row)\n                    break\n    print("There are {}% of outliers (exactly {} outliers) in the train set.".format((len(outliers)/len(df_train)), len(outliers)))\n    print("It takes {} minutes to detect outliers.".format((time.time() - start_time)/60))\n    try :\n        print("{} outliers were dropped.".format(len(outliers)))\n        df_train = df_train.drop(outliers)\n        targets = targets.drop(outliers)\n    except : \n        print("Can\'t drop outliers")\nX_train, X_test, y_train, y_test = train_test_split(df_train, targets, test_size=0.1, random_state=42)\nprint("X_train : {}, X_test : {}, y_train : {}, y_test : {}".format(X_train.shape, X_test.shape, y_train.shape, y_test.shape))')
 
 
-# In[9]:
 
 
 get_ipython().run_cell_magic('time', '', 'models = [\n            {\'name\' : \'LogisticRegression\', \'model\' : LogisticRegression(), \'predictions\' : None, "auc" : 0.0, \'accuracy\' : 0.0, \'training_time\' : 0.0, \'prediction_time\' : 0.0},\n            {\'name\' : \'GradientBoostingClassifier\', \'model\' : GradientBoostingClassifier(), \'predictions\' : None, "auc" : 0.0, \'accuracy\' : 0.0, \'training_time\' : 0.0, \'prediction_time\' : 0.0},\n            {\'name\' : \'XGBClassifier\', \'model\' : xgb.XGBClassifier(), \'predictions\' : None, "auc" : 0.0, \'accuracy\' : 0.0, \'training_time\' : 0.0, \'prediction_time\' : 0.0},\n            {\'name\' : \'RandomForestClassifier\', \'model\' : RandomForestClassifier(), \'predictions\' : None, "auc" : 0.0, \'accuracy\' : 0.0, \'training_time\' : 0.0, \'prediction_time\' : 0.0}\n]\nfor index_model, model in enumerate(models) : \n    print("Model {} : {}.".format(index_model, model[\'name\']))\n    training_time = time.time()\n    model[\'model\'].fit(X_train, y_train)\n    model[\'training_time\'] = (time.time() - training_time)/60\n    print("Model {} : {} completed training.".format(index_model, model[\'name\']))\n    predict_time = time.time()\n    y_pred = model[\'model\'].predict_proba(X_test)[:,1]\n    pred = model[\'model\'].predict_proba(df_test)[:,1]\n    model[\'predictions\'] = pred\n    print("Model {} : {} completed predicting.".format(index_model, model[\'name\']))\n    model[\'auc\'] = roc_auc_score(y_test, y_pred) \n    model[\'accuracy\'] = accuracy_score(y_test, y_pred.round()) \n    model[\'prediction_time\'] = (time.time() - predict_time)/60\n    print("Model {} : {} reachs the end in {} minutes.".format(index_model, model[\'name\'], (time.time() - training_time)/60))')
 
 
-# In[16]:
 
 
 if(GRAFS) : 
@@ -230,7 +220,6 @@ if(GRAFS) :
     print(df_results)
 
 
-# In[ ]:
 
 
 try : 
@@ -242,7 +231,6 @@ else :
 print("Ending the kernel - Thank to read.")
 
 
-# In[ ]:
 
 
 

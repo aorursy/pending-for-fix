@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import numpy as np
@@ -32,27 +30,23 @@ import os
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[3]:
 
 
 events = pd.read_csv('../input/events.csv')
 events.head()
 
 
-# In[4]:
 
 
 events = pd.read_csv('../input/events.csv', dtype={'device_id': np.str})
 events.head()
 
 
-# In[5]:
 
 
 Plot maps showing the locations of events
 
 
-# In[6]:
 
 
 # Set up plot
@@ -80,13 +74,11 @@ plt.title('Global view of events')
 plt.show()
 
 
-# In[7]:
 
 
 Plot the events in china
 
 
-# In[8]:
 
 
 lon_min, lon_max = 75, 135
@@ -117,7 +109,6 @@ plt.title('Events in china')
 plt.show()
 
 
-# In[9]:
 
 
 

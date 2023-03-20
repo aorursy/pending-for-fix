@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
 
 
 import numpy as np
@@ -13,7 +12,6 @@ import seaborn as sns
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[3]:
 
 
 # Load the data into DataFrames
@@ -21,7 +19,6 @@ train_users = pd.read_csv('../input/train_users_2.csv')
 test_users = pd.read_csv('../input/test_users.csv')
 
 
-# In[ ]:
 
 
 print("We have", train_users.shape[0], "users in the training set and", 
@@ -29,7 +26,6 @@ print("We have", train_users.shape[0], "users in the training set and",
 print("In total we have", train_users.shape[0] + test_users.shape[0], "users.")
 
 
-# In[4]:
 
 
 # Merge train and test users
@@ -41,20 +37,17 @@ users.drop('id', axis=1, inplace=True)
 users.head()
 
 
-# In[5]:
 
 
 users.gender.replace('-unknown-', np.nan, inplace=True)
 
 
-# In[6]:
 
 
 users_nan = (users.isnull().sum() / users.shape[0]) * 100
 users_nan[users_nan > 0].drop('country_destination')
 
 
-# In[ ]:
 
 
 print("Just for the sake of curiosity; we have", 
@@ -62,39 +55,33 @@ print("Just for the sake of curiosity; we have",
       "% of missing values at date_first_booking in the training data")
 
 
-# In[7]:
 
 
 users.age.describe()
 
 
-# In[8]:
 
 
 print(sum(users.age > 122))
 print(sum(users.age < 18))
 
 
-# In[9]:
 
 
 users[users.age > 122]['age'].describe()
 
 
-# In[10]:
 
 
 users[users.age < 18]['age'].describe()
 
 
-# In[19]:
 
 
 users.loc[users.age > 95, 'age'] = np.nan
 users.loc[users.age < 13, 'age'] = np.nan
 
 
-# In[20]:
 
 
 categorical_features = [
@@ -114,7 +101,6 @@ for categorical_feature in categorical_features:
     users[categorical_feature] = users[categorical_feature].astype('category')
 
 
-# In[21]:
 
 
 users['date_account_created'] = pd.to_datetime(users['date_account_created'])
@@ -122,7 +108,6 @@ users['date_first_booking'] = pd.to_datetime(users['date_first_booking'])
 users['date_first_active'] = pd.to_datetime((users.timestamp_first_active // 1000000), format='%Y%m%d')
 
 
-# In[29]:
 
 
 users.gender.value_counts(dropna=False).plot(kind='bar', color='#FD5C64', rot=0)
@@ -131,7 +116,6 @@ sns.despine()
 sns.barplot(x='gender',data=)
 
 
-# In[11]:
 
 
 women = sum(users['gender'] == 'FEMALE')
@@ -154,7 +138,6 @@ male_destinations = users.loc[users['gender'] == 'MALE', 'country_destination'].
 #plt.show()
 
 
-# In[17]:
 
 
 destination_percentage = users.country_destination.value_counts() / users.shape[0] * 100
@@ -167,7 +150,6 @@ plt.ylabel('Percentage')
 sns.despine()
 
 
-# In[30]:
 
 
 sns.distplot(users.age.dropna(), color='#FD5C64')
@@ -175,7 +157,6 @@ plt.xlabel('Age')
 sns.despine()
 
 
-# In[31]:
 
 
 age = 45
@@ -197,13 +178,11 @@ sns.despine()
 plt.show()
 
 
-# In[ ]:
 
 
 print((sum(users.language == 'en') / users.shape[0])*100)
 
 
-# In[ ]:
 
 
 sns.set_style("whitegrid", {'axes.edgecolor': '0'})
@@ -211,13 +190,11 @@ sns.set_context("poster", font_scale=1.1)
 users.date_account_created.value_counts().plot(kind='line', linewidth=1.2, color='#FD5C64')
 
 
-# In[ ]:
 
 
 users.date_first_active.value_counts().plot(kind='line', linewidth=1.2, color='#FD5C64')
 
 
-# In[ ]:
 
 
 users_2013 = users[users['date_first_active'] > pd.to_datetime(20130101, format='%Y%m%d')]
@@ -226,7 +203,6 @@ users_2013.date_first_active.value_counts().plot(kind='line', linewidth=2, color
 plt.show()
 
 
-# In[ ]:
 
 
 weekdays = []
@@ -235,7 +211,6 @@ for date in users.date_account_created:
 weekdays = pd.Series(weekdays)
 
 
-# In[ ]:
 
 
 sns.barplot(x = weekdays.value_counts().index, y=weekdays.value_counts().values, order=range(0,7))
@@ -243,7 +218,6 @@ plt.xlabel('Week Day')
 sns.despine()
 
 
-# In[ ]:
 
 
 date = pd.to_datetime(20140101, format='%Y%m%d')

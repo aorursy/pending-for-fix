@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -28,7 +27,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 #Load the training data
@@ -36,21 +34,18 @@ train_csv_file = '../input/train.csv'
 train_df = pd.read_csv(train_csv_file, nrows=100)
 
 
-# In[3]:
 
 
 #Better understand at the data
 #train_df.describe()
 
 
-# In[4]:
 
 
 #Peak at the data
 #train_df.head()
 
 
-# In[5]:
 
 
 #Pre-Processing Remove Outliers
@@ -61,7 +56,6 @@ train_df = pd.read_csv(train_csv_file, nrows=100)
             
 
 
-# In[6]:
 
 
 #Pre-Processing Scaling
@@ -71,7 +65,6 @@ def pre_process_scale(process_df):
         
 
 
-# In[7]:
 
 
 #Pre-processing PCA
@@ -85,7 +78,6 @@ def pre_process_pca(process_df):
     return pca_scaled_df
 
 
-# In[8]:
 
 
 #Model data
@@ -109,13 +101,11 @@ y_pred = clf.predict(model_df, y)
 measure_performance(y, y_pred[0:])
 
 
-# In[ ]:
 
 
 
 
 
-# In[9]:
 
 
 #Measure accuracy score
@@ -123,14 +113,12 @@ def measure_performance(y_test, y_prediction):
     print(accuracy_score(y_test, y_prediction))
 
 
-# In[10]:
 
 
 #cm = confusion_matrix(y_test, y_prediction)
 #cm
 
 
-# In[11]:
 
 
 #Now time to test the model
@@ -143,7 +131,6 @@ model_df = scaled_df
 y_test_pred = classifier.predict(model_df)
 
 
-# In[12]:
 
 
 sub = pd.read_csv('../input/sample_submission.csv')

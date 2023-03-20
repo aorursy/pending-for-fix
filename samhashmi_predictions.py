@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -25,14 +24,12 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 read_file=pd.read_csv('../input/train.csv',  sep=",")
 read_file.head(5)
 
 
-# In[3]:
 
 
 for i in read_file.columns:
@@ -44,7 +41,6 @@ for i in read_file.columns:
 read_file=read_file.drop(['id'], axis=1)
 
 
-# In[4]:
 
 
 data=read_file[:500]
@@ -52,20 +48,17 @@ clf=RandomForestRegressor( n_estimators=22)
 clf.fit(data.ix[:, data.columns != 'loss'], data['loss'])
 
 
-# In[5]:
 
 
 data=read_file[0:100]
 clf.predict(data.ix[:, data.columns != 'loss'])
 
 
-# In[6]:
 
 
 training_data, validation_data=train_test_split(read_file, test_size=0.30, random_state=42)
 
 
-# In[7]:
 
 
 class Sklearn_class(object):
@@ -83,7 +76,6 @@ class Sklearn_class(object):
         
 
 
-# In[8]:
 
 
 et_params = {
@@ -107,7 +99,6 @@ train=et.train(training_data.ix[:, training_data.columns != 'loss'], training_da
 results=et.test(validation_data.ix[:, validation_data.columns != 'loss'])
 
 
-# In[9]:
 
 
 rfr = Sklearn_class(clf=RandomForestRegressor, seed=0, params=et_params)
@@ -115,13 +106,11 @@ train=rfr.train(training_data.ix[:, training_data.columns != 'loss'], training_d
 results_rf=rfr.test(validation_data.ix[:, validation_data.columns != 'loss'])
 
 
-# In[10]:
 
 
 meanvalidation_data.ix[:, validation_data.columns != 'loss']_absolute_error(results, validation_data['loss']), mean_absolute_error(results_rf, validation_data['loss'])
 
 
-# In[11]:
 
 
 dtrain = xgb.DMatrix(training_data.ix[:, training_data.columns != 'loss'], training_data['loss'])
@@ -142,14 +131,12 @@ num_round = 250
 bst = xgb.train(xgb_params, dtrain, num_round)
 
 
-# In[12]:
 
 
 dtest=xgb.DMatrix(validation_data.ix[:, validation_data.columns != 'loss'])
 results=bst.predict(dtest)
 
 
-# In[13]:
 
 
 mean_absolute_error(results, validation_data['loss'])

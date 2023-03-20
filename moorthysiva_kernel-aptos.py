@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,7 +21,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 traincsv=pd.read_csv('/kaggle/input/aptos2019-blindness-detection/train.csv')
@@ -30,7 +28,6 @@ trainImgsPath='/kaggle/input/aptos2019-blindness-detection/train_images'
 testImgsPath='/kaggle/input/aptos2019-blindness-detection/test_images'
 
 
-# In[3]:
 
 
 import cv2 as cv2
@@ -38,7 +35,6 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 
 
-# In[4]:
 
 
 def getNImageFromFolder(folderName,N):
@@ -56,7 +52,6 @@ def getNImageFromFolder(folderName,N):
     return imgs
 
 
-# In[5]:
 
 
 def plotNImages(imgs,r,c):
@@ -69,14 +64,12 @@ def plotNImages(imgs,r,c):
     
 
 
-# In[6]:
 
 
 trainImgs=getNImageFromFolder(trainImgsPath,20)
 plotNImages(trainImgs,4,5)
 
 
-# In[7]:
 
 
 #Concept:Unsharp Masking...first blur an image and subtract the blur in the original to get sharpened version
@@ -93,14 +86,12 @@ def preprocessImgs(imgs,size,sigmaX):
     return ppImgs
 
 
-# In[8]:
 
 
 ppImgs=preprocessImgs(trainImgs,size=500,sigmaX=38)
 plotNImages(ppImgs,r=4,c=5)
 
 
-# In[9]:
 
 
 def cropImagesFromCircleCenter():

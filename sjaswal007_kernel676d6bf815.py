@@ -1,26 +1,22 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 from google.colab import drive
 drive.mount('/content/drive')
 
 
-# In[ ]:
 
 
 import imblearn
 
 
-# In[ ]:
 
 
 pip install Unidecode
 
 
-# In[ ]:
 
 
 import pandas as pd
@@ -49,21 +45,18 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, fbeta_score, multilabel_confusion_matrix, confusion_matrix, plot_confusion_matrix, f1_score
 
 
-# In[ ]:
 
 
 data = pd.read_csv('/content/drive/My Drive/train.csv/train.csv')
 data_dum = data.copy()
 
 
-# In[ ]:
 
 
 comments = data_dum['comment_text'].to_numpy()
 labels = data_dum[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']].to_numpy()
 
 
-# In[ ]:
 
 
 data_ = []
@@ -75,19 +68,16 @@ for ind in range(len(labels)):
       data_.append([comments[ind],1])
 
 
-# In[ ]:
 
 
 df = pd.DataFrame(data_,columns=['comment','label'])
 
 
-# In[ ]:
 
 
 df['label'].value_counts()
 
 
-# In[ ]:
 
 
 contraction_mapping = {"ain't": "is not", "aren't": "are not","can't": "cannot", 
@@ -135,7 +125,6 @@ contraction_mapping = {"ain't": "is not", "aren't": "are not","can't": "cannot",
                    "you'll've": "you will have", "you're": "you are", "you've": "you have" } 
 
 
-# In[ ]:
 
 
 import codecs
@@ -168,13 +157,11 @@ def spacy_cleaner(text):
     return spell_corrected
 
 
-# In[ ]:
 
 
 df['clean_text'] = [spacy_cleaner(t) for t in df.comment]
 
 
-# In[ ]:
 
 
 from sklearn.linear_model import LogisticRegression
@@ -214,7 +201,6 @@ def lr_cv(splits, X, Y, pipeline, average_method):
     print("f1 score: %.2f%% (+/- %.2f%%)" % (np.mean(f1), np.std(f1)))
 
 
-# In[ ]:
 
 
 from sklearn.pipeline import Pipeline
@@ -225,7 +211,6 @@ original_pipeline = Pipeline([
 lr_cv(3, df.clean_text, df.label, original_pipeline, 'macro')
 
 
-# In[ ]:
 
 
 from imblearn.pipeline import make_pipeline
@@ -234,32 +219,27 @@ ROS_pipeline = make_pipeline(tvec, RandomOverSampler(random_state=777),lr)
 SMOTE_pipeline = make_pipeline(tvec, SMOTE(random_state=777),lr)
 
 
-# In[ ]:
 
 
 lr_cv(3, df.clean_text, df.label, ROS_pipeline, 'macro')
 
 
-# In[ ]:
 
 
 lr_cv(3, df.clean_text, df.label, SMOTE_pipeline, 'macro')
 
 
-# In[ ]:
 
 
 from imblearn.under_sampling import NearMiss, RandomUnderSampler
 RUS_pipeline = make_pipeline(tvec, RandomUnderSampler(random_state=777),lr)
 
 
-# In[ ]:
 
 
 lr_cv(3, df.clean_text, df.label, RUS_pipeline, 'macro')
 
 
-# In[ ]:
 
 
 from sklearn import svm
@@ -299,31 +279,26 @@ def lr_v(splits, X, Y, pipeline, average_method):
     print("f1 score: %.2f%% (+/- %.2f%%)" % (np.mean(f1), np.std(f1)))
 
 
-# In[ ]:
 
 
 lr_v(3, df.clean_text, df.label, original_pipeline, 'macro')
 
 
-# In[ ]:
 
 
 lr_v(3, df.clean_text, df.label, ROS_pipeline, 'macro')
 
 
-# In[ ]:
 
 
 lr_v(3, df.clean_text, df.label, SMOTE_pipeline, 'macro')
 
 
-# In[ ]:
 
 
 lr_v(3, df.clean_text, df.label, RUS_pipeline, 'macro')
 
 
-# In[ ]:
 
 
 from sklearn.naive_bayes import GaussianNB
@@ -363,25 +338,21 @@ def lr_(splits, X, Y, pipeline, average_method):
     print("f1 score: %.2f%% (+/- %.2f%%)" % (np.mean(f1), np.std(f1)))
 
 
-# In[ ]:
 
 
 lr_(3, df.clean_text, df.label, original_pipeline, 'macro')
 
 
-# In[ ]:
 
 
 lr_(3, df.clean_text, df.label, ROS_pipeline, 'macro')
 
 
-# In[ ]:
 
 
 lr_(3, df.clean_text, df.label, SMOTE_pipeline, 'macro')
 
 
-# In[ ]:
 
 
 lr_(3, df.clean_text, df.label, RUS_pipeline, 'macro')

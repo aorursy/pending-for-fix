@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 from pathlib import Path
@@ -16,7 +15,6 @@ else:
     DATA_DIR = Path("data")
 
 
-# In[2]:
 
 
 ## Data Loading
@@ -32,7 +30,6 @@ else:
 get_ipython().system('pip install torchsummary')
 
 
-# In[3]:
 
 
 # standard imports (Numpy, Pandas, Matplotlib)
@@ -61,13 +58,11 @@ import time
 import glob
 
 
-# In[ ]:
 
 
 
 
 
-# In[4]:
 
 
 get_ipython().run_line_magic('reload_ext', 'autoreload')
@@ -77,7 +72,6 @@ get_ipython().run_line_magic('pylab', 'inline')
 random.seed(42)
 
 
-# In[5]:
 
 
 input_size = (224,224)
@@ -85,7 +79,6 @@ batch_size = 32
 num_workers = 8
 
 
-# In[6]:
 
 
 data_transforms = {
@@ -107,7 +100,6 @@ data_transforms = {
 }
 
 
-# In[7]:
 
 
 image_datasets = {x: ImageFolder(os.path.join(DATA_DIR, x),data_transforms[x])
@@ -139,7 +131,6 @@ class ImageLoader(Dataset):
 image_datasets['Test'] = ImageLoader(str(DATA_DIR / "Test"), transform=data_transforms["Test"])
 
 
-# In[8]:
 
 
 dataloaders = {x: DataLoader(image_datasets[x], batch_size=batch_size, shuffle=True, num_workers = num_workers)
@@ -148,14 +139,12 @@ dataloaders = {x: DataLoader(image_datasets[x], batch_size=batch_size, shuffle=T
 test_loader = DataLoader(dataset = image_datasets['Test'], batch_size = 1, shuffle=True)
 
 
-# In[9]:
 
 
 dog_breeds = image_datasets['Train'].classes
 print("\n".join(dog_breeds))
 
 
-# In[10]:
 
 
 # Just printing the number of images in each dataset we created
@@ -166,7 +155,6 @@ print('Train Length: {} | Valid Length: {} | Test Length: {}'.format(dataset_siz
                                                                      dataset_sizes['Validation'], dataset_sizes['Test']))
 
 
-# In[11]:
 
 
 # Here we're defining what component we'll use to train this model
@@ -176,7 +164,6 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 device
 
 
-# In[12]:
 
 
 # Plots a given number of images from a PyTorch Data
@@ -220,13 +207,11 @@ def show_batch(batch):
   plt.pause(0.001)
 
 
-# In[13]:
 
 
 show_random_imgs(3)
 
 
-# In[14]:
 
 
 # Get a batch of training data (32 random images)
@@ -238,7 +223,6 @@ batch = torchvision.utils.make_grid(imgs)
 show_batch(batch)
 
 
-# In[15]:
 
 
 # It is good practice to maintain input dimensions as the image is passed through convolution layers
@@ -259,7 +243,6 @@ def get_padding(input_dim, output_dim, kernel_size, stride):
     return padding
 
 
-# In[16]:
 
 
 # Make sure you calculate the padding amount needed to maintain the spatial size of the input
@@ -348,7 +331,6 @@ class CNN(nn.Module):
         return x
 
 
-# In[17]:
 
 
 model = CNN()
@@ -359,7 +341,6 @@ model.to(device)
 summary(model, (3,224,224))
 
 
-# In[18]:
 
 
 def run_epoch(epoch, model, criterion, optimizer, dataloaders, device, phase):
@@ -409,7 +390,6 @@ def run_epoch(epoch, model, criterion, optimizer, dataloaders, device, phase):
     return epoch_loss, epoch_acc
 
 
-# In[19]:
 
 
 def train(model, criterion, optimizer, num_epochs, dataloaders, device):
@@ -454,7 +434,6 @@ def train(model, criterion, optimizer, num_epochs, dataloaders, device):
     return model
 
 
-# In[20]:
 
 
 def test_model(model, num_images):
@@ -492,13 +471,11 @@ def test_model(model, num_images):
         model.train(mode=was_training)
 
 
-# In[21]:
 
 
 model = train(model, criterion, optimizer, epochs, dataloaders, device)
 
 
-# In[22]:
 
 
 torch.save({
@@ -512,7 +489,6 @@ torch.save({
             }, 'base_model.tar')
 
 
-# In[23]:
 
 
 def load_checkpoint(filepath):
@@ -529,19 +505,16 @@ def load_checkpoint(filepath):
     return model, optimizer, criterion, epoch
 
 
-# In[24]:
 
 
 model, optimizer, criterion, epoch = load_checkpoint('base_model.tar')
 
 
-# In[25]:
 
 
 test_model(model, 6)
 
 
-# In[26]:
 
 
 class PreTrained_Resnet(nn.Module):
@@ -572,7 +545,6 @@ class PreTrained_Resnet(nn.Module):
         raise NotImplementedError()
 
 
-# In[27]:
 
 
 # Instantiate a pretrained network using the class we've just defined (call it 'pretrained')
@@ -591,13 +563,11 @@ raise NotImplementedError()
 summary(pretrained, (3,224,224))
 
 
-# In[28]:
 
 
 pretrained = train(pretrained, criterion2, optimizer2, epochs2, dataloaders, device)
 
 
-# In[29]:
 
 
 torch.save({
@@ -611,19 +581,16 @@ torch.save({
             }, 'pretrained.tar')
 
 
-# In[30]:
 
 
 pretrained, optimizer2, criterion2, epoch2 = load_checkpoint('pretrained.tar')
 
 
-# In[31]:
 
 
 test_model(pretrained, 6)
 
 
-# In[32]:
 
 
 # Run this to generate the submission file for the competition!

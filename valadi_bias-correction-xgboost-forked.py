@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 from datetime import datetime
@@ -32,7 +30,6 @@ from math import exp, log
 import xgboost as xgb
 
 
-# In[3]:
 
 
 def timer(start_time=None):
@@ -45,7 +42,6 @@ def timer(start_time=None):
               (tmin, round(tsec, 2)))
 
 
-# In[4]:
 
 
 def scale_data(X, scaler=None):
@@ -56,7 +52,6 @@ def scale_data(X, scaler=None):
     return X, scaler
 
 
-# In[5]:
 
 
 
@@ -64,7 +59,6 @@ DATA_TRAIN_PATH = '../input/train.csv'
 DATA_TEST_PATH = '../input/test.csv'
 
 
-# In[6]:
 
 
 def load_data(path_train=DATA_TRAIN_PATH, path_test=DATA_TEST_PATH):
@@ -105,7 +99,6 @@ def load_data(path_train=DATA_TRAIN_PATH, path_test=DATA_TEST_PATH):
     return train, train_labels, test, train_ids, test_ids
 
 
-# In[7]:
 
 
 # enter the number of folds from xgb.cv
@@ -130,7 +123,6 @@ params['silent'] = 1
 params['random_state'] = 1001
 
 
-# In[8]:
 
 
 start_time = timer(None)
@@ -142,7 +134,6 @@ d_test = xgb.DMatrix(test)
 kf = KFold(train.shape[0], n_folds=folds)
 
 
-# In[9]:
 
 
 
@@ -181,7 +172,6 @@ for i, (train_index, test_index) in enumerate(kf):
     
 
 
-# In[10]:
 
 
 mpred = pred / folds
@@ -190,7 +180,6 @@ print('\n Average eval-MAE: %.6f' % score)
 n_rounds = int(np.mean(xgb_rounds))
 
 
-# In[11]:
 
 
 print('\n Training full dataset for %d rounds ...' % n_rounds)
@@ -204,7 +193,6 @@ y_pred_full = np.exp(clf_full.predict(d_test))
 timer(start_time)
 
 
-# In[12]:
 
 
 n_fixed = 376
@@ -222,7 +210,6 @@ y_pred_fixed = np.exp(clf_fixed.predict(d_test))
 timer(start_time)
 
 
-# In[13]:
 
 
 print("#\n Writing results")
@@ -244,7 +231,6 @@ print("\n Full datset (at CV #iterations) prediction:\n")
 print(result_fixed.head())
 
 
-# In[14]:
 
 
 now = datetime.now()
@@ -264,13 +250,11 @@ print("\n Writing submission: %s" % sub_file)
 result_fixed.to_csv(sub_file, index=True, index_label='id')
 
 
-# In[15]:
 
 
 fusion=(result_fixed+result_full+result)/3
 
 
-# In[16]:
 
 
 meanSub="meanSub.csv"
@@ -278,7 +262,6 @@ print("\n Writing submission: %s" % meanSub)
 fusion.to_csv(meanSub, index=True, index_label='id')
 
 
-# In[17]:
 
 
 

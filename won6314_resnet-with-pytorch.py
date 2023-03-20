@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 from set1.util.path import path_dropbox_data
@@ -31,7 +30,6 @@ if __name__ == "__main__":
 	writepickle(join(path_dropbox_data(), 'QuickDraw'), merged, 'merged')
 
 
-# In[2]:
 
 
 import torch
@@ -93,7 +91,6 @@ class Resnet(nn.Module):
 		return out
 
 
-# In[3]:
 
 
 import numpy as np
@@ -140,7 +137,6 @@ class Doodle_loss(nn.Module):
 		return loss
 
 
-# In[4]:
 
 
 import torch
@@ -211,7 +207,6 @@ for epoch in range(100):
 			print("saved at iter_{}".format(i + epoch * data_loader.__len__()))
 
 
-# In[5]:
 
 
 filenumber [3], Step [0] accuracy : [9.0234375%]
@@ -227,7 +222,6 @@ filenumber [3], Step [90] accuracy : [89.453125%]
 filenumber [3], Step [100] accuracy : [90.078125%]
 
 
-# In[6]:
 
 
 filenumber [8], Step [0] accuracy : [0.0%]

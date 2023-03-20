@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,7 +22,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[ ]:
 
 
 from tqdm.autonotebook import tqdm
@@ -53,7 +51,6 @@ import cv2
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[ ]:
 
 
 DIR_INPUT = '../input/siim-isic-melanoma-classification/jpeg'
@@ -64,7 +61,6 @@ TEST_CSV = '../input/siim-isic-melanoma-classification/test.csv'
 SUBMISSION_CSV = '../input/siim-isic-melanoma-classification/sample_submission.csv'
 
 
-# In[ ]:
 
 
 def color_constancy(img, power=6, gamma=None):
@@ -90,7 +86,6 @@ def color_constancy(img, power=6, gamma=None):
     return img.astype(img_dtype)
 
 
-# In[ ]:
 
 
 def split_data_v1(path,fold,random_state=42):
@@ -111,7 +106,6 @@ def split_data_v1(path,fold,random_state=42):
     return X_train, X_test, y_train, y_test
 
 
-# In[ ]:
 
 
 class SEResnext50_32x4d(nn.Module):
@@ -137,7 +131,6 @@ class SEResnext50_32x4d(nn.Module):
         return out
 
 
-# In[ ]:
 
 
 class MelanomaDataSet(torch.utils.data.Dataset):
@@ -184,7 +177,6 @@ class MelanomaDataSet(torch.utils.data.Dataset):
         return torch.tensor(img,dtype=torch.float32), torch.tensor(targets,dtype=torch.float32)
 
 
-# In[ ]:
 
 
 def run_fold(fold,LR,EPOCHS=10,bs=256):
@@ -308,7 +300,6 @@ def eval_test(test_path,test_csv,submission_csv,fname,bs=128,TTA_COUNT=2,fold=0)
     return ls_sample
 
 
-# In[ ]:
 
 
 splits=16
@@ -326,7 +317,6 @@ for i in range(splits):
     ls_sample.append(eval_test(DIR_TEST,TEST_CSV,SUBMISSION_CSV,f'sample_{i}.csv',bs=bs,fold=i))
 
 
-# In[ ]:
 
 
 pred = []

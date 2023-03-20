@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
 
 
 library(data.table)
@@ -16,7 +15,6 @@ test=fread('../input/act_test.csv') %>% as.data.frame()
 
 
 
-# In[3]:
 
 
 #people data frame
@@ -31,7 +29,6 @@ for (col in p_logi) set(people, j = col, value = as.numeric(people[[col]]))
 people$people_group_1[people$people_group_1 %in% names(which(table(people$people_group_1)==1))]='group unique'
 
 
-# In[ ]:
 
 
 

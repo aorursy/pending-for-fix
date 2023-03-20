@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,7 +21,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 # Intorduction to COVID-19
@@ -81,13 +79,11 @@ This dataset is updated on daily basis by Johns Hopkins CSSE
 ### Please don't PANIC, stay safe, follow the WHO, and your nation guidelines. We all can defeat this together. Please don't spread rumors.
 
 
-# In[ ]:
 
 
 # **COVID-19 Analysis, Visualization, Comparison and Pridictions**
 
 
-# In[ ]:
 
 
 # Content :
@@ -124,7 +120,6 @@ This dataset is updated on daily basis by Johns Hopkins CSSE
 * [Valuable Feedback](#Valuable-Feedback)
 
 
-# In[ ]:
 
 
 # Downloding and Installing Prerequisite 
@@ -139,7 +134,6 @@ This dataset is updated on daily basis by Johns Hopkins CSSE
 * [model_deaths.h5](https://raw.githubusercontent.com/tarunk04/COVID-19-CaseStudy-and-Predictions/master/models/model_deaths.h5)
 
 
-# In[ ]:
 
 
 # Installs
@@ -151,7 +145,6 @@ get_ipython().system('wget https://raw.githubusercontent.com/tarunk04/COVID-19-C
 get_ipython().system('wget https://raw.githubusercontent.com/tarunk04/COVID-19-CaseStudy-and-Predictions/master/models/model_usa_c.h5')
 
 
-# In[ ]:
 
 
 # Installs
@@ -163,7 +156,6 @@ get_ipython().system('wget https://raw.githubusercontent.com/tarunk04/COVID-19-C
 get_ipython().system('wget https://raw.githubusercontent.com/tarunk04/COVID-19-CaseStudy-and-Predictions/master/models/model_usa_c.h5')
 
 
-# In[ ]:
 
 
 import pandas as pd
@@ -189,7 +181,6 @@ warnings.filterwarnings('ignore')
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[ ]:
 
 
 ### 2019 Novel Coronavirus COVID-19 (2019-nCoV) Data Repository by Johns Hopkins CSSE ([LINK](https://github.com/CSSEGISandData/COVID-19)) 
@@ -208,7 +199,6 @@ Dataset consists of time-series data from 22 JAN 2020 to Till date (Updated on d
 * cases_country.csv ([Link Raw File]("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/web-data/data/cases_country.csv"))
 
 
-# In[ ]:
 
 
 # Retriving Dataset
@@ -221,7 +211,6 @@ df_covid19 = pd.read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID
 df_table = pd.read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/web-data/data/cases_time.csv",parse_dates=['Last_Update'])
 
 
-# In[ ]:
 
 
 # new dataset 
@@ -229,20 +218,17 @@ df_covid19 = df_covid19.drop(["People_Tested","People_Hospitalized","UID","ISO3"
 df_covid19.head(2)
 
 
-# In[ ]:
 
 
 df_confirmed.head(2)
 
 
-# In[ ]:
 
 
 # Preprocessing 
 <hr>
 
 
-# In[ ]:
 
 
 df_confirmed = df_confirmed.rename(columns={"Province/State":"state","Country/Region": "country"})
@@ -252,7 +238,6 @@ df_covid19["Active"] = df_covid19["Confirmed"]-df_covid19["Recovered"]-df_covid1
 # df_recovered = df_recovered.rename(columns={"Province/State":"state","Country/Region": "country"})
 
 
-# In[ ]:
 
 
 # Changing the conuntry names as required by pycountry_convert Lib
@@ -340,19 +325,16 @@ df_table.insert(1,"continent",  [continents[country_to_continent_code(country)] 
 # df_recovered.insert(2,"continent",  [continents[country_to_continent_code(country)] for country in countries[:]] )   
 
 
-# In[ ]:
 
 
 df_table = df_table[df_table["continent"] != "Others"]
 
 
-# In[ ]:
 
 
 df_deaths[df_deaths["continent" ]== 'Others']
 
 
-# In[ ]:
 
 
 # df_active = df_confirmed.copy()
@@ -360,7 +342,6 @@ df_deaths[df_deaths["continent" ]== 'Others']
 # df_active.head(5)
 
 
-# In[ ]:
 
 
 df_confirmed = df_confirmed.replace(np.nan, '', regex=True)
@@ -369,7 +350,6 @@ df_deaths = df_deaths.replace(np.nan, '', regex=True)
 # df_active = df_active.replace(np.nan, '', regex=True)
 
 
-# In[ ]:
 
 
 # Defining Functions
@@ -379,7 +359,6 @@ df_deaths = df_deaths.replace(np.nan, '', regex=True)
 * get_mortality_rate()
 
 
-# In[ ]:
 
 
 def plot_params(ax,axis_label= None, plt_title = None,label_size=15, axis_fsize = 15, title_fsize = 20, scale = 'linear' ):
@@ -504,7 +483,6 @@ def dd(date1,date2):
 out = ""#+"output/"
 
 
-# In[ ]:
 
 
 # General Analysis of Data
@@ -512,7 +490,6 @@ out = ""#+"output/"
 Getting country wise and continent wise data.
 
 
-# In[ ]:
 
 
 df_countries_cases = df_covid19.copy().drop(['Lat','Long_','continent','Last_Update'],axis =1)
@@ -526,14 +503,12 @@ df_countries_cases.fillna(0,inplace=True)
 df_continents_cases.fillna(0,inplace=True)
 
 
-# In[ ]:
 
 
 ### Global Reported Cases till Date
 Total number of confirmed cases, deaths reported, revoveries and active cases all across the world
 
 
-# In[ ]:
 
 
 df_t = pd.DataFrame(pd.to_numeric(df_countries_cases.sum()),dtype=np.float64).transpose()
@@ -541,28 +516,24 @@ df_t["Mortality Rate (per 100)"] = np.round(100*df_t["Deaths"]/df_t["Confirmed"]
 df_t.style.background_gradient(cmap='Wistia',axis=1).format("{:.0f}",subset=["Confirmed"])
 
 
-# In[ ]:
 
 
 ### Coninent Wise Reported Cases 
 Coninent Wise reported confirmed cases, recovered cases, deaths, active cases
 
 
-# In[ ]:
 
 
 df_continents_cases["Mortality Rate (per 100)"] = np.round(100*df_continents_cases["Deaths"]/df_continents_cases["Confirmed"],2)
 df_continents_cases.style.background_gradient(cmap='Blues',subset=["Confirmed"])                        .background_gradient(cmap='Reds',subset=["Deaths"])                        .background_gradient(cmap='Greens',subset=["Recovered"])                        .background_gradient(cmap='Purples',subset=["Active"])                        .background_gradient(cmap='Pastel1_r',subset=["Incident_Rate"])                        .background_gradient(cmap='YlOrBr',subset=["Mortality Rate (per 100)"])
 
 
-# In[ ]:
 
 
 ### Country Wise Reported Cases
 Country Wise reported confirmed cases, recovered cases, deaths, active cases
 
 
-# In[ ]:
 
 
 # df_countries_cases.sort_values('Confirmed', ascending= False).style.background_gradient(cmap='Wistia')
@@ -570,13 +541,11 @@ df_countries_cases["Mortality Rate (per 100)"] = np.round(100*df_countries_cases
 df_countries_cases.sort_values('Confirmed', ascending= False).style.background_gradient(cmap='Blues',subset=["Confirmed"])                        .background_gradient(cmap='Reds',subset=["Deaths"])                        .background_gradient(cmap='Greens',subset=["Recovered"])                        .background_gradient(cmap='Purples',subset=["Active"])                        .background_gradient(cmap='Pastel1_r',subset=["Incident_Rate"])                        .background_gradient(cmap='YlOrBr',subset=["Mortality Rate (per 100)"])
 
 
-# In[ ]:
 
 
 ### Top 10 countries (Confirmed Cases and Deaths)
 
 
-# In[ ]:
 
 
 f = plt.figure(figsize=(10,5))
@@ -591,7 +560,6 @@ plt.grid(alpha=0.3)
 plt.savefig(out+'Top 10 Countries (Confirmed Cases).png')
 
 
-# In[ ]:
 
 
 f = plt.figure(figsize=(10,5))
@@ -606,7 +574,6 @@ plt.grid(alpha=0.3,which='both')
 plt.savefig(out+'Top 10 Countries (Deaths Cases).png')
 
 
-# In[ ]:
 
 
 f = plt.figure(figsize=(10,5))
@@ -621,7 +588,6 @@ plt.grid(alpha=0.3,which='both')
 plt.savefig(out+'Top 10 Countries (Active Cases).png')
 
 
-# In[ ]:
 
 
 f = plt.figure(figsize=(10,5))
@@ -636,14 +602,12 @@ plt.grid(alpha=0.3,which='both')
 plt.savefig(out+'Top 10 Countries (Recovered Cases).png')
 
 
-# In[ ]:
 
 
 # Calander Map
 <hr>
 
 
-# In[ ]:
 
 
 f = plt.figure(figsize=(20,10))
@@ -659,7 +623,6 @@ plt.tick_params(labelsize=15)
 plt.show()
 
 
-# In[ ]:
 
 
 # Correlation Analysis
@@ -669,32 +632,27 @@ Plotting Heat map of correlation of confirmed cases, recovered cases, deaths and
 ### Country wise Correlation
 
 
-# In[ ]:
 
 
 df_countries_cases.iloc[:,:].corr().style.background_gradient(cmap='Reds')
 
 
-# In[ ]:
 
 
 ### Continent Wise Correlation
 
 
-# In[ ]:
 
 
 df_continents_cases.iloc[:,:].corr().style.background_gradient(cmap='Reds')
 
 
-# In[ ]:
 
 
 # Visualization on Map
 <hr>
 
 
-# In[ ]:
 
 
 world_map = folium.Map(location=[10,0], tiles="cartodbpositron", zoom_start=2,max_zoom=6,min_zoom=2)
@@ -718,14 +676,12 @@ for i in range(0,len(df_confirmed)):
 world_map
 
 
-# In[ ]:
 
 
 ## Global Confirmed Cases Heat Map 
 <hr>
 
 
-# In[ ]:
 
 
 temp_df = pd.DataFrame(df_countries_cases['Confirmed'])
@@ -742,14 +698,12 @@ fig.update_coloraxes(colorbar_title="Confirmed Cases(Log Scale)",colorscale="Blu
 fig.show()
 
 
-# In[ ]:
 
 
 ## Global Deaths Heat Map 
 <hr>
 
 
-# In[ ]:
 
 
 temp_df = pd.DataFrame(df_countries_cases['Deaths'])
@@ -766,14 +720,12 @@ fig.update_coloraxes(colorbar_title="Deaths (Log Scale)",colorscale="Reds")
 fig.show()
 
 
-# In[ ]:
 
 
 ## Global Recovered Heat Map 
 <hr>
 
 
-# In[ ]:
 
 
 temp_df = pd.DataFrame(df_countries_cases['Recovered'])
@@ -790,13 +742,11 @@ fig.update_coloraxes(colorbar_title="Recovered",colorscale="Greens")
 fig.show()
 
 
-# In[ ]:
 
 
 ## COVID-19: Spread Progression
 
 
-# In[ ]:
 
 
 df_data = df_table.groupby(['Last_Update', 'Country_Region'])['Confirmed', 'Deaths'].max().reset_index()
@@ -815,7 +765,6 @@ fig.update(layout_coloraxis_showscale=False)
 fig.show()
 
 
-# In[ ]:
 
 
 # COVID-19 Spread Analysis
@@ -826,7 +775,6 @@ Spread Analysis is in two sections
 2. Spread Trends in the World, Continents and few most affected Countries
 
 
-# In[ ]:
 
 
 ## 1. Spread Across Globe 
@@ -834,7 +782,6 @@ Spread Analysis is in two sections
 ### Number of countries affected over the time
 
 
-# In[ ]:
 
 
 case_nums_country = df_confirmed.groupby("country").sum().drop(['Lat','Long'],axis =1).apply(lambda x: x[x > 0].count(), axis =0)
@@ -857,7 +804,6 @@ plt.show()
 plt.close()
 
 
-# In[ ]:
 
 
 ##  2. Spread Trends in the World, Continents and few most affected Countries
@@ -874,7 +820,6 @@ plt.close()
 This graph shows the confirmed, deaths, recovered and active caes trends over the world.
 
 
-# In[ ]:
 
 
 cols = 1
@@ -887,13 +832,11 @@ plt.savefig(out+'COIVD-19-World.png')
 plt.show()
 
 
-# In[ ]:
 
 
 ### 2 . COVID-19 Spread Trends in Different Continents
 
 
-# In[ ]:
 
 
 df_continents= df_confirmed.groupby(["continent"]).sum()
@@ -908,13 +851,11 @@ for i,continent in enumerate(continents):
 plt.show()
 
 
-# In[ ]:
 
 
 ### 3. COVID-19 Spread Trends in Few Most Affected Countries
 
 
-# In[ ]:
 
 
 df_countries = df_confirmed.groupby(["country"]).sum()
@@ -930,13 +871,11 @@ for i,country in enumerate(countries):
 plt.show()
 
 
-# In[ ]:
 
 
 ### 4. COVID-19 Spread Comparison of few most affected countries and INDIA
 
 
-# In[ ]:
 
 
 temp = df_confirmed.groupby('country').sum().drop(["Lat","Long"],axis =1).sort_values(df_confirmed.columns[-1], ascending= False)
@@ -1004,7 +943,6 @@ plt.savefig(out+'Trend Comparison with India (confirmed).png')
 plt.show()
 
 
-# In[ ]:
 
 
 temp = df_deaths.groupby('country').sum().drop(["Lat","Long"],axis =1).sort_values(df_deaths.columns[-1], ascending= False)
@@ -1061,13 +999,11 @@ plt.savefig(out+'Trend Comparison countries deaths.png')
 plt.show()
 
 
-# In[ ]:
 
 
 ### 5. COVID-19 Spread Comparison of in different continents
 
 
-# In[ ]:
 
 
 temp = df_confirmed.groupby('continent').sum().drop(["Lat","Long"],axis =1).sort_values(df_confirmed.columns[-1], ascending= False)
@@ -1124,7 +1060,6 @@ plt.savefig(out+'Trend Comparison of continents (Confirmed).png')
 plt.show()
 
 
-# In[ ]:
 
 
 temp = df_deaths.groupby('continent').sum().drop(["Lat","Long"],axis =1).sort_values(df_deaths.columns[-1], ascending= False)
@@ -1181,7 +1116,6 @@ plt.savefig(out+'Trend Comparison continents (deaths).png')
 plt.show()
 
 
-# In[ ]:
 
 
 # Global Prediction
@@ -1193,7 +1127,6 @@ It is useful to understand the global trend of an increase in the number of case
 **Note: This prediction is only based on the current spread trend, and no other factor is included, so this trend may vary a lot. Also, at some point in time, the testing capacity will become the limiting factor, so it may affect the actual figure a lot. This is to estimate the possible values that could reach with the consideration of any measures taken by different countries to control the spread.**  
 
 
-# In[ ]:
 
 
 temp_data = df_confirmed.iloc[:,5:].sum(axis =0)
@@ -1257,14 +1190,12 @@ plt.savefig(out+"World Trend Confirmed cases.png")
 plt.show()
 
 
-# In[ ]:
 
 
 ## Prediction Curve for Global Confirmed Cases
 Buliding Model
 
 
-# In[ ]:
 
 
 # Visible = Input(shape=(1,))
@@ -1287,40 +1218,34 @@ Buliding Model
 # model.summary()
 
 
-# In[ ]:
 
 
 data_y = np.log10(np.asarray(df_confirmed.iloc[:,5:].sum(axis =0)).astype("float32"))
 data_x = np.arange(1,len(data_y)+1)
 
 
-# In[ ]:
 
 
 # epochs = 5000
 # model.fit(data_x.reshape([data_y.shape[0],1]),data_y.reshape([data_y.shape[0],1]),epochs=epochs)
 
 
-# In[ ]:
 
 
 # model.save('model_confirmed_v2.h5')
 
 
-# In[ ]:
 
 
 #### Loading Model
 
 
-# In[ ]:
 
 
 model = models.load_model("model_confirmed_v2.h5")
 model.summary()
 
 
-# In[ ]:
 
 
 lakh = 100000
@@ -1376,14 +1301,12 @@ plt.savefig(out+"Prediction Curve-Confirmed.png")
 plt.show()
 
 
-# In[ ]:
 
 
 ## Prediction Curve for Global Death Cases
 Buliding Model
 
 
-# In[ ]:
 
 
 # Visible = Input(shape=(1,))
@@ -1406,40 +1329,34 @@ Buliding Model
 # model2.summary()
 
 
-# In[ ]:
 
 
 data1_y = np.log10(np.asarray(df_deaths.iloc[:,5:].sum(axis =0)).astype("float32"))
 data1_x = np.arange(1,len(data1_y)+1)
 
 
-# In[ ]:
 
 
 # epochs=5000
 # model2.fit(data1_x.reshape([data1_y.shape[0],1]),data1_y.reshape([data1_y.shape[0],1]),epochs=epochs)
 
 
-# In[ ]:
 
 
 # model2.save('model_deaths_v2.h5')
 
 
-# In[ ]:
 
 
 #### Loading Model
 
 
-# In[ ]:
 
 
 model2 = models.load_model("model_deaths_v2.h5")
 model2.summary()
 
 
-# In[ ]:
 
 
 thousand = 1000
@@ -1499,13 +1416,11 @@ plt.savefig(out+"Prediction Curve2.png")
 plt.show()
 
 
-# In[ ]:
 
 
 ## Tabulation of prediction and actual figure after 5th April-Global
 
 
-# In[ ]:
 
 
 start_date = "4/5/20"
@@ -1523,7 +1438,6 @@ pd.DataFrame([total[sd:],
             ).transpose().set_index("Date")
 
 
-# In[ ]:
 
 
 # COVID-19 Daily Analysis
@@ -1533,7 +1447,6 @@ pd.DataFrame([total[sd:],
 ## 1. Daily New Confirmed Cases and Deaths
 
 
-# In[ ]:
 
 
 # Data
@@ -1581,7 +1494,6 @@ plt.savefig(out+"daily confirmed cases global.png")
 plt.show()
 
 
-# In[ ]:
 
 
 # Data
@@ -1628,13 +1540,11 @@ plt.savefig(out+"daily deaths cases Global.png")
 plt.show()
 
 
-# In[ ]:
 
 
 ## 2.Daily New Cases in Different Countries
 
 
-# In[ ]:
 
 
 thoudand = 1000
@@ -1680,7 +1590,6 @@ plt.savefig(out+"daily confirmed cases countrywise.png")
 plt.show()
 
 
-# In[ ]:
 
 
 thoudand = 1000
@@ -1726,7 +1635,6 @@ plt.savefig(out+"daily deaths reported countrywise.png")
 plt.show()
 
 
-# In[ ]:
 
 
 # Testing Analysis
@@ -1736,14 +1644,12 @@ plt.show()
 Testing is important in controling the spread. As it helps controls further spread of disease by any individual once the suspect found positive, by isolation or quarantine. This section, provides insights based on the data provided by https://ourworldindata.org.
 
 
-# In[ ]:
 
 
 df_test = pd.read_csv("https://raw.githubusercontent.com/tarunk04/COVID-19-CaseStudy-and-Predictions/master/v53/test.csv")[:-1]
 # df_test
 
 
-# In[ ]:
 
 
 df_test.drop(df_test[df_test["Entity"]=="India - people tested"].index[0],inplace=True)
@@ -1755,7 +1661,6 @@ df_test = df_test.loc[:,["country","Cumulative total","Cumulative total per mill
 # df_test
 
 
-# In[ ]:
 
 
 df_test["confirmed"] = [ df_countries_cases.loc[c,'Confirmed'] for c in df_test["country"].values]
@@ -1765,19 +1670,16 @@ df_test["Positive"] = np.round(100*df_test["confirmed"]/df_test["Cumulative tota
 df_test.style.background_gradient(cmap='Blues',subset=["Cumulative total"])                        .background_gradient(cmap='Reds',subset=["Cumulative total per million"])                        .background_gradient(cmap='Greens',subset=["confirmed"])                        .background_gradient(cmap='Purples',subset=["deaths"])                        .background_gradient(cmap='YlOrBr',subset=["MR"])                        .background_gradient(cmap='bone_r',subset=["Positive"])
 
 
-# In[ ]:
 
 
 ### Correlation
 
 
-# In[ ]:
 
 
 df_test.corr().style.background_gradient(cmap='Blues').format("{:.2f}")
 
 
-# In[ ]:
 
 
 ## Graphical Analysis of Testing Data
@@ -1785,7 +1687,6 @@ df_test.corr().style.background_gradient(cmap='Blues').format("{:.2f}")
 ### Countrywise
 
 
-# In[ ]:
 
 
 fig = px.bar(df_test.sort_values("Cumulative total"),
@@ -1800,7 +1701,6 @@ fig.update_yaxes(title_text="Number of Tests (Text on bars is MR %)")
 fig.show()
 
 
-# In[ ]:
 
 
 fig = px.bar(df_test.sort_values("Positive"),
@@ -1815,7 +1715,6 @@ fig.update_yaxes(title_text="Positive Tests(%)- (Text on bars is MR %)")
 fig.show()
 
 
-# In[ ]:
 
 
 fig = px.bar(df_test.sort_values("MR"),
@@ -1830,7 +1729,6 @@ fig.update_yaxes(title_text="MR(%)- (Text on bars is Positive %)")
 fig.show()
 
 
-# In[ ]:
 
 
 fig = px.bar(df_test.sort_values("Cumulative total per million"),
@@ -1845,13 +1743,11 @@ fig.update_yaxes(title_text="Tests per million(%)- (Text on bars is MR %)")
 fig.show()
 
 
-# In[ ]:
 
 
 ## Total Test vs Positive (per 100 Test)
 
 
-# In[ ]:
 
 
 fig = px.scatter(df_test, y=df_test.loc[:,"MR"],
@@ -1871,7 +1767,6 @@ fig.update_xaxes(title_text="Tests Positive (%)")
 fig.show()
 
 
-# In[ ]:
 
 
 # COVID-19 Case (Confirmed and Deaths) Percent Split in Different countries (Pie Viz)
@@ -1883,7 +1778,6 @@ These pie plots are showing the proportion of the spread of this Pandemic across
 * Recovered Cases: Any Countries reported more than 2000 recoveries are shown rest of the countries are under "others" Category.
 
 
-# In[ ]:
 
 
 rows = 4
@@ -1913,7 +1807,6 @@ for i, stat in enumerate(stats):
 plt.show()
 
 
-# In[ ]:
 
 
 # COVID-19 Mortality Rate Variation Over Period of Time
@@ -1923,7 +1816,6 @@ For any epidemic the one of the most important evaluation is Mortality Rate. It 
 * 2nd Curve shows the variation of mortality rate in different continents over time.
 
 
-# In[ ]:
 
 
 df_continents= df_confirmed.groupby(["continent"]).sum()
@@ -1976,13 +1868,11 @@ plt.savefig(out+'Mortality rate.png')
 plt.show()
 
 
-# In[ ]:
 
 
 ### COVID-19: Change in Mortality Rate of Each Countries Over Time
 
 
-# In[ ]:
 
 
 
@@ -2012,7 +1902,6 @@ fig.update_yaxes(title_text="Mortality Rate (%)")
 fig.show()
 
 
-# In[ ]:
 
 
 # Comparision of Mortality and Recovery Rate 
@@ -2025,7 +1914,6 @@ In any Epidemic or Pandemic, the study of Mortality Rate and Recovery Rate has a
 **Scale : LOG**
 
 
-# In[ ]:
 
 
 # cols =1
@@ -2047,7 +1935,6 @@ In any Epidemic or Pandemic, the study of Mortality Rate and Recovery Rate has a
 # l = plt.legend(loc= "best")
 
 
-# In[ ]:
 
 
 # Cumulative Confirmed Cases and Cumulative Recovery Vs Cumulative Deaths Analysis 
@@ -2060,7 +1947,6 @@ The variation of Cumulative Confirmed Cases and Cumulative Recovery with Cumulat
 * ** Cumulative Recovery Vs Cumulative Deaths has been depricated. [Check out version 17](https://www.kaggle.com/tarunkr/covid-19-case-study-analysis-viz-comparisons?scriptVersionId=30677812)**
 
 
-# In[ ]:
 
 
 cols =1
@@ -2091,13 +1977,11 @@ plt.savefig(out+'Cumulative Confirmed Cases Vs Cumulative Deaths Curve.png')
 plt.show()
 
 
-# In[ ]:
 
 
 ### Variation of Deaths vs Confirmed cases of different cuntries over time
 
 
-# In[ ]:
 
 
 df_data = df_table.groupby(['Last_Update', 'Country_Region'])['Confirmed', 'Deaths','continent'].max().reset_index()
@@ -2127,13 +2011,11 @@ fig.update_yaxes(title_text="Deaths Rate (Log Scale)")
 fig.show()
 
 
-# In[ ]:
 
 
 # China Vs Outside China
 
 
-# In[ ]:
 
 
 # Getting data for China and Oouside China
@@ -2185,7 +2067,6 @@ plt.savefig(out+'China vs Rest of the world.png')
 plt.show()
 
 
-# In[ ]:
 
 
 # Getting data for China and Oouside China
@@ -2238,7 +2119,6 @@ plt.savefig(out+'China vs Rest of the world1.png')
 plt.show()
 
 
-# In[ ]:
 
 
 
@@ -2246,7 +2126,6 @@ plt.show()
 * ** This section Depricated. [Check out version 17](https://www.kaggle.com/tarunkr/covid-19-case-study-analysis-viz-comparisons?scriptVersionId=30677812)**
 
 
-# In[ ]:
 
 
 # # Getting data for China and Oouside China
@@ -2296,13 +2175,11 @@ plt.show()
 # plt.show()
 
 
-# In[ ]:
 
 
 # pd.DataFrame([df_confirmed_report.iloc[:,-1],df_deaths_report.iloc[:,-1],df_recovered_report.iloc[:,-1]],["Confirmed","Deaths","Recovered"]).transpose()
 
 
-# In[ ]:
 
 
 f = plt.figure(figsize=(15,8))
@@ -2329,7 +2206,6 @@ plt.savefig(out+'China vs Rest of the world3.png')
 plt.show()
 
 
-# In[ ]:
 
 
 f = plt.figure(figsize=(15,8))
@@ -2356,7 +2232,6 @@ plt.savefig(out+'China vs Rest of the world4.png')
 plt.show()
 
 
-# In[ ]:
 
 
 f = plt.figure(figsize=(15,8))
@@ -2383,7 +2258,6 @@ plt.savefig(out+'China vs Rest of the world5.png')
 plt.show()
 
 
-# In[ ]:
 
 
 # COVID-19 : INDIA
@@ -2393,7 +2267,6 @@ plt.show()
 This dataset is provided by https://api.rootnet.in/
 
 
-# In[ ]:
 
 
 ## Analysis of Tests done in India and Comparission with South Korea
@@ -2401,13 +2274,11 @@ This dataset is provided by https://api.rootnet.in/
 **Note:** I am working on more on testing data and comparisions insights and will adding soon.
 
 
-# In[ ]:
 
 
 df_india_test = pd.io.json.json_normalize(requests.get('https://api.rootnet.in/covid19-in/stats/testing/history').json()['data']).rename(columns = {"totalIndividualsTested":"c_individualtest","totalPositiveCases":"c_positive","totalSamplesTested":"c_tests"})
 
 
-# In[ ]:
 
 
 df_india_test["p2t_ratio"]= np.round(100*df_india_test["c_positive"]/df_india_test["c_tests"],2)
@@ -2417,7 +2288,6 @@ df_india_test["p2t_ratio"]= np.round(100*df_india_test["positive"]/df_india_test
 df_india_test = df_india_test[1:]
 
 
-# In[ ]:
 
 
 f = plt.figure(figsize=(10,5))
@@ -2437,31 +2307,26 @@ plt.legend()
 plt.savefig(out+'Test_India.png')
 
 
-# In[ ]:
 
 
 ### Total tests done till date (1 April 2020) in India 
 
 
-# In[ ]:
 
 
 df_india_test["c_tests"][-1:].values[0]
 
 
-# In[ ]:
 
 
 ### Test Conducted per Million People
 
 
-# In[ ]:
 
 
 np.round(1000000*df_india_test["c_tests"][-1:].values[0]/1300000000,2)
 
 
-# In[ ]:
 
 
 This is far less than the tests happening in South Korea, Singapore and Other countries. Here is a comparison table for India and South Korea <br>**(Last Update: 31 Mar 2020)**
@@ -2510,14 +2375,12 @@ This is far less than the tests happening in South Korea, Singapore and Other co
 From this table, this can be concluded that India is far behind in terms of testing, and testing is very important to keep track of COVID19 spread and also to quarantine those people or isolate them to control the spread of COVID19 as done by South Korea.
 
 
-# In[ ]:
 
 
 ## COVID19 Cases in India
 <hr>
 
 
-# In[ ]:
 
 
 india_data_json = requests.get('https://api.rootnet.in/covid19-in/unofficial/covid19india.org/statewise').json()
@@ -2525,7 +2388,6 @@ df_india = pd.io.json.json_normalize(india_data_json['data']['statewise'])
 df_india = df_india.set_index("state")
 
 
-# In[ ]:
 
 
 total = df_india.sum()
@@ -2535,32 +2397,27 @@ df_t["Mortality Rate (per 100)"] = np.round(100*df_t["deaths"]/df_t["confirmed"]
 df_t.style.background_gradient(cmap='Purples',axis=1)
 
 
-# In[ ]:
 
 
 df_india["Mortality Rate (per 100)"]= np.round(np.nan_to_num(100*df_india["deaths"]/df_india["confirmed"]),2)
 df_india.style.background_gradient(cmap='Blues',subset=["confirmed"])                        .background_gradient(cmap='Reds',subset=["deaths"])                        .background_gradient(cmap='Greens',subset=["recovered"])                        .background_gradient(cmap='Purples',subset=["active"])                        .background_gradient(cmap='YlOrBr',subset=["Mortality Rate (per 100)"])
 
 
-# In[ ]:
 
 
 ### States with Reported Deaths
 
 
-# In[ ]:
 
 
 df_india[df_india['deaths'] > 0].style.background_gradient(cmap='Blues',subset=["confirmed"])                        .background_gradient(cmap='Reds',subset=["deaths"])                        .background_gradient(cmap='Greens',subset=["recovered"])                        .background_gradient(cmap='Purples',subset=["active"])                        .background_gradient(cmap='YlOrBr',subset=["Mortality Rate (per 100)"])
 
 
-# In[ ]:
 
 
 ### 10 Most effected States
 
 
-# In[ ]:
 
 
 f = plt.figure(figsize=(10,5))
@@ -2575,7 +2432,6 @@ plt.grid(alpha=0.3)
 plt.savefig(out+'Top 10 States_India (Confirmed Cases).png')
 
 
-# In[ ]:
 
 
 f = plt.figure(figsize=(10,5))
@@ -2590,26 +2446,22 @@ plt.grid(alpha=0.3)
 plt.savefig(out+'Top 10 States_India (Deaths Cases).png')
 
 
-# In[ ]:
 
 
 ### Correlation
 
 
-# In[ ]:
 
 
 df_india.corr().style.background_gradient(cmap='Reds')
 
 
-# In[ ]:
 
 
 ## Map Visualization (Statewise Inida)
 <hr>
 
 
-# In[ ]:
 
 
 # Adding Location data (Latitude,Longitude)
@@ -2659,7 +2511,6 @@ for index in df_india.index :
     df_india.loc[df_india.index == index,"Long"] = locations[index][1]
 
 
-# In[ ]:
 
 
 # url = "https://raw.githubusercontent.com/Subhash9325/GeoJson-Data-of-Indian-States/master/Indian_States"
@@ -2687,13 +2538,11 @@ for i in range(0,len(df_india[df_india['confirmed']>0].index)):
 india
 
 
-# In[ ]:
 
 
 # COVID-19 : USA
 
 
-# In[ ]:
 
 
 date_usa = datetime.strptime(df_confirmed.columns[-1],'%m/%d/%y').strftime("%m-%d-%Y")
@@ -2702,7 +2551,6 @@ df_usa = df_temp.loc[df_temp["Country_Region"]== "US"]
 df_usa = df_usa.rename(columns={"Admin2":"County"})
 
 
-# In[ ]:
 
 
 total = df_usa.sum()
@@ -2710,31 +2558,26 @@ total.name = "Total"
 pd.DataFrame(total).transpose().loc[:,["Confirmed","Deaths"]].style.background_gradient(cmap='Purples',axis=1)
 
 
-# In[ ]:
 
 
 df_usa.loc[:,["Confirmed","Deaths","Province_State"]].groupby(["Province_State"]).sum().sort_values("Confirmed",ascending=False).style.background_gradient(cmap='Blues',subset=["Confirmed"]).background_gradient(cmap='Reds',subset=["Deaths"])
 
 
-# In[ ]:
 
 
 ### Top 15 affected Cities or Counties:
 
 
-# In[ ]:
 
 
 df_usa.loc[:,["Province_State","Confirmed","Deaths","County"]].sort_values("Confirmed",ascending=False).set_index("County")[:15].style.background_gradient(cmap='Blues',subset=["Confirmed"])                        .background_gradient(cmap='Reds',subset=["Deaths"])
 
 
-# In[ ]:
 
 
 ### Most Affected States: USA
 
 
-# In[ ]:
 
 
 f = plt.figure(figsize=(10,5))
@@ -2749,7 +2592,6 @@ plt.grid(alpha=0.3)
 plt.savefig(out+'Top 10 States_USA (Confirmed Cases).png')
 
 
-# In[ ]:
 
 
 f = plt.figure(figsize=(10,5))
@@ -2764,13 +2606,11 @@ plt.grid(alpha=0.3)
 plt.savefig(out+'Top 10 States_USA (Deaths Cases).png')
 
 
-# In[ ]:
 
 
 ### Map Visualization (Demographic)
 
 
-# In[ ]:
 
 
 # url = "https://raw.githubusercontent.com/Subhash9325/GeoJson-Data-of-Indian-States/master/Indian_States"
@@ -2799,7 +2639,6 @@ for i in np.int32(np.asarray(df_usa[df_usa['Confirmed'] > 0].index)):
 usa
 
 
-# In[ ]:
 
 
 state_geo = requests.get('https://raw.githubusercontent.com/python-visualization/folium/master/examples/data/us-states.json').json()
@@ -2807,7 +2646,6 @@ county_geo = requests.get('https://raw.githubusercontent.com/python-visualizatio
 # county_geo
 
 
-# In[ ]:
 
 
 data_temp = df_usa.groupby(["Province_State"]).sum().reset_index().drop(["Lat","Long_"],axis=1)
@@ -2841,14 +2679,12 @@ m.get_root().html.add_child(folium.Element(legend_html))
 m
 
 
-# In[ ]:
 
 
 ### Affected Counties : USA
 <hr>
 
 
-# In[ ]:
 
 
 # binsurl = 'https://raw.githubusercontent.com/python-visualization/folium/master/examples/data'
@@ -2886,13 +2722,11 @@ folium.TopoJson(
 m
 
 
-# In[ ]:
 
 
 ### Prediction Curve for USA
 
 
-# In[ ]:
 
 
 # Visible = Input(shape=(1,))
@@ -2909,20 +2743,17 @@ m
 # model_usa_c.summary()
 
 
-# In[ ]:
 
 
 # model_usa_c.save('model_usa_c.h5')
 
 
-# In[ ]:
 
 
 # epochs = 3000
 # model_usa_c.fit(data_x.reshape([data_x.shape[0],1]),data_y.reshape([data_x.shape[0],1]),epochs=epochs,batch_size=64)
 
 
-# In[ ]:
 
 
 lakh = 100000
@@ -2979,13 +2810,11 @@ plt.savefig(out+"Prediction Curve-Confirmed (USA).png")
 plt.show()
 
 
-# In[ ]:
 
 
 This analysis is made using Machine Learning to predict the best fit curve. The actual curve is following the expected trajectory, if this happens for the next five days, then it may be possible that confirmed cases reach about 400K+. It is a very fast growth, and the actual figure may vary significantly. I will update the prediction curve as more data available.
 
 
-# In[ ]:
 
 
 # Valuable Feedback 

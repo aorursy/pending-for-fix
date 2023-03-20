@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -17,14 +16,12 @@ import tensorflow as tf
 from sklearn.linear_model import LogisticRegression
 
 
-# In[2]:
 
 
 master = pd.read_csv("../input/train_labels.csv")
 master.head()
 
 
-# In[3]:
 
 
 data_dir = "../input/train/"
@@ -38,7 +35,6 @@ def get_image_data_for_batch(images_in_batch):
     return np.array(batch_image_data)
 
 
-# In[4]:
 
 
 
@@ -297,7 +293,6 @@ def inception_resnet_v2_arg_scope(weight_decay=0.00004,
       return scope
 
 
-# In[5]:
 
 
 X = tf.placeholder(tf.float32, shape=[None, 299,299,3])
@@ -307,7 +302,6 @@ predictions = end_points["PreLogitsFlatten"] #you can try with other layers too.
 #may give good accuracy, but feature size for each image will be in 10k's.
 
 
-# In[6]:
 
 
 X = tf.placeholder(tf.float32, shape=[None, 299,299,3])
@@ -319,7 +313,6 @@ sess = tf.Session()
 saver.restore(sess, "PATH TO inception_resnet_v2_2016_08_30.ckpt")
 
 
-# In[7]:
 
 
 number_of_batches = int(np.ceil(float(len(master))/10))
@@ -331,7 +324,6 @@ for i in range(number_of_batches):
     bottleneck_features_train = np.concatenate([bottleneck_features_train, btnk_batch], axis=0)
 
 
-# In[8]:
 
 
 data_dir = "../input/test/"
@@ -345,13 +337,11 @@ for i in range(number_of_batches_test):
     bottleneck_features_test = np.concatenate([bottleneck_features_test, btnk_batch], axis=0)
 
 
-# In[9]:
 
 
 I have used Logistic regression from scikit learn, you can use other powerful algorithms like randomForest, xgboost etc.
 
 
-# In[10]:
 
 
 model =  LogisticRegression()

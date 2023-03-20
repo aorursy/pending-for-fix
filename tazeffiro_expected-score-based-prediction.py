@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import pandas as pd 
@@ -85,7 +84,6 @@ class Matchup(object):
                 self.season,self.team1,self.team2,self.PTeam1Win)
 
 
-# In[10]:
 
 
 years = [1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017] # an array of years from 1998 to 2018
@@ -110,14 +108,12 @@ teamData = teamData.set_index('UID')
 teamData.head()
 
 
-# In[3]:
 
 
 tourney = pd.read_csv("../input/WNCAATourneyCompactResults.csv")
 tourney.head()
 
 
-# In[4]:
 
 
 tourney['WUID'] = tourney['Season'].astype(str) + '_' + tourney['WTeamID'].astype(str)
@@ -125,7 +121,6 @@ tourney['LUID'] = tourney['Season'].astype(str) + '_' + tourney['LTeamID'].astyp
 tourney.head()
 
 
-# In[26]:
 
 
 def EstimateProb(team1PPG, team1OPPG, team1STD, team1OSTD, team2PPG, team2OPPG, team2STD, team2OSTD):
@@ -141,7 +136,6 @@ def EstimateProb(team1PPG, team1OPPG, team1STD, team1OSTD, team2PPG, team2OPPG, 
     return 1 - st.norm.cdf(-1 * zScore)
 
 
-# In[53]:
 
 
 # The Requisite team1 statistics
@@ -161,7 +155,6 @@ tourney['Result'] = 1
 tourney.head()
 
 
-# In[54]:
 
 
 correct = tourney.loc[tourney['Prediction'] > .5, :]['Prediction'].size
@@ -169,14 +162,12 @@ incorrect = tourney.loc[tourney['Prediction'] <= .5, :]['Prediction'].size
 print("{:.4f}".format(correct / (correct + incorrect)))
 
 
-# In[57]:
 
 
 from sklearn.metrics import log_loss
 print("{:.4f}".format(log_loss(tourney['Result'].values, tourney['Prediction'].values, labels = [0,1])))
 
 
-# In[ ]:
 
 
 A fairly high log-loss on its own, however a valueable piece of information none the less.

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import gc
@@ -13,13 +12,11 @@ pd.set_option('display.width', 1000)
 from sklearn.preprocessing import LabelEncoder
 
 
-# In[ ]:
 
 
 ls ../input/
 
 
-# In[ ]:
 
 
 dtypes = {
@@ -109,7 +106,6 @@ dtypes = {
         }
 
 
-# In[ ]:
 
 
 test = pd.read_csv('../input/test.csv',nrows =100,dtype=dtypes)#Remove nrows stuff
@@ -117,19 +113,16 @@ dtypes['HasDetections'] = 'int8'
 train = pd.read_csv('../input/train.csv',nrows =100, dtype=dtypes)#Remove nrows stuff
 
 
-# In[ ]:
 
 
 train.HasDetections.mean()
 
 
-# In[ ]:
 
 
 train.head()
 
 
-# In[ ]:
 
 
 traintargets = train['HasDetections'].values
@@ -137,7 +130,6 @@ del train['HasDetections']
 gc.collect()
 
 
-# In[ ]:
 
 
 del train['Census_FirmwareVersionIdentifier']
@@ -169,7 +161,6 @@ for c in true_numerical_columns:
         test.loc[~test[c].isnull(),c] = (test.loc[~test[c].isnull(),c]).round(0)
 
 
-# In[ ]:
 
 
 for c in train.columns[1:]:
@@ -187,31 +178,26 @@ for c in train.columns[1:]:
     gc.collect()
 
 
-# In[ ]:
 
 
 train['HasDetections'] = traintargets
 
 
-# In[ ]:
 
 
 train.shape
 
 
-# In[ ]:
 
 
 test.shape
 
 
-# In[ ]:
 
 
 train.head()
 
 
-# In[ ]:
 
 
 features = train.columns[1:-1]
@@ -219,7 +205,6 @@ categories = train.columns[1:-1]
 numerics = []
 
 
-# In[ ]:
 
 
 currentcode = len(numerics)

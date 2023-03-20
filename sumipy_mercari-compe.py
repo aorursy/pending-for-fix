@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,7 +21,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import nltk
@@ -66,7 +64,6 @@ import logging
 logging.getLogger("lda").setLevel(logging.WARNING)
 
 
-# In[3]:
 
 
 import os
@@ -78,19 +75,16 @@ logging.getLogger("lda").setLevel(logging.WARNING)
 print(os.listdir("../input"))
 
 
-# In[4]:
 
 
 pwd
 
 
-# In[5]:
 
 
 ls ../input/mercari-price-suggestion-challenge/
 
 
-# In[6]:
 
 
 import pandas as pd
@@ -99,38 +93,32 @@ train = pd.read_csv(f'../input/mercari/train.tsv', sep='\t') #sep='\t'でタブ�
 test = pd.read_csv(f'../input/mercari/test.tsv', sep='\t')
 
 
-# In[7]:
 
 
 print(train.shape)
 print(test.shape)
 
 
-# In[8]:
 
 
 train.info()
 
 
-# In[9]:
 
 
 train.head()
 
 
-# In[10]:
 
 
 train.dtypes
 
 
-# In[11]:
 
 
 train.price.describe() #eの横の数字だけ10倍
 
 
-# In[12]:
 
 
 import matplotlib.pyplot as plt
@@ -140,7 +128,6 @@ plt.xlabel('price')
 plt.ylabel('count')
 
 
-# In[13]:
 
 
 #自然対数
@@ -153,7 +140,6 @@ plt.ylabel('count')
 plt.xlim(1, 7)
 
 
-# In[14]:
 
 
 plt.hist(train.loc[train['shipping'] == 0, 'price'].dropna(),
@@ -165,14 +151,12 @@ plt.ylabel('count')
 plt.legend(title='shipping')
 
 
-# In[15]:
 
 
 print(train.loc[train['shipping'] == 0, 'price'].mean()) #送料購入者
 print(train.loc[train['shipping'] == 1, 'price'].mean()) #送料出品者
 
 
-# In[16]:
 
 
 #自然対数
@@ -185,35 +169,30 @@ plt.ylabel('count')
 plt.legend(title='shipping')
 
 
-# In[17]:
 
 
 print((train.loc[train['shipping'] == 0, 'price'] + 1).apply(np.log).mean()) #送料購入者
 print((train.loc[train['shipping'] == 1, 'price'] + 1).apply(np.log).mean()) #送料出品者
 
 
-# In[18]:
 
 
 #The number of category_name
 train['category_name'].nunique()
 
 
-# In[19]:
 
 
 #top 5
 train['category_name'].value_counts()[:5]
 
 
-# In[20]:
 
 
 #count null.
 train['category_name'].isnull().sum()
 
 
-# In[21]:
 
 
 #survied details of categories
@@ -224,7 +203,6 @@ def split_cat(text):
         return ("No data", "No data", "No data")
 
 
-# In[22]:
 
 
 #edit category_name
@@ -232,7 +210,6 @@ train['general_cat'], train['subcat1'], train['subcat2'] = zip(*train['category_
 train.head()
 
 
-# In[23]:
 
 
 #repeat the same step for the test set
@@ -240,39 +217,33 @@ test['general_cat'], test['subcat1'], test['subcat2'] = zip(*test['category_name
 test.head()
 
 
-# In[24]:
 
 
 #The number of subcat1
 train['subcat1'].nunique()
 
 
-# In[25]:
 
 
 train['general_cat'].value_counts()
 
 
-# In[26]:
 
 
 train['subcat1'].value_counts()[:5]
 
 
-# In[27]:
 
 
 #The number of subcat2
 train['subcat2'].nunique()
 
 
-# In[28]:
 
 
 train['subcat2'].value_counts()[:5]
 
 
-# In[29]:
 
 
 #valuesにすることで配列に変換
@@ -281,7 +252,6 @@ y = train['general_cat'].value_counts().values #大カテゴリー別件数の�
 unique_pct = [("%.2f"%(v*100))+"%"for v in (y/len(train))] #各general_catラベルの出現率
 
 
-# In[30]:
 
 
 import plotly.offline as py
@@ -295,7 +265,6 @@ fig = dict(data=[trace1], layout=layout)
 py.iplot(fig)
 
 
-# In[31]:
 
 
 #上から15件までのサブカテゴリ1を同様に出現率計算
@@ -305,7 +274,6 @@ y = train['subcat1'].value_counts().values[:15]
 subcat1_pct = [("%.2f"%(v*100))+"%" for v in (y/(len(train)))]
 
 
-# In[32]:
 
 
 trace1 = go.Bar(x=x, y=y, text=subcat1_pct,
@@ -320,7 +288,6 @@ fig = dict(data=[trace1], layout=layout)
 py.iplot(fig)
 
 
-# In[33]:
 
 
 #とりあえず箱ひげ図作る
@@ -328,21 +295,18 @@ general_cats = train['general_cat'].unique()
 general_cats
 
 
-# In[34]:
 
 
 #大カテゴリー別の値段をリストでまとめる(これが横軸)
 x = [train.loc[train['general_cat'] == cat, 'price'] for cat in general_cats] 
 
 
-# In[35]:
 
 
 #priceはlog(price + 1)で正規化する
 data = [go.Box(x=np.log(x[i] + 1), name=general_cats[i]) for i in range(len(general_cats))]
 
 
-# In[36]:
 
 
 layout = dict(title='Price distribution by general_cat',
@@ -352,20 +316,17 @@ fig = dict(data=data, layout=layout)
 py.iplot(fig)
 
 
-# In[37]:
 
 
 train['brand_name'].nunique()
 
 
-# In[38]:
 
 
 x = train['brand_name'].value_counts().index.values.astype('str')[:10]
 y = train['brand_name'].value_counts().values[:10]
 
 
-# In[39]:
 
 
 trace1 = go.Bar(x=x, y=y, 
@@ -380,7 +341,6 @@ fig=dict(data=[trace1], layout=layout)
 py.iplot(fig)
 
 
-# In[40]:
 
 
 import re
@@ -405,7 +365,6 @@ def wordCount(text):
         #return 0
 
 
-# In[41]:
 
 
 #ストップワードを取り除いた後の単語の総数をカウントした列を追加
@@ -413,26 +372,22 @@ train['desc_len'] = train['item_description'].apply(lambda x : wordCount(x))
 test['desc_len'] = test['item_description'].apply(lambda x : wordCount(x))
 
 
-# In[42]:
 
 
 train.head()
 
 
-# In[43]:
 
 
 test.head()
 
 
-# In[44]:
 
 
 df = train.groupby('desc_len')['price'].mean().reset_index()
 df
 
 
-# In[45]:
 
 
 trace1 = go.Scatter(
@@ -448,14 +403,12 @@ fig = dict(data=[trace1], layout=layout)
 py.iplot(fig)
 
 
-# In[46]:
 
 
 #item_description内の欠損値を除く
 train = train[pd.notnull(train['item_description'])]
 
 
-# In[47]:
 
 
 from nltk.corpus import stopwords
@@ -463,7 +416,6 @@ from nltk.corpus import stopwords
 stopwords.words('english')
 
 
-# In[48]:
 
 
 #(準備)リストの演算
@@ -475,7 +427,6 @@ a += 't'
 a
 
 
-# In[49]:
 
 
 from nltk.stem.porter import *
@@ -513,7 +464,6 @@ def tokenize(text):
         print(text, e)
 
 
-# In[50]:
 
 
 """
@@ -544,7 +494,6 @@ y = [w[1] for w in all_top10]
 """
 
 
-# In[51]:
 
 
 """
@@ -557,7 +506,6 @@ py.iplot(fig)
 """
 
 
-# In[52]:
 
 
 # apply the tokenizer into the item descriptipn column
@@ -565,7 +513,6 @@ train['token'] = train['item_description'].map(tokenize)
 test['token'] = test['item_description'].map(tokenize)
 
 
-# In[53]:
 
 
 #index再振り分け
@@ -573,19 +520,16 @@ train.reset_index(drop=True, inplace=True)
 test.reset_index(drop=True, inplace=True)
 
 
-# In[54]:
 
 
 train.head()
 
 
-# In[55]:
 
 
 test.head()
 
 
-# In[56]:
 
 
 #一旦整形データ保存
@@ -593,14 +537,12 @@ test.head()
 #test.to_csv('re_test.csv', sep='\t')
 
 
-# In[57]:
 
 
 #train = pd.read_csv('re_train.csv', sep='\t')
 #test = pd.read_csv('re_test.csv', sep='\t')
 
 
-# In[58]:
 
 
 for descriptions, tokens in zip(train['item_description'].head(), train['token'].head()):
@@ -609,7 +551,6 @@ for descriptions, tokens in zip(train['item_description'].head(), train['token']
     print()
 
 
-# In[59]:
 
 
 from collections import Counter
@@ -634,7 +575,6 @@ kids100 = Counter(cat_dicts['Kids']).most_common(100)
 electronics100 = Counter(cat_dicts['Electronics']).most_common(100)
 
 
-# In[60]:
 
 
 from wordcloud import WordCloud
@@ -648,7 +588,6 @@ def generate_wordcloud(tup):
     return wordcloud
 
 
-# In[61]:
 
 
 fig, axes = plt.subplots(2, 2, figsize=(30, 15))
@@ -674,7 +613,6 @@ ax.axis('off')
 ax.set_title('Electronics Top 100', fontsize=30)
 
 
-# In[62]:
 
 
 #インスタンス化
@@ -685,7 +623,6 @@ vectorizer = TfidfVectorizer(min_df=10,
                             ngram_range=(1, 2))
 
 
-# In[63]:
 
 
 all_desc = np.append(train['item_description'].values, test['item_description'].values)
@@ -693,7 +630,6 @@ all_desc = np.append(train['item_description'].values, test['item_description'].
 vz = vectorizer.fit_transform(list(all_desc))
 
 
-# In[64]:
 
 
 #  create a dictionary mapping the tokens to their tfidf values
@@ -704,19 +640,16 @@ tfidf = pd.DataFrame(columns=['tfidf']).from_dict(
 tfidf.columns = ['tfidf']
 
 
-# In[65]:
 
 
 tfidf.sort_values(by=['tfidf'], ascending=True).head(10)
 
 
-# In[66]:
 
 
 tfidf.sort_values(by=['tfidf'], ascending=False).head(10)
 
 
-# In[67]:
 
 
 #trainとtestデータをコピー
@@ -734,7 +667,6 @@ combined_sample = combined_df.sample(n=sample_sz)
 vz_sample = vectorizer.fit_transform(list(combined_sample['item_description']))
 
 
-# In[68]:
 
 
 from sklearn.decomposition import TruncatedSVD
@@ -744,26 +676,22 @@ svd = TruncatedSVD(n_components=n_comp, random_state=42)
 svd_tfidf = svd.fit_transform(vz_sample)
 
 
-# In[69]:
 
 
 from sklearn.manifold import TSNE
 tsne_model = TSNE(n_components=2, verbose=1, random_state=42, n_iter=500)
 
 
-# In[70]:
 
 
 tsne_tfidf = tsne_model.fit_transform(svd_tfidf)
 
 
-# In[71]:
 
 
 tsne_tfidf
 
 
-# In[72]:
 
 
 #可視化ライブラリbokeh
@@ -778,13 +706,11 @@ plot_tfidf = bp.figure(plot_width=700, plot_height=600,
                       x_axis_type=None, y_axis_type=None, min_border=1)
 
 
-# In[73]:
 
 
 combined_sample.reset_index(inplace=True, drop=True)
 
 
-# In[74]:
 
 
 tfidf_df = pd.DataFrame(tsne_tfidf, columns=['x', 'y']) #2次元データtnse_tfidfをx, yコラムに置換
@@ -793,7 +719,6 @@ tfidf_df['tokens'] = combined_sample['token']
 tfidf_df['category'] = combined_sample['general_cat']
 
 
-# In[75]:
 
 
 plot_tfidf.scatter(x='x', y='y', source=tfidf_df, alpha=0.7)
@@ -802,7 +727,6 @@ hover.tooltips = {"description": "@description", "tokens": "@tokens", "category"
 show(plot_tfidf)
 
 
-# In[76]:
 
 
 from sklearn.cluster import MiniBatchKMeans
@@ -815,7 +739,6 @@ kmeans_model = MiniBatchKMeans(n_clusters=num_clusters,
                               init_size=1000, batch_size=1000, verbose=0, max_iter=1000)
 
 
-# In[77]:
 
 
 kmeans = kmeans_model.fit(vz) #Compute the centroids on X by chunking it into mini-batches.
@@ -823,32 +746,27 @@ kmeans_clusters = kmeans.predict(vz) #Compute cluster centers and predict cluste
 kmeans_distance = kmeans.transform(vz) #Compute clustering and transform X to cluster-distance space.
 
 
-# In[78]:
 
 
 kmeans
 
 
-# In[79]:
 
 
 len(kmeans_clusters)
 
 
-# In[80]:
 
 
 kmeans_distance
 
 
-# In[81]:
 
 
 sorted_centroids = kmeans.cluster_centers_.argsort()[:, ::-1]
 len(sorted_centroids)
 
 
-# In[82]:
 
 
 terms = vectorizer.get_feature_names()
@@ -862,7 +780,6 @@ for i in range(num_clusters):
     print() 
 
 
-# In[83]:
 
 
 #repeat the same step for the sample
@@ -872,7 +789,6 @@ kmeans_distance = kmeans.transform(vz_sample) #Compute clustering and transform 
 tsne_kmeans = tsne_model.fit_transform(kmeans_distance)
 
 
-# In[84]:
 
 
 colormap = np.array(["#6d8dca", "#69de53", "#723bca", "#c3e14c", "#c84dc9", "#68af4e", "#6e6cd5",
@@ -881,7 +797,6 @@ colormap = np.array(["#6d8dca", "#69de53", "#723bca", "#c3e14c", "#c84dc9", "#68
 "#52697d", "#194196", "#d27c88", "#36422b", "#b68f79"])
 
 
-# In[85]:
 
 
 kmeans_df = pd.DataFrame(tsne_kmeans, columns=['x', 'y']) #2次元データtnse_kmeansをx, yコラムに置換
@@ -890,7 +805,6 @@ kmeans_df['description'] = combined_sample['item_description']
 kmeans_df['category'] = combined_sample['general_cat']
 
 
-# In[86]:
 
 
 output_notebook() #notebook出力にはこの1行が必要
@@ -901,7 +815,6 @@ plot_kmeans = bp.figure(plot_width=700, plot_height=600,
                       x_axis_type=None, y_axis_type=None, min_border=1)
 
 
-# In[87]:
 
 
 #クラスターごとの色分けはsourceで設定した
@@ -918,7 +831,6 @@ hover.tooltips = {"cluster": "@cluster", "description": "@description", "categor
 show(plot_kmeans)
 
 
-# In[88]:
 
 
 from sklearn.feature_extraction.text import CountVectorizer
@@ -928,13 +840,11 @@ cvectorizer = CountVectorizer(min_df=4,
                              ngram_range=(1, 2))
 
 
-# In[89]:
 
 
 cvz = cvectorizer.fit_transform(combined_sample['item_description'])
 
 
-# In[90]:
 
 
 from sklearn.decomposition import LatentDirichletAllocation
@@ -945,13 +855,11 @@ lda_model = LatentDirichletAllocation(n_components=20,
                                      random_state=42)
 
 
-# In[91]:
 
 
 X_topics = lda_model.fit_transform(cvz)
 
 
-# In[92]:
 
 
 n_top_words = 10
@@ -966,14 +874,12 @@ for i, topic_dist in enumerate(topic_word):
     print('Topic {}: {}'.format(i, ' | '.join(topic_words)))
 
 
-# In[93]:
 
 
 # reduce dimension to 2 using tsne
 tsne_lda = tsne_model.fit_transform(X_topics)
 
 
-# In[94]:
 
 
 unnormalized = np.matrix(X_topics)
@@ -990,7 +896,6 @@ lda_df['topic'] = lda_keys
 lda_df['topic'] = lda_df['topic'].map(int)
 
 
-# In[95]:
 
 
 #可視化
@@ -1001,7 +906,6 @@ plot_lda = bp.figure(plot_width=700,
     x_axis_type=None, y_axis_type=None, min_border=1)
 
 
-# In[96]:
 
 
 source = ColumnDataSource(data=dict(x=lda_df['x'], y=lda_df['y'],
@@ -1018,7 +922,6 @@ hover.tooltips={"description":"@description",
 show(plot_lda)
 
 
-# In[97]:
 
 
 def prepareLDAData():
@@ -1032,7 +935,6 @@ def prepareLDAData():
     return data
 
 
-# In[98]:
 
 
 """
@@ -1045,7 +947,6 @@ prepared_data = pyLDAvis.prepare(**ldadata)
 """
 
 
-# In[99]:
 
 
 """
@@ -1057,7 +958,6 @@ IPython.display.display_HTML(h)
 """
 
 
-# In[100]:
 
 
 #整形データ保存

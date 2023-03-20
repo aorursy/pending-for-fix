@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # Import the required libraries 
@@ -22,7 +21,6 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 
 
-# In[2]:
 
 
 # Train Data Preparation
@@ -33,7 +31,6 @@ json_train = pd.read_json(json_train_path)
 json_train
 
 
-# In[3]:
 
 
 # Step 1: Make a list with all unique ingredients
@@ -76,7 +73,6 @@ clean_unique_ingredients_list = [c for c in list(np.unique(clean_ingredients_lis
 print('Total number of cleaned unique ingredients: ', len(clean_unique_ingredients_list))
 
 
-# In[4]:
 
 
 # Step 2: Clean the recipes.
@@ -100,7 +96,6 @@ tq.close()
 json_train
 
 
-# In[5]:
 
 
 # Previous Step: Codificate the train data in a sparse matrix to save memory.
@@ -114,7 +109,6 @@ lb = LabelEncoder()
 y_train = lb.fit_transform(json_train['cuisine'])
 
 
-# In[6]:
 
 
 # Model 1: Neuronal Network
@@ -130,7 +124,6 @@ classifier_1 = OneVsRestClassifier(classifier_1, n_jobs=-1)
 model_1 = classifier_1.fit(X_train,y_train)
 
 
-# In[7]:
 
 
 # Model 2: SVMachine Classifier (This model alone have an 0.78761 score under the test set in Kaggle)
@@ -155,7 +148,6 @@ classifier_2 = OneVsRestClassifier(classifier_2, n_jobs=1)
 model_2 = classifier_2.fit(X_train, y_train)
 
 
-# In[8]:
 
 
 json_test_path = json_train_path = os.path.join(data_path, 't.json')
@@ -182,7 +174,6 @@ tq.close()
 json_test
 
 
-# In[9]:
 
 
 X_test = vectorizer.transform(json_test['ingredients'])
@@ -196,7 +187,6 @@ y_pred_2 = model_2.predict_proba(X_test)
 print(y_pred_2.shape)
 
 
-# In[10]:
 
 
 # Ensembling:
@@ -207,7 +197,6 @@ y_pred = lb.inverse_transform(y_pred)
 y_pred
 
 
-# In[11]:
 
 
 # Submission:
@@ -218,7 +207,6 @@ sub = pd.DataFrame({'id': test_id, 'cuisine': y_pred}, columns=['id', 'cuisine']
 sub.to_csv('output.csv', index=False)
 
 
-# In[ ]:
 
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import pandas as pd
@@ -9,61 +8,52 @@ import numpy as np
 from scipy import stats
 
 
-# In[ ]:
 
 
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-# In[ ]:
 
 
 sns.set_palette(palette='icefire', n_colors=10)
 
 
-# In[ ]:
 
 
 density = sns.color_palette(palette= 'RdYlGn', n_colors= 10)
 
 
-# In[ ]:
 
 
 in_train = pd.read_csv('../input/train.csv')
 in_test = pd.read_csv('../input/test.csv')
 
 
-# In[ ]:
 
 
 print (in_train.shape)
 print (in_test.shape)
 
 
-# In[ ]:
 
 
 print ('Unique households in training set:', in_train['idhogar'].nunique())
 print ('Unique households in training set:', in_test['idhogar'].nunique())
 
 
-# In[ ]:
 
 
 ### Check if there are any households both in the train, test set
 set(in_train['idhogar'].unique()).intersection(in_test['idhogar'].unique())
 
 
-# In[ ]:
 
 
 in_train['Id'].duplicated().sum()
 in_test['Id'].duplicated().sum()
 
 
-# In[ ]:
 
 
 ### Combine the train and test dataframes
@@ -71,88 +61,74 @@ df = pd.concat([in_train, in_test], axis = 0, sort=False, ignore_index= True)
 df.shape
 
 
-# In[ ]:
 
 
 df.head()
 
 
-# In[ ]:
 
 
 df.isnull().sum()[df.isnull().sum() > 0]
 
 
-# In[ ]:
 
 
 df[['tipovivi1', 'tipovivi2', 'tipovivi3', 'tipovivi4', 'tipovivi5']][df['v2a1'].isnull()].sum()
 
 
-# In[ ]:
 
 
 df[(df['tipovivi4'] == 1)&(df['v2a1'] > 0)]
 
 
-# In[ ]:
 
 
 df[(df['tipovivi5'] == 1)&(df['v2a1'] > 0)]
 
 
-# In[ ]:
 
 
 df['v2a1'].fillna(0, inplace = True)
 
 
-# In[ ]:
 
 
 df['v18q'][df['v18q1'].isnull()].value_counts(dropna=False)
 
 
-# In[ ]:
 
 
 df['v18q1'].fillna(0, inplace = True)
 
 
-# In[ ]:
 
 
 sns.distplot(df['age'][df['rez_esc'].isnull()])
 
 
-# In[ ]:
 
 
 df['rez_esc'].fillna(0, inplace = True)
 df['Schooling_age'] =((df['age'] >= 7)&(df['age'] <= 19))*1
 
 
-# In[ ]:
 
 
 ##df[df['rez_esc']==99].index
 df.loc[13069,'rez_esc'] = 0
 
 
-# In[ ]:
 
 
 df[['age', 'escolari', 'meaneduc', 'idhogar', 'parentesco1']][df['meaneduc'].isnull()].sort_values(by = 'idhogar')
 
 
-# In[ ]:
 
 
 ### Identify the household id corresponding to the missing report
 no_meanedu = df['idhogar'][df['meaneduc'].isnull()].unique()
 
 
-# In[ ]:
 
 
 ### Check if 'meaneduc' is available for any other records for the same household
@@ -160,7 +136,6 @@ for household in no_meanedu:
     print (household, df['meaneduc'][df['idhogar'] == household].values)
 
 
-# In[ ]:
 
 
 mean_educ = {}
@@ -168,40 +143,34 @@ for household in no_meanedu:
     mean_educ[household] = df['escolari'][(df['idhogar'] == household)&(df['age'] >= 18)].mean()
 
 
-# In[ ]:
 
 
 mean_educ
 
 
-# In[ ]:
 
 
 ## we still get two NaN values..
 df[['escolari', 'age']][df['idhogar'] == 'c49af2e64']
 
 
-# In[ ]:
 
 
 for household in no_meanedu:
     df.loc[df['idhogar'] == household, 'meaneduc'] = mean_educ[household]
 
 
-# In[ ]:
 
 
 df['meaneduc'].fillna(0, inplace = True)
 
 
-# In[ ]:
 
 
 ## We'll recalculate the squared mean education based on the mean education column
 df['SQBmeaned'] = df['meaneduc'] **2
 
 
-# In[ ]:
 
 
 ind_indicators = ['Id', 'escolari', 'rez_esc', 'Schooling_age', 'dis', 'male', 'female',
@@ -213,37 +182,31 @@ ind_indicators = ['Id', 'escolari', 'rez_esc', 'Schooling_age', 'dis', 'male', '
                          'instlevel6', 'instlevel7', 'instlevel8', 'instlevel9', 'age', 'SQBescolari', 'SQBage', 'agesq'] 
 
 
-# In[ ]:
 
 
 hh_indicators = [col for col in df.columns if col not in ind_indicators]
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 inconsistant_col = {}
@@ -259,7 +222,6 @@ for col in ['Target']:
         inconsistant_col[col] = consistant_value[consistant_value == False]
 
 
-# In[ ]:
 
 
 for household in inconsistant_col['Target'].index:
@@ -268,26 +230,22 @@ for household in inconsistant_col['Target'].index:
         df.loc[df['idhogar'] == household, 'Target'] = target_val_for_parentesco1.values
 
 
-# In[ ]:
 
 
 no_head = set(df['idhogar'].unique()).difference(df['idhogar'][df['parentesco1'] == 1].unique())
 
 
-# In[ ]:
 
 
 len(no_head)
 
 
-# In[ ]:
 
 
 sns.countplot('Target', data = df[df['parentesco1'] == 1])
 plt.xticks((0,1,2,3), ('Extreme Poverty', 'Moderate Poverty', 'Vulnerable', 'Non-Vulnerable'), rotation = 90)
 
 
-# In[ ]:
 
 
 sns.distplot(df['v2a1'][(df['Target'] == 1)&(df['v2a1'] > 0 )], hist=False, label= 'Extreme Poverty')
@@ -299,38 +257,32 @@ sns.distplot(df['v2a1'][(df['Target'] == 4)&(df['v2a1'] > 0 )], hist=False, labe
 plt.legend()
 
 
-# In[ ]:
 
 
 df['hacdor'][df['Target'].notnull()].value_counts()
 
 
-# In[ ]:
 
 
 sns.countplot('Target', data = df[df['hacdor'] == 1])
 plt.xticks((0,1,2,3), ('Extreme Poverty', 'Moderate Poverty', 'Vulnerable', 'Non-Vulnerable'), rotation = 90)
 
 
-# In[ ]:
 
 
 df['Target'][df['hacdor'] == 1].value_counts(normalize = True)
 
 
-# In[ ]:
 
 
 sns.countplot('rooms', data = df[df['Target'].notnull()], hue= 'Target')
 
 
-# In[ ]:
 
 
 df['hacapo'][df['Target'].notnull()].value_counts()
 
 
-# In[ ]:
 
 
 ###sns.countplot('Target', data = df[df['hacapo'] == 1])
@@ -339,7 +291,6 @@ sns.barplot(norm_val.index, norm_val)
 plt.xticks((0,1,2,3), ('Extreme Poverty', 'Moderate Poverty', 'Vulnerable', 'Non-Vulnerable'), rotation = 90)
 
 
-# In[ ]:
 
 
 norm_val = df['Target'][df['v14a'] == 1].value_counts(normalize = True)
@@ -348,7 +299,6 @@ sns.barplot( norm_val.index, norm_val)
 plt.xticks((0, 1, 2, 3), ('Extreme Poverty', 'Moderate Poverty', 'Vulnerable', 'Non-Vulnerable'), rotation = 90)
 
 
-# In[ ]:
 
 
 norm_val = df['Target'][df['refrig'] == 1].value_counts(normalize = True)
@@ -357,7 +307,6 @@ sns.barplot( norm_val.index, norm_val)
 plt.xticks((0, 1, 2, 3), ('Extreme Poverty', 'Moderate Poverty', 'Vulnerable', 'Non-Vulnerable'), rotation = 90)
 
 
-# In[ ]:
 
 
 norm_val = df['Target'][df['v18q'] == 1].value_counts(normalize = True)
@@ -366,14 +315,12 @@ sns.barplot( norm_val.index, norm_val)
 plt.xticks((0, 1, 2, 3), ('Extreme Poverty', 'Moderate Poverty', 'Vulnerable', 'Non-Vulnerable'), rotation = 90)
 
 
-# In[ ]:
 
 
 ## How many individuals in each poverty level own a tablet.
 df['Target'][(df['Target'].notnull())&(df['v18q'] == 1)].value_counts()/df['Target'].value_counts()
 
 
-# In[ ]:
 
 
 ## Number of tablets in household
@@ -381,13 +328,11 @@ sns.countplot('v18q1', data = df[df['parentesco1'] == 1], hue= 'Target' )
 plt.legend(loc = 1)
 
 
-# In[ ]:
 
 
 df[df['parentesco1'] == 1].pivot_table(values = 'idhogar', columns = 'v18q1', index = 'Target', aggfunc = 'count')
 
 
-# In[ ]:
 
 
 ### Average number of children, adults in household
@@ -395,7 +340,6 @@ pivot = df[df['parentesco1'] == 1].pivot_table(values= ['r4t2', 'r4t1'], index =
 sns.heatmap(pivot, annot= True, cmap = density, vmin = 0, vmax = 3)
 
 
-# In[ ]:
 
 
 norm_val = df['tamhog'][df['parentesco1'] == 1].value_counts(normalize = True)
@@ -404,13 +348,11 @@ sns.countplot('tamhog', data = df[df['parentesco1'] == 1], hue= 'Target',)
 plt.legend(loc = 1)
 
 
-# In[ ]:
 
 
 df[df['parentesco1'] == 1].pivot_table(index = 'Target', values = 'tamhog' )
 
 
-# In[ ]:
 
 
 norm_val = df['tamviv'][df['parentesco1'] == 1].value_counts(normalize = True)
@@ -419,25 +361,21 @@ sns.countplot('tamviv', data = df[df['parentesco1'] == 1], hue= 'Target',)
 plt.legend(loc = 1)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 sns.distplot(df['escolari'][(df['Target'] == 1)&(df['parentesco1'] == 1 )], hist=False, rug=False, label= 'Extreme Poverty')
@@ -449,25 +387,21 @@ sns.distplot(df['escolari'][(df['Target'] == 4)&(df['parentesco1'] == 1 )], hist
 plt.legend()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 wall_material = {}
@@ -486,7 +420,6 @@ for ax in plt.gcf().get_axes():
     ax.set_xticklabels(['Brick', 'Socket', 'Cement', 'WasteMat', 'Wood', 'Zink', 'NaturalFiber', 'Other'])
 
 
-# In[ ]:
 
 
 floor_material = {}
@@ -501,7 +434,6 @@ temp = pd.DataFrame(floor_material)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 roof_material = {}
@@ -516,7 +448,6 @@ temp = pd.DataFrame(roof_material)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 water_provision = {}
@@ -531,7 +462,6 @@ temp = pd.DataFrame(water_provision)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 electricity = {}
@@ -546,7 +476,6 @@ temp = pd.DataFrame(electricity)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 toilet = {}
@@ -561,7 +490,6 @@ temp = pd.DataFrame(toilet)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 cooking = {}
@@ -576,7 +504,6 @@ temp = pd.DataFrame(cooking)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 cooking = {}
@@ -591,13 +518,11 @@ temp = pd.DataFrame(cooking)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 (pov_level/in_level).sum()
 
 
-# In[ ]:
 
 
 wasteDisposal = {}
@@ -612,7 +537,6 @@ temp = pd.DataFrame(wasteDisposal)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 wasteDisposal = {}
@@ -627,7 +551,6 @@ temp = pd.DataFrame(wasteDisposal)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 WallQual = {}
@@ -642,7 +565,6 @@ temp = pd.DataFrame(WallQual)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 WallQual = {}
@@ -657,7 +579,6 @@ temp = pd.DataFrame(WallQual)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 RoofQual = {}
@@ -672,7 +593,6 @@ temp = pd.DataFrame(RoofQual)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 RoofQual = {}
@@ -687,7 +607,6 @@ temp = pd.DataFrame(RoofQual)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 FloorQual = {}
@@ -702,7 +621,6 @@ temp = pd.DataFrame(FloorQual)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 indGroup = {}
@@ -718,7 +636,6 @@ temp = pd.DataFrame(indGroup)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 indGroup = {}
@@ -733,7 +650,6 @@ temp = pd.DataFrame(indGroup)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 relationship = {}
@@ -749,7 +665,6 @@ plt.figure(figsize= (10,4))
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 relationship = {}
@@ -764,25 +679,21 @@ temp = pd.DataFrame(relationship)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 df[['hogar_nin', 'hogar_adul', 'hogar_mayor', 'hogar_total']].sum()
 
 
-# In[ ]:
 
 
 df['hogar_mid'] = df['hogar_adul'] -df['hogar_mayor']
 
 
-# In[ ]:
 
 
 education = {} 
@@ -798,7 +709,6 @@ plt.figure(figsize=(10,4))
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 education = {} 
@@ -814,7 +724,6 @@ plt.figure(figsize=(10,4))
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 homeOwnership = {}
@@ -829,31 +738,26 @@ temp = pd.DataFrame(homeOwnership)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 df['Target'][df['computer'] == 1].value_counts()/df['Target'].value_counts()
 
 
-# In[ ]:
 
 
 df['Target'][df['television'] == 1].value_counts()/df['Target'].value_counts()
 
 
-# In[ ]:
 
 
 df['Target'][df['mobilephone'] == 1].value_counts()/df['Target'].value_counts()
 
 
-# In[ ]:
 
 
 sns.countplot(x = 'qmobilephone', data = df, hue = 'Target')
 
 
-# In[ ]:
 
 
 Region = {}
@@ -868,7 +772,6 @@ temp = pd.DataFrame(Region)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 Region = {}
@@ -883,7 +786,6 @@ temp = pd.DataFrame(Region)
 sns.heatmap(temp, cmap = density, vmin = 0 ,vmax = 1, annot=True, linewidths=.1, linecolor='white')
 
 
-# In[ ]:
 
 
 sns.distplot(df['age'][(df['Target'] == 1)&(df['parentesco1'] == 1 )], hist=False, rug=False, label= 'Extreme Poverty')
@@ -895,7 +797,6 @@ sns.distplot(df['age'][(df['Target'] == 4)&(df['parentesco1'] == 1 )], hist=Fals
 plt.legend()
 
 
-# In[ ]:
 
 
 sns.distplot(df['age'][df['Target'] == 1], hist=False, rug=False, label= 'Extreme Poverty')
@@ -907,7 +808,6 @@ sns.distplot(df['age'][df['Target'] == 4], hist=False, rug=False, label= 'Non-vu
 plt.legend()
 
 
-# In[ ]:
 
 
 sns.distplot(df['meaneduc'][(df['Target'] == 1)&(df['parentesco1'] == 1 )], hist=False, rug=False, label= 'Extreme Poverty')
@@ -919,26 +819,22 @@ sns.distplot(df['meaneduc'][(df['Target'] == 4)&(df['parentesco1'] == 1 )], hist
 plt.legend()
 
 
-# In[ ]:
 
 
 df['dependencyR'] = (df['hogar_nin'] + df['hogar_mayor']) / df['hogar_mid']
 
 
-# In[ ]:
 
 
 df['dependencyR'].value_counts()
 
 
-# In[ ]:
 
 
 df['dependencyR'].fillna(0, inplace = True)
 df['dependencyR'].replace(np.inf, 9, inplace = True)
 
 
-# In[ ]:
 
 
 #### df[['edjefa','edjefe', 'escolari']]
@@ -946,14 +842,12 @@ df['edjefa'].replace(to_replace= 'no' , value= np.nan, inplace= True)
 df['edjefe'].replace(to_replace= 'no' , value= np.nan, inplace= True)
 
 
-# In[ ]:
 
 
 sns.distplot(df['meaneduc'][(df['male'] == 1)&(df['parentesco1'] == 1 )], hist=False, rug=False, label= 'Male')
 sns.distplot(df['meaneduc'][(df['female'] == 1)&(df['parentesco1'] == 1 )], hist=False, rug=False, label= 'Female')
 
 
-# In[ ]:
 
 
 df['phonespp'] = df['qmobilephone'] / df['tamviv']
@@ -962,14 +856,12 @@ df['roomspp'] = df['rooms'] / df['tamviv']
 df['rentpp'] = df['v2a1'] / df['tamviv']
 
 
-# In[ ]:
 
 
 df['median_schooling'] = df['escolari'].groupby(df['idhogar']).transform('median')
 df['max_schooling'] = df['escolari'].groupby(df['idhogar']).transform('max')
 
 
-# In[ ]:
 
 
 ## Education of the Household Head
@@ -977,33 +869,28 @@ df['eduForHeadofHH'] = 0
 df.loc[(df['parentesco1']== 1), 'eduForHeadofHH'] = df['escolari']
 
 
-# In[ ]:
 
 
 df['eduForHeadofHH'] = df['eduForHeadofHH'].groupby(df['idhogar']).transform('max')
 
 
-# In[ ]:
 
 
 df['SecondaryEduLess'] = ((df[['instlevel1','instlevel2', 'instlevel3', 'instlevel4']] == 1).any(axis = 1)&(df['age'] > 19))*1
 df['SecondaryEduMore'] = ((df[['instlevel5','instlevel6', 'instlevel7', 'instlevel8', 'instlevel9']] == 1).any(axis = 1)&(df['age'] > 19))*1
 
 
-# In[ ]:
 
 
 df['SecondaryEduMore'].value_counts()
 
 
-# In[ ]:
 
 
 df['MembersWithSecEdu']  = df['SecondaryEduMore'].groupby(df['idhogar']).transform('sum')
 df['MembersWithPrimEdu']  = df['SecondaryEduLess'].groupby(df['idhogar']).transform('sum')
 
 
-# In[ ]:
 
 
 df['Educated_Ratio'] = (df['MembersWithSecEdu']/df['MembersWithPrimEdu'])
@@ -1011,7 +898,6 @@ df['Educated_Ratio'].replace(np.inf, -1, inplace = True)
 df['Educated_Ratio'].fillna(value = 0, inplace = True)
 
 
-# In[ ]:
 
 
 sns.distplot(df['Educated_Ratio'][df['Target'] ==1])
@@ -1020,13 +906,11 @@ sns.distplot(df['Educated_Ratio'][df['Target'] ==3])
 sns.distplot(df['Educated_Ratio'][df['Target'] ==4])
 
 
-# In[ ]:
 
 
 df['access_to_tech'] = ((df['v18q1'] >= 1)&(df['qmobilephone'] >= 1)&(df['computer'] >= 0)&(df['television'] >= 0))*1
 
 
-# In[ ]:
 
 
 df['marital_status'] = (((df['estadocivil3'] ==1)|(df['estadocivil4'] == 1))&(df['parentesco1'] == 1))*1
@@ -1034,14 +918,12 @@ df['marital_status'] = (((df['estadocivil3'] ==1)|(df['estadocivil4'] == 1))&(df
 df['marital_status'] = df['marital_status'].groupby(df['idhogar']).transform('max')
 
 
-# In[ ]:
 
 
 df['FemaleHousehold'] = ((df['male'] == 0)&(df['parentesco1'] == 1))*1
 df['FemaleHousehold'] = df['FemaleHousehold'].groupby(df['idhogar']).transform('max')
 
 
-# In[ ]:
 
 
 df['bedrooms_to_rooms'] = df['bedrooms']/df['rooms']
@@ -1050,7 +932,6 @@ df['rooms_to_tamviv'] = df['rooms']/df['tamviv']
 df['v2a1_to_r4t3'] = df['v2a1']/df['r4t3']
 
 
-# In[ ]:
 
 
 df['female_to_males'] = df['r4m2']/df['r4h2']
@@ -1059,13 +940,11 @@ df['less12_to_adult'] = df['r4t1']/df['hogar_mid']
 df['less12_to_older'] = df['r4t1']/df['r4t2']
 
 
-# In[ ]:
 
 
 (df== np.inf).sum()[(df== np.inf).sum() >0]
 
 
-# In[ ]:
 
 
 df['less12_to_adult'].fillna(0, inplace = True)
@@ -1075,14 +954,12 @@ df['female_to_males'].fillna(0, inplace = True)
 df['female_to_males'].replace(np.inf, -1, inplace = True)
 
 
-# In[ ]:
 
 
 df['NoMalesInHH'] = (df['r4h2'] == 0)*1
 df['NoFemalesInHH'] = (df['r4m2'] == 0)*1
 
 
-# In[ ]:
 
 
 from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
@@ -1096,19 +973,16 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 
 
-# In[ ]:
 
 
 from sklearn.metrics import f1_score, confusion_matrix
 
 
-# In[ ]:
 
 
 (df == np.inf).sum()[(df == np.inf).sum() > 0]
 
 
-# In[ ]:
 
 
 def get_train_test(df):
@@ -1121,13 +995,11 @@ def get_train_test(df):
     return train, test
 
 
-# In[ ]:
 
 
 train, test = get_train_test(df)
 
 
-# In[ ]:
 
 
 columnstoDrop = ['idhogar','Id', 'edjefe', 'edjefa','dependency']
@@ -1148,58 +1020,49 @@ X= std_scl.fit_transform(X)
 test= std_scl.transform(test)
 
 
-# In[ ]:
 
 
 kfold = KFold(n_splits= 5, shuffle= True)
 
 
-# In[ ]:
 
 
 X_train, X_test, y_train, y_test= train_test_split(X,y)
 
 
-# In[ ]:
 
 
 from sklearn.ensemble import RandomForestClassifier
 
 
-# In[ ]:
 
 
 rf_clf = RandomForestClassifier(n_estimators= 10, class_weight= 'balanced')
 rf_clf.fit(X,y)
 
 
-# In[ ]:
 
 
 featureImp = pd.Series(data= rf_clf.feature_importances_, index = X_col)
 featureImp
 
 
-# In[ ]:
 
 
 select =rf_clf.feature_importances_ > 0.001
 sum(select)
 
 
-# In[ ]:
 
 
 clf = LogisticRegression(class_weight = 'balanced', solver= 'liblinear', multi_class= 'ovr')
 
 
-# In[ ]:
 
 
 cross_val_score(clf,  , y, scoring = 'f1_macro', cv= kfold)
 
 
-# In[ ]:
 
 
 ### cross_val_score(clf, X, y, scoring = 'f1_macro', cv= kfold)
@@ -1207,7 +1070,6 @@ cross_val_score(clf,  , y, scoring = 'f1_macro', cv= kfold)
 ### array([ 0.4278837 ,  0.45065472,  0.48420681,  0.42884422,  0.44957925])
 
 
-# In[ ]:
 
 
 for reg in [0.001, 0.01, 0.1, 1, 10, 20, 30]:
@@ -1224,7 +1086,6 @@ for reg in [0.001, 0.01, 0.1, 1, 10, 20, 30]:
 ### 0.49290073775881293
 
 
-# In[ ]:
 
 
 clf = LogisticRegression(class_weight = 'balanced', solver= 'liblinear', multi_class= 'ovr')
@@ -1232,7 +1093,6 @@ clf = LogisticRegression(class_weight = 'balanced', solver= 'liblinear', multi_c
 pred = cross_val_predict(clf, X[:,select], y, cv=kfold).astype(int)
 
 
-# In[ ]:
 
 
 ## confusion_matrix(y, pred)
@@ -1243,7 +1103,6 @@ pred = cross_val_predict(clf, X[:,select], y, cv=kfold).astype(int)
 ##        [ 274,  443,  395, 4892]])
 
 
-# In[ ]:
 
 
 clf = LogisticRegression(class_weight = 'balanced', solver= 'liblinear', multi_class= 'ovr', C= 20)
@@ -1251,46 +1110,39 @@ clf.fit( X[:,select], y)
 prediction = clf.predict(test[:,select]).astype(int)
 
 
-# In[ ]:
 
 
 submission = pd.DataFrame({'Id': in_test['Id'], 'idhogar': in_test['idhogar'], 'isHead': in_test['parentesco1'] , 'Target':prediction})
 submission['Target'].value_counts(normalize = True)
 
 
-# In[ ]:
 
 
 submission.to_csv('./Submission_log_clf.csv', columns=['Id', 'Target'], index= False)
 
 
-# In[ ]:
 
 
 gb_clf = GradientBoostingClassifier()
 
 
-# In[ ]:
 
 
 ##cross_val_score(gb_clf, X[:, select], y, scoring = 'f1_macro', cv= kfold).mean()
 ## 0.6303527489770167
 
 
-# In[ ]:
 
 
 ## prediction = cross_val_predict(gb_clf, X[:, select], y, cv=kfold)
 
 
-# In[ ]:
 
 
 ##  f1_score(y, prediction, average='macro')
 ##  0.6287221065578112
 
 
-# In[ ]:
 
 
 ## confusion_matrix(y, prediction)
@@ -1301,156 +1153,132 @@ gb_clf = GradientBoostingClassifier()
 ##       [  36,  176,   31, 5761]])
 
 
-# In[ ]:
 
 
 gb_clf.fit(X[:,select],y)
 prediction = gb_clf.predict(test[:, select]).astype(int)
 
 
-# In[ ]:
 
 
 submission = pd.DataFrame({'Id': in_test['Id'], 'idhogar': in_test['idhogar'], 'isHead': in_test['parentesco1'] , 'Target':prediction})
 submission['Target'].value_counts(normalize = True)
 
 
-# In[ ]:
 
 
 submission.to_csv('./Submission_GradientBoosting_clf.csv', columns=['Id', 'Target'], index= False)
 
 
-# In[ ]:
 
 
 tree_clf = DecisionTreeClassifier()
 
 
-# In[ ]:
 
 
 ## cross_val_score(tree_clf, X[:,select], y, scoring = 'f1_macro', cv= kfold).mean()
 ## 0.9298023676497221
 
 
-# In[ ]:
 
 
 ## tree_clf.fit(X[:,select],y)
 ## prediction = tree_clf.predict(test[:, select]).astype(int)
 
 
-# In[ ]:
 
 
 ## submission = pd.DataFrame({'Id': in_test['Id'], 'idhogar': in_test['idhogar'], 'isHead': in_test['parentesco1'] , 'Target':prediction})
 ## submission['Target'].value_counts(normalize = True)
 
 
-# In[ ]:
 
 
 ## submission.to_csv('./Submission_tree_clf.csv', columns=['Id', 'Target'], index= False)
 
 
-# In[ ]:
 
 
 from sklearn.ensemble import VotingClassifier
 
 
-# In[ ]:
 
 
 voting_clf = VotingClassifier(estimators= [('tree', tree_clf), ('gradiantBoost', gb_clf), ('logR', clf)], voting= 'hard')
 
 
-# In[ ]:
 
 
 cross_val_score(voting_clf, X[:, select], y, scoring = 'f1_macro', cv= kfold)
 
 
-# In[ ]:
 
 
 prediction = cross_val_predict(voting_clf,  X[:, select], y, cv=kfold)
 confusion_matrix(y, prediction)
 
 
-# In[ ]:
 
 
 voting_clf.fit(X[:, select],y)
 prediction = voting_clf.predict(test[:, select]).astype(int)
 
 
-# In[ ]:
 
 
 submission = pd.DataFrame({'Id': in_test['Id'], 'idhogar': in_test['idhogar'], 'isHead': in_test['parentesco1'] , 'Target':prediction})
 submission['Target'].value_counts(normalize = True)
 
 
-# In[ ]:
 
 
 submission.to_csv('./Submission_voting_clfHardVote.csv', columns=['Id', 'Target'], index= False)
 
 
-# In[ ]:
 
 
 voting_clf = VotingClassifier(estimators= [('tree', tree_clf), ('gradiantBoost', gb_clf), ('logR', clf)], voting= 'soft')
 
 
-# In[ ]:
 
 
 ## cross_val_score(voting_clf, X, y, scoring = 'f1_macro', cv= kfold)
 
 
-# In[ ]:
 
 
 ## prediction = cross_val_predict(voting_clf, X, y, cv=kfold)
 ## confusion_matrix(y, prediction)
 
 
-# In[ ]:
 
 
 voting_clf.fit(X[:, select],y)
 prediction = voting_clf.predict(test[:, select]).astype(int)
 
 
-# In[ ]:
 
 
 submission = pd.DataFrame({'Id': in_test['Id'], 'idhogar': in_test['idhogar'], 'isHead': in_test['parentesco1'] , 'Target':prediction})
 submission['Target'].value_counts(normalize = True)
 
 
-# In[ ]:
 
 
 submission.to_csv('./Submission_voting_clfSoftVote.csv', columns=['Id', 'Target'], index= False)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 

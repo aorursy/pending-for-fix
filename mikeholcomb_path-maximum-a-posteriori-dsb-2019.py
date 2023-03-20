@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,13 +21,11 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 DATA_DIR='/kaggle/input/data-science-bowl-2019'
 
 
-# In[3]:
 
 
 train = pd.read_csv(os.path.join(DATA_DIR,'train.csv'))
@@ -36,7 +33,6 @@ test = pd.read_csv(os.path.join(DATA_DIR,'test.csv'))
 train_labels = pd.read_csv(os.path.join(DATA_DIR,'train_labels.csv'))
 
 
-# In[4]:
 
 
 # Recreate the train_labels.csv file for episodes in the training data
@@ -81,13 +77,11 @@ def extract_accuracy_group(df: pd.DataFrame) -> pd.DataFrame:
     return score_events_sum.reset_index()
 
 
-# In[5]:
 
 
 test_labels = extract_accuracy_group(test)
 
 
-# In[6]:
 
 
 def build_episode_game_sessions(df):
@@ -134,20 +128,17 @@ def build_session_labels(events, labels):
     return add_labels_to_sessions(starts, labels_with_times)
 
 
-# In[7]:
 
 
 train_bm_starts, train_no_asmt = build_session_labels(train, train_labels)
 
 
-# In[8]:
 
 
 test_bm_starts, test_to_predict = build_session_labels(test, test_labels)
 bm_starts = pd.concat([train_bm_starts, test_bm_starts], sort=True)
 
 
-# In[9]:
 
 
 idx_to_titles = list(set(bm_starts['title'])) + ['<START>','<END>']
@@ -155,7 +146,6 @@ titles_to_idx = {title: idx for idx, title in enumerate(idx_to_titles)}
 bm_starts['title_idx'] = bm_starts['title'].map(titles_to_idx)
 
 
-# In[10]:
 
 
 idx_to_asmt = list(set(bm_starts['title_episode']))
@@ -163,13 +153,11 @@ asmt_to_idx = {title: idx for idx, title in enumerate(idx_to_asmt)}
 bm_starts['asmt_idx'] = bm_starts['title_episode'].map(asmt_to_idx)
 
 
-# In[11]:
 
 
 asmt_to_idx
 
 
-# In[12]:
 
 
 bm_session_columns = ['installation_id','episode_session',
@@ -177,13 +165,11 @@ bm_session_columns = ['installation_id','episode_session',
 bm_episodes = bm_starts.groupby(bm_session_columns)['title_idx'].aggregate(lambda x: [len(idx_to_titles)-2] + list(x) ).reset_index()
 
 
-# In[13]:
 
 
 bm_episodes.head()
 
 
-# In[14]:
 
 
 num_asmt, num_scores, num_titles = len(idx_to_asmt), 4, len(idx_to_titles)
@@ -200,7 +186,6 @@ for asmt, acc, path in zip(asmt_idx, accuracy_group, paths):
 transition_matrix = transition_matrix / transition_matrix.sum(axis=-1).reshape(*transition_matrix.shape[:-1],1)
 
 He we calculate a prior probability of a given `accuracy_group` for each assessment type.
-# In[15]:
 
 
 def build_priors(sessions):
@@ -211,7 +196,6 @@ def build_priors(sessions):
 priors = build_priors(bm_episodes)
 
 
-# In[16]:
 
 
 from sklearn.metrics import cohen_kappa_score
@@ -261,19 +245,16 @@ class PathNaiveBayes:
                'kappa': kappa}
 
 
-# In[17]:
 
 
 model = PathNaiveBayes(priors,transition_matrix, titles_to_idx['<START>'], titles_to_idx['<END>'] )
 
 
-# In[18]:
 
 
 ## Results on Training Data
 
 
-# In[19]:
 
 
 results = model.evaluate(asmts=bm_episodes['asmt_idx'],
@@ -283,7 +264,6 @@ results.pop('predictions')
 print(results)
 
 
-# In[20]:
 
 
 test.set_index(['installation_id','timestamp'])
@@ -291,7 +271,6 @@ last_entries = test.assign(rn=test.sort_values(['timestamp'], ascending=False)  
 last_entries[['installation_id','title']].to_csv('test_final_title.csv',index=False)
 
 
-# In[21]:
 
 
 submission = pd.read_csv('test_final_title.csv')
@@ -299,7 +278,6 @@ submission['asmt_idx'] = submission['title'].map(asmt_to_idx)
 submission_asmt = pd.DataFrame(index=submission['installation_id'], data=submission['asmt_idx'].values, columns=['asmt_idx'])
 
 
-# In[22]:
 
 
 test_to_predict['title_idx'] = test_to_predict['title'].map(titles_to_idx)
@@ -307,7 +285,6 @@ test_to_predict = pd.merge(left=test_to_predict,right=submission_asmt,left_on='i
 test_to_predict
 
 
-# In[23]:
 
 
 test_session_columns = ['installation_id','asmt_idx']
@@ -315,7 +292,6 @@ test_episodes = test_to_predict.groupby(test_session_columns)['title_idx'].aggre
 test_episodes
 
 
-# In[24]:
 
 
 def predict_row(row):
@@ -325,13 +301,11 @@ test_episodes['accuracy_group'] = test_episodes.apply(predict_row,axis=1)
 test_episodes
 
 
-# In[25]:
 
 
 test_episodes[['installation_id','accuracy_group']].to_csv('submission.csv',index=False)
 
 
-# In[26]:
 
 
 test_episodes.groupby(['asmt_idx','accuracy_group'])['installation_id'].count().unstack(-1)

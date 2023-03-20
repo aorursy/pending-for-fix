@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # Memory saving function credit to https://www.kaggle.com/gemartin/load-data-reduce-memory-usage
@@ -43,7 +42,6 @@ def reduce_mem_usage(df):
     return df
 
 
-# In[2]:
 
 
 # Importing the libraries
@@ -61,13 +59,11 @@ y = dataset_train.loc[:,'winPlacePerc']
 X_test2 = dataset_test.loc[:,:]
 
 
-# In[3]:
 
 
 X_test2 = dataset_test.loc[:,'assists':]
 
 
-# In[4]:
 
 
 # Splitting the dataset into the Training set and Test set
@@ -75,7 +71,6 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
 
 
-# In[5]:
 
 
 from sklearn.preprocessing import LabelEncoder,OneHotEncoder
@@ -94,7 +89,6 @@ X_test = ohext.fit_transform(X_test).toarray()
 X_test = X_test[:,1:]
 
 
-# In[6]:
 
 
 le_xt2 = LabelEncoder()
@@ -105,7 +99,6 @@ X_test2 = ohext.fit_transform(X_test2).toarray()
 X_test2 = X_test2[:,1:]
 
 
-# In[7]:
 
 
 # Feature Scaling
@@ -115,19 +108,16 @@ X_test2 = X_test2[:,1:]
 #X_test = sc.transform(X_test)
 
 
-# In[8]:
 
 
 #X_test2 = sc.transform(X_test2)
 
 
-# In[9]:
 
 
 X_train
 
 
-# In[10]:
 
 
 from sklearn.metrics import mean_absolute_error
@@ -135,7 +125,6 @@ from math import sqrt
 from sklearn.metrics import r2_score
 
 
-# In[11]:
 
 
 '''import xgboost
@@ -146,20 +135,17 @@ XGB_pred1 = XGBModel.predict(X_test)
 ...
 
 
-# In[12]:
 
 
 from sklearn.ensemble import RandomForestRegressor
 rfmodel = RandomForestRegressor(n_estimators=80, random_state=0, n_jobs=3, min_samples_leaf=3, max_features='sqrt')
 
 
-# In[13]:
 
 
 rfmodel.fit(X_train,y_train)
 
 
-# In[14]:
 
 
 pred1 = rfmodel.predict(X_test)
@@ -167,43 +153,36 @@ MAE = mean_absolute_error(y_test , pred1)
 print("MAE = > {}".format(MAE))
 
 
-# In[15]:
 
 
 XGB_pred = rfmodel.predict(X_test2)
 
 
-# In[16]:
 
 
 ss = pd.read_csv("../input/sample_submission_V2.csv")
 
 
-# In[17]:
 
 
 ss.drop(['winPlacePerc'],axis = 1)
 
 
-# In[18]:
 
 
 ss['winPlacePerc'] = XGB_pred
 
 
-# In[19]:
 
 
 ss
 
 
-# In[20]:
 
 
 ss.to_csv('mysubmission2.csv', index = False)
 
 
-# In[21]:
 
 
 

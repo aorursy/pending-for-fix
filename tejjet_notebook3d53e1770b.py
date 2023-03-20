@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -34,7 +33,6 @@ print(patients)
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 # Load the scans in given folder path
@@ -52,7 +50,6 @@ def load_scan(path):
     return slices
 
 
-# In[3]:
 
 
 def get_pixels_hu(scans):
@@ -78,7 +75,6 @@ def get_pixels_hu(scans):
     return np.array(image, dtype=np.int16)
 
 
-# In[4]:
 
 
 first_patient = load_scan(INPUT_FOLDER + patients[0])
@@ -93,7 +89,6 @@ plt.imshow(first_patient_pixels[80], cmap=plt.cm.gray)
 plt.show()
 
 
-# In[5]:
 
 
 `

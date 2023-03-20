@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -26,13 +25,11 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 teams = pd.read_csv('/kaggle/input/google-cloud-ncaa-march-madness-2020-division-1-mens-tournament/MDataFiles_Stage1/MTeams.csv')
 
 
-# In[3]:
 
 
 def get_team_dict(df):
@@ -44,13 +41,11 @@ def get_team_dict(df):
 team_dict = get_team_dict(teams)
 
 
-# In[4]:
 
 
 players = pd.read_csv('/kaggle/input/google-cloud-ncaa-march-madness-2020-division-1-mens-tournament/MPlayers.csv')
 
 
-# In[5]:
 
 
 def get_player_dict(df):
@@ -61,14 +56,12 @@ def get_player_dict(df):
     return dict((x,y) for x,y in list(zip(player_ids, player_names)))
 
 
-# In[6]:
 
 
 results = pd.read_csv('/kaggle/input/google-cloud-ncaa-march-madness-2020-division-1-mens-tournament/MDataFiles_Stage1/MNCAATourneyDetailedResults.csv')
 results = results.drop('WLoc', axis = 1) #useless col (1115 'N' values)
 
 
-# In[7]:
 
 
 def plot_kde(results, col):
@@ -89,7 +82,6 @@ for col in stat_cols:
     plot_kde(results, col)
 
 
-# In[8]:
 
 
 def plot_kde(results, col):
@@ -102,7 +94,6 @@ def plot_kde(results, col):
     sns.kdeplot(results[lost_col])
 
 
-# In[9]:
 
 
 team_dict = get_team_dict(teams)
@@ -110,7 +101,6 @@ results['WTeam'] = results.WTeamID.map(lambda x:team_dict[x])
 results['LTeam'] = results.LTeamID.map(lambda x:team_dict[x])
 
 
-# In[10]:
 
 
 def basic_eda(train):
@@ -125,7 +115,6 @@ def basic_eda(train):
             print (train[col].unique()[:10])
 
 
-# In[11]:
 
 
 ev_16 = pd.read_csv('/kaggle/input/google-cloud-ncaa-march-madness-2020-division-1-mens-tournament/MEvents2016.csv')
@@ -135,14 +124,12 @@ ev_19 = pd.read_csv('/kaggle/input/google-cloud-ncaa-march-madness-2020-division
 players = pd.read_csv('/kaggle/input/google-cloud-ncaa-march-madness-2020-division-1-mens-tournament/MPlayers.csv')
 
 
-# In[12]:
 
 
 ev_full = pd.concat([ev_16, ev_17, ev_18, ev_19], ignore_index = True)
 del ev_16, ev_17, ev_18, ev_19
 
 
-# In[13]:
 
 
 ev_full['win_bool'] = ev_full['WTeamID'] - ev_full['EventTeamID']
@@ -161,64 +148,54 @@ ev_full['event_name'] = np.where(b == 0, a, c)
 #ignore player id 0 when eda player stats
 
 
-# In[14]:
 
 
 ev_full = ev_full.sort_values(['Season','DayNum','WTeamID','WCurrentScore','ElapsedSeconds']).reset_index().drop('index', axis = 1)
 
 
-# In[15]:
 
 
 val_cnts = ev_full['event_name'].value_counts()
 
 
-# In[16]:
 
 
 val_cnts[-30:-20]
 
 
-# In[ ]:
 
 
 
 
 
-# In[17]:
 
 
 val_cnts[:45]
 
 
-# In[18]:
 
 
 win = ev_full[ev_full.win_bool == 1].groupby(['Season',"DayNum", "WTeamID", "event_name"]).size()
 lost = ev_full[ev_full.win_bool == 0].groupby(['Season',"DayNum", "WTeamID", "event_name"]).size()
 
 
-# In[19]:
 
 
 lol = ev_full.iloc[7897547:7897557, :]
 lol.head(20)
 
 
-# In[20]:
 
 
 lol = ev_full.iloc[7904503:7904509, :]
 lol.head(20)
 
 
-# In[21]:
 
 
 ev_full[ev_full.event_name == "miss1_1of3"]
 
 
-# In[22]:
 
 
 
@@ -226,7 +203,6 @@ evname = 'made2_stepb'
 plt.figure(figsize = (15,4))
 
 
-# In[23]:
 
 
 for event in ['s':
@@ -239,13 +215,11 @@ for event in ['s':
         lost_ax = sns.kdeplot(match_group[match_group.win_bool == 1][match_group.event_name == event].rename(columns = {'ev_count':'won'})['won'].dropna()) 
 
 
-# In[24]:
 
 
 ev_full[ev_full.event_name == 'jumpb_won']
 
 
-# In[25]:
 
 
 ev_name = 'jumpb_won'
@@ -256,7 +230,6 @@ lol_win.columns = ['Season', 'DayNum', 'WTeamID', 'event_name', 'win_count']
 lol_lost.columns = ['Season', 'DayNum', 'WTeamID', 'event_name', 'lost_count']
 
 
-# In[26]:
 
 
 for i in lol_win.event_name.unique():
@@ -264,31 +237,26 @@ for i in lol_win.event_name.unique():
         print (i)
 
 
-# In[27]:
 
 
 ev_name = 'reb_def'
 
 
-# In[28]:
 
 
 lol_lost[lol_lost.event_name == ev_name]['lost_count'].value_counts()
 
 
-# In[29]:
 
 
 lol_win[lol_win.event_name == ev_name]['win_count'].value_counts()
 
 
-# In[ ]:
 
 
 
 
 
-# In[30]:
 
 
 ev_name = 'made2_stepb'
@@ -298,7 +266,6 @@ sns.distplot(lol_win[lol_win.event_name == ev_name]['win_count'])
 sns.plot(lol_lost[lol_lost.event_name == ev_name]['lost_count'])
 
 
-# In[31]:
 
 
 year = 2017
@@ -326,7 +293,6 @@ sns.barplot(x = 'event_name', y = 'count', data = lost_top)
 plt.xticks(rotation = 45)
 
 
-# In[32]:
 
 
 full_diff_df = pd.DataFrame({'event_name':list(ev_full.event_name.unique())})
@@ -350,38 +316,32 @@ for year in [2016,2017,2018,2019]:
     full_diff_df = pd.merge(full_diff_df, diff_df, how = 'left', on = 'event_name')
 
 
-# In[33]:
 
 
 event_names = full_diff_df.sort_values('diff_2017').head(23).event_name.unique()
 
 
-# In[34]:
 
 
 match_group = ev_full.groupby(['Season','DayNum','EventTeamID','event_name','win_bool'])['ElapsedSeconds'].count().reset_index()
 
 
-# In[35]:
 
 
 ev_full.columns
 
 
-# In[36]:
 
 
 match_group.columns = ['Season', 'DayNum', 'EventTeamID', 'event_name', 'win_bool',
        'ev_count']
 
 
-# In[37]:
 
 
 match_group.head()
 
 
-# In[38]:
 
 
 for event in event_names:
@@ -398,13 +358,11 @@ for event in event_names:
     
 
 
-# In[39]:
 
 
 match_group = ev_full.groupby(['Season','DayNum','WTeamID','LTeamID'])['']
 
 
-# In[40]:
 
 
 #all of the nan event_names only exists in 2019
@@ -413,55 +371,46 @@ lol_list.remove(np.nan)
 ev_full[ev_full.event_name.isin(lol_list)].Season.unique()
 
 
-# In[41]:
 
 
 ev_full.isnull().sum()
 
 
-# In[42]:
 
 
 ev_full.EventSubType.unique()
 
 
-# In[43]:
 
 
 ev_full[ev_full.EventSubType == 'coate'].DayNum.unique()
 
 
-# In[44]:
 
 
 ev_names = list(ev_full.event_name.unique())
 
 
-# In[45]:
 
 
 ev_full.event_name.nunique()
 
 
-# In[46]:
 
 
 diff_df['diff'] = diff_df['win_count'] / diff_df['lost_count']
 
 
-# In[47]:
 
 
 pd.DataFrame({'event_name':list(ev_full.event_name.unique())})
 
 
-# In[48]:
 
 
 diff_df.sort_values('diff')
 
 
-# In[49]:
 
 
 lol_top = lol1.head(10)
@@ -470,19 +419,16 @@ sns.barplot(x = 'event_name', y = 'count', data = lol_top)
 plt.xticks(rotation = 45)
 
 
-# In[50]:
 
 
 lol1.head(1)
 
 
-# In[51]:
 
 
 lol.tail(3)
 
 
-# In[52]:
 
 
 for season in ev_full.Season.unique():
@@ -492,19 +438,16 @@ for season in ev_full.Season.unique():
     bottom1
 
 
-# In[53]:
 
 
 sample_df = pd.read_csv('/kaggle/input/google-cloud-ncaa-march-madness-2020-division-1-mens-tournament/MSampleSubmissionStage1_2020.csv')
 
 
-# In[54]:
 
 
 sample_df
 
 
-# In[ ]:
 
 
 

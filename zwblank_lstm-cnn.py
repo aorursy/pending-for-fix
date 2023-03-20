@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -47,7 +46,6 @@ from keras.callbacks import ModelCheckpoint, TensorBoard, Callback, EarlyStoppin
 from sklearn.preprocessing import OneHotEncoder
 
 
-# In[2]:
 
 
 train = pd.read_csv("../input/finaltrain/newTRAIN.csv")
@@ -79,7 +77,6 @@ val = dataset_split(val)
 test = test[:76545]
 
 
-# In[3]:
 
 
 max_features = 90000
@@ -88,14 +85,12 @@ full_text = list(train['title'].values) + list(test["title"].values)
 tk.fit_on_texts(full_text)
 
 
-# In[4]:
 
 
 train_tokenized = tk.texts_to_sequences(train['title'].fillna('missing'))
 test_tokenized = tk.texts_to_sequences(test['title'].fillna('missing'))
 
 
-# In[5]:
 
 
 train['title'].apply(lambda x: len(x.split())).plot(kind='hist');
@@ -103,7 +98,6 @@ plt.yscale('log');
 plt.title('Distribution of question text length in characters')
 
 
-# In[6]:
 
 
 max_len = 70
@@ -112,20 +106,17 @@ X_val = pad_sequences(tk.texts_to_sequences(val.title.fillna('missing')), maxlen
 X_test = pad_sequences(test_tokenized, maxlen = max_len)
 
 
-# In[7]:
 
 
 embedding_path = "../input/quora-insincere-questions-classification/embeddings/glove.840B.300d/glove.840B.300d.txt"
 #embedding_path = "../input/embeddings/paragram_300_sl999/paragram_300_sl999.txt"
 
 
-# In[8]:
 
 
 embed_size = 300
 
 
-# In[9]:
 
 
 def get_coefs(word,*arr): return word, np.asarray(arr, dtype='float32')
@@ -142,14 +133,12 @@ for word, i in word_index.items():
     if embedding_vector is not None: embedding_matrix[i] = embedding_vector
 
 
-# In[10]:
 
 
 ohe = OneHotEncoder(sparse=False)
 y_ohe = ohe.fit_transform(train['Category'].values.reshape(-1, 1))
 
 
-# In[11]:
 
 
 def build_model(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, kernel_size1=3, kernel_size2=2, dense_units=128, dr=0.1, conv_size=32, epochs=20):
@@ -199,14 +188,12 @@ def build_model(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, kernel_size1=3, kerne
     return model
 
 
-# In[12]:
 
 
 
 get_ipython().run_cell_magic('time', '', 'model1 = build_model(lr = 1e-4, lr_d = 0, units = 128, spatial_dr = 0.5, kernel_size1=4, kernel_size2=3, dense_units=58*2, dr=0.1, conv_size=16, epochs=5)')
 
 
-# In[13]:
 
 
 pred = model1.predict(X_test, batch_size = 1024, verbose = 1)
@@ -214,7 +201,6 @@ predictions = np.round(np.argmax(pred, axis=1)).astype(int)
 print(np.unique(predictions))
 
 
-# In[14]:
 
 
 def build_model1(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, kernel_size1=3, kernel_size2=2, dense_units=128, dr=0.1, conv_size=32, epochs=20):
@@ -254,7 +240,6 @@ def build_model1(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, kernel_size1=3, kern
     return model
 
 
-# In[15]:
 
 
 def build_model2(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, kernel_size1=3, kernel_size2=2, dense_units=128, dr=0.1, conv_size=32, epochs=20):
@@ -293,19 +278,16 @@ def build_model2(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, kernel_size1=3, kern
     return model
 
 
-# In[16]:
 
 
 get_ipython().run_cell_magic('time', '', 'model2 = build_model2(lr = 1e-4, lr_d = 1e-7, units = 64, spatial_dr = 0.3, kernel_size1=4, kernel_size2=3, dense_units = 64, dr=0.1, conv_size=8, epochs=5)')
 
 
-# In[17]:
 
 
 model3 = build_model1(lr = 1e-4, lr_d = 1e-7, units = 256, spatial_dr = 0.1, kernel_size1=4, kernel_size2=3, dense_units = 64, dr=0.1, conv_size=16, epochs=5)
 
 
-# In[18]:
 
 
 pred = model3.predict(X_test, batch_size = 1024, verbose = 1)
@@ -313,7 +295,6 @@ predictions = np.round(np.argmax(pred, axis=1)).astype(int)
 print(np.unique(predictions))
 
 
-# In[19]:
 
 
 pred = model2.predict(X_test, batch_size = 1024, verbose = 1)
@@ -321,7 +302,6 @@ predictions = np.round(np.argmax(pred, axis=1)).astype(int)
 print(np.unique(predictions))
 
 
-# In[20]:
 
 
 class Attention(Layer):
@@ -420,7 +400,6 @@ class Attention(Layer):
         return input_shape[0],  self.features_dim
 
 
-# In[21]:
 
 
 def build_model3(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, dense_units=128, dr=0.1, use_attention=True):
@@ -448,13 +427,11 @@ def build_model3(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, dense_units=128, dr=
     return model
 
 
-# In[22]:
 
 
 get_ipython().run_cell_magic('time', '', 'file_path = "best_model.hdf5"\ncheck_point = ModelCheckpoint(file_path, monitor = "val_loss", verbose = 1,\n                              save_best_only = True, mode = "min")\nearly_stop = EarlyStopping(monitor = "val_loss", mode = "min", patience = 3)\nmodel4 = build_model3(lr = 1e-3, lr_d = 1e-7, units = 128, spatial_dr = 0.3, dense_units=58*2, dr=0.1, use_attention=True)\nhistory = model4.fit(X_train, y_ohe, batch_size = 512, epochs = 10, validation_split=0.1, \n                    verbose = 1, callbacks = [check_point, early_stop])')
 
 
-# In[23]:
 
 
 def build_model4(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, kernel_size1=3, kernel_size2=2, dense_units=128, dr=0.1, conv_size=32, epochs=20):
@@ -488,19 +465,16 @@ def build_model4(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, kernel_size1=3, kern
     return model
 
 
-# In[24]:
 
 
 get_ipython().run_cell_magic('time', '', 'model5 = build_model4(lr = 1e-4, lr_d = 1e-7, units = 128, spatial_dr = 0.3, kernel_size1=3, dense_units=58*2, dr=0.8, conv_size=8, epochs=10)')
 
 
-# In[25]:
 
 
 model6 = build_model4(lr = 1e-4, lr_d = 1e-7, units = 256, spatial_dr = 0.3, kernel_size1=4, dense_units=58*2, dr=0.1, conv_size=8, epochs=5)
 
 
-# In[26]:
 
 
 def build_model5(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, kernel_size1=3, kernel_size2=2, dense_units=128, dr=0.1, conv_size=32, epochs=20):
@@ -531,19 +505,16 @@ def build_model5(lr=0.0, lr_d=0.0, units=0, spatial_dr=0.0, kernel_size1=3, kern
     return model
 
 
-# In[27]:
 
 
 model7 = build_model5(lr = 1e-4, lr_d = 1e-7, units = 128, spatial_dr = 0.3, kernel_size1=4, dense_units=64, dr=0.8, conv_size=8, epochs=5)
 
 
-# In[28]:
 
 
 model8 = build_model5(lr = 1e-4, lr_d = 1e-7, units = 256, spatial_dr = 0.3, kernel_size1=4, dense_units=64, dr=1.2, conv_size=8, epochs=10)
 
 
-# In[29]:
 
 
 from nltk import word_tokenize
@@ -553,7 +524,6 @@ tfv = TfidfVectorizer(min_df=3,  max_features=None,
             smooth_idf=1,sublinear_tf=1, stop_words = 'english')
 
 
-# In[30]:
 
 
 tfv.fit(list(train.title.values) + list(val.title.values) + list(test.title.values))
@@ -562,13 +532,11 @@ xval = tfv.transform(val.title.values)
 xtest = tfv.transform(test.title.values)
 
 
-# In[31]:
 
 
 clf = xgb.XGBClassifier(max_depth=12, n_estimators=2000, colsample_bytree=0.8, random_state = 123, objective='multi:softmax',  num_class = 58, subsample=0.8, n_jobs=-1, learning_rate=0.1, silent = False)
 
 
-# In[32]:
 
 
 ytrain, yval = train.Category, val.Category
@@ -580,7 +548,6 @@ print('Beauty Cross Validation Accuracy:', accuracy_score(yval, clf.predict(xval
 xgproba = clf.predict_proba(xtrain, ntree_limit=1000)
 
 
-# In[33]:
 
 
 pred1 = model1.predict(X_train, batch_size = 1024, verbose = 1)
@@ -597,7 +564,6 @@ y_ohe = ohe.fit_transform(xgpred.values.reshape(-1, 1))
 #pred = pred / 8
 
 
-# In[34]:
 
 
 from sklearn.metrics import accuracy_score
@@ -612,7 +578,6 @@ ensemble_predictions = gbm.predict(x_ensemble)
 print(accuracy_score(ensemble_predictions, train.Category))
 
 
-# In[35]:
 
 
 pred1 = model1.predict(X_val, batch_size = 1024, verbose = 1)
@@ -643,7 +608,6 @@ ensemble_predictions = gbm.predict(x_ensemble)
 print(accuracy_score(ensemble_predictions, val.Category))
 
 
-# In[36]:
 
 
 pred1 = model1.predict(X_test, batch_size = 1024, verbose = 1)
@@ -667,14 +631,12 @@ ohe = OneHotEncoder(sparse=False)
 y_ohe = ohe.fit_transform(xgpred.values.reshape(-1, 1))
 
 
-# In[37]:
 
 
 x_ensemble = np.concatenate((pred1,pred2,pred3,pred4,pred5,pred6,pred7,pred8,y_ohe),axis=1)
 ensemble_predictions = gbm.predict(x_ensemble)
 
 
-# In[38]:
 
 
 pd.DataFrame(ensemble_predictions).to_csv("lstm_cnn_submission.csv",index=False)

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 BATCH_SIZE = 48
@@ -20,7 +19,6 @@ MAX_TRAIN_EPOCHS = 99
 AUGMENT_BRIGHTNESS = False
 
 
-# In[ ]:
 
 
 import os
@@ -97,7 +95,6 @@ def masks_as_color(in_mask_list):
     return all_masks
 
 
-# In[ ]:
 
 
 masks = pd.read_csv(os.path.join('../input/', 'train_ship_segmentations.csv'))
@@ -107,7 +104,6 @@ print((~not_empty).sum(), 'empty images in', masks.ImageId.nunique(), 'total ima
 masks.head()
 
 
-# In[ ]:
 
 
 fig, (ax1, ax2, ax3, ax4) = plt.subplots(1, 4, figsize = (16, 5))
@@ -131,7 +127,6 @@ print('Check Decoding->Encoding',
 print(np.sum(img_0 - img_1), 'error')
 
 
-# In[ ]:
 
 
 masks['ships'] = masks['EncodedPixels'].map(lambda c_row: 1 if isinstance(c_row, str) else 0)
@@ -148,13 +143,11 @@ masks.drop(['ships'], axis=1, inplace=True)
 unique_img_ids.sample(7)
 
 
-# In[ ]:
 
 
 unique_img_ids['ships'].hist(bins=unique_img_ids['ships'].max())
 
 
-# In[ ]:
 
 
 SAMPLES_PER_GROUP = 2000
@@ -163,7 +156,6 @@ balanced_train_df['ships'].hist(bins=balanced_train_df['ships'].max()+1)
 print(balanced_train_df.shape[0], 'masks')
 
 
-# In[ ]:
 
 
 from sklearn.model_selection import train_test_split
@@ -176,7 +168,6 @@ print(train_df.shape[0], 'training masks')
 print(valid_df.shape[0], 'validation masks')
 
 
-# In[ ]:
 
 
 def make_image_gen(in_df, batch_size = BATCH_SIZE):
@@ -199,7 +190,6 @@ def make_image_gen(in_df, batch_size = BATCH_SIZE):
                 out_rgb, out_mask=[], []
 
 
-# In[ ]:
 
 
 train_gen = make_image_gen(train_df)
@@ -208,7 +198,6 @@ print('x', train_x.shape, train_x.min(), train_x.max())
 print('y', train_y.shape, train_y.min(), train_y.max())
 
 
-# In[ ]:
 
 
 fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize = (30, 10))
@@ -224,13 +213,11 @@ ax3.set_title('Outlined Ships')
 fig.savefig('overview.png')
 
 
-# In[ ]:
 
 
 get_ipython().run_cell_magic('time', '', 'valid_x, valid_y = next(make_image_gen(valid_df, VALID_IMG_COUNT))\nprint(valid_x.shape, valid_y.shape)')
 
 
-# In[ ]:
 
 
 from keras.preprocessing.image import ImageDataGenerator
@@ -271,7 +258,6 @@ def create_aug_gen(in_gen, seed = None):
         yield next(g_x)/255.0, next(g_y)
 
 
-# In[ ]:
 
 
 cur_gen = create_aug_gen(train_gen)
@@ -288,19 +274,16 @@ ax2.imshow(montage(t_y[:, :, :, 0]), cmap='gray_r')
 ax2.set_title('ships')
 
 
-# In[ ]:
 
 
 gc.collect()
 
 
-# In[ ]:
 
 
 t_x.shape[1:]
 
 
-# In[ ]:
 
 
 from keras import models, layers
@@ -326,7 +309,6 @@ pp_in_layer = input_img
 pp_in_layer.shape
 
 
-# In[ ]:
 
 
 from keras import models, layers
@@ -418,7 +400,6 @@ seg_model = models.Model(inputs=[input_img], outputs=[d])
 seg_model.summary()
 
 
-# In[ ]:
 
 
 import keras.backend as K
@@ -434,7 +415,6 @@ def IoU(y_true, y_pred, eps=1e-6):
     return -K.mean( (intersection + eps) / (union + eps), axis=0)
 
 
-# In[ ]:
 
 
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, EarlyStopping, ReduceLROnPlateau
@@ -452,7 +432,6 @@ early = EarlyStopping(monitor="val_loss", mode="min", verbose=2,
 callbacks_list = [checkpoint, early, reduceLROnPlat]
 
 
-# In[ ]:
 
 
 def fit():
@@ -475,7 +454,6 @@ while True:
         break
 
 
-# In[ ]:
 
 
 def show_loss(loss_history):
@@ -495,21 +473,18 @@ def show_loss(loss_history):
 show_loss(loss_history)
 
 
-# In[ ]:
 
 
 seg_model.load_weights(weight_path)
 seg_model.save('seg_model.h5')
 
 
-# In[ ]:
 
 
 pred_y = seg_model.predict(valid_x)
 print(pred_y.shape, pred_y.min(axis=0).max(), pred_y.max(axis=0).min(), pred_y.mean())
 
 
-# In[ ]:
 
 
 fig, ax = plt.subplots(1, 1, figsize = (6, 6))
@@ -518,7 +493,6 @@ ax.set_xlim(0, 1)
 ax.set_yscale('log', nonposy='clip')
 
 
-# In[ ]:
 
 
 if IMG_SCALING is not None:
@@ -531,7 +505,6 @@ else:
 fullres_model.save('fullres_model.h5')
 
 
-# In[ ]:
 
 
 def predict(img, path=test_image_dir):
@@ -562,14 +535,12 @@ for (ax1, ax2, ax3, ax4), c_img_name in zip(m_axs, samples.ImageId.values):
 fig.savefig('validation.png')
 
 
-# In[ ]:
 
 
 test_paths = np.array(os.listdir(test_image_dir))
 print(len(test_paths), 'test images found')
 
 
-# In[ ]:
 
 
 from tqdm import tqdm_notebook
@@ -584,7 +555,6 @@ for c_img_name in tqdm_notebook(test_paths[:30000]): ## only a subset as it take
     out_pred_rows += pred_encode(c_img_name, min_max_threshold=1.0)
 
 
-# In[ ]:
 
 
 sub = pd.DataFrame(out_pred_rows)
@@ -593,7 +563,6 @@ sub = sub[sub.EncodedPixels.notnull()]
 sub.head()
 
 
-# In[ ]:
 
 
 ## let's see what we got
@@ -610,7 +579,6 @@ for (ax1, ax2), c_img_name in zip(m_axs, sub.ImageId.unique()[:TOP_PREDICTIONS])
     ax2.set_title('Prediction')
 
 
-# In[ ]:
 
 
 sub1 = pd.read_csv('../input/sample_submission.csv')

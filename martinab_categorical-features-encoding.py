@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # Importing numpy (linear algebra) and pandas (data processing): 
@@ -18,14 +17,12 @@ import os
 import matplotlib.ticker as ticker
 
 
-# In[2]:
 
 
 # Explore what's in the cat-in-the-dat folder:
 print(os.listdir("../input/cat-in-the-dat"))
 
 
-# In[3]:
 
 
 # Read train, test and sample_submission data:
@@ -34,41 +31,35 @@ test_df = pd.read_csv("../input/cat-in-the-dat/test.csv")
 submission = pd.read_csv("../input/cat-in-the-dat/sample_submission.csv")
 
 
-# In[4]:
 
 
 submission.head()
 
 
-# In[5]:
 
 
 # Shape of the train and testdataset:
 print(train_df.shape)
 
 
-# In[6]:
 
 
 # To display first 5 rows of the train_df:
 train_df.head()
 
 
-# In[7]:
 
 
 # Print the names of all columns in train DataFrame:
 print(train_df.columns.values)
 
 
-# In[8]:
 
 
 # Are there any missing values in train_df?
 # train_df.apply(axis=0, func=lambda x : any(pd.isnull(x)))
 
 
-# In[9]:
 
 
 # Function to describe variables
@@ -89,14 +80,12 @@ def nulls_report(df):
     return nulls_report
 
 
-# In[10]:
 
 
 # Use desc function to describe test data:
 desc(train_df)
 
 
-# In[11]:
 
 
 # Bar chart of frequency of digit occurance in our train dataset:
@@ -137,20 +126,17 @@ plt.title('Target Distribution')
 plt.show()
 
 
-# In[12]:
 
 
 print(train_df['target'].value_counts())
 
 
-# In[13]:
 
 
 # Define bin list:
 bin = ['bin_0', 'bin_1', 'bin_2', 'bin_3', 'bin_4']
 
 
-# In[14]:
 
 
 # Bar charts for binary features, split according to the target:
@@ -177,14 +163,12 @@ for i in bin:
 plt.show()
 
 
-# In[15]:
 
 
 # Define nom as:
 nom = ['nom_0', 'nom_1', 'nom_2', 'nom_3', 'nom_4', 'nom_5', 'nom_6', 'nom_7', 'nom_8', 'nom_9']
 
 
-# In[16]:
 
 
 # Bar charts for nominal features, split according to the target:
@@ -211,7 +195,6 @@ for i in nom[0:5]:
 plt.show()  
 
 
-# In[17]:
 
 
 # Create a crosstab with nom_1 and target:
@@ -222,7 +205,6 @@ pd.crosstab([train_df.target],
              margins=True).style.background_gradient(cmap='autumn_r')
 
 
-# In[18]:
 
 
 # Create a crosstab with nom_2 and target:
@@ -233,7 +215,6 @@ pd.crosstab([train_df.target],
              margins=True).style.background_gradient(cmap='autumn_r')
 
 
-# In[19]:
 
 
 # Create a crosstab with nom_3 and target:
@@ -244,13 +225,11 @@ pd.crosstab([train_df.target],
              margins=True).style.background_gradient(cmap='autumn_r')
 
 
-# In[20]:
 
 
 ord = ['ord_0', 'ord_1', 'ord_2', 'ord_3', 'ord_4', 'ord_5']
 
 
-# In[21]:
 
 
 # Bar charts for ordinal features, split according to the target:
@@ -278,7 +257,6 @@ for i in ord[0:3]:
 plt.show()
 
 
-# In[22]:
 
 
 for i in ord[3:5]:
@@ -304,21 +282,18 @@ for i in ord[3:5]:
 plt.show()
 
 
-# In[23]:
 
 
 # Number of unique values in ord_5:
 print('Number of unique values for ord_5: ' + str(train_df['ord_5'].nunique()))
 
 
-# In[24]:
 
 
 print('Unique values of day:',train_df.day.unique())
 print('Unique values of month:',train_df.month.unique())
 
 
-# In[25]:
 
 
 cyc = ['day', 'month']
@@ -347,14 +322,12 @@ for i in cyc:
 plt.show()      
 
 
-# In[26]:
 
 
 # Assign output target to the following variable:
 target = train_df['target']
 
 
-# In[27]:
 
 
 # Merge train and test data into tetra_df and drop target and id column:
@@ -362,14 +335,12 @@ tetra_df = train_df.append(test_df, ignore_index = True, sort = 'True')
 tetra_df = tetra_df.drop(['target', 'id'], axis = 1)
 
 
-# In[28]:
 
 
 # Check if merge worked (must have 500,000 entries):
 tetra_df.shape
 
 
-# In[29]:
 
 
 # Create indexes to separate data later:
@@ -377,7 +348,6 @@ train_df_idx = len(train_df)
 test_df_idx = len(tetra_df) - len(test_df)
 
 
-# In[30]:
 
 
 # Convert T, F in bin_3 to binary values (0,1):
@@ -387,14 +357,12 @@ tetra_df['bin_3'] = tetra_df['bin_3'].map({'T':1, 'F':0})
 tetra_df['bin_4'] = tetra_df['bin_4'].map({'Y':1, 'N':0})
 
 
-# In[31]:
 
 
 # Check the outcome:
 tetra_df[bin].head()
 
 
-# In[32]:
 
 
 # One hot encoding for column : nom_0 to nom_4
@@ -403,7 +371,6 @@ tetra_df = pd.get_dummies(tetra_df, columns = nom[0:5],
                         drop_first = True)
 
 
-# In[33]:
 
 
 # Encoding hex features
@@ -416,13 +383,11 @@ for col in features_hex:
     tetra_df[col] = labelencoder.transform(tetra_df[col])
 
 
-# In[34]:
 
 
 #tetra_df[ord].head()
 
 
-# In[35]:
 
 
 # Convert ord_1 by dictionary mapping as follows:
@@ -445,7 +410,6 @@ tetra_df['ord_2'] = tetra_df['ord_2'].map({
 })
 
 
-# In[36]:
 
 
 # Change type of ord_3 to category, create a dictionary alph that orders letters alphabetically:
@@ -462,7 +426,6 @@ tetra_df['ord_4'] = tetra_df['ord_4'].map(alph1)
 tetra_df['ord_4'] = tetra_df['ord_4'].astype(int)
 
 
-# In[37]:
 
 
 # Create sorted list of ord_5 values (ordered alphabetically):
@@ -475,7 +438,6 @@ alph2 = dict(zip(ordli, range(len(ordli))))
 tetra_df['ord_5'] = tetra_df['ord_5'].map(alph2)
 
 
-# In[38]:
 
 
 # Cyclical encoding for day:
@@ -487,7 +449,6 @@ tetra_df['month_sin'] = np.sin(2 * np.pi * tetra_df['month']/12.0)
 tetra_df['month_cos'] = np.cos(2 * np.pi * tetra_df['month']/12.0)
 
 
-# In[39]:
 
 
 # Show that Encoded values are now placed on the circle with radius 1 and origing at [0,0]:
@@ -498,20 +459,17 @@ tetra_df.sample(5000).plot.scatter('day_sin','day_cos').set_aspect('equal')
 tetra_df.sample(5000).plot.scatter('month_sin','month_cos').set_aspect('equal')
 
 
-# In[40]:
 
 
 tetra_df = tetra_df.drop(['day', 'month'], axis = 1)
 
 
-# In[41]:
 
 
 # Print the names of all columns in tetra_df DataFrame:
  print(tetra_df.columns.values)
 
 
-# In[42]:
 
 
 #from sklearn.preprocessing import MinMaxScaler
@@ -525,13 +483,11 @@ tetra_df = tetra_df.drop(['day', 'month'], axis = 1)
 #tetra_df = pd.DataFrame(x_scaled)
 
 
-# In[43]:
 
 
 #tetra_df.describe()
 
 
-# In[44]:
 
 
 # Creating training and testing data:
@@ -539,28 +495,24 @@ training = tetra_df[ : train_df_idx]
 testing = tetra_df[test_df_idx :]
 
 
-# In[45]:
 
 
 # For splitting data we will be using train_test_split from sklearn:
 from sklearn.model_selection import train_test_split
 
 
-# In[46]:
 
 
 X = training
 y = target
 
 
-# In[47]:
 
 
 # Splitting the training data into test and train, we are testing on 0.20 = 20% of dataset:
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state=13)
 
 
-# In[48]:
 
 
 from xgboost import XGBClassifier
@@ -569,7 +521,6 @@ from sklearn.model_selection import cross_validate, GridSearchCV, StratifiedKFol
 from sklearn.preprocessing import StandardScaler
 
 
-# In[49]:
 
 
 xgb = XGBClassifier(objective= 'binary:logistic'
@@ -584,14 +535,12 @@ xgb = XGBClassifier(objective= 'binary:logistic'
 xgb.fit(X_train, y_train)   
 
 
-# In[50]:
 
 
 y_predict = xgb.predict(X_test)
 print(classification_report(y_test,y_predict))
 
 
-# In[51]:
 
 
 # Confusion matrix cm:
@@ -599,20 +548,17 @@ cm = confusion_matrix(y_test,y_predict)
 cm
 
 
-# In[52]:
 
 
 # Quick overview of our confusion matrix:
 sns.heatmap(cm, annot = True, square = True, fmt='g')
 
 
-# In[53]:
 
 
 prediction = xgb.predict(testing)
 
 
-# In[54]:
 
 
 # Combine ImageID and Label into one DataFrame:

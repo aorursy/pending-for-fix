@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np # linear algebra
@@ -21,7 +20,6 @@ in_path="../input"
 print(os.listdir(in_path))
 
 
-# In[2]:
 
 
 
@@ -56,14 +54,12 @@ print (label.shape)
 
 
 
-# In[3]:
 
 
 sns.countplot(label)
 # 1이 dog 0이 cat
 
 
-# In[4]:
 
 
 from sklearn.model_selection import train_test_split
@@ -75,7 +71,6 @@ print(valid_data.shape)
 print(valid_label.shape)
 
 
-# In[5]:
 
 
 from keras import Sequential
@@ -86,7 +81,6 @@ from keras.callbacks import *
 import keras.backend as K
 
 
-# In[6]:
 
 
 from tensorflow.python.keras.applications import ResNet50
@@ -104,13 +98,11 @@ my_new_model.add(Dense(1, activation='sigmoid'))
 my_new_model.layers[0].trainable = False
 
 
-# In[7]:
 
 
 ResNet50().summary()
 
 
-# In[8]:
 
 
 train_datagen = ImageDataGenerator(rescale=1./255, 
@@ -131,7 +123,6 @@ train_generator = train_datagen.flow(np.array(train_data), np.array(train_label)
 validation_generator = val_datagen.flow(np.array(valid_data), np.array(valid_label), batch_size = 128)
 
 
-# In[9]:
 
 
 my_new_model.compile(optimizer='adam',loss="binary_crossentropy",metrics=["accuracy"])
@@ -148,7 +139,6 @@ callack_saver = ModelCheckpoint(
 train_history=my_new_model.fit(train_data,train_label,validation_data=(valid_data,valid_label),epochs=40,batch_size=128, callbacks=[callack_saver])
 
 
-# In[10]:
 
 
 import matplotlib.pyplot as plt
@@ -169,7 +159,6 @@ plt.legend()
 plt.show()
 
 
-# In[11]:
 
 
 
@@ -204,19 +193,16 @@ print (data.shape)
 
 
 
-# In[12]:
 
 
 Y_pred = my_new_model.predict(data)
 
 
-# In[13]:
 
 
 print(Y_pred)
 
 
-# In[14]:
 
 
 test_datagen = ImageDataGenerator(rescale=1./255)
@@ -224,7 +210,6 @@ test_datagen = ImageDataGenerator(rescale=1./255)
 train_generator = test_datagen.flow_from_directory("../input/test1",target_size=(128, 128),batch_size=32,class_mode='binary')
 
 
-# In[15]:
 
 
 
@@ -240,7 +225,6 @@ scores = my_new_model.evaluate_generator(
 print("%s: %.2f%%" %(my_new_model.metrics_names[1], scores[1]*100))
 
 
-# In[16]:
 
 
 steps = 12500 / 20
@@ -251,13 +235,11 @@ print("-- Predict --")
 output = my_new_model.predict_generator(test_generator,steps)
 
 
-# In[17]:
 
 
 print(output)
 
 
-# In[18]:
 
 
 print(len(output))
@@ -265,7 +247,6 @@ print(len(output))
 pred = np.array(output) 
 
 
-# In[19]:
 
 
 import matplotlib.pyplot as plt
@@ -281,13 +262,11 @@ plt.yticks(range(2), ['Cat', 'Dog'], fontsize=16)
 plt.show()
 
 
-# In[20]:
 
 
 Y_pred = my_new_model.predict(valid_data)
 
 
-# In[21]:
 
 
 # predicted_label=np.round(Y_pred,decimals=2)
@@ -310,7 +289,6 @@ plt.yticks(range(2), ['Cat', 'Dog'], fontsize=16)
 plt.show()
 
 
-# In[22]:
 
 
 test_data=[]
@@ -334,7 +312,6 @@ test_data=test_data.reshape((test_data.shape)[0],(test_data.shape)[1],(test_data
 dataframe_output=pd.DataFrame({"id":id})
 
 
-# In[23]:
 
 
 predicted_labels=my_new_model.predict(test_data)
@@ -342,14 +319,12 @@ predicted_labels=np.round(predicted_labels,decimals=2)
 labels=[1 if value>0.5 else 0 for value in predicted_labels]
 
 
-# In[24]:
 
 
 dataframe_output["label"]=labels
 print(dataframe_output)
 
 
-# In[25]:
 
 
 import matplotlib.pyplot as plt
@@ -364,7 +339,6 @@ for i in range(20):
     plt.show()
 
 
-# In[26]:
 
 
 0 이 cat 1 강아지

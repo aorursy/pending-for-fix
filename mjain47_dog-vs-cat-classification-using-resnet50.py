@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -21,7 +20,6 @@ for dirname, _, filenames in os.walk('/kaggle'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 from zipfile import ZipFile
@@ -30,7 +28,6 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten, GlobalAveragePooling2D
 
 
-# In[3]:
 
 
 import os
@@ -81,7 +78,6 @@ else:
     print('path doesnot exists')
 
 
-# In[4]:
 
 
 from zipfile import ZipFile
@@ -102,7 +98,6 @@ with ZipFile(test_file_name, 'r') as zip:
     
 
 
-# In[5]:
 
 
 #import os
@@ -114,7 +109,6 @@ for root, dirs, files in os.walk("../output/kaggle/working/test/"):
 print(len(f))
 
 
-# In[6]:
 
 
 #import os
@@ -124,7 +118,6 @@ print(len(f))
   #      print(filename)
 
 
-# In[7]:
 
 
 # specifying the zip file name 
@@ -142,7 +135,6 @@ with ZipFile(train_file_name, 'r') as zip:
     
 
 
-# In[8]:
 
 
 import shutil
@@ -161,7 +153,6 @@ print(len(dogslist))
 print(len(catslist))
 
 
-# In[9]:
 
 
 
@@ -175,7 +166,6 @@ for e in [os.path.join('../output/kaggle/working/train/',name) for name in dogsl
     
 
 
-# In[10]:
 
 
 if not os.path.exists('../output/kaggle/working/train/cat'):
@@ -186,7 +176,6 @@ for e in [os.path.join('../output/kaggle/working/train/',name) for name in catsl
     
 
 
-# In[11]:
 
 
 import shutil
@@ -205,7 +194,6 @@ print(len(dogslist))
 print(len(catslist))
 
 
-# In[12]:
 
 
 import shutil
@@ -224,7 +212,6 @@ print(len(dogslist))
              
 
 
-# In[13]:
 
 
 num_classes=2
@@ -243,7 +230,6 @@ my_model.add(Dense(num_classes,activation='softmax'))
 my_model.layers[0].trainable=False
 
 
-# In[14]:
 
 
 my_model.compile(optimizer='sgd', 
@@ -251,7 +237,6 @@ my_model.compile(optimizer='sgd',
                      metrics=['accuracy'])
 
 
-# In[15]:
 
 
 if not os.path.exists('../output/kaggle/working/validation/dog'):
@@ -262,13 +247,11 @@ if not os.path.exists('../output/kaggle/working/validation/cat'):
     
 
 
-# In[16]:
 
 
 pip install split_folders
 
 
-# In[17]:
 
 
 import split_folders
@@ -276,7 +259,6 @@ import split_folders
 split_folders.ratio('../output/kaggle/working/train', output="../output/kaggle/working/Val", seed=1337, ratio=(.8,.2))
 
 
-# In[18]:
 
 
 import shutil
@@ -294,7 +276,6 @@ print(len(catslist))
 print(len(dogslist))
 
 
-# In[19]:
 
 
 import shutil
@@ -313,7 +294,6 @@ print(len(dogslist))
 print(len(catslist))
 
 
-# In[20]:
 
 
 
@@ -334,7 +314,6 @@ print(len(dogslist))
 print(len(catslist))
 
 
-# In[21]:
 
 
 
@@ -355,7 +334,6 @@ print(len(catslist))
 print(len(dogslist))
 
 
-# In[22]:
 
 
 from tensorflow.keras.applications.resnet50 import preprocess_input
@@ -380,7 +358,6 @@ validation_generator = data_generator.flow_from_directory(
 
 
 
-# In[23]:
 
 
 f=[]
@@ -424,7 +401,6 @@ test_generator = data_generator.flow_from_directory(
 )
 
 
-# In[24]:
 
 
 my_model.fit_generator(
@@ -434,7 +410,6 @@ my_model.fit_generator(
         validation_steps=1)
 
 
-# In[25]:
 
 
 test_generator.reset()
@@ -444,7 +419,6 @@ pred = my_model.predict_generator(test_generator, steps = len(test_generator), v
 predicted_class_indices = np.argmax(pred, axis = 1)
 
 
-# In[26]:
 
 
 import cv2
@@ -471,7 +445,6 @@ for i in range(0,50):
 plt.show()
 
 
-# In[27]:
 
 
 results_df = pd.DataFrame(

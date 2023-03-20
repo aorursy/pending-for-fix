@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().system('pip install ../input/mmcvwhl/addict-2.2.1-py3-none-any.whl')
@@ -10,13 +9,11 @@ get_ipython().system('pip install ../input/mmdetection20-5-13/terminal-0.4.0-py3
 get_ipython().system('pip install ../input/mmdetection20-5-13/terminaltables-3.1.0-py3-none-any.whl')
 
 
-# In[2]:
 
 
 get_ipython().system('cp -r ../input/mmdetection20-5-13/mmdetection/mmdetection .')
 
 
-# In[3]:
 
 
 get_ipython().system('mkdir -p mmdetection/data/Wheatdetection/annotations')
@@ -25,7 +22,6 @@ get_ipython().system('cp -r ../input/global-wheat-detection/sample_submission.cs
 get_ipython().system('mkdir mmdetection/configs/wheatdetection')
 
 
-# In[4]:
 
 
 get_ipython().system('cp ../input/mmdetfasterrcnn/config/config/faster_rcnn_r50_fpn_1x_coco_test.py mmdetection/configs/wheatdetection')
@@ -34,74 +30,62 @@ get_ipython().system('cp ../input/mmdetfasterrcnn/config/config/__init__.py mmde
 get_ipython().system('cp ../input/mmdetfasterrcnn/config/config/wheat.py mmdetection/mmdet/datasets')
 
 
-# In[5]:
 
 
 cd mmdetection
 
 
-# In[6]:
 
 
 get_ipython().system('cp -r ../../input/mmdetection20-5-13/cocoapi/cocoapi .')
 
 
-# In[7]:
 
 
 cd cocoapi/PythonAPI
 
 
-# In[8]:
 
 
 get_ipython().system('make')
 
 
-# In[9]:
 
 
 get_ipython().system('make install')
 
 
-# In[10]:
 
 
 get_ipython().system('python setup.py install')
 
 
-# In[11]:
 
 
 import pycocotools
 
 
-# In[12]:
 
 
 cd ../..
 
 
-# In[13]:
 
 
 get_ipython().system('pip install -v -e .')
 
 
-# In[14]:
 
 
 cd ../
 
 
-# In[15]:
 
 
 import sys
 sys.path.append('mmdetection') # To find local version
 
 
-# In[16]:
 
 
 from mmdet.apis import init_detector, inference_detector, show_result_pyplot
@@ -122,7 +106,6 @@ from PIL import Image
 import torch
 
 
-# In[17]:
 
 
 from mmdet.apis import inference_detector, init_detector
@@ -131,7 +114,6 @@ config_file = '../input/zlb0525/cascade_rcnn_r50_fpn_1x_coco.py'
 model = init_detector(config_file, WEIGHTS_FILE)
 
 
-# In[18]:
 
 
 def format_prediction_string(boxes, scores):
@@ -141,7 +123,6 @@ def format_prediction_string(boxes, scores):
     return " ".join(pred_strings)
 
 
-# In[19]:
 
 
 #################################### cascade rcnn ############################################
@@ -171,7 +152,6 @@ with torch.no_grad():
         results.append(result)
 
 
-# In[20]:
 
 
 test_df = pd.DataFrame(results, columns=['image_id', 'PredictionString'])
@@ -179,7 +159,6 @@ test_df.to_csv('submission.csv', index=False)
 test_df.head()
 
 
-# In[21]:
 
 
 get_ipython().system('rm -rf mmdetection/')

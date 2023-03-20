@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # for data manipulation
@@ -38,7 +37,6 @@ from sklearn import datasets
 from sklearn import metrics
 
 
-# In[4]:
 
 
 train = pd.read_csv("../input/forest-cover-type-prediction/train.csv")
@@ -47,31 +45,26 @@ print("Number of rows and columns in the trees dataset are:", train.shape)
 print("Number of rows and columns in the trees dataset are:", test.shape)
 
 
-# In[5]:
 
 
 train.head()
 
 
-# In[6]:
 
 
 display(train.info())
 
 
-# In[7]:
 
 
 train.isnull().sum()
 
 
-# In[8]:
 
 
 display(train.describe())
 
 
-# In[9]:
 
 
 def outlier_function(df, col_name):
@@ -93,7 +86,6 @@ def outlier_function(df, col_name):
     return lower_limit, upper_limit, outlier_count
 
 
-# In[10]:
 
 
 # loop through all columns to see if there are any outliers
@@ -102,7 +94,6 @@ for column in train.columns:
         print("There are {} outliers in {}".format(outlier_function(train, column)[2], column))
 
 
-# In[11]:
 
 
 train = train[(train['Horizontal_Distance_To_Fire_Points'] > outlier_function(train, 'Horizontal_Distance_To_Fire_Points')[0]) &
@@ -110,7 +101,6 @@ train = train[(train['Horizontal_Distance_To_Fire_Points'] > outlier_function(tr
 train.shape
 
 
-# In[12]:
 
 
 # list of columns of wilderness areas and soil types
@@ -118,7 +108,6 @@ is_binary_columns = [column for column in train.columns if ("Wilderness" in colu
 pd.unique(train[is_binary_columns].values.ravel())
 
 
-# In[13]:
 
 
 # list of columns of wilderness areas and soil types
@@ -126,7 +115,6 @@ is_binary_columns = [column for column in train.columns if ("Soil" in column)]
 pd.unique(train[is_binary_columns].values.ravel())
 
 
-# In[14]:
 
 
 # list of columns of Aspect types
@@ -134,7 +122,6 @@ is_binary_columns = [column for column in train.columns if ("Aspect" in column)]
 pd.unique(train[is_binary_columns].values.ravel())
 
 
-# In[15]:
 
 
 plt.figure(figsize=(12,5))
@@ -142,7 +129,6 @@ plt.title("Distribution of forest categories(Target Variable)")
 ax = sns.distplot(train["Cover_Type"])
 
 
-# In[16]:
 
 
 # store continious variables in a list
@@ -157,7 +143,6 @@ def corr_func(x, y, **kwargs):
                 size = 20)
 
 
-# In[17]:
 
 
 # Create the pairgrid object
@@ -174,7 +159,6 @@ grid.map_diag(plt.hist, color = 'green', edgecolor = 'white')
 grid.map_lower(plt.scatter, color = 'green', alpha = 0.1)
 
 
-# In[18]:
 
 
 train.drop(['Id'], inplace = True, axis = 1 )
@@ -182,7 +166,6 @@ train.drop(['Soil_Type15' , "Soil_Type7"], inplace = True, axis = 1 )
 test.drop(['Soil_Type15' , "Soil_Type7"], inplace = True, axis = 1 )
 
 
-# In[19]:
 
 
 # train.head()
@@ -244,7 +227,6 @@ test['Vertical_Distance_To_Hydrology'] = abs(test["Vertical_Distance_To_Hydrolog
 test['Neg_EHyd'] = test.Elevation-test.Horizontal_Distance_To_Hydrology*0.2
 
 
-# In[20]:
 
 
 from sklearn.model_selection import train_test_split
@@ -253,13 +235,11 @@ y = train['Cover_Type']
 print( y.head() )
 
 
-# In[21]:
 
 
 x_train, x_valid, y_train, y_valid = train_test_split( x.values, y.values, test_size=0.05, random_state=42 )
 
 
-# In[22]:
 
 
 # Create dummy classifer
@@ -273,7 +253,6 @@ baseline_accuracy = dummy.score(x_valid, y_valid)
 print("Our dummy algorithm classified {:0.2f} of the of the trees correctly".format(baseline_accuracy))
 
 
-# In[23]:
 
 
 pd.set_option('display.max_rows', None)
@@ -296,7 +275,6 @@ df.sort_values(by='values', ascending=False, inplace = True)
 df.head(100)
 
 
-# In[24]:
 
 
 scaler = StandardScaler()
@@ -305,7 +283,6 @@ x_train = scaler.transform(x_train)
 x_valid = scaler.transform(x_valid)
 
 
-# In[25]:
 
 
 # function to train a given model, generate predictions, and return accuracy score
@@ -315,7 +292,6 @@ def fit_evaluate_model(model, x_train, y_train, x_valid, y_valid):
     return accuracy_score(y_valid, y_predicted)
 
 
-# In[26]:
 
 
 # create model apply fit_evaluate_model
@@ -324,7 +300,6 @@ knn_accuracy = fit_evaluate_model(knn_classifier, x_train, y_train, x_valid, y_v
 print("Number of correct predictions made out of all predictions are:", knn_accuracy)
 
 
-# In[27]:
 
 
 # create model apply fit_evaluate_model
@@ -333,7 +308,6 @@ lgbm_accuracy = fit_evaluate_model(lgbm_classifier, x_train, y_train, x_valid, y
 print("Number of correct predictions made out of all predictions are:", lgbm_accuracy)
 
 
-# In[28]:
 
 
 # create model apply fit_evaluate_model
@@ -342,7 +316,6 @@ rf_accuracy = fit_evaluate_model(rf_classifier, x_train, y_train, x_valid, y_val
 print("Number of correct predictions made out of all predictions are:", rf_accuracy)
 
 
-# In[29]:
 
 
 # create model apply fit_evaluate_model
@@ -351,7 +324,6 @@ xrf_accuracy = fit_evaluate_model(xrf_classifier, x_train, y_train, x_valid, y_v
 print("Number of correct predictions made out of all predictions are:", xrf_accuracy)
 
 
-# In[30]:
 
 
 # create model apply fit_evaluate_model
@@ -360,7 +332,6 @@ xgb_accuracy = fit_evaluate_model(xgb_classifier, x_train, y_train, x_valid, y_v
 print("Number of correct predictions made out of all predictions are:", xgb_accuracy)
 
 
-# In[31]:
 
 
 # create model apply fit_evaluate_model
@@ -369,7 +340,6 @@ catboost_accuracy = fit_evaluate_model(catboost_classifier, x_train, y_train, x_
 print("Number of correct predictions made out of all predictions are:", catboost_accuracy)
 
 
-# In[32]:
 
 
 # create dataframe of accuracy and model and sort values
@@ -388,19 +358,16 @@ plt.xticks(size = 14)
 plt.title("Accuracy Score of Different Models", size=14)
 
 
-# In[33]:
 
 
 train.head()
 
 
-# In[34]:
 
 
 test.head()
 
 
-# In[35]:
 
 
 id = test['Id']
@@ -409,13 +376,11 @@ test.drop(['Id'] , inplace = True , axis = 1)
 test = scaler.transform(test)
 
 
-# In[36]:
 
 
 predictions = xrf_classifier.predict(test)
 
 
-# In[37]:
 
 
 out = pd.DataFrame()
@@ -425,7 +390,6 @@ out.to_csv('my_submission.csv', index=False)
 out.head(5)
 
 
-# In[39]:
 
 
 #create list of features

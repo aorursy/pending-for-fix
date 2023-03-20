@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import numpy as np # linear algebra
@@ -20,7 +19,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-# In[ ]:
 
 
 train = pd.read_csv("../input/landmark-retrieval-2020/train.csv")
@@ -54,7 +52,6 @@ show_sample(get_paths(2))
 #train.describe()
 
 
-# In[ ]:
 
 
 # Landmark ID distribution
@@ -83,14 +80,12 @@ sns.barplot(x="landmark_id", y="count", data=temp, label="Count",ax=axs[2])
 plt.show()
 
 
-# In[ ]:
 
 
 get_ipython().system('git clone https://github.com/tensorflow/models.git')
 get_ipython().system('bash models/research/delf/delf/python/training/install_delf.sh')
 
 
-# In[ ]:
 
 
 #In case the installation was not successful:
@@ -98,7 +93,6 @@ get_ipython().system('cp -r models/research/delf/* ./')
 get_ipython().system('protoc delf/protos/*.proto --python_out=.')
 
 
-# In[ ]:
 
 
 get_ipython().system('mkdir /tmp/data')
@@ -108,14 +102,12 @@ get_ipython().system('python3 delf/python/training/build_image_dataset.py   --tr
   --train_directory=../input/landmark-retrieval-2020/train/*/*/*/   --output_directory=/tmp/data   --num_shards=12   --generate_train_validation_splits   --validation_split_size=0.2
 
 
-# In[ ]:
 
 
 get_ipython().system('curl -Os http://storage.googleapis.com/delf/resnet50_imagenet_weights.tar.gz')
 get_ipython().system('tar -xzvf resnet50_imagenet_weights.tar.gz')
 
 
-# In[ ]:
 
 
 # add the delf to the pythonpath
@@ -123,14 +115,12 @@ os.environ['PYTHONPATH']+=':models/research/delf/:delf:protoc'
 get_ipython().system('cp -r delf/protos/*  models/research/delf/delf/protos/')
 
 
-# In[ ]:
 
 
 # installing the object detection api, required by the delf model
 get_ipython().system('pip install tensorflow-object-detection-api')
 
 
-# In[ ]:
 
 
 #-- dont forget to increase the number of iterations, default is max_iters=500.000
@@ -138,13 +128,11 @@ get_ipython().system('cp ../input/cleancode/train2.py models/research/delf/delf/
 get_ipython().system('python3 models/research/delf/delf/python/training/train2.py   --train_file_pattern=/tmp/data/train*   --seed=1   --max_iters=20000   --validation_file_pattern=/tmp/data/validation*   --imagenet_checkpoint=resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5   --dataset_version=gld_v2_clean   --logdir=gldv2_training/')
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 get_ipython().system('python3 models/research/delf/delf/python/training/model/export_global_model.py   --ckpt_path=gldv2_training/delf_weights   --export_path=gldv2_model_global   --input_scales_list=0.70710677,1.0,1.4142135   --multi_scale_pool_type=sum   --normalize_global_descriptor')

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import numpy as np
@@ -36,50 +35,42 @@ from torch.nn import Linear, ReLU, CrossEntropyLoss, Sequential, Conv2d, MaxPool
 from torch.optim import Adam, SGD
 
 
-# In[ ]:
 
 
 get_ipython().system('pip install -U -q kaggle --force')
 
 
-# In[ ]:
 
 
 from google.colab import files
 f=files.upload()
 
 
-# In[ ]:
 
 
 get_ipython().system('mkdir -p ~/.kaggle')
 
 
-# In[ ]:
 
 
 get_ipython().system('cp kaggle.json ~/.kaggle/')
 
 
-# In[ ]:
 
 
 get_ipython().system('chmod 600 /root/.kaggle/kaggle.json')
 
 
-# In[ ]:
 
 
 get_ipython().system('kaggle competitions download -c nnfl-cnn-lab2')
 
 
-# In[ ]:
 
 
 get_ipython().run_cell_magic('bash', '', 'cd /content\nunzip nnfl-cnn-lab2.zip')
 
 
-# In[ ]:
 
 
 import numpy as np
@@ -93,7 +84,6 @@ import os
 print(os.listdir("../content"))
 
 
-# In[ ]:
 
 
 FAST_RUN = False
@@ -103,49 +93,41 @@ IMAGE_SIZE=(IMAGE_WIDTH, IMAGE_HEIGHT)
 IMAGE_CHANNELS=3
 
 
-# In[ ]:
 
 
 cd upload
 
 
-# In[ ]:
 
 
 ls
 
 
-# In[ ]:
 
 
 df = pd.read_csv("train_set.csv") 
 
 
-# In[ ]:
 
 
 df.head()
 
 
-# In[ ]:
 
 
 df.tail()
 
 
-# In[ ]:
 
 
 df['label'].value_counts().plot.bar()
 
 
-# In[ ]:
 
 
 df['label']=df['label'].astype(str)
 
 
-# In[ ]:
 
 
 transform = transforms.Compose([transforms.Resize(150),
@@ -182,7 +164,6 @@ TrainSet = TrainingDataset(csv_file = './train_set.csv', root_dir = './train_ima
 TrainLoader = torch.utils.data.DataLoader(TrainSet,batch_size=1, shuffle=True, num_workers=2)
 
 
-# In[ ]:
 
 
 def imshow(img):
@@ -202,7 +183,6 @@ imshow(torchvision.utils.make_grid(image))
 print(label.item())
 
 
-# In[ ]:
 
 
 import pandas as pd
@@ -245,19 +225,16 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 model.summary()
 
 
-# In[ ]:
 
 
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
 
-# In[ ]:
 
 
 earlystop = EarlyStopping(patience=10)
 
 
-# In[ ]:
 
 
 learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy', 
@@ -267,7 +244,6 @@ learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy',
                                             min_lr=0.00001)
 
 
-# In[ ]:
 
 
 from tensorflow.keras.callbacks import ModelCheckpoint
@@ -275,13 +251,11 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 callbacks = [earlystop, learning_rate_reduction,ModelCheckpoint(filepath='best_model.h5', monitor='val_loss', save_best_only=True)]
 
 
-# In[ ]:
 
 
 df['label'].head()
 
 
-# In[ ]:
 
 
 train_df, validate_df = train_test_split(df, test_size=0.20, random_state=42)
@@ -289,19 +263,16 @@ train_df = train_df.reset_index(drop=True)
 validate_df = validate_df.reset_index(drop=True)
 
 
-# In[ ]:
 
 
 train_df['label'].value_counts().plot.bar()
 
 
-# In[ ]:
 
 
 validate_df['label'].value_counts().plot.bar()
 
 
-# In[ ]:
 
 
 total_train = train_df.shape[0]
@@ -309,14 +280,12 @@ total_validate = validate_df.shape[0]
 batch_size=15
 
 
-# In[ ]:
 
 
 print(total_train)
 print(total_validate)
 
 
-# In[ ]:
 
 
 train_datagen = ImageDataGenerator(
@@ -340,19 +309,16 @@ train_generator = train_datagen.flow_from_dataframe(
 )
 
 
-# In[ ]:
 
 
 train_df['label']=train_df['label'].astype(str)
 
 
-# In[ ]:
 
 
 validate_df['label']=validate_df['label'].astype(str)
 
 
-# In[ ]:
 
 
 validation_datagen = ImageDataGenerator(rescale=1./255)
@@ -367,13 +333,11 @@ validation_generator = validation_datagen.flow_from_dataframe(
 )
 
 
-# In[ ]:
 
 
 train_df['label']=train_df['label'].astype(str)
 
 
-# In[ ]:
 
 
 example_df = train_df.sample(n=1).reset_index(drop=True)
@@ -387,7 +351,6 @@ example_generator = train_datagen.flow_from_dataframe(
 )
 
 
-# In[ ]:
 
 
 plt.figure(figsize=(12, 12))
@@ -401,7 +364,6 @@ plt.tight_layout()
 plt.show()
 
 
-# In[ ]:
 
 
 epochs=3 if FAST_RUN else 40
@@ -415,13 +377,11 @@ history = model.fit(
 )
 
 
-# In[ ]:
 
 
 model.save_weights("model.h5")
 
 
-# In[ ]:
 
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 12))
@@ -439,7 +399,6 @@ plt.tight_layout()
 plt.show()
 
 
-# In[ ]:
 
 
 test_filenames = os.listdir("./test_images/test_images")
@@ -449,7 +408,6 @@ test_df = pd.DataFrame({
 nb_samples = test_df.shape[0]
 
 
-# In[ ]:
 
 
 test_gen = ImageDataGenerator(rescale=1./255)
@@ -465,32 +423,27 @@ test_generator = test_gen.flow_from_dataframe(
 )
 
 
-# In[ ]:
 
 
 predict = model.predict_generator(test_generator, steps=np.ceil(nb_samples/batch_size))
 
 
-# In[ ]:
 
 
 test_df['category'] = np.argmax(predict, axis=-1)
 
 
-# In[ ]:
 
 
 label_map = dict((v,k) for k,v in train_generator.class_indices.items())
 test_df['category'] = test_df['category'].replace(label_map)
 
 
-# In[ ]:
 
 
 test_df['category'].value_counts().plot.bar()
 
 
-# In[ ]:
 
 
 sample_test = test_df.head(18)
@@ -507,7 +460,6 @@ plt.tight_layout()
 plt.show()
 
 
-# In[ ]:
 
 
 submission_df = test_df.copy()
@@ -517,39 +469,33 @@ submission_df.drop(['filename', 'category'], axis=1, inplace=True)
 submission_df.to_csv('submission.csv', index=False)
 
 
-# In[ ]:
 
 
 from google.colab import files
 files.download("submission.csv")
 
 
-# In[ ]:
 
 
 files.download("model.h5")
 
 
-# In[ ]:
 
 
 from google.colab import drive
 drive.mount('/content/gdrive')
 
 
-# In[ ]:
 
 
 mv best_model.h5 /content/gdrive/'My Drive'
 
 
-# In[ ]:
 
 
 mv model.h5 /content/gdrive/'My Drive'
 
 
-# In[ ]:
 
 
 

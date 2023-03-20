@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().system('pip install ../input/pytorchlightning-071/pytorch-lightning-0.7.1/pytorch-lightning-0.7.1')
 
 
-# In[2]:
 
 
 import numpy as np
@@ -39,25 +37,21 @@ from transformers import AdamW
 from transformers import get_linear_schedule_with_warmup
 
 
-# In[3]:
 
 
 pl.__version__
 
 
-# In[4]:
 
 
 get_ipython().system('ls ../input/tweet-sentiment-extraction')
 
 
-# In[5]:
 
 
 get_ipython().system('ls ../input/roberta-base')
 
 
-# In[6]:
 
 
 #df_train = pd.read_csv('../input/tweet-train-folds/train_folds.csv')
@@ -66,14 +60,12 @@ df_test = pd.read_csv('../input/tweet-sentiment-extraction/test.csv')
 submission = pd.read_csv('../input/tweet-sentiment-extraction/sample_submission.csv')
 
 
-# In[7]:
 
 
 df_train = df_train.dropna()
 df_train.shape
 
 
-# In[8]:
 
 
 def remove_multiple_dot(line):
@@ -83,7 +75,6 @@ def remove_multiple_dot(line):
     return line
 
 
-# In[9]:
 
 
 def remove_single_multiple_dot(line):
@@ -92,45 +83,38 @@ def remove_single_multiple_dot(line):
     return line
 
 
-# In[10]:
 
 
 #df_train['text'] = df_train['text'].apply(lambda x :remove_multiple_dot(x))
 #df_train['selected_text'] = df_train['selected_text'].apply(lambda x :remove_single_multiple_dot(x))
 
 
-# In[11]:
 
 
 #df_test['text'] = df_test['text'].apply(lambda x :remove_multiple_dot(x))
 
 
-# In[12]:
 
 
 df_train, df_val = train_test_split(df_train, train_size=0.8,stratify=df_train['sentiment'])
 
 
-# In[13]:
 
 
 df_train.head()
 
 
-# In[14]:
 
 
 df_train.shape
 
 
-# In[15]:
 
 
 df_train = df_train.reset_index(drop=True)
 df_val = df_val.reset_index(drop=True)
 
 
-# In[16]:
 
 
 for col in df_train:
@@ -138,7 +122,6 @@ for col in df_train:
         print(col,sum(df_train[col].isnull()) )
 
 
-# In[17]:
 
 
 for col in df_val:
@@ -146,7 +129,6 @@ for col in df_val:
         print(col,sum(df_val[col].isnull()) )
 
 
-# In[18]:
 
 
 for col in df_test:
@@ -154,19 +136,16 @@ for col in df_test:
         print(col,sum(df_test[col].isnull()) )
 
 
-# In[19]:
 
 
 df_val.head()
 
 
-# In[20]:
 
 
 df_test.head()
 
 
-# In[21]:
 
 
 def process_data1(tweet, selected_text, sentiment, tokenizer, max_len):
@@ -215,7 +194,6 @@ def process_data1(tweet, selected_text, sentiment, tokenizer, max_len):
     }
 
 
-# In[22]:
 
 
 def process_data(tweet, selected_text, sentiment, tokenizer, max_len):
@@ -282,7 +260,6 @@ def process_data(tweet, selected_text, sentiment, tokenizer, max_len):
     }
 
 
-# In[23]:
 
 
 def process_data_test1(tweet, selected_text, sentiment, tokenizer, max_len):
@@ -306,7 +283,6 @@ def process_data_test1(tweet, selected_text, sentiment, tokenizer, max_len):
     }
 
 
-# In[24]:
 
 
 def process_data_test(tweet, sentiment, tokenizer, max_len):
@@ -344,7 +320,6 @@ def process_data_test(tweet, sentiment, tokenizer, max_len):
     }
 
 
-# In[25]:
 
 
 class Training_Dataset(Dataset):
@@ -383,13 +358,11 @@ class Training_Dataset(Dataset):
         }
 
 
-# In[26]:
 
 
 #textID	text	selected_text	sentiment	kfold
 
 
-# In[27]:
 
 
 class Test_Dataset(Dataset):
@@ -424,7 +397,6 @@ class Test_Dataset(Dataset):
         }
 
 
-# In[28]:
 
 
 class TweetBaseSuperModule(pl.LightningModule):
@@ -621,13 +593,11 @@ class TweetBaseSuperModule(pl.LightningModule):
         pass
 
 
-# In[29]:
 
 
 np.array([1,2,4]).shape
 
 
-# In[30]:
 
 
 class Tweet_Model(TweetBaseSuperModule):
@@ -647,13 +617,11 @@ class Tweet_Model(TweetBaseSuperModule):
         return test_dl
 
 
-# In[31]:
 
 
 ls ../input/roberta-transformers-pytorch/roberta-large
 
 
-# In[32]:
 
 
 MAX_LEN = 128
@@ -676,7 +644,6 @@ model_config.output_hidden_states = True
 model = RobertaModel.from_pretrained(f"{ROBERTA_PATH}pytorch_model.bin", config=model_config)
 
 
-# In[33]:
 
 
 #tweet, sentiment, selected_text,tokenizer,max_len
@@ -685,7 +652,6 @@ val_ds = Training_Dataset(df_val)
 test_ds = Test_Dataset(df_test)
 
 
-# In[34]:
 
 
 train_dl = DataLoader(train_ds, batch_size=TRAIN_BATCH_SIZE, num_workers=4)
@@ -693,56 +659,47 @@ val_dl = DataLoader(val_ds, batch_size=VALID_BATCH_SIZE, num_workers=4)
 test_dl = DataLoader(test_ds, batch_size=VALID_BATCH_SIZE, num_workers=4)
 
 
-# In[35]:
 
 
 model = Tweet_Model(model, TOKENIZER, 'pred.csv')
 model
 
 
-# In[36]:
 
 
 1024*2
 
 
-# In[37]:
 
 
 trainer = pl.Trainer(gpus=1,max_nb_epochs=EPOCHS, fast_dev_run=DEBUG_MODE)
 
 
-# In[38]:
 
 
 trainer.fit(model)
 
 
-# In[39]:
 
 
 trainer.test()
 
 
-# In[40]:
 
 
 pred = pd.read_csv('pred.csv')
 
 
-# In[41]:
 
 
 pred = pred[['text_ID','selected_text']]
 
 
-# In[42]:
 
 
 pred.columns=['textID','selected_text']
 
 
-# In[43]:
 
 
 def fillna_by_text(val):
@@ -752,7 +709,6 @@ def fillna_by_text(val):
         return val['selected_text']
 
 
-# In[44]:
 
 
 submission_final = pred.merge(df_test,on='textID',how='inner')
@@ -763,19 +719,16 @@ submission_final.columns=['textID','selected_text']
 submission_final.to_csv('submission.csv',index=False)
 
 
-# In[45]:
 
 
 #pred.to_csv('submission.csv',index=False)
 
 
-# In[46]:
 
 
 submission_final.shape,submission.shape
 
 
-# In[47]:
 
 
 submission_final

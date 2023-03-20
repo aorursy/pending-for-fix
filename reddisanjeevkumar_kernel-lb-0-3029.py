@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import os
@@ -44,7 +43,6 @@ random.seed = seed
 np.random.seed = seed
 
 
-# In[ ]:
 
 
 # Get train and test IDs
@@ -52,7 +50,6 @@ train_ids = next(os.walk(TRAIN_PATH))[1]
 test_ids = next(os.walk(TEST_PATH))[1]
 
 
-# In[ ]:
 
 
 # Get and resize train images and masks
@@ -88,7 +85,6 @@ for n, id_ in tqdm(enumerate(test_ids), total=len(test_ids)):
 print('Done!')
 
 
-# In[ ]:
 
 
 # Define IoU metric
@@ -104,7 +100,6 @@ def mean_iou(y_true, y_pred):
     return K.mean(K.stack(prec), axis=0)
 
 
-# In[ ]:
 
 
 # Build U-Net model
@@ -166,7 +161,6 @@ model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[mean_iou])
 model.summary()
 
 
-# In[ ]:
 
 
 # Fit model
@@ -176,7 +170,6 @@ results = model.fit(X_train, Y_train, validation_split=0.1, batch_size=16, epoch
                     callbacks=[earlystopper, checkpointer])
 
 
-# In[ ]:
 
 
 # Predict on train, val and test
@@ -198,7 +191,6 @@ for i in range(len(preds_test)):
                                        mode='constant', preserve_range=True))
 
 
-# In[ ]:
 
 
 # Perform a sanity check on some random training samples
@@ -211,7 +203,6 @@ imshow(np.squeeze(preds_train_t[ix]))
 plt.show()
 
 
-# In[ ]:
 
 
 # Perform a sanity check on some random validation samples
@@ -224,7 +215,6 @@ imshow(np.squeeze(preds_val_t[ix]))
 plt.show()
 
 
-# In[ ]:
 
 
 Run-length encoding stolen from https://www.kaggle.com/rakhlin/fast-run-length-encoding-python
@@ -244,7 +234,6 @@ def prob_to_rles(x, cutoff=0.5):
        yield rle_encoding(lab_img == i)
 
 
-# In[ ]:
 
 
 new_test_ids = []
@@ -255,7 +244,6 @@ for n, id_ in enumerate(test_ids):
     new_test_ids.extend([id_] * len(rle))
 
 
-# In[ ]:
 
 
 # Create submission DataFrame

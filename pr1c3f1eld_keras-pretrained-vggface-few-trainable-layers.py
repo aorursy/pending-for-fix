@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import tensorflow as tf
@@ -41,27 +39,23 @@ from matplotlib.pyplot import imshow
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[3]:
 
 
 pip install git+https://github.com/rcmalli/keras-vggface.git
 
 
-# In[4]:
 
 
 from keras_vggface.vggface import VGGFace
 from keras_vggface import utils
 
 
-# In[5]:
 
 
 relationships = pd.read_csv("../input/recognizing-faces-in-the-wild/train_relationships.csv")
 test_df = pd.read_csv("../input/recognizing-faces-in-the-wild/sample_submission.csv")
 
 
-# In[6]:
 
 
 def preprocess(filepath):
@@ -74,7 +68,6 @@ def preprocess(filepath):
     return x
 
 
-# In[7]:
 
 
 #visualizing a test set image
@@ -87,7 +80,6 @@ ex_pre = preprocess("../input/recognizing-faces-in-the-wild/test/face06124.jpg")
 print(ex_pre.shape)
 
 
-# In[8]:
 
 
 #convolutional features
@@ -97,13 +89,11 @@ for x in vggfeatures.layers[:]:
 base_model = vggfeatures
 
 
-# In[9]:
 
 
 base_model.summary()
 
 
-# In[10]:
 
 
 def baseline_model():
@@ -129,14 +119,12 @@ def baseline_model():
     return model 
 
 
-# In[11]:
 
 
 my_model = baseline_model()
 my_model.summary()
 
 
-# In[12]:
 
 
 train_base_path = '../input/recognizing-faces-in-the-wild/train/'
@@ -145,13 +133,11 @@ print('We have {} families in the dataset'.format(len(families)))
 print(families[:5])
 
 
-# In[13]:
 
 
 members = {i:sorted(os.listdir(train_base_path+i)) for i in families}
 
 
-# In[14]:
 
 
 test_path = '../input/recognizing-faces-in-the-wild/test/'
@@ -159,7 +145,6 @@ test_imgs_names = os.listdir(test_path)
 print(test_imgs_names[:5])
 
 
-# In[15]:
 
 
 from collections import defaultdict
@@ -185,7 +170,6 @@ for x in val_images:
     val_person_to_images_map[x.split("/")[-3] + "/" + x.split("/")[-2]].append(x)
 
 
-# In[16]:
 
 
 relationships = list(zip(relationships.p1.values, relationships.p2.values))
@@ -195,7 +179,6 @@ train = [x for x in relationships if val_famillies not in x[0]]
 val = [x for x in relationships if val_famillies in x[0]]
 
 
-# In[17]:
 
 
 def gen(list_tuples, person_to_images_map, batch_size=16):
@@ -224,7 +207,6 @@ def gen(list_tuples, person_to_images_map, batch_size=16):
         yield [X1, X2], labels
 
 
-# In[18]:
 
 
 file_path = "weights.h5"
@@ -240,7 +222,6 @@ my_model.compile(loss="binary_crossentropy", metrics=['acc'], optimizer=Adam(0.0
 my_model.fit_generator(gen(train, train_person_to_images_map, batch_size=16), use_multiprocessing=True, validation_data=gen(val, val_person_to_images_map, batch_size=16), epochs=100, verbose=2, workers=4, callbacks=callbacks_list, steps_per_epoch=200, validation_steps=100)
 
 
-# In[19]:
 
 
 test_folder = "../input/test/"

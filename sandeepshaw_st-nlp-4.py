@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,26 +21,22 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import pandas as pd
 import io
 
 
-# In[3]:
 
 
 pip install simpletransformers
 
 
-# In[4]:
 
 
 pip install pytorch-transformers
 
 
-# In[5]:
 
 
 a=pd.read_csv("../input/tweet-sentiment-extraction/train.csv")
@@ -49,7 +44,6 @@ b=pd.read_csv("../input/tweet-sentiment-extraction/test.csv")
 c=pd.read_csv("../input/tweet-sentiment-extraction/sample_submission.csv")
 
 
-# In[6]:
 
 
 a.head()
@@ -58,7 +52,6 @@ a['selected_text'][a['selected_text'].isnull()]='0'
 a.isnull().sum()
 
 
-# In[7]:
 
 
 def f(x):
@@ -91,37 +84,31 @@ train=outer_list
 train[:3]
 
 
-# In[8]:
 
 
 pip install pytorch-transformers
 
 
-# In[9]:
 
 
 pip install simpletransformers
 
 
-# In[10]:
 
 
 from simpletransformers.question_answering import QuestionAnsweringModel
 
 
-# In[11]:
 
 
 model=QuestionAnsweringModel('distilbert', 'distilbert-base-uncased-distilled-squad', use_cuda=True)
 
 
-# In[12]:
 
 
 train
 
 
-# In[13]:
 
 
 import os
@@ -135,19 +122,16 @@ with open('data/train.json', 'w') as f:
     f.close()
 
 
-# In[14]:
 
 
 type(train)
 
 
-# In[15]:
 
 
 train[:3]
 
 
-# In[17]:
 
 
 import os, sys, shutil
@@ -176,13 +160,11 @@ if USE_APEX:
                 from apex import amp
 
 
-# In[18]:
 
 
 model.train_model('data/train.json')
 
 
-# In[19]:
 
 
 #for test
@@ -208,13 +190,11 @@ for i in range(len(test)):
 outer_test[:3]
 
 
-# In[20]:
 
 
 test=outer_test
 
 
-# In[21]:
 
 
 with open('data/test.json', 'w') as f:
@@ -222,7 +202,6 @@ with open('data/test.json', 'w') as f:
     f.close()
 
 
-# In[23]:
 
 
 pred_df = model.predict(test)

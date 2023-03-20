@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,43 +19,36 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 data = pd.read_csv("../input/ru_train.csv")
 
 
-# In[3]:
 
 
 data.shape
 
 
-# In[4]:
 
 
 data.head(100)
 
 
-# In[5]:
 
 
 diff = data[data.before !=  data.after]
 
 
-# In[6]:
 
 
 diff.shape
 
 
-# In[7]:
 
 
 diff.head(100)
 
 
-# In[8]:
 
 
 diff[diff.class == 'PLAIN'].head(100)

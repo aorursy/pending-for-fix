@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import numpy as np
@@ -19,7 +18,6 @@ from fbprophet import Prophet
 
 
 
-# In[ ]:
 
 
 # set which items are predicted by adjusting n, start, end.
@@ -33,7 +31,6 @@ end = 10
 ../input/dataset
 
 
-# In[ ]:
 
 
 # read data
@@ -44,7 +41,6 @@ price_predict = pd.read_pickle('../input/dataset/dataset/df_price_predict.pkl')
 df_calendar = pd.read_pickle('../input/dataset/dataset/df_calendar.pkl')
 
 
-# In[ ]:
 
 
 def linear_part(price_train, price_predict, calender, item_name):
@@ -68,7 +64,6 @@ def day_format_converter(df, name_id, calendar):
     return df
 
 
-# In[ ]:
 
 
 # Create event dataframe
@@ -103,7 +98,6 @@ superbowls = pd.DataFrame({
 holidays = pd.concat((playoffs, superbowls))
 
 
-# In[ ]:
 
 
 df_forecast = pd.DataFrame()
@@ -168,7 +162,6 @@ for i in range(start, end):
     df_forecast = pd.concat([df_forecast, predict], axis = 1)
 
 
-# In[ ]:
 
 
 path = "output/" + str(n) + ".pkl"

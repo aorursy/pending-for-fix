@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # These are all the modules we'll be using later. Make sure you can import them
@@ -16,7 +15,6 @@ TRAIN_DIR = '../input/train/'
 TEST_DIR = '../input/test/'
 
 
-# In[2]:
 
 
 # used for scaling/normalization
@@ -48,7 +46,6 @@ test_images =  test_images[:TEST_SIZE_ALL]
 test_labels = np.array (['unknownclass'] * TEST_SIZE_ALL)
 
 
-# In[3]:
 
 
 # resizes to IMAGE_SIZE/IMAGE_SIZE while keeping aspect ratio the same.  pads on right/bottom as appropriate 
@@ -86,7 +83,6 @@ print("Train shape: {}".format(train_normalized.shape))
 print("Test shape: {}".format(test_normalized.shape))
 
 
-# In[4]:
 
 
 plt.imshow (train_normalized[0,:,:,:], interpolation='nearest')
@@ -102,7 +98,6 @@ plt.figure ()
 plt.imshow (train_normalized[1002,:,:,:], interpolation='nearest')
 
 
-# In[5]:
 
 
 np.random.seed (133)
@@ -125,7 +120,6 @@ print ('Validation', valid_dataset.shape, valid_labels.shape)
 print ('Test', test_dataset.shape, test_labels.shape)
 
 
-# In[6]:
 
 
 import tensorflow as tf
@@ -147,7 +141,6 @@ print ('Validation set', valid_dataset.shape, valid_labels.shape)
 print ('Test set', test_dataset.shape, test_labels.shape)
 
 
-# In[7]:
 
 
 batch_size = 16
@@ -260,7 +253,6 @@ with graph.as_default():
   test_prediction = tf.nn.softmax(model(tf_test_dataset))
 
 
-# In[8]:
 
 
 def accuracy(predictions, labels):
@@ -284,7 +276,6 @@ with tf.Session(graph=graph) as session:
   #print ("Test accuracy: %.1f%%" % accuracy(test_prediction.eval(), test_labels))
 
 
-# In[9]:
 
 
 import pandas as pd

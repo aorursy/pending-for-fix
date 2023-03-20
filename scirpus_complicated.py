@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -12,13 +11,11 @@ import matplotlib.pyplot as plt
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[2]:
 
 
 ls ../input
 
 
-# In[3]:
 
 
 def OrdinalConverter(d):
@@ -33,14 +30,12 @@ def OrdinalConverter(d):
 #     return a1*52+a2
 
 
-# In[4]:
 
 
 df_train = pd.read_csv('../input/cat-in-the-dat-ii/train.csv')
 df_test = pd.read_csv('../input/cat-in-the-dat-ii/test.csv')
 
 
-# In[5]:
 
 
 allcolumns = df_train.columns
@@ -49,14 +44,12 @@ nominals = [c for c in df_train.columns if 'nom' in c]
 ordinals = [c for c in df_train.columns if 'ord' in c]
 
 
-# In[6]:
 
 
 df_train['nans'] = df_train.isnull().sum(axis=1)
 df_test['nans'] = df_test.isnull().sum(axis=1)
 
 
-# In[7]:
 
 
 df_train = df_train.set_index('id')
@@ -65,7 +58,6 @@ y_train = df_train.target
 del df_train['target']
 
 
-# In[8]:
 
 
 ord_0_mapping = {1 : 0, 2 : 1, 3 : 2}
@@ -85,38 +77,32 @@ for c in otherordinals:
     df_test['real_'+c] = df_test[[c]].apply(lambda a: OrdinalConverter(a[c]) if not pd.isnull(a[c]) else np.nan,axis=1)
 
 
-# In[9]:
 
 
 df_train.drop(ordinals,inplace=True,axis=1)
 df_test.drop(ordinals,inplace=True,axis=1)
 
 
-# In[10]:
 
 
 df = pd.concat([df_train,df_test])
 
 
-# In[11]:
 
 
 df = pd.get_dummies(df, dummy_na=False, columns=binaries)
 
 
-# In[12]:
 
 
 df.head()
 
 
-# In[13]:
 
 
 df.columns
 
 
-# In[14]:
 
 
 for c in nominals:
@@ -124,26 +110,22 @@ for c in nominals:
     df.loc[~df[c].isnull(),c] = le.fit_transform(df.loc[~df[c].isnull(),c])
 
 
-# In[15]:
 
 
 df.shape
 
 
-# In[16]:
 
 
 df_train = df[:600000].copy()
 df_test = df[600000:].copy()
 
 
-# In[17]:
 
 
 df_train.head()
 
 
-# In[18]:
 
 
 import category_encoders as ce
@@ -157,26 +139,22 @@ test_oof = np.zeros(df_test[cat_feat_to_encode].shape)
  
 
 
-# In[19]:
 
 
 cat_feat_to_encode
 
 
-# In[20]:
 
 
 df_train.columns
 
 
-# In[21]:
 
 
 df_train[['real_ord_0', 'real_ord_1',
        'real_ord_2', 'real_ord_3', 'real_ord_4', 'real_ord_5']].head()
 
 
-# In[22]:
 
 
 from sklearn.model_selection import StratifiedKFold
@@ -193,45 +171,38 @@ for tr_idx, oof_idx in StratifiedKFold(n_splits=folds, random_state= 1032, shuff
 test_oof /= folds  
 
 
-# In[23]:
 
 
 new_train = pd.DataFrame(data=oof,columns=['te_'+ c for c in cat_feat_to_encode],index=df_train.index.values)
 new_test = pd.DataFrame(data=test_oof,columns=['te_'+ c for c in cat_feat_to_encode],index=df_test.index.values)  
 
 
-# In[24]:
 
 
 df_train = pd.concat([df_train,new_train],axis=1)
 df_test = pd.concat([df_test,new_test],axis=1)
 
 
-# In[25]:
 
 
 alldata = pd.concat([df_train,df_test])
 
 
-# In[26]:
 
 
 alldata.head()
 
 
-# In[27]:
 
 
 alldata.columns
 
 
-# In[28]:
 
 
 ordinals
 
 
-# In[29]:
 
 
 for c in alldata.columns:
@@ -242,38 +213,32 @@ for c in alldata.columns:
     alldata.loc[~alldata[c].isnull(),c] /= sd
 
 
-# In[30]:
 
 
 alldata.drop(nominals,inplace=True,axis=1)
 
 
-# In[31]:
 
 
 df_train = alldata[:600000].copy()
 df_test = alldata[600000:].copy()
 
 
-# In[32]:
 
 
 df_train.head()
 
 
-# In[33]:
 
 
 df_test.head()
 
 
-# In[34]:
 
 
 df_train['target'] = y_train
 
 
-# In[35]:
 
 
 from sklearn.linear_model import LogisticRegression
@@ -281,13 +246,11 @@ glm =LogisticRegression(C=1, random_state=2, solver='lbfgs', max_iter=20600, fit
 glm.fit(df_train[df_train.columns[:-1]].fillna(df_train[df_train.columns[:-1]].mean()), df_train.target)
 
 
-# In[36]:
 
 
 roc_auc_score(y_train,glm.predict_proba(df_train[df_train.columns[:-1]].fillna(df_train[df_train.columns[:-1]].mean()))[:,1])
 
 
-# In[37]:
 
 
 def Output(p):
@@ -397,13 +360,11 @@ def GP(data):
                     0.028169*np.tanh((-((((np.where(data["te_real_ord_3"] < -998, data["te_real_ord_2"], np.sin((((((data["te_real_ord_2"]) + (((data["te_real_ord_3"]) + (data["te_real_ord_4"]))))) + (data["real_ord_5"])))) )) + (np.sin((((((((data["te_real_ord_3"]) + (data["te_nom_7"]))) + (data["real_ord_5"]))) + (data["te_nom_7"])))))))))))
 
 
-# In[38]:
 
 
 roc_auc_score(y_train,GP(df_train[df_train.columns[:-1]].fillna(-999)))
 
 
-# In[39]:
 
 
 def GPComplex(data):
@@ -509,31 +470,26 @@ def GPComplex(data):
                     0.043721*np.tanh(np.real(complex(0,1)*np.conjugate(((data["te_bin_0_1.0"]) / (np.tanh((((np.tanh((((((((data["te_bin_0_1.0"]) * (((np.tanh((((complex(0,1)*np.conjugate(data["te_nom_1"])) / 2.0)))) / 2.0)))) / 2.0)) + (data["month"]))))) + (np.tanh((np.sinh((((complex(0,1)*np.conjugate(data["te_nom_1"])) * 2.0)))))))))))))))
 
 
-# In[40]:
 
 
 roc_auc_score(y_train,GPComplex(df_train[df_train.columns[:-1]].astype(complex).fillna(complex(0,1))))
 
 
-# In[41]:
 
 
 pd.DataFrame({'id': df_test.index.values, 'target': glm.predict_proba(df_test[df_test.columns].fillna(df_test[df_test.columns].mean()))[:,1]}).to_csv('glmsubmission.csv', index=False)
 
 
-# In[42]:
 
 
 pd.DataFrame({'id': df_test.index.values, 'target': GP(df_test[df_test.columns].fillna(-999))}).to_csv('gpsubmission.csv', index=False)
 
 
-# In[43]:
 
 
 pd.DataFrame({'id': df_test.index.values, 'target': GPComplex(df_test[df_test.columns].astype(complex).fillna(complex(0,1)))}).to_csv('gpcomplexsubmission.csv', index=False)
 
 
-# In[44]:
 
 
 predictions = (.5*glm.predict_proba(df_test[df_test.columns].fillna(df_test[df_test.columns].mean()))[:,1] +
@@ -541,7 +497,6 @@ predictions = (.5*glm.predict_proba(df_test[df_test.columns].fillna(df_test[df_t
                .25*GPComplex(df_test[df_test.columns].astype(complex).fillna(complex(0,1))))
 
 
-# In[45]:
 
 
 pd.DataFrame({'id': df_test.index.values, 'target': predictions}).to_csv('allmodelssubmission.csv', index=False)

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -34,7 +33,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 seed = 1321
@@ -42,13 +40,11 @@ np.random.seed(seed)
 tf.set_random_seed(seed)
 
 
-# In[3]:
 
 
 from pathlib import Path
 
 
-# In[4]:
 
 
 data_train_curated =Path('../input/train_curated.csv')
@@ -56,7 +52,6 @@ data_test = Path()
 data_train_noisy = Path('../input/train_noisy.csv')
 
 
-# In[5]:
 
 
 data_train_curated = pd.read_csv('../input/train_curated.csv')
@@ -64,7 +59,6 @@ data_test = pd.read_csv('../input/sample_submission.csv')
 data_train_noisy = pd.read_csv('../input/train_noisy.csv')
 
 
-# In[6]:
 
 
 import plotly.offline as py
@@ -73,50 +67,42 @@ import plotly.graph_objs as go
 import plotly.tools as tls
 
 
-# In[7]:
 
 
 data_train_curated.shape
 
 
-# In[8]:
 
 
 data_test.sample(10)
 
 
-# In[9]:
 
 
 print("Number of class in training data",len(set(data_train_curated.labels)))
 print("Number of class in test data", len(set(data_test.columns[1:])))
 
 
-# In[10]:
 
 
 data_train_curated.info()
 
 
-# In[11]:
 
 
 data_train_curated.head()
 
 
-# In[12]:
 
 
 data_train_noisy.info()
 
 
-# In[13]:
 
 
 data_train_noisy.head()
 
 
-# In[14]:
 
 
 catagory_train = data_train_curated.groupby(['labels']).count()
@@ -124,7 +110,6 @@ catagory_train.columns = ['counts']
 print(len(catagory_train))
 
 
-# In[15]:
 
 
 category_group = data_train_curated.groupby(['labels']).count()
@@ -132,7 +117,6 @@ category_group.columns = ['counts']
 print(len(category_group))
 
 
-# In[16]:
 
 
 plt.figure(figsize = (28,8))
@@ -144,7 +128,6 @@ plt.xlabel('Catagory',color = 'Red',size =15)
 plt.ylabel('No of sample', color = 'red', size =15)
 
 
-# In[17]:
 
 
 import IPython.display as ipd
@@ -152,7 +135,6 @@ sound = ('../input/train_curated/0019ef41.wav')
 ipd.Audio(sound)
 
 
-# In[18]:
 
 
 from scipy.io import wavfile
@@ -160,7 +142,6 @@ rate, data = wavfile.read(sound)
 plt.plot(data , '-',color ='r')
 
 
-# In[19]:
 
 
 #zooming the wave
@@ -168,7 +149,6 @@ plt.figure(figsize=(10,5))
 plt.plot(data[:300],'.',color ='b');plt.plot(data[:300],'-',color ='r')
 
 
-# In[20]:
 
 
 import wave
@@ -177,13 +157,11 @@ data_train_curated['frames'] = data_train_curated['fname'].apply(lambda x: wave.
 data_test['frames'] = data_test['fname'].apply(lambda x: wave.open('../input/test/' + x).getnframes())
 
 
-# In[21]:
 
 
 data_train_curated.head()
 
 
-# In[22]:
 
 
 plt.figure(figsize = (18,9))
@@ -192,20 +170,17 @@ plt.xlabel('No of frames', color = 'white',size = 20)
 plt.ylabel('counts of fname ', color = 'white', size =20)
 
 
-# In[23]:
 
 
 data_train_curated[data_train_curated['frames']>2500000]
 
 
-# In[24]:
 
 
 sound = ('../input/train_curated/77b925c2.wav')
 ipd.Audio(sound)
 
 
-# In[25]:
 
 
 from wordcloud import *
@@ -222,7 +197,6 @@ plt.tight_layout(pad = 0)
 plt.show() 
 
 
-# In[26]:
 
 
 def audio_norm(data):
@@ -233,7 +207,6 @@ def audio_norm(data):
     
 
 
-# In[27]:
 
 
 from keras.layers import (Convolution2D, GlobalAveragePooling2D, BatchNormalization, Flatten,
@@ -245,7 +218,6 @@ from keras.models import Model
 from keras import backend as K
 
 
-# In[28]:
 
 
 class Config(object):
@@ -271,7 +243,6 @@ class Config(object):
     
 
 
-# In[29]:
 
 
 #Thanks to keras ;)
@@ -331,7 +302,6 @@ class DataGenerator(Sequence):
         return X, keras.utils.to_categorical(y, num_classes=self.n_classes)
 
 
-# In[30]:
 
 
 #to get dummy 1D dummy model
@@ -347,7 +317,6 @@ def get_dummy(config):
     return model
 
 
-# In[31]:
 
 
 def_conv_model(config):
@@ -361,7 +330,6 @@ def_conv_model(config):
     
 
 
-# In[32]:
 
 
 Stay Tuned

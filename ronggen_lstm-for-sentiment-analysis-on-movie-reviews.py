@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 seed = 1
@@ -34,7 +32,6 @@ np.random.seed(seed)
 set_random_seed(seed)
 
 
-# In[ ]:
 
 
 #load data
@@ -42,28 +39,24 @@ train = pd.read_csv('../input/train.tsv',  sep="\t")
 test = pd.read_csv('../input/test.tsv',  sep="\t")
 
 
-# In[ ]:
 
 
 #观察数据
 train.info()
 
 
-# In[ ]:
 
 
 #数据没有空值,观察数据内容
 train.head()
 
 
-# In[ ]:
 
 
 #观察样本的大致统计分布
 train['Sentiment'].value_counts()
 
 
-# In[ ]:
 
 
 #试试NB的效果
@@ -88,7 +81,6 @@ X=vec.transform(X)
 X_test=vec.transform(X_test)
 
 
-# In[ ]:
 
 
 #对数据进行切分
@@ -96,13 +88,11 @@ from sklearn.model_selection import train_test_split
 X_train, X_val, Y_train, Y_val = train_test_split(X, Y, test_size=0.25, random_state=seed)
 
 
-# In[ ]:
 
 
 from sklearn.e
 
 
-# In[ ]:
 
 
 from sklearn.naive_bayes import MultinomialNB
@@ -110,13 +100,11 @@ classifier = MultinomialNB()
 classifier.fit(X_train, Y_train)
 
 
-# In[ ]:
 
 
 classifier.score(X_val, Y_val)
 
 
-# In[ ]:
 
 
 #对文本进行预处理
@@ -144,7 +132,6 @@ X_test=pad_sequences(X_test,maxlen=max_length)
 Y = to_categorical(train['Sentiment'].values)
 
 
-# In[ ]:
 
 
 #对数据进行切分
@@ -152,7 +139,6 @@ from sklearn.model_selection import train_test_split
 X_train, X_val, Y_train, Y_val = train_test_split(X, Y, test_size=0.25, random_state=seed)
 
 
-# In[ ]:
 
 
 #搭建模型,利用LSTM搭建
@@ -171,7 +157,6 @@ model.add(Activation("softmax"))
 model.compile(loss="categorical_crossentropy", optimizer="adam",metrics=["accuracy"])
 
 
-# In[ ]:
 
 
 sub = pd.read_csv('../input/sampleSubmission.csv')
@@ -180,7 +165,6 @@ sub['Sentiment'] = model.predict_classes(test_X, batch_size=batch_size, verbose=
 sub.to_csv('sub_cnn.csv', index=False)
 
 
-# In[ ]:
 
 
 def format_data(train, test, max_features, maxlen):

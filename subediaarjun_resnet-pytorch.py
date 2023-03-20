@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np # linear algebra
@@ -22,7 +21,6 @@ from torchvision import transforms,models
 from tqdm import tqdm_notebook as tqdm
 
 
-# In[2]:
 
 
 train = pd.read_csv('/kaggle/input/bengaliai-cv19/train.csv')
@@ -32,25 +30,21 @@ data2 = pd.read_feather('/kaggle/usr/lib/resize_and_load_with_feather_format_muc
 data3 = pd.read_feather('/kaggle/usr/lib/resize_and_load_with_feather_format_much_faster/train_data_3.feather')
 
 
-# In[3]:
 
 
 ls /kaggle/usr/lib/resize_and_load_with_feather_format_much_faster/
 
 
-# In[4]:
 
 
 data_full = pd.concat([data0,data1,data2,data3],ignore_index=True)
 
 
-# In[5]:
 
 
 data_full.head()
 
 
-# In[6]:
 
 
 class GraphemeDataset(Dataset):
@@ -67,7 +61,6 @@ class GraphemeDataset(Dataset):
         return image,label1,label2,label3
 
 
-# In[7]:
 
 
 class ResidualBlock(nn.Module):
@@ -99,7 +92,6 @@ class ResidualBlock(nn.Module):
         return x
 
 
-# In[8]:
 
 
 class ResNet18(nn.Module):
@@ -154,7 +146,6 @@ class ResNet18(nn.Module):
         return x1,x2,x3
 
 
-# In[9]:
 
 
 class ResNet34(nn.Module):
@@ -215,27 +206,23 @@ class ResNet34(nn.Module):
         return x1,x2,x3
 
 
-# In[10]:
 
 
 #!pip install torchsummary
 #from torchsummary import summary
 
 
-# In[11]:
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-# In[12]:
 
 
 #model_resnet34 = ResNet34().to(device)
 #summary(model_resnet34, (1, 64, 64))
 
 
-# In[13]:
 
 
 model = ResNet34().to(device)
@@ -245,7 +232,6 @@ criterion = nn.CrossEntropyLoss()
 batch_size=32
 
 
-# In[14]:
 
 
 epochs = 60
@@ -287,7 +273,6 @@ for epoch in range(epochs):
 torch.save(model.state_dict(), 'resnet34_50epochs_saved_weights.pth')
 
 
-# In[15]:
 
 
 import matplotlib.pyplot as plt
@@ -298,7 +283,6 @@ ax[1].plot(accs)
 ax[1].set_title('acc')
 
 
-# In[16]:
 
 
 import numpy as np # linear algebra
@@ -321,13 +305,11 @@ from torchvision import transforms,models
 from tqdm import tqdm_notebook as tqdm
 
 
-# In[17]:
 
 
 test = pd.read_csv('/kaggle/input/bengaliai-cv19/test.csv')
 
 
-# In[18]:
 
 
 class GraphemeDataset(Dataset):
@@ -340,7 +322,6 @@ class GraphemeDataset(Dataset):
         return image
 
 
-# In[19]:
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -348,7 +329,6 @@ model = ResNet34().to(device)
 model.load_state_dict(torch.load('./resnet34_50epochs_saved_weights.pth'))
 
 
-# In[20]:
 
 
 def Resize(df,size=64):
@@ -363,7 +343,6 @@ def Resize(df,size=64):
     return resized
 
 
-# In[21]:
 
 
 model.eval()
@@ -385,20 +364,17 @@ for fname in test_data:
             predictions.append(outputs1.argmax(1).cpu().detach().numpy())
 
 
-# In[22]:
 
 
 submission = pd.read_csv('/kaggle/input/bengaliai-cv19/sample_submission.csv')
 
 
-# In[23]:
 
 
 submission.target = np.hstack(predictions)
 submission.head(10)
 
 
-# In[24]:
 
 
 submission.to_csv('submission.csv',index=False)

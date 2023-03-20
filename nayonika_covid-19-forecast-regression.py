@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -37,32 +36,27 @@ from sklearn.ensemble import BaggingRegressor
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 train_df = pd.read_csv("../input/covid19-global-forecasting-week-4/train.csv")
 test_df = pd.read_csv("../input/covid19-global-forecasting-week-4/test.csv")
 
 
-# In[3]:
 
 
 train_df.head(50)
 
 
-# In[4]:
 
 
 train_df.info()
 
 
-# In[5]:
 
 
 test_df.info()
 
 
-# In[6]:
 
 
 from pandas_profiling import ProfileReport
@@ -70,7 +64,6 @@ train_profile = ProfileReport(train_df, title='Pandas Profiling Report', html={'
 train_profile
 
 
-# In[7]:
 
 
 #The Procince/State values are replaced with Country/Region to fill the nulls
@@ -78,7 +71,6 @@ train_df.Province_State.fillna(train_df.Country_Region, inplace=True)
 test_df.Province_State.fillna(test_df.Country_Region, inplace=True)
 
 
-# In[8]:
 
 
 train_df.Date = train_df.Date.apply(pd.to_datetime)
@@ -93,14 +85,12 @@ test_df['ReportDay_week'] = test_df['Date'].dt.week
 test_df['ReportDay_day'] = test_df['Date'].dt.day
 
 
-# In[9]:
 
 
 test_df.drop(['Date'], axis=1, inplace = True)
 train_df.drop(['Date'], axis=1, inplace = True)
 
 
-# In[10]:
 
 
 le = LabelEncoder()
@@ -113,7 +103,6 @@ test_df['Province_State'] = le.fit_transform(test_df['Province_State'])
 test_df.head(10)
 
 
-# In[11]:
 
 
 X_train = train_df.drop(["Id", "ConfirmedCases", "Fatalities"], axis = 1)
@@ -122,20 +111,17 @@ Y_train_Fat = train_df["Fatalities"]
 X_test = test_df.drop(["ForecastId"], axis = 1) 
 
 
-# In[12]:
 
 
 X_test.info()
 
 
-# In[13]:
 
 
 
 skfold = ShuffleSplit(random_state=7)
 
 
-# In[14]:
 
 
 '''#1. Ridge Regression
@@ -154,7 +140,6 @@ print (score_CC.mean(), score_Fat.mean())
 #0.02542952540508501 0.011197579501272648'''
 
 
-# In[15]:
 
 
 '''#2.Lasso Regression
@@ -174,7 +159,6 @@ print (score_CC.mean(), score_Fat.mean())
 #0.025431596423250158 0.01122396097530325''''''
 
 
-# In[16]:
 
 
 '''#3. SVM
@@ -191,7 +175,6 @@ score_Fat = cross_val_score(reg_Fat, X_train, Y_train_Fat, cv = skfold)
 print (score_CC.mean(), score_Fat.mean())'''
 
 
-# In[17]:
 
 
 #4. ElasticNet
@@ -215,7 +198,6 @@ print (score_CC.mean(), score_Fat.mean())
 #0.006609985459851919 0.0026637521539920163
 
 
-# In[18]:
 
 
 '''#5. LinearRegression
@@ -233,7 +215,6 @@ print (score_CC.mean(), score_Fat.mean())
 #0.02542909255578929 0.011196924912099948'''
 
 
-# In[19]:
 
 
 '''#6 Logistic Regression
@@ -250,7 +231,6 @@ score_Fat = cross_val_score(reg_Fat, X_train, Y_train_Fat, cv = skfold)
 print (score_CC.mean(), score_Fat.mean())'''
 
 
-# In[20]:
 
 
 '''#7. XGBoost
@@ -267,7 +247,6 @@ score_Fat = cross_val_score(reg_Fat, X_train, Y_train_Fat, cv = skfold)
 print (score_CC.mean(), score_Fat.mean())'''
 
 
-# In[21]:
 
 
 '''#8. Adaboost regressor
@@ -284,7 +263,6 @@ print (score_CC.mean(), score_Fat.mean())
 #-0.28701899875717746 -0.07457296951523934'''
 
 
-# In[22]:
 
 
 '''#9. Bagging 
@@ -298,7 +276,6 @@ score_Fat = cross_val_score(reg_Fat, X_train, Y_train_Fat, cv = skfold)
 print (score_CC.mean(), score_Fat.mean())'''
 
 
-# In[23]:
 
 
 '''#10 Random Forest
@@ -312,7 +289,6 @@ print (score_CC.mean(), score_Fat.mean())
 #0.04355921589425451 0.021343671523731022'''
 
 
-# In[24]:
 
 
 '''#11 Decision Tree
@@ -327,7 +303,6 @@ print (score_CC.mean(), score_Fat.mean())
 #0.6417006505631566 0.6417006505631566'''
 
 
-# In[25]:
 
 
 reg_CC.fit(X_train, Y_train_CC)
@@ -337,7 +312,6 @@ reg_Fat.fit(X_train, Y_train_Fat)
 Y_pred_Fat = reg_Fat.predict(X_test) 
 
 
-# In[26]:
 
 
 df_out = pd.DataFrame({'ForecastId': [], 'ConfirmedCases': [], 'Fatalities': []})
@@ -346,7 +320,6 @@ df_out = pd.concat([df_out, soln], axis=0)
 df_out.ForecastId = df_out.ForecastId.astype('int')
 
 
-# In[27]:
 
 
 df_out.to_csv('submission.csv', index=False)

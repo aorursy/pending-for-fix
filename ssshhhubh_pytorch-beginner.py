@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[8]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,33 +22,28 @@ os.listdir('../input/histopathologic-cancer-detection')
 # Any results you write to the current directory are saved as output.
 
 
-# In[9]:
 
 
 path2csv='../input/histopathologic-cancer-detection/train_labels.csv'
 labels_df=pd.read_csv(path2csv)
 
 
-# In[10]:
 
 
 labels_df.head(5)
 
 
-# In[12]:
 
 
 print(labels_df['label'].value_counts())
 
 
-# In[13]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
 labels_df['label'].hist();
 
 
-# In[14]:
 
 
 import matplotlib.pylab as plt
@@ -59,26 +53,22 @@ import os
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[20]:
 
 
 # get ids for malignant images
 malignantIds = labels_df.loc[labels_df['label']==1]['id'].values
 
 
-# In[21]:
 
 
 path2train="../input/histopathologic-cancer-detection/train"
 
 
-# In[22]:
 
 
 color=False
 
 
-# In[23]:
 
 
 plt.rcParams['figure.figsize'] = (10.0, 10.0)
@@ -86,7 +76,6 @@ plt.subplots_adjust(wspace=0, hspace=0)
 nrows,ncols=3,3
 
 
-# In[24]:
 
 
 for i,id_ in enumerate(malignantIds[:nrows*ncols]):
@@ -104,7 +93,6 @@ for i,id_ in enumerate(malignantIds[:nrows*ncols]):
     plt.axis('off')
 
 
-# In[25]:
 
 
 print("image shape:", np.array(img).shape)
@@ -112,7 +100,6 @@ print("pixel values range from %s to %s" %(np.min(img),
 np.max(img)))
 
 
-# In[26]:
 
 
 from PIL import Image
@@ -123,14 +110,12 @@ import torchvision.transforms as transforms
 import os
 
 
-# In[27]:
 
 
 # fix torch random seed
 torch.manual_seed(0)
 
 
-# In[126]:
 
 
 class histoCancerDataset(Dataset):
@@ -162,14 +147,12 @@ class histoCancerDataset(Dataset):
         return image, self.labels[idx]
 
 
-# In[127]:
 
 
 import torchvision.transforms as transforms
 data_transformer = transforms.Compose([transforms.ToTensor()])
 
 
-# In[128]:
 
 
 data_dir = "../input/histopathologic-cancer-detection"
@@ -177,7 +160,6 @@ histo_dataset = histoCancerDataset(data_dir, data_transformer,"train")
 print(len(histo_dataset))
 
 
-# In[32]:
 
 
 # load an image
@@ -185,7 +167,6 @@ img,label=histo_dataset[256]
 print(img.shape,torch.min(img),torch.max(img))
 
 
-# In[33]:
 
 
 from torch.utils.data import random_split
@@ -197,7 +178,6 @@ print("train dataset length:", len(train_ds))
 print("validation dataset length:", len(val_ds))
 
 
-# In[34]:
 
 
 for x,y in train_ds:
@@ -208,7 +188,6 @@ for x,y in val_ds:
     break
 
 
-# In[35]:
 
 
 #Import the required packages:
@@ -219,7 +198,6 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 np.random.seed(0)
 
 
-# In[36]:
 
 
 #helper function
@@ -237,7 +215,6 @@ def show(img,y,color=True):
     plt.title("label: "+str(y))
 
 
-# In[37]:
 
 
 #making grid 
@@ -252,7 +229,6 @@ plt.rcParams['figure.figsize'] = (10.0, 5)
 show(x_grid_train,y_grid_train)
 
 
-# In[38]:
 
 
 train_transformer = transforms.Compose([
@@ -265,7 +241,6 @@ train_transformer = transforms.Compose([
 val_transformer = transforms.Compose([transforms.ToTensor()])
 
 
-# In[39]:
 
 
 #overwrite the transform functions
@@ -273,7 +248,6 @@ train_ds.transform=train_transformer
 val_ds.transform=val_transformer
 
 
-# In[40]:
 
 
 from torch.utils.data import DataLoader
@@ -281,7 +255,6 @@ train_dl = DataLoader(train_ds, batch_size=32, shuffle=True)
 val_dl = DataLoader(val_ds, batch_size=64, shuffle=False)
 
 
-# In[41]:
 
 
 # extract a batch from training data
@@ -295,21 +268,18 @@ for x, y in val_dl:
     break
 
 
-# In[42]:
 
 
 # get labels for validation dataset
 y_val=[y for _,y in val_ds]
 
 
-# In[43]:
 
 
 def accuracy(labels, out):
     return np.sum(out==labels)/float(len(labels))
 
 
-# In[51]:
 
 
 # accuracy all zero predictions
@@ -317,7 +287,6 @@ acc_all_zeros=accuracy(y_val,np.zeros_like(y_val))
 print("accuracy all zero prediction: %.2f" %acc_all_zeros)
 
 
-# In[52]:
 
 
 # accuracy all ones predictions
@@ -325,7 +294,6 @@ acc_all_ones=accuracy(y_val,np.ones_like(y_val))
 print("accuracy all one prediction: %.2f" %acc_all_ones)
 
 
-# In[53]:
 
 
 # accuracy random predictions
@@ -333,7 +301,6 @@ acc_random=accuracy(y_val,np.random.randint(2,size=len(y_val)))
 print("accuracy random prediction: %.2f" %acc_random)
 
 
-# In[54]:
 
 
 #now the full cnn model
@@ -342,7 +309,6 @@ import numpy as np
 import torch.nn.functional as F
 
 
-# In[55]:
 
 
 #helper function to give output size
@@ -360,7 +326,6 @@ def findConv2dOutShape(H_in,W_in,conv,pool=2):
     return int(H_out),int(W_out)
 
 
-# In[56]:
 
 
 class Net(nn.Module):
@@ -401,7 +366,6 @@ class Net(nn.Module):
     
 
 
-# In[57]:
 
 
 # dict to define model parameters
@@ -414,14 +378,12 @@ params_model={
     }
 
 
-# In[58]:
 
 
 # create model
 cnn_model = Net(params_model)
 
 
-# In[59]:
 
 
 if torch.cuda.is_available():
@@ -429,39 +391,33 @@ if torch.cuda.is_available():
     cnn_mdel = cnn_model.to(device) 
 
 
-# In[60]:
 
 
 print(cnn_model)
 
 
-# In[61]:
 
 
 pip install torchsummary
 
 
-# In[62]:
 
 
 from torchsummary import summary
 summary(cnn_model, input_size=(3, 96, 96),device=device.type)
 
 
-# In[63]:
 
 
 loss_func = nn.NLLLoss(reduction="sum")
 
 
-# In[64]:
 
 
 from torch import optim
 opt = optim.Adam(cnn_model.parameters(), lr=3e-4)
 
 
-# In[65]:
 
 
 # get learning rate
@@ -472,7 +428,6 @@ current_lr=get_lr(opt)
 print('current lr={}'.format(current_lr))
 
 
-# In[66]:
 
 
 from torch.optim.lr_scheduler import ReduceLROnPlateau
@@ -483,7 +438,6 @@ for i in range(100):
     lr_scheduler.step(1)
 
 
-# In[67]:
 
 
 def metrics_batch(output, target):
@@ -494,7 +448,6 @@ def metrics_batch(output, target):
     return corrects
 
 
-# In[68]:
 
 
 #loss value per batch
@@ -509,7 +462,6 @@ def loss_batch(loss_func, output, target, opt=None):
     return loss.item(), metric_b
 
 
-# In[71]:
 
 
 #loss per epoch
@@ -543,7 +495,6 @@ def loss_epoch(model,loss_func,dataset_dl,sanity_check=False,opt=None):
     return loss, metric
 
 
-# In[72]:
 
 
 def train_val(model, params):
@@ -619,7 +570,6 @@ def train_val(model, params):
         
 
 
-# In[73]:
 
 
 import copy
@@ -629,7 +579,6 @@ lr_scheduler = ReduceLROnPlateau(opt, mode='min',factor=0.5,
 patience=20,verbose=1)
 
 
-# In[80]:
 
 
 params_train = {
@@ -645,14 +594,12 @@ params_train = {
 } 
 
 
-# In[81]:
 
 
 # train and validate the model
 cnn_model,loss_hist,metric_hist=train_val(cnn_model,params_train)
 
 
-# In[82]:
 
 
 # Train-Validation Progress
@@ -676,7 +623,6 @@ plt.grid()
 plt.show()
 
 
-# In[83]:
 
 
 #First, we'll create an object of the Net class and load the stored weights into the model
@@ -690,14 +636,12 @@ params_model={
 }
 
 
-# In[84]:
 
 
 # initialize model
 cnn_model = Net(params_model)
 
 
-# In[86]:
 
 
 # load state_dict into model
@@ -706,13 +650,11 @@ path2weights="weights.pt"
 cnn_model.load_state_dict(torch.load(path2weights))
 
 
-# In[87]:
 
 
 cnn_model.eval()
 
 
-# In[88]:
 
 
 # move model to cuda/gpu device
@@ -721,7 +663,6 @@ if torch.cuda.is_available():
     cnn_model=cnn_model.to(device)
 
 
-# In[92]:
 
 
 import time
@@ -750,7 +691,6 @@ def deploy_model(model,dataset,device,num_classes=2,sanity_check=False):
             
 
 
-# In[93]:
 
 
 # deploy model
@@ -758,7 +698,6 @@ y_out,y_gt=deploy_model(cnn_model,val_ds,device=device,sanity_check=False)
 print(y_out.shape,y_gt.shape)
 
 
-# In[94]:
 
 
 from sklearn.metrics import accuracy_score
@@ -770,7 +709,6 @@ acc=accuracy_score(y_pred,y_gt)
 print("accuracy: %.2f" %acc)
 
 
-# In[97]:
 
 
 path2csv="./../input/histopathologic-cancer-detection/sample_submission.csv"
@@ -778,7 +716,6 @@ labels_df=pd.read_csv(path2csv)
 labels_df.head()
 
 
-# In[129]:
 
 
 class histoCancerDataset_test(Dataset):
@@ -810,28 +747,24 @@ class histoCancerDataset_test(Dataset):
         return image, self.labels[idx]
 
 
-# In[147]:
 
 
 histo_test = histoCancerDataset_test(data_dir,val_transformer,data_type="test")
 print(len(histo_test))
 
 
-# In[132]:
 
 
 y_test_out,_=deploy_model(cnn_model,histo_test, device,sanity_check=False)
 
 
 
-# In[133]:
 
 
 y_test_pred=np.argmax(y_test_out,axis=1)
 print(y_test_pred.shape)
 
 
-# In[135]:
 
 
 grid_size=4
@@ -845,7 +778,6 @@ plt.rcParams['figure.figsize'] = (10.0, 5)
 show(x_grid_test,y_grid_test)
 
 
-# In[136]:
 
 
 print(y_test_out.shape)
@@ -853,7 +785,6 @@ cancer_preds = np.exp(y_test_out[:, 1])
 print(cancer_preds.shape)
 
 
-# In[ ]:
 
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -29,7 +28,6 @@ import os
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 # First we load the csv files
@@ -40,7 +38,6 @@ test_df = pd.read_csv(path/'sample_submission.csv')
 train_df
 
 
-# In[3]:
 
 
 # Here we will visualize the number of tags per image
@@ -52,14 +49,12 @@ plt.title('Tag Count per Image')
 sns.despine()
 
 
-# In[4]:
 
 
 TAG_COUNTS = train_df['tag_count'].value_counts().reset_index().sort_values(by=['index']).set_index('index').style.background_gradient(cmap="cividis")
 TAG_COUNTS
 
 
-# In[5]:
 
 
 # We are now replacing the attribute_type::attrbiute_value format in attribute_name with the two columns seperated, and deleting the original 
@@ -69,7 +64,6 @@ labels_df.drop("attribute_name",1,inplace=True)
 labels_df
 
 
-# In[6]:
 
 
 # See which different types of attributes we have
@@ -82,7 +76,6 @@ for attribute in unique_attributes:
     print(attribute, ": ",all_matches.min().attribute_id,"-",all_matches.max().attribute_id)
 
 
-# In[7]:
 
 
 np.random.seed(69)
@@ -95,13 +88,11 @@ data = (ImageList.from_csv(path, 'train.csv', folder='train', suffix='.png')
        .normalize(imagenet_stats))
 
 
-# In[8]:
 
 
 data.show_batch(3, figsize=(12,12))
 
 
-# In[9]:
 
 
 copy pretrained weights for resnet50 to the folder fastai will search by default
@@ -113,20 +104,17 @@ f_score = partial(fbeta,thresh=0.2)
 learn=cnn_learner(data,arch,metrics=[acc_02,f_score], model_dir="/kaggle", pretrained=True)
 
 
-# In[10]:
 
 
 learn.lr_find()
 learn.recorder.plot()
 
 
-# In[ ]:
 
 
 
 
 
-# In[11]:
 
 
 lr = 0.01
@@ -135,32 +123,27 @@ learn.save('stage-1-rn50')
 learn.export('resnet50_imet')
 
 
-# In[12]:
 
 
 # learn = load_learner('/kaggle/input/models/', 'resnet50_imet_2_f0.399.pkl')
 # learn
 
 
-# In[13]:
 
 
 learn.data.add_test(ImageList.from_df(test_df,path,folder='test',suffix='.png'))
 
 
-# In[14]:
 
 
 preds,y = learn.get_preds(DatasetType.Test)
 
 
-# In[15]:
 
 
 pd.DataFrame(preds.numpy()).to_csv('preds.csv', index=False)
 
 
-# In[16]:
 
 
 # Use this one when doing predictions on a new model
@@ -171,7 +154,6 @@ preds_df = pd.DataFrame(preds.numpy())
 # preds_df
 
 
-# In[17]:
 
 
 def display_Predictions(image,display):
@@ -189,14 +171,12 @@ def display_Predictions(image,display):
 display_Predictions(11, display=True).style.background_gradient(cmap='cividis')
 
 
-# In[18]:
 
 
 for img_index in range(len(preds_df)):
     values = display_Predictions(img_index,display=False)['acc_preds'].round(2)
 
 
-# In[19]:
 
 
 thresh = 0.2
@@ -204,7 +184,6 @@ labelled_preds = [' '.join([learn.data.classes[i] for i,p in enumerate(pred) if 
 df = pd.DataFrame({'id':test_df['id'], 'attribute_ids':labelled_preds})
 
 
-# In[20]:
 
 
 df.to_csv('submission.csv', index=False)

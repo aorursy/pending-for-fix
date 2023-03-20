@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -33,7 +32,6 @@ get_ipython().run_line_magic('env', 'JOBLIB_TEMP_FOLDER=/tmp')
 gc.collect()
 
 
-# In[2]:
 
 
 
@@ -61,7 +59,6 @@ proliferative_dr_ratio = float((np.shape(df_train_lbl.loc[df_train_lbl['diagnosi
 print(proliferative_dr_ratio)
 
 
-# In[3]:
 
 
 # Under-sampling of dataset
@@ -86,7 +83,6 @@ sampled_m_tr = np.shape(sampled_train_lbl)[0]
 gc.collect()
 
 
-# In[4]:
 
 
 def image_resize_tf(img_path, image_dim):
@@ -104,13 +100,11 @@ def image_resize_tf(img_path, image_dim):
     return actual_resize_nearest_neighbor
 
 
-# In[5]:
 
 
 resized_img = image_resize_tf("../input/train_images/875d2ffcbf47.png", 224)
 
 
-# In[6]:
 
 
 # shuffling the data
@@ -124,7 +118,6 @@ idx_train = idx_arr[:m_train_validate]
 idx_validate = idx_arr[m_train_validate:]
 
 
-# In[ ]:
 
 
 # resizing training images
@@ -145,7 +138,6 @@ print(np.shape(img_arr_train))
 print(np.shape(lbl_train))
 
 
-# In[7]:
 
 
 # resizing validating images
@@ -166,7 +158,6 @@ print(np.shape(img_arr_validate))
 print(np.shape(lbl_validate))
 
 
-# In[8]:
 
 
 # vgg19 code
@@ -216,7 +207,6 @@ sgd = SGD(lr=0.0001, momentum=0.9)
 model.compile(loss=keras.losses.categorical_crossentropy, optimizer=sgd, metrics=["accuracy"])
 
 
-# In[9]:
 
 
 #img_arr_train = img_arr_train/255
@@ -235,7 +225,6 @@ for k in range(0,np.size(img_arr_train,1)):
 print(np.shape(img_arr_train))
 
 
-# In[10]:
 
 
 # contering the the image array for validating
@@ -251,14 +240,12 @@ for k in range(0,np.size(img_arr_validate,1)):
 print(np.shape(img_arr_validate))
 
 
-# In[11]:
 
 
 #lbls = np.array(sampled_train_lbl['diagnosis']).reshape(sampled_m_tr,1)
 history = model.fit(x=img_arr_train,y=lbl_train,validation_data=(img_arr_validate, lbl_validate),batch_size=64,epochs=200,verbose=1) 
 
 
-# In[12]:
 
 
 #img_arr_train
@@ -269,7 +256,6 @@ del df_test_lbl
 gc.collect()
 
 
-# In[13]:
 
 
 #test_images = glob.glob(test_path + '*.png')
@@ -288,7 +274,6 @@ for row in df_sample_sub.iterrows():
     k += 1
 
 
-# In[14]:
 
 
 scores = model.predict_proba(test_images)
@@ -296,14 +281,12 @@ y_test = np.argmax(scores,axis=1)
 print(y_test)
 
 
-# In[15]:
 
 
 df_sample_sub['diagnosis'] = y_test
 df_sample_sub['diagnosis'].astype('int64')
 
 
-# In[16]:
 
 
 os.chdir("/kaggle/working/")

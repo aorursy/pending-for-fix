@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 from kaggle.competitions import twosigmanews
@@ -29,7 +27,6 @@ env = twosigmanews.make_env()
 (market_data,news_data) = env.get_training_data()
 
 
-# In[ ]:
 
 
 # output the shape of the data
@@ -37,19 +34,16 @@ print(market_data.shape)
 print(news_data.shape)
 
 
-# In[ ]:
 
 
 market_data.head()
 
 
-# In[ ]:
 
 
 news_data.head()
 
 
-# In[ ]:
 
 
 # look at missing data
@@ -64,7 +58,6 @@ mis_value_graph(market_data)
 mis_value_graph(news_data)
 
 
-# In[ ]:
 
 
 # handle missing data about market_data
@@ -99,13 +92,11 @@ scaler = StandardScaler()
 market_data[Num_cols] = scaler.fit_transform(market_data[Num_cols])
 
 
-# In[ ]:
 
 
 market_data.head()
 
 
-# In[ ]:
 
 
 # create train model
@@ -127,7 +118,6 @@ def getNewsData(assetCode):
                 return i
 
 
-# In[ ]:
 
 
 # handle fulldata list
@@ -145,7 +135,6 @@ def getFullData(market_data,news_data):
 fullData = getFullData(market_data,news_data)
 
 
-# In[ ]:
 
 
 # split all data as train and test data
@@ -155,14 +144,12 @@ train_data,test_data = train_test_split(fullData.index.values,test_size=0.2,rand
 print(train_data.shape)
 
 
-# In[ ]:
 
 
 # show some descriptions of target variable
 market_data.returnsOpenNextMktres10.describe()
 
 
-# In[ ]:
 
 
 # look at the distribution of target variable
@@ -172,7 +159,6 @@ import seaborn as sns
 sns.distplot(market_data['returnsOpenNextMktres10'])
 
 
-# In[ ]:
 
 
 # create train model
@@ -193,7 +179,6 @@ def  get_lstm(data):
 model = get_lstm(fullData)
 
 
-# In[ ]:
 
 
 # train model
@@ -210,7 +195,6 @@ config = {"batch":32,"epochs":10}
 train_model(model,train_data-train_data.returnsOpenNextMktres10,train_data.returnsOpenNextMktres10,config)
 
 
-# In[ ]:
 
 
 # predict
@@ -229,7 +213,6 @@ import seaborn as sns
 sns.distplot(predictd)
 
 
-# In[ ]:
 
 
 # fourth : Evaluate model
@@ -248,7 +231,6 @@ import seaborn as sns
 sns.distplot(error)
 
 
-# In[ ]:
 
 
 # write the result into submission.csv

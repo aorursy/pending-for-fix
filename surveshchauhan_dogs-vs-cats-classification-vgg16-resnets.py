@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np # linear algebra
@@ -19,13 +18,11 @@ import os
 print(os.listdir("../input"))
 
 
-# In[ ]:
 
 
 ls '../input'
 
 
-# In[2]:
 
 
 from zipfile import ZipFile 
@@ -44,7 +41,6 @@ with ZipFile(file_name, 'r') as zip:
     print('Done!') 
 
 
-# In[3]:
 
 
 from zipfile import ZipFile 
@@ -63,13 +59,11 @@ with ZipFile(file_name, 'r') as zip:
     print('Done!') 
 
 
-# In[4]:
 
 
 ls '/kaggle/working'
 
 
-# In[5]:
 
 
 filenames = os.listdir("/kaggle/working/train/")
@@ -88,13 +82,11 @@ df = pd.DataFrame({
 df.head()
 
 
-# In[6]:
 
 
 df['category'].value_counts().plot.bar()
 
 
-# In[11]:
 
 
 sample = random.choice(filenames)
@@ -102,7 +94,6 @@ image = load_img("/kaggle/working/train/"+sample)
 plt.imshow(image)
 
 
-# In[13]:
 
 
 from keras.models import Sequential
@@ -125,7 +116,6 @@ pre_trained_model = VGG16(input_shape=input_shape, include_top=False, weights="i
 pre_trained_model.summary()
 
 
-# In[14]:
 
 
 for layer in pre_trained_model.layers:#[:15]:
@@ -153,7 +143,6 @@ model.compile(loss='binary_crossentropy',
 model.summary()
 
 
-# In[22]:
 
 
 image_size = 224
@@ -166,7 +155,6 @@ pre_trained_model_resnet = ResNet50(input_shape=input_shape, include_top=False, 
 pre_trained_model_resnet.summary()
 
 
-# In[23]:
 
 
 headModel = pre_trained_model_resnet.output
@@ -191,7 +179,6 @@ model2.compile(loss='binary_crossentropy',
 model2.summary()
 
 
-# In[16]:
 
 
 train_df, validate_df = train_test_split(df, test_size=0.1)
@@ -205,7 +192,6 @@ total_train = train_df.shape[0]
 total_validate = validate_df.shape[0]
 
 
-# In[17]:
 
 
 train_datagen = ImageDataGenerator(
@@ -230,7 +216,6 @@ train_generator = train_datagen.flow_from_dataframe(
 )
 
 
-# In[18]:
 
 
 validation_datagen = ImageDataGenerator(rescale=1./255)
@@ -245,7 +230,6 @@ validation_generator = validation_datagen.flow_from_dataframe(
 )
 
 
-# In[19]:
 
 
 example_df = train_df.sample(n=1).reset_index(drop=True)
@@ -267,7 +251,6 @@ plt.tight_layout()
 plt.show()
 
 
-# In[20]:
 
 
 # fine-tune the model
@@ -279,14 +262,12 @@ history = model.fit_generator(
     steps_per_epoch=total_train//batch_size)
 
 
-# In[21]:
 
 
 loss, accuracy = model.evaluate_generator(validation_generator, total_validate//batch_size, workers=12)
 print("Test: accuracy = %f  ;  loss = %f " % (accuracy, loss))
 
 
-# In[ ]:
 
 
 def plot_model_history(model_history, acc='acc', val_acc='val_acc'):
@@ -310,7 +291,6 @@ def plot_model_history(model_history, acc='acc', val_acc='val_acc'):
 plot_model_history(history)
 
 
-# In[ ]:
 
 
 # fine-tune the model
@@ -322,38 +302,32 @@ history2 = model2.fit_generator(
     steps_per_epoch=total_train//batch_size)
 
 
-# In[ ]:
 
 
 loss2, accuracy2 = model2.evaluate_generator(validation_generator, total_validate//batch_size, workers=12)
 print("Test: accuracy = %f  ;  loss = %f " % (accuracy2, loss2))
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 test_filenames = os.listdir("kaggle/working/test1")
@@ -363,7 +337,6 @@ test_df = pd.DataFrame({
 nb_samples = test_df.shape[0]
 
 
-# In[ ]:
 
 
 test_gen = ImageDataGenerator(rescale=1./255)
@@ -379,7 +352,6 @@ test_generator = test_gen.flow_from_dataframe(
 )
 
 
-# In[ ]:
 
 
 predict = model.predict_generator(test_generator, steps=np.ceil(nb_samples/batch_size))
@@ -387,7 +359,6 @@ threshold = 0.5
 test_df['category'] = np.where(predict > threshold, 1,0)
 
 
-# In[ ]:
 
 
 sample_test = test_df.sample(n=9).reset_index()
@@ -404,7 +375,6 @@ plt.tight_layout()
 plt.show()
 
 
-# In[ ]:
 
 
 submission_df = test_df.copy()

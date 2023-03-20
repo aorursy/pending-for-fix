@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 oimport pandas as pd
@@ -59,13 +58,11 @@ temp_features['common_tokens'] = np.vectorize(return_common_tokens)(transformed_
 print (naive_similarity[:20])
 
 
-# In[2]:
 
 
 
 
 
-# In[2]:
 
 
 dictionary = pd.DataFrame()
@@ -104,7 +101,6 @@ del weights['term_id_q1'], weights['term_id_q2'], weights['term_id']
 print (weights[:20])
 
 
-# In[3]:
 
 
 type(terms_matrix)
@@ -114,7 +110,6 @@ terms_matrix.data.shape
 vectorizer.get_feature_names()[-100:]
 
 
-# In[4]:
 
 
 X = naive_similarity.join(weights, how = 'inner')
@@ -132,7 +127,6 @@ for frame in (X_train, X_test):
 print (X_train[:20])
 
 
-# In[5]:
 
 
 #Training the algorithm and making a prediction
@@ -146,7 +140,6 @@ prediction_actual = prediction.join(y_test, how = 'inner', lsuffix = '_predicted
 print ('The log loss is %s' % log_loss(y_test, prediction))
 
 
-# In[6]:
 
 
 print (prediction_actual[prediction_actual['is_duplicate_predicted'] != prediction_actual['is_duplicate_actual']][:10])

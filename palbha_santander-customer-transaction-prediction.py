@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -38,14 +37,12 @@ from sklearn.model_selection import train_test_split
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 train=pd.read_csv("../input/train.csv")
 test=pd.read_csv("../input/test.csv")
 
 
-# In[3]:
 
 
 train1=train.copy(deep=True)
@@ -54,19 +51,16 @@ test1=test.copy(deep=True)
 print("shape of train data ",train.shape)
 
 
-# In[4]:
 
 
 train["target"].value_counts()
 
 
-# In[5]:
 
 
 sns.countplot(train["target"])
 
 
-# In[6]:
 
 
 count_class_0, count_class_1 = train.target.value_counts()
@@ -75,7 +69,6 @@ df_class_0 = train[train['target'] == 0]
 df_class_1 = train[train['target'] == 1]
 
 
-# In[7]:
 
 
 df_class_0_under = df_class_0.sample(count_class_1)
@@ -87,7 +80,6 @@ print(df_test_under.target.value_counts())
 df_test_under.target.value_counts().plot(kind='bar', title='Count (target)');
 
 
-# In[8]:
 
 
 def recall(y_true, y_pred):
@@ -104,7 +96,6 @@ def recall(y_true, y_pred):
         return recall
 
 
-# In[9]:
 
 
 def _Model1():
@@ -120,7 +111,6 @@ def _Model1():
     return model
 
 
-# In[10]:
 
 
 def _Model2():
@@ -136,7 +126,6 @@ def _Model2():
     return model
 
 
-# In[11]:
 
 
 def _Model4():
@@ -152,13 +141,11 @@ def _Model4():
     return model
 
 
-# In[12]:
 
 
 #print("Summary /n",model.summary())
 
 
-# In[13]:
 
 
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=7)
@@ -171,14 +158,12 @@ df_test=scaler.fit_transform(df_test)
 #y_test=test["target"]
 
 
-# In[14]:
 
 
 df_train= pd.DataFrame(df_train)
 df_test= pd.DataFrame(df_test)
 
 
-# In[15]:
 
 
 # 128 64 32 16 1
@@ -188,7 +173,6 @@ df_test= pd.DataFrame(df_test)
 # different activations as well
 
 
-# In[16]:
 
 
 preds = []
@@ -215,13 +199,11 @@ auc = roc_auc_score(y_train, oof_preds)
 print("CV_AUC: {}".format(auc))
 
 
-# In[17]:
 
 
 prediction=(preds[0]+preds[1]+preds[2]+preds[3]+preds[4])/5
 
 
-# In[18]:
 
 
 sub = pd.DataFrame() 
@@ -230,20 +212,17 @@ sub["target"] = prediction
 sub.to_csv("submission-cnn-ksplit.csv", index=False)
 
 
-# In[19]:
 
 
 sub.to_csv("submission-cnn-ksplit.csv", index=False)
 
 
-# In[20]:
 
 
 history_dict = history.history
 history_dict.keys()
 
 
-# In[21]:
 
 
 import matplotlib.pyplot as plt
@@ -269,19 +248,16 @@ plt.legend()
 plt.show()
 
 
-# In[22]:
 
 
 df_test_under.head()
 
 
-# In[23]:
 
 
 x_train.shape
 
 
-# In[24]:
 
 
 preds = []
@@ -310,7 +286,6 @@ auc = roc_auc_score(y_train, oof_preds)
 print("CV_AUC: {}".format(auc))
 
 
-# In[25]:
 
 
 #model_list=["_Model1","_Model2","_Model3","_Model4"]
@@ -324,7 +299,6 @@ x_train, x_test, y_train, y_test = train_test_split(df_test_under.drop(["ID_code
     
 
 
-# In[26]:
 
 
 X_train = np.reshape(x_train.values, (-1, 200, 1))
@@ -341,7 +315,6 @@ history1 = model.fit(X_train,
                     validation_data=(X_valid, y_valid))
 
 
-# In[27]:
 
 
 model = _Model2()
@@ -352,7 +325,6 @@ history2 = model.fit(X_train,
                     validation_data=(X_valid, y_valid))
 
 
-# In[28]:
 
 
 model = _Model3()
@@ -363,7 +335,6 @@ history4 = model.fit(X_train,
                     validation_data=(X_valid, y_valid))
 
 
-# In[29]:
 
 
 import matplotlib.pyplot as plt

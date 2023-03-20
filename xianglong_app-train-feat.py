@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -30,7 +29,6 @@ app_test = pd.read_csv('application_test.csv')
 #app_test.head()
 
 
-# In[2]:
 
 
 os.chdir('../imputed')
@@ -38,7 +36,6 @@ os.chdir('../imputed')
 train_and_test_imputed = pd.read_csv('train_and_test_imputed.csv')
 
 
-# In[3]:
 
 
 #os.chdir('/Users/xianglongtan/Desktop/kaggle/submission')
@@ -46,7 +43,6 @@ os.chdir('/kaggle/working')
 os.getcwd()
 
 
-# In[4]:
 
 
 # Check missing value
@@ -100,7 +96,6 @@ else:
     #tnt_imp_dum[col] = normalizer.fit_transform(tnt_imp_dum[col])
 
 
-# In[5]:
 
 
 train_X = tnt_imp_dum.loc[0:len(app_train)-1,:]
@@ -110,7 +105,6 @@ train_X = train_X.drop(['Unnamed: 0','SK_ID_CURR'],axis=1)
 train_X.head()
 
 
-# In[6]:
 
 
 test_ID = pd.DataFrame(test_X['SK_ID_CURR'])
@@ -120,7 +114,6 @@ test_X = test_X.drop(['Unnamed: 0','SK_ID_CURR'],axis=1)
 #test_ID.head()
 
 
-# In[7]:
 
 
 from sklearn.model_selection import StratifiedShuffleSplit
@@ -143,7 +136,6 @@ seed = 0
 X_train,X_val,y_train,y_val = train_test_split(train_X,train_Y,random_state=seed,stratify=train_Y)
 
 
-# In[8]:
 
 
 flag = None
@@ -310,19 +302,16 @@ else:
     pass
 
 
-# In[9]:
 
 
 result.head(20)
 
 
-# In[24]:
 
 
 
 
 
-# In[ ]:
 
 
 # CV for logistic regression
@@ -342,7 +331,6 @@ if cv_logit == 1
     print(end-start)
 
 
-# In[ ]:
 
 
 # CV for XGB
@@ -370,7 +358,6 @@ if xv_xgb == 1:
     print(end-start)
 
 
-# In[10]:
 
 
 NN = 1
@@ -517,19 +504,16 @@ if NN == 1:
     result_final.to_csv('app_feat_NN1.csv')
 
 
-# In[11]:
 
 
 result_final.head()
 
 
-# In[12]:
 
 
 
 
 
-# In[ ]:
 
 
 

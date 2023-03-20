@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 from fastai import *
@@ -14,7 +13,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
         print(os.path.join(dirname, filename))
 
 
-# In[2]:
 
 
 def get_data_labels(csv,label):
@@ -25,7 +23,6 @@ def get_data_labels(csv,label):
     return data, labels
 
 
-# In[3]:
 
 
 train_data, train_labels = get_data_labels(DATAPATH/'train.csv','label')
@@ -33,20 +30,17 @@ test_data, test_labels = get_data_labels(DATAPATH/'test.csv','id')
 other_data, other_labels = get_data_labels(DATAPATH/'Dig-MNIST.csv','label')
 
 
-# In[4]:
 
 
 print(f' Train:\tdata shape {train_data.shape}\tlabel shape {train_labels.shape}\n Test:\tdata shape {test_data.shape}\tlabel shape {test_labels.shape}\n Other:\tdata shape {other_data.shape}\tlabel shape {other_labels.shape}')
 
 Display a labelled image:
-# In[5]:
 
 
 plt.title(f'Training Label: {train_labels[5]}')
 plt.imshow(train_data[8,0],cmap='gray');
 
 
-# In[6]:
 
 
 np.random.seed(60)
@@ -61,7 +55,6 @@ valid_10_labels = train_labels[ran_10_pct_idx]
 valid_10_data = train_data[ran_10_pct_idx]
 
 
-# In[7]:
 
 
 class ArrayDataset(Dataset):
@@ -77,7 +70,6 @@ class ArrayDataset(Dataset):
         return self.x[i], self.y[i]
 
 
-# In[8]:
 
 
 train_ds = ArrayDataset(train_90_data,train_90_labels)
@@ -86,14 +78,12 @@ other_ds = ArrayDataset(other_data, other_labels)
 test_ds = ArrayDataset(test_data, test_labels)
 
 
-# In[9]:
 
 
 bs = 256
 databunch = DataBunch.create(train_ds, valid_ds, test_ds=test_ds, bs=bs)
 
 
-# In[10]:
 
 
 def conv2(ni,nf,stride=2,ks=5): return conv_layer(ni,nf,stride=stride,ks=ks)
@@ -101,7 +91,6 @@ def conv2(ni,nf,stride=2,ks=5): return conv_layer(ni,nf,stride=stride,ks=ks)
 # Create a sequence of convolutional (`ni` to `nf`), ReLU (if `use_activ`) and batchnorm (if `bn`) layers."
 
 
-# In[11]:
 
 
 best_architecture = nn.Sequential(
@@ -124,26 +113,22 @@ best_architecture = nn.Sequential(
 )
 
 
-# In[12]:
 
 
 learn = Learner(databunch, best_architecture, loss_func = nn.CrossEntropyLoss(), metrics=[accuracy] )
 
 
-# In[13]:
 
 
 learn.fit_one_cycle(42)
 
 
-# In[14]:
 
 
 preds, ids = learn.get_preds(DatasetType.Test)
 y = torch.argmax(preds, dim=1)
 
 
-# In[15]:
 
 
 submission = pd.DataFrame({ 'id': ids,'label': y })

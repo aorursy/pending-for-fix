@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,13 +19,11 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 ls ../input/smalldata/smalldata/smalldata
 
 
-# In[ ]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
@@ -45,7 +42,6 @@ import seaborn as sns
 import math
 
 
-# In[ ]:
 
 
 import keras
@@ -67,7 +63,6 @@ from keras.preprocessing.image import load_img
 from sklearn.metrics import classification_report
 
 
-# In[ ]:
 
 
 batch_size = 32
@@ -87,7 +82,6 @@ img_size=224
 #img_size=150
 
 
-# In[ ]:
 
 
 # Define the path for training and test image data.
@@ -98,7 +92,6 @@ test_images = os.listdir(test_data_path)
 test_images_path = [test_data_path+i for i in os.listdir(test_data_path)] 
 
 
-# In[ ]:
 
 
 # Visualize class distribution of traning data.
@@ -110,14 +103,12 @@ def image_plot(image_data):
     plt.title('Cats and Dogs')
 
 
-# In[ ]:
 
 
 # Plotting training data to visualize class distribution by calling image_plot().
 image_plot(train_images)
 
 
-# In[ ]:
 
 
 # Visualize image height and width of the test data.
@@ -146,19 +137,16 @@ def plot_testimage_size(height=True):
         plot_testwidth()
 
 
-# In[ ]:
 
 
 plot_testimage_size(True)
 
 
-# In[ ]:
 
 
 plot_testimage_size(False)
 
 
-# In[ ]:
 
 
 # Statistical analysis of the training image sizes
@@ -168,7 +156,6 @@ print ("Training images max height is {} and min height is {}.".format(max(testh
 print ("Training images max width is {} and min width is {}.".format(max(testwidth),min(testwidth)))
 
 
-# In[ ]:
 
 
 # Visualize image height and width of the traning data.
@@ -197,19 +184,16 @@ def plot_trainimage_size(height=True):
         plot_trainwidth()
 
 
-# In[ ]:
 
 
 plot_trainimage_size(True)
 
 
-# In[ ]:
 
 
 plot_trainimage_size(False)
 
 
-# In[ ]:
 
 
 # Statistical analysis of the training image sizes
@@ -219,7 +203,6 @@ print ("Training images max height is {} and min height is {}.".format(max(heigh
 print ("Training images max width is {} and min width is {}.".format(max(width),min(width)))
 
 
-# In[ ]:
 
 
 def create_image_label(img):
@@ -240,19 +223,16 @@ def process_data(image_files,image_folder,Train=True):
     return image_data
 
 
-# In[ ]:
 
 
 train=process_data(train_images,train_data_path)
 
 
-# In[ ]:
 
 
 test=process_data(test_images,test_data_path,False)
 
 
-# In[ ]:
 
 
 # Function to to display 25 sample images from train and test data
@@ -275,19 +255,16 @@ def display_images(input_data,Test=False):
     plt.show()
 
 
-# In[ ]:
 
 
 display_images(train)
 
 
-# In[ ]:
 
 
 display_images(test,True)
 
 
-# In[ ]:
 
 
 if K.image_data_format() == 'channels_first':
@@ -296,7 +273,6 @@ else:
     input_shape = (img_size, img_size, 3)
 
 
-# In[ ]:
 
 
 #Process training data to make it ready for fitting.
@@ -316,7 +292,6 @@ sample_test_generator=test_datagen.flow_from_directory(sample_test_dir,
 filename=test_generator.filenames
 
 
-# In[ ]:
 
 
 print ('Creating model...')
@@ -345,7 +320,6 @@ new_model.compile(optimizer=SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True
 print ('Model is ready to be fit with training data.')
 
 
-# In[ ]:
 
 
 # Create logs, filepath and checkpoints for the model.
@@ -362,7 +336,6 @@ checkpoint = ModelCheckpoint('new_model.h5',monitor='val_loss', verbose=1, save_
 callbacks_list = [checkpoint,history,early_stopping]
 
 
-# In[ ]:
 
 
 # Fit the model on batches of 20000 samples of training  data and validate on 5000 samples.
@@ -372,7 +345,6 @@ fitted_new_model=new_model.fit_generator(train_generator,
     validation_steps=math.ceil(num_v_samples/batch_size),callbacks=callbacks_list,verbose=1)
 
 
-# In[ ]:
 
 
 # Plot Val_loss,train_loss and val_acc and train_acc.
@@ -393,19 +365,16 @@ plt.legend()
 plt.show()
 
 
-# In[ ]:
 
 
 ls '../input/dogs-and-cats-final-kernel-explore-cnn-scratch/new_model.h5'
 
 
-# In[ ]:
 
 
 new_model=load_model('../input/dogs-and-cats-final-kernel-explore-cnn-scratch/new_model.h5')
 
 
-# In[ ]:
 
 
 #Get the sample test data filenames from the generator
@@ -436,7 +405,6 @@ for i in range(len(errors)):
     plt.show()
 
 
-# In[ ]:
 
 
 #get the predictions for the test data
@@ -449,7 +417,6 @@ target_names = ["Class {}:".format(i) for i in range(num_classes)]
 print(classification_report(ground_truth, predicted_classes, target_names=target_names))
 
 
-# In[ ]:
 
 
 # Proces test data to generate predictions on provided test data.
@@ -467,7 +434,6 @@ for i in range(len(predictions)):
         new_preds.append('cat')
 
 
-# In[ ]:
 
 
 # Display predictions with 25 pictures with their labels.
@@ -486,7 +452,6 @@ def display_testdata(testdata,filenames):
     plt.show()
 
 
-# In[ ]:
 
 
 display_testdata(new_preds[7700:7725],filename[7700:7725])

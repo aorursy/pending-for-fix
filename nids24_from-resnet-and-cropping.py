@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np # linear algebra
@@ -26,7 +25,6 @@ train_dir = "../input/aptos2019-blindness-detection/train_images/"
 test_dir = "../input/aptos2019-blindness-detection/test_images/"
 
 
-# In[2]:
 
 
 df_train = pd.read_csv(train_csv) 
@@ -36,7 +34,6 @@ NUM_CLASSES = df_train['diagnosis'].nunique()
 print(NUM_CLASSES)
 
 
-# In[3]:
 
 
 # cropping function (uses edge detection to crop images)
@@ -53,7 +50,6 @@ def get_cropped_image(image):
     return cropped_img
 
 
-# In[4]:
 
 
 '''sample_to_show = ['07419eddd6be.png','0124dffecf29.png']
@@ -90,7 +86,6 @@ ax4 = fig.add_subplot(2,2,4)
 ax4.title.set_text('cropped image'), ax4.axis("off"), plt.imshow(cropped_images[1]);'''
 
 
-# In[5]:
 
 
 def load_image(path):
@@ -100,7 +95,6 @@ def load_image(path):
     return img
 
 
-# In[6]:
 
 
 import matplotlib.pyplot as plt
@@ -121,7 +115,6 @@ plt.show()
  
 
 
-# In[7]:
 
 
 training_paths = [train_dir + str(x) + str(".png") for x in df_train["id_code"]]
@@ -130,33 +123,28 @@ for i, path in tqdm_notebook(enumerate(training_paths)):
     images[i,:,:,:] = load_image(path)
 
 
-# In[8]:
 
 
 print(len(images))
 #plt.show()
 
 
-# In[9]:
 
 
 labels = df_train["diagnosis"].values.tolist()
 labels = keras.utils.to_categorical(labels)
 
 
-# In[10]:
 
 
 images, x_val, labels, y_val = train_test_split(images, labels, test_size = 0.15)
 
 
-# In[11]:
 
 
 images, x_test, labels, y_test = train_test_split(images, labels, test_size = 0.08,shuffle=False)
 
 
-# In[12]:
 
 
 train_aug = ImageDataGenerator(horizontal_flip = True,
@@ -168,19 +156,16 @@ train_aug = ImageDataGenerator(horizontal_flip = True,
 train_generator = train_aug.flow(images, labels, batch_size = 8)
 
 
-# In[13]:
 
 
 val_aug=train_aug.flow(x_val,y_val,batch_size=8)
 
 
-# In[14]:
 
 
 test_aug=train_aug.flow(x_test,y_test,batch_size=8)
 
 
-# In[15]:
 
 
 '''input_layer = Input(shape = (256,256,3))
@@ -192,7 +177,6 @@ out = Dense(5, activation = 'softmax')(x)
 model = Model(inputs = input_layer, outputs = out)
 
 
-# In[16]:
 
 
 BATCH_SIZE = 32
@@ -209,7 +193,6 @@ RLROP_PATIENCE = 3
 DECAY_DROP = 0.5
 
 
-# In[17]:
 
 
 from tensorflow.keras.applications import ResNet50 
@@ -230,7 +213,6 @@ def build_model(input_shape, n_out):
     return model
 
 
-# In[18]:
 
 
 from keras import optimizers, applications
@@ -239,7 +221,6 @@ model = build_model(input_shape=(HEIGHT, WIDTH, CANAL), n_out=N_CLASSES)
 model.summary()
 
 
-# In[19]:
 
 
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau
@@ -254,7 +235,6 @@ optimizer = optimizers.Adam(lr=LEARNING_RATE)
 model.compile(optimizer=optimizer, loss="categorical_crossentropy",  metrics=['accuracy'])
 
 
-# In[20]:
 
 
 #kappa_metrics = Metrics()
@@ -267,13 +247,11 @@ history = model.fit_generator(
 )
 
 
-# In[21]:
 
 
 #model.save('densenet.h5')
 
 
-# In[22]:
 
 
 accu = history.history['acc']
@@ -289,7 +267,6 @@ plt.plot(np.argmax(history.history["val_acc"]), np.max(history.history["val_acc"
 plt.show()
 
 
-# In[23]:
 
 
 from tqdm import tqdm
@@ -299,7 +276,6 @@ print("[INFO] accuracy: {:.2f}%".format(eval_accuracy * 100))
 print("[INFO] Loss: {}".format(eval_loss))
 
 
-# In[24]:
 
 
 from tqdm import tqdm
@@ -308,7 +284,6 @@ print("[INFO] accuracy: {:.2f}%".format(eval_accuracy * 100))
 print("[INFO] Loss: {}".format(eval_loss))
 
 
-# In[25]:
 
 
 from keras.applications.resnet50 import ResNet50
@@ -358,14 +333,12 @@ def create_resnet(img_dim, CHANNEL, n_class):
 model_resnet = create_resnet(256, 3, NUM_CLASSES)
 
 
-# In[26]:
 
 
 for layers in model_resnet.layers:
     layers.trainable = True
 
 
-# In[27]:
 
 
 lr = 1e-3
@@ -379,20 +352,17 @@ callback_list = [es, rlrop]
 model_resnet.compile(optimizer = optimizer, loss = "categorical_crossentropy", metrics = ["accuracy"]) 
 
 
-# In[28]:
 
 
 h=model_resnet.fit_generator(generator = train_generator, steps_per_epoch = len(train_generator), epochs = 20, validation_data = (x_val, y_val), callbacks = callback_list)
 
 
-# In[29]:
 
 
 del train_generator, images
 gc.collect()
 
 
-# In[30]:
 
 
 model_json = model_resnet.to_json()
@@ -403,13 +373,11 @@ model_resnet.save_weights("model2.h5")
 print("Saved model to disk")
 
 
-# In[31]:
 
 
 h.history.keys()
 
 
-# In[32]:
 
 
 accu = h.history['acc']
@@ -425,7 +393,6 @@ plt.plot(np.argmax(h.history["val_acc"]), np.max(h.history["val_acc"]), marker="
 plt.show()
 
 
-# In[33]:
 
 
 from tqdm import tqdm
@@ -435,7 +402,6 @@ print("[INFO] accuracy: {:.2f}%".format(eval_accuracy * 100))
 print("[INFO] Loss: {}".format(eval_loss))
 
 
-# In[34]:
 
 
 test_df = pd.read_csv(test_csv)
@@ -445,13 +411,11 @@ for i, path in tqdm_notebook(enumerate(test_paths)):
     test_images[i,:,:,:] = cv2.resize(cv2.cvtColor(cv2.imread(path), cv2.COLOR_BGR2RGB), size)
 
 
-# In[35]:
 
 
 predprobs = model_resnet.predict(test_images)
 
 
-# In[36]:
 
 
 accu = h.history['acc']
@@ -467,7 +431,6 @@ plt.plot(np.argmax(h.history["val_acc"]), np.max(h.history["val_acc"]), marker="
 plt.show()
 
 
-# In[37]:
 
 
 predictions = []
@@ -475,7 +438,6 @@ for i in predprobs:
     predictions.append(np.argmax(i)) 
 
 
-# In[38]:
 
 
 id_code = test_df["id_code"].values.tolist()
@@ -483,14 +445,12 @@ subfile = pd.DataFrame({"id_code":id_code, "diagnosis":predictions})
 subfile.to_csv('submission.csv',index=False)
 
 
-# In[39]:
 
 
 #loaded_model.load_weights("..input/MY model/model2.h5")
 #print("Loaded model from disk")
 
 
-# In[ ]:
 
 
 

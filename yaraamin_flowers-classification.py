@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 pip install git+https://github.com/qubvel/segmentation_models
 
 
-# In[2]:
 
 
 import math, re, os
@@ -25,7 +23,6 @@ import tensorflow as tf
 import efficientnet.tfkeras as efn
 
 
-# In[3]:
 
 
 AUTO = tf.data.experimental.AUTOTUNE
@@ -45,13 +42,11 @@ EPOCHS = 30
 BATCH_SIZE = 16 * strategy.num_replicas_in_sync
 
 
-# In[4]:
 
 
 GCS_DS_PATH = KaggleDatasets().get_gcs_path()
 
 
-# In[5]:
 
 
 GCS_PATH_SELECT = { # available image sizes
@@ -67,13 +62,11 @@ VALIDATION_FILENAMES = tf.io.gfile.glob(GCS_PATH + '/val/*.tfrec')
 TEST_FILENAMES = tf.io.gfile.glob(GCS_PATH + '/test/*.tfrec') # predictions on this dataset should be submitted for the competition
 
 
-# In[6]:
 
 
 TRAINING_FILENAMES
 
 
-# In[7]:
 
 
 CLASSES = ['pink primrose',    'hard-leaved pocket orchid', 'canterbury bells', 'sweet pea',     'wild geranium',     'tiger lily',           'moon orchid',              'bird of paradise', 'monkshood',        'globe thistle',         # 00 - 09
@@ -89,7 +82,6 @@ CLASSES = ['pink primrose',    'hard-leaved pocket orchid', 'canterbury bells', 
            'trumpet creeper',  'blackberry lily',           'common tulip',     'wild rose']                                                                                                                                               # 100 - 102
 
 
-# In[8]:
 
 
 def decode_image(image_data):
@@ -172,7 +164,6 @@ def count_data_items(filenames):
     return np.sum(n)
 
 
-# In[9]:
 
 
 with strategy.scope():
@@ -199,7 +190,6 @@ with strategy.scope():
     model.summary()
 
 
-# In[10]:
 
 
 NUM_TRAINING_IMAGES = count_data_items(TRAINING_FILENAMES)
@@ -212,7 +202,6 @@ history = model.fit(
     epochs=EPOCHS)
 
 
-# In[11]:
 
 
 test_ds = get_test_dataset(ordered=True)
@@ -228,7 +217,6 @@ test_ids = next(iter(test_ids_ds.batch(NUM_TEST_IMAGES))).numpy().astype('U') # 
 np.savetxt('submission.csv', np.rec.fromarrays([test_ids, predictions]), fmt=['%s', '%d'], delimiter=',', header='id,label', comments='')
 
 
-# In[ ]:
 
 
 

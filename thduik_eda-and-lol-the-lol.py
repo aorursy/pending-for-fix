@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -27,14 +26,12 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 train = pd.read_csv('/kaggle/input/m5-forecasting-accuracy/sales_train_validation.csv')
 calendar = pd.read_csv('/kaggle/input/m5-forecasting-accuracy/calendar.csv')
 
 
-# In[3]:
 
 
 def reduce_mem_usage(df, verbose=True):
@@ -70,7 +67,6 @@ def merge_id(df, col):
     return pd.merge(df, id_df[[col+'_enc',col+'_id']] , how = 'left', on = col + '_enc')
 
 
-# In[4]:
 
 
 #train = reduce_mem_usage(train)
@@ -90,7 +86,6 @@ id_df['store_enc'] = LabelEncoder().fit_transform(id_df['store_id'])
 id_df['state_enc'] = LabelEncoder().fit_transform(id_df['state_id'])
 
 
-# In[5]:
 
 
 from itertools import product
@@ -122,7 +117,6 @@ matrix['sales'] = np.hstack(train.loc[:, 'd_1101':].values)
 matrix['sales'] = matrix['sales'].astype('int16')
 
 
-# In[6]:
 
 
 calendar = calendar.fillna('none')
@@ -146,13 +140,11 @@ matrix = matrix.rename(columns = {"id":"id_enc"})
 matrix = pd.merge(matrix, reduce_mem_usage(id_df[id_cols]), how = 'left', on = 'id_enc')
 
 
-# In[7]:
 
 
 matrix.head()
 
 
-# In[8]:
 
 
 lol = matrix.groupby('event_name_1_enc')['sales'].agg(['count','mean']).sort_values('mean').reset_index()
@@ -160,25 +152,21 @@ lol = merge_calendar(lol, 'event_name_1')
 lol = lol.drop_duplicates().reset_index().drop('index', axis = 1)
 
 
-# In[9]:
 
 
 lol.head(5)
 
 
-# In[10]:
 
 
 lol.tail(20)
 
 
-# In[11]:
 
 
 matrix.head(2)
 
 
-# In[12]:
 
 
 lel = matrix[matrix.event_name_1_enc == 21].groupby('dept_enc')['sales'].agg(['mean','count']).sort_values('mean')
@@ -186,19 +174,16 @@ lel = merge_id(lel, 'dept')
 lel = lel.drop_duplicates().reset_index().drop('index', axis = 1)
 
 
-# In[13]:
 
 
 lel.head(10)
 
 
-# In[14]:
 
 
 lel.tail(10)
 
 
-# In[15]:
 
 
 lel = matrix[matrix.event_name_1_enc == 21].groupby('dept_enc')['sales'].agg(['mean','count']).sort_values('mean')
@@ -206,25 +191,21 @@ lel = merge_id(lel, 'dept')
 lel = lel.drop_duplicates().reset_index().drop('index', axis = 1)
 
 
-# In[16]:
 
 
 lel.head()
 
 
-# In[17]:
 
 
 lel
 
 
-# In[18]:
 
 
 id_df.head()
 
 
-# In[19]:
 
 
 def get_name(name, entry):
@@ -233,19 +214,16 @@ def get_name(name, entry):
     return dept_dict[entry]
 
 
-# In[20]:
 
 
 loldf = matrix.groupby(['day_num','item_enc'])['sales'].sum().reset_index()
 
 
-# In[21]:
 
 
 loldf
 
 
-# In[22]:
 
 
 
@@ -257,7 +235,6 @@ for item_id in matrix.item_enc.unique()[:10]:
     
 
 
-# In[23]:
 
 
 for item_id in matrix.item_enc.unique()[:10]:
@@ -266,7 +243,6 @@ for item_id in matrix.item_enc.unique()[:10]:
     plt.plot(loldf[loldf['item_enc'] == item_id].reset_index()['sales'])
 
 
-# In[ ]:
 
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -10,7 +9,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-# In[2]:
 
 
 def get_product_agg(cols):
@@ -30,7 +28,6 @@ def get_product_agg(cols):
     
 
 
-# In[3]:
 
 
 

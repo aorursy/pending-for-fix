@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -281,7 +280,6 @@ res = pd.DataFrame(res)
 res.to_csv("res.csv", index=False)
 
 
-# In[ ]:
 
 
 

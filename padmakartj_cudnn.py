@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 #model version with cwt transformation has best score so far
@@ -53,7 +52,6 @@ dftrain = pd.read_csv('../input/metadata_train.csv')
 #dftrain.head()
 
 
-# In[2]:
 
 
 def matthews_correlation(y_true, y_pred):
@@ -78,7 +76,6 @@ def matthews_correlation(y_true, y_pred):
     return numerator / (denominator + K.epsilon())
 
 
-# In[3]:
 
 
 # https://www.kaggle.com/suicaokhoailang/lstm-attention-baseline-0-652-lb
@@ -153,7 +150,6 @@ class Attention(Layer):
         return input_shape[0],  self.features_dim
 
 
-# In[4]:
 
 
 # 800,000 data points taken over 20 ms
@@ -237,7 +233,6 @@ def removeIsolatedPeack(x_data,width, height, min_instances):
     return (x_data)
 
 
-# In[5]:
 
 
 #n_dim=256 divides signal in complete chunk and is power of 2. if want to change
@@ -298,7 +293,6 @@ def feature_extraction(x_data, low_cutoff=10000,signal_len=800000,n_dim=256):
     #return np.asarray([sumRange,count,std,tweenthyPercentile,eighthPercentile])
 
 
-# In[6]:
 
 
 def prep_data(start, end):
@@ -337,7 +331,6 @@ def prep_data(start, end):
   #  return X, y
 
 
-# In[7]:
 
 
 df_train = pd.read_csv('../input/metadata_train.csv')
@@ -346,7 +339,6 @@ df_train.head()
 len(df_train)
 
 
-# In[8]:
 
 
 
@@ -372,7 +364,6 @@ maxCoefficient=maxCoefficient+K.epsilon()
 X = X/maxCoefficient
 
 
-# In[9]:
 
 
 print(X.shape)
@@ -380,7 +371,6 @@ print(X[0])
 print(y[0])
 
 
-# In[10]:
 
 
 print(X.shape)
@@ -391,14 +381,12 @@ print(maxCoefficient.shape)
 print(np.max(np.ravel(X)))
 
 
-# In[11]:
 
 
 #TODO get balanced split.
 X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.25)
 
 
-# In[12]:
 
 
 plt.plot(y_train)
@@ -415,7 +403,6 @@ plt.plot(X_valid[:,:,2])
 plt.show()
 
 
-# In[13]:
 
 
 #from sklearn import tree, ensemble
@@ -428,7 +415,6 @@ plt.show()
 #fit = gboost_fit
 
 
-# In[14]:
 
 
 #train_y_pred = fit.predict(X_train)
@@ -438,7 +424,6 @@ plt.show()
 #print(matthews_corrcoef1)
 
 
-# In[15]:
 
 
 #test_y_pred = fit.predict(X_test)
@@ -448,19 +433,16 @@ plt.show()
 #print(matthews_corrcoef2)
 
 
-# In[16]:
 
 
 
 
 
-# In[16]:
 
 
 
 
 
-# In[16]:
 
 
 #from tensorflow.python.ops.rnn_cell_impl import DropoutWrapper
@@ -485,7 +467,6 @@ def model_lstm(input_shape,dropout=0.3):
     return model
 
 
-# In[17]:
 
 
 model= model_lstm(X_train.shape)
@@ -493,14 +474,12 @@ print(model.metrics_names)
 model.summary()
 
 
-# In[18]:
 
 
 ckp = ModelCheckpoint('weights.h5', save_best_only=True, save_weights_only=True, verbose=1, monitor='val_matthews_correlation', mode='max')
 history=model.fit(X_train, y_train, batch_size=100, epochs=250, validation_data=[X_valid, y_valid] , callbacks=[ckp])
 
 
-# In[19]:
 
 
 print(history.history.keys())
@@ -522,33 +501,28 @@ plt.legend(['train', 'test'], loc='upper left')
 plt.show()
 
 
-# In[20]:
 
 
 get_ipython().run_cell_magic('time', '', "# 25ms in Kernel\nmeta_test = pd.read_csv('../input/metadata_test.csv')")
 
 
-# In[21]:
 
 
 meta_test = meta_test.set_index(['signal_id'])
 meta_test.head()
 
 
-# In[22]:
 
 
 get_ipython().run_cell_magic('time', '', 'first_sig = meta_test.index[0]\nn_parts = 10\nmax_line = len(meta_test)\n#max_line = 90\npart_size = int(max_line / n_parts)\nlast_part = max_line % n_parts\nprint(first_sig, n_parts, max_line, part_size, last_part, n_parts * part_size + last_part)\nstart_end = [[x, x+part_size] for x in range(first_sig, max_line + first_sig, part_size)]\nstart_end = start_end[:-1] + [[start_end[-1][0], start_end[-1][0] + last_part]]\n\nprint("Change max_line = len(meta_test)")\nX_test = []\nfor start, end in start_end:\n    subset_test = pq.read_pandas(\'../input/test.parquet\', columns=[str(i) for i in range(start, end)]).to_pandas()\n    for i in tqdm(subset_test.columns):\n        id_measurement, phase = meta_test.loc[int(i)]\n        subset_test_col = subset_test[i]\n        subset_trans = extract_features(subset_test_col)\n        X_test.append([i, id_measurement, phase, subset_trans])')
 
 
-# In[23]:
 
 
 X_test_input = np.asarray([np.concatenate([X_test[i][3],X_test[i+1][3], X_test[i+2][3]], axis=1) for i in range(0,len(X_test), 3)])
 X_test_input.shape
 
 
-# In[24]:
 
 
 submission = pd.read_csv('../input/sample_submission.csv')
@@ -556,13 +530,11 @@ print(len(submission))
 submission.head()
 
 
-# In[25]:
 
 
 model.load_weights('weights.h5')
 
 
-# In[26]:
 
 
 pred = model.predict(X_test_input, batch_size=300)
@@ -571,7 +543,6 @@ plt.title('Predications Probabilities')
 plt.show()
 
 
-# In[27]:
 
 
 pred_3 = []
@@ -583,7 +554,6 @@ submission.to_csv('submission15.csv', index=False)
 print("submission15 # predicted true",np.sum(submission['target']))
 
 
-# In[28]:
 
 
 pred_3 = []
@@ -595,7 +565,6 @@ submission.to_csv('submission2.csv', index=False)
 print("submission2 # predicted true",np.sum(submission['target']))
 
 
-# In[29]:
 
 
 pred_3 = []
@@ -607,7 +576,6 @@ submission.to_csv('submission25.csv', index=False)
 print("submission25 # predicted true",np.sum(submission['target']))
 
 
-# In[30]:
 
 
 pred_3 = []
@@ -619,7 +587,6 @@ submission.to_csv('submission3.csv', index=False)
 print("submission3 # predicted true",np.sum(submission['target']))
 
 
-# In[31]:
 
 
 pred_3 = []
@@ -631,7 +598,6 @@ submission.to_csv('submission35.csv', index=False)
 print("submission35 # predicted true",np.sum(submission['target']))
 
 
-# In[32]:
 
 
 pred_3 = []
@@ -643,14 +609,12 @@ submission.to_csv('submission4.csv', index=False)
 print("submission4 # predicted true",np.sum(submission['target']))
 
 
-# In[33]:
 
 
 f=(1,2)
 np.asarray(f)
 
 
-# In[34]:
 
 
 

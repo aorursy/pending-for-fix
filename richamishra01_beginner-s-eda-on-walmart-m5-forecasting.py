@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -24,7 +23,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 stv = pd.read_csv('/kaggle/input/m5-forecasting-accuracy/sales_train_validation.csv')
@@ -33,13 +31,11 @@ s_price = pd.read_csv('/kaggle/input/m5-forecasting-accuracy/sell_prices.csv')
 cal = pd.read_csv('/kaggle/input/m5-forecasting-accuracy/calendar.csv')
 
 
-# In[3]:
 
 
 stv
 
 
-# In[4]:
 
 
 print("Categories {}".format(stv['cat_id'].unique()))
@@ -48,19 +44,16 @@ print("Stores {}".format(stv['store_id'].unique()))
 
 
 
-# In[5]:
 
 
 cal.head(5)
 
 
-# In[6]:
 
 
 stv.mean(axis=1).sort_values()
 
 
-# In[7]:
 
 
 # to get only days columns
@@ -71,7 +64,6 @@ plt.legend('')
 plt.show()
 
 
-# In[8]:
 
 
 examples = ['FOODS_3_090_CA_3','FOODS_3_586_TX_3','FOODS_3_586_TX_2']
@@ -93,7 +85,6 @@ for i in [0,1,2]:
     examples_df[i].groupby('year').mean()[examples[i]].plot(kind='line',title='average yearly sale',ax=ax3)
 
 
-# In[9]:
 
 
 samples = stv.sample(20, random_state=200).set_index('id')[d_cols].T            .merge(cal.set_index('d')['date'],left_index=True,right_index=True,validate='1:1').set_index('date')
@@ -106,13 +97,11 @@ plt.show()
     
 
 There are many days when the sale is zero.
-# In[10]:
 
 
 sns.countplot(data=stv,x='cat_id')
 
 
-# In[11]:
 
 
 cats = ['FOODS','HOBBIES','HOUSEHOLD']
@@ -125,7 +114,6 @@ for i in range(len(cats)):
     daily_sale[cats[i]].plot(title= cats[i], ax = axs[i])
 
 
-# In[12]:
 
 
 from matplotlib.pyplot import figure
@@ -139,7 +127,6 @@ def plot_Graph3Series(series, title,labels):
     plt.show()
 
 
-# In[13]:
 
 
 #monthly_sale = daily_sale['FOODS'].groupby('month')
@@ -151,7 +138,6 @@ for i in range(len(cats)):
     sale.groupby('month')[cats[i]].mean().plot(title = cats[i],ax=axs[i])
 
 
-# In[14]:
 
 
 #daily_sale['date'] = pd.to_datetime(daily_sale['date'])
@@ -162,7 +148,6 @@ daily_sale['date'] = pd.to_datetime(daily_sale.index)
 #.index = monthlyWithoutOutliersdf.index.to_timestamp()
 
 
-# In[15]:
 
 
 series = []
@@ -173,7 +158,6 @@ for i in range(len(cats)):
 plot_Graph3Series(series,'Monthly Sale in categories',cats)
 
 
-# In[16]:
 
 
 past_sales = stv.set_index('id')[d_cols]     .T     .merge(cal.set_index('d')['date'],
@@ -190,7 +174,6 @@ plt.legend(stv['cat_id'].unique())
 plt.show()
 
 
-# In[17]:
 
 
 state_list = stv['state_id'].unique()
@@ -203,7 +186,6 @@ plt.legend(state_list)
 plt.show()
 
 
-# In[18]:
 
 
 # ----------------------------------------------------------------------------
@@ -259,7 +241,6 @@ def calmap(ax, year, data):
               cmap="RdYlBu_r", origin="lower", alpha=.75)
 
 
-# In[19]:
 
 
 from sklearn.preprocessing import StandardScaler
@@ -285,7 +266,6 @@ for i in stv['cat_id'].unique():
     plt.show()
 
 
-# In[20]:
 
 
 #fig, axes = plt.subplots(3, 1, figsize=(20, 8))
@@ -300,27 +280,23 @@ for i in stv['state_id'].unique():
     index = index+1
 
 
-# In[21]:
 
 
 cal
 
 
-# In[22]:
 
 
 state_cols=[]
 cat_cols = []
 
 
-# In[23]:
 
 
 past_sales['date'] = pd.to_datetime(past_sales.index)
 #past_sales.index
 
 
-# In[24]:
 
 
 past_sales = stv.set_index('id')[d_cols].T
@@ -342,7 +318,6 @@ for s in stv['state_id'].unique():
        
 
 
-# In[25]:
 
 
 fig,axs = plt.subplots(1,3,figsize=(16,3))
@@ -363,7 +338,6 @@ for s in stv['state_id'].unique():
        
 
 
-# In[26]:
 
 
 #snap_count = cal.groupby(['weekday','snap_TX'])['snap_TX'].count()
@@ -375,7 +349,6 @@ sns.countplot(data=cal,x='weekday',hue='snap_TX', ax=axs[1])
 sns.countplot(data=cal,x='weekday',hue='snap_WI', ax=axs[2])
 
 
-# In[27]:
 
 
 #import datetime
@@ -388,7 +361,6 @@ fig, axes = plt.subplots(figsize=(20, 8))
 calmap(axes, 2013, vals.reshape(53,7).T)
 
 
-# In[28]:
 
 
 
@@ -408,7 +380,6 @@ for cat in stv['cat_id'].unique():
        
 
 
-# In[29]:
 
 
 
@@ -432,13 +403,11 @@ for s in stv['state_id'].unique():
        
 
 
-# In[30]:
 
 
 sns.boxplot(y=x[0], x=x['event_type_1'])
 
 
-# In[31]:
 
 
 fig, axes = plt.subplots(1,3,figsize=(16,6))
@@ -447,7 +416,6 @@ sns.countplot(data=cal, x=cal['snap_WI'], ax=axes[1])
 sns.countplot(data=cal, x=cal['snap_TX'], ax=axes[2]) 
 
 
-# In[32]:
 
 
 sns.countplot(data=cal['event_name_1'], x=cal['event_type_1']) #.isnull().sum()

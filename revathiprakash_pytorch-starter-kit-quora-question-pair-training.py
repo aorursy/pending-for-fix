@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import os
@@ -36,14 +35,12 @@ from collections import defaultdict
 from textwrap import wrap
 
 
-# In[ ]:
 
 
 get_ipython().system('pip install transformers==3.3.0 --use-feature=2020-resolver')
 get_ipython().system('pip install pytorch-pretrained-bert')
 
 
-# In[ ]:
 
 
 from transformers import BertTokenizer
@@ -52,7 +49,6 @@ print('Loading BERT tokenizer...')
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
 
 
-# In[ ]:
 
 
 from transformers import BertForSequenceClassification, AdamW, BertConfig
@@ -60,7 +56,6 @@ import torch.nn as nn
 pretrained = BertForSequenceClassification.from_pretrained('bert-base-uncased', return_dict=True, output_hidden_states=True)
 
 
-# In[ ]:
 
 
 import re
@@ -125,13 +120,11 @@ def text_to_wordlist(text, remove_stopwords=False, stem_words=False):
     return(text)
 
 
-# In[ ]:
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-# In[ ]:
 
 
 def init_weights(m):
@@ -175,13 +168,11 @@ class BertModelModified(nn.Module):
 model = BertModelModified(my_pretrained_model=pretrained)
 
 
-# In[ ]:
 
 
 model.to(device)
 
 
-# In[ ]:
 
 
 
@@ -198,13 +189,11 @@ def create_encoding(df):
     return encoded_dict
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 train=pd.read_csv('../input/quora-question-pairs/train.csv.zip')
@@ -212,7 +201,6 @@ train=train.dropna()
 train.isna().sum()
 
 
-# In[ ]:
 
 
 duprate=train.groupby('is_duplicate').size()
@@ -220,7 +208,6 @@ duprate = duprate/train.shape[0]
 duprate
 
 
-# In[ ]:
 
 
 train['is_duplicate']=train['is_duplicate'].astype('category')
@@ -228,7 +215,6 @@ train['question1'] = train['question1'].apply(lambda x: text_to_wordlist(x, remo
 train['question2'] = train['question2'].apply(lambda x: text_to_wordlist(x, remove_stopwords=True))
 
 
-# In[ ]:
 
 
 encoded_dict = create_encoding(train)
@@ -270,14 +256,12 @@ validation_dataloader = DataLoader(
         )
 
 
-# In[ ]:
 
 
 import gc
 gc.collect()
 
 
-# In[ ]:
 
 
 optimizer = AdamW(model.parameters(),
@@ -286,7 +270,6 @@ optimizer = AdamW(model.parameters(),
                 )
 
 
-# In[ ]:
 
 
 from transformers import get_linear_schedule_with_warmup
@@ -303,7 +286,6 @@ scheduler = get_linear_schedule_with_warmup(optimizer,
                                             num_training_steps = total_steps)
 
 
-# In[ ]:
 
 
 import numpy as np
@@ -317,7 +299,6 @@ def flat_accuracy(preds, labels):
     return np.sum(pred_flat == labels_flat) / len(labels_flat)
 
 
-# In[ ]:
 
 
 import time
@@ -334,7 +315,6 @@ def format_time(elapsed):
     return str(datetime.timedelta(seconds=elapsed_rounded))
 
 
-# In[ ]:
 
 
 params = list(model.named_parameters())
@@ -357,7 +337,6 @@ for p in params[-4:]:
     print("{:<55} {:>12}".format(p[0], str(tuple(p[1].size()))))
 
 
-# In[ ]:
 
 
 import random
@@ -560,7 +539,6 @@ print("Training complete!")
 print("Total training took {:} (h:mm:ss)".format(format_time(time.time()-total_t0)))
 
 
-# In[ ]:
 
 
 model_save_name = 'classification.pt'
@@ -568,7 +546,6 @@ path = F"/kaggle/working/{model_save_name}"
 torch.save(model.state_dict(), path)
 
 
-# In[ ]:
 
 
 del encoded_dict
@@ -579,7 +556,6 @@ del training_stats
 gc.collect()
 
 
-# In[ ]:
 
 
 

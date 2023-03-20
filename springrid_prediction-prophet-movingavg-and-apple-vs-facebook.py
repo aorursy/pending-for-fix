@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
@@ -32,7 +31,6 @@ df_train = pd.read_csv(path + 'train_1.csv', nrows=150000).fillna(0)
 print('Len of data: ', len(df_train.index))
 
 
-# In[2]:
 
 
 # Convert page views to integers
@@ -40,7 +38,6 @@ for col in df_train.columns[1:]:
     df_train[col] = pd.to_numeric(df_train[col], downcast='integer')
 
 
-# In[3]:
 
 
 # Get the language of an article
@@ -55,7 +52,6 @@ languages = df_train.lang.unique()
 print(Counter(df_train.lang))
 
 
-# In[4]:
 
 
 # Analyze language feature
@@ -81,7 +77,6 @@ plt.legend()
 plt.show()
 
 
-# In[5]:
 
 
 def plot_with_fft(key):
@@ -114,7 +109,6 @@ for key in sums:
     plot_with_fft(key)
 
 
-# In[6]:
 
 
 # For each language get highest few pages
@@ -130,7 +124,6 @@ for key in lang_sets:
     # print('\n\n')
 
 
-# In[7]:
 
 
 cols = df_train.columns[1:-1]
@@ -162,7 +155,6 @@ if False:
         plt.axvline(df_companies.index.get_loc(date), color='black', linestyle='solid')
 
 
-# In[8]:
 
 
 ## 3 Predictive Modelling - Apple vs. Others
@@ -172,7 +164,6 @@ We will try a few different simple models to see how they perform.
 Simple moving average approach over one week.
 
 
-# In[9]:
 
 
 def moving_average_approach(df):
@@ -185,7 +176,6 @@ moving_average_approach(df_companies).plot()
 df_companies.plot()
 
 
-# In[10]:
 
 
 # https://github.com/facebookincubator/prophet/issues/223
@@ -220,7 +210,6 @@ class suppress_stdout_stderr(object):
         os.close(self.null_fds[1])
 
 
-# In[11]:
 
 
 from fbprophet import Prophet
@@ -255,7 +244,6 @@ if False:
             fig = m.plot_components(forecast)
 
 
-# In[12]:
 
 
 from statsmodels.tsa.arima_model import ARIMA
@@ -300,7 +288,6 @@ for key in top_pages:
     plt.show()
 
 
-# In[13]:
 
 
 def batch_process_with_prophet(df):
@@ -335,7 +322,6 @@ def batch_process_with_prophet(df):
     return results_forecasts
 
 
-# In[14]:
 
 
 CHUNKSIZE = 100
@@ -377,7 +363,6 @@ print(training.head())
 print(training.describe())
 
 
-# In[15]:
 
 
 # from: https://www.kaggle.com/c/web-traffic-time-series-forecasting/discussion/37232
@@ -398,7 +383,6 @@ def smape_fast(y_true, y_pred):
     return out
 
 
-# In[16]:
 
 
 

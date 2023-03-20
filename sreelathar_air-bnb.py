@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -24,7 +23,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[2]:
 
 
 #Importing the libraries for the garphs
@@ -48,7 +46,6 @@ from sklearn.model_selection import RandomizedSearchCV,GridSearchCV
 from sklearn.metrics import r2_score,mean_squared_error
 
 
-# In[3]:
 
 
 df_train = pd.read_csv("/kaggle/input/dphi-amsterdam-airbnb-data/airbnb_listing_train.csv")
@@ -56,7 +53,6 @@ df_validate = pd.read_csv("/kaggle/input/dphi-amsterdam-airbnb-data/airbnb_listi
 df_ss=pd.read_csv("/kaggle/input/dphi-amsterdam-airbnb-data/sample_submission.csv")
 
 
-# In[4]:
 
 
 def aboutdf (df):
@@ -70,38 +66,32 @@ def aboutdf (df):
     return df_stats
 
 
-# In[5]:
 
 
 aboutdf(df_train)
 
 
-# In[6]:
 
 
 df_train=df_train.drop(columns='neighbourhood_group',axis=1)
 
 
-# In[7]:
 
 
 bool_series = pd.notnull(df_train["name"])
 df_train[bool_series].name
 
 
-# In[8]:
 
 
 df_train.name.describe()
 
 
-# In[9]:
 
 
 df_train[bool_series].groupby(['name']).size().sort_values(ascending=False).reset_index(name='count').head(100)
 
 
-# In[10]:
 
 
 d=df_train[bool_series].groupby(['name']).size().sort_values(ascending=False).reset_index(name='count').head(100)
@@ -120,26 +110,22 @@ fig.update_layout(autosize=False,
 fig.show()
 
 
-# In[11]:
 
 
 df_train.host_name.describe()
 
 
-# In[12]:
 
 
 bool_series1 = pd.notnull(df_train["host_name"])
 df_train[bool_series1].host_name
 
 
-# In[13]:
 
 
 df_train[bool_series1].groupby(['host_name']).size().sort_values(ascending=False).reset_index(name='count').head(100)
 
 
-# In[14]:
 
 
 d=df_train[bool_series1].groupby(['host_name']).size().sort_values(ascending=False).reset_index(name='count').head(100)
@@ -158,19 +144,16 @@ fig.update_layout(autosize=False,
 fig.show()
 
 
-# In[15]:
 
 
 df_train.neighbourhood.describe()
 
 
-# In[16]:
 
 
 df_train.groupby(['neighbourhood']).size().sort_values(ascending=False).reset_index(name='count')
 
 
-# In[17]:
 
 
 d=df_train.groupby(['neighbourhood']).size().sort_values(ascending=False).reset_index(name='count')
@@ -189,13 +172,11 @@ fig.update_layout(autosize=False,
 fig.show()
 
 
-# In[18]:
 
 
 df_train.room_type.unique
 
 
-# In[19]:
 
 
 d=df_train.groupby(['room_type']).size().sort_values(ascending=False).reset_index(name='count')
@@ -214,13 +195,11 @@ fig.update_layout(autosize=False,
 fig.show()
 
 
-# In[20]:
 
 
 df_train.minimum_nights.describe()
 
 
-# In[21]:
 
 
 d=df_train.groupby(['minimum_nights']).size().sort_values(ascending=False).reset_index(name='count').head(100)
@@ -240,19 +219,16 @@ fig.update_layout(autosize=False,
 fig.show()
 
 
-# In[22]:
 
 
 df_train.number_of_reviews.describe()
 
 
-# In[23]:
 
 
 df_train.groupby(['number_of_reviews']).size().sort_values(ascending=False).reset_index(name='count')
 
 
-# In[24]:
 
 
 d=df_train.groupby(['number_of_reviews']).size().sort_values(ascending=False).reset_index(name='count')
@@ -272,19 +248,16 @@ fig.update_layout(autosize=False,
 fig.show()
 
 
-# In[25]:
 
 
 df_train.last_review.describe()
 
 
-# In[26]:
 
 
 df_train.last_review
 
 
-# In[27]:
 
 
 d=df_train.groupby(['last_review']).size().sort_values(ascending=False).reset_index(name='count').head(100)
@@ -304,31 +277,26 @@ fig.update_layout(autosize=False,
 fig.show()
 
 
-# In[28]:
 
 
 df_train.reviews_per_month.describe()
 
 
-# In[ ]:
 
 
 
 
 
-# In[29]:
 
 
 df_train.calculated_host_listings_count.describe()
 
 
-# In[30]:
 
 
 df_train.availability_365.describe()
 
 
-# In[31]:
 
 
 d=df_train.groupby(['availability_365']).size().sort_values(ascending=False).reset_index(name='count')
@@ -348,19 +316,16 @@ fig.update_layout(autosize=False,
 fig.show()
 
 
-# In[32]:
 
 
 df_train.price.describe()
 
 
-# In[33]:
 
 
 df_train[['name','host_name','price']].sort_values(by='price',ascending=False)
 
 
-# In[34]:
 
 
 d=df_train[['name','host_name','price']].sort_values(by='price',ascending=False).head(50)
@@ -380,63 +345,53 @@ fig.update_layout(autosize=False,
 fig.show()
 
 
-# In[35]:
 
 
 plt.figure(figsize=(12,8))
 sns.heatmap(df_train.corr(),cmap='bwr',annot=True)
 
 
-# In[36]:
 
 
 df_train.cp=df_train.copy()
 
 
-# In[37]:
 
 
 df_train_dup=df_train[df_train.duplicated()]
 df_train_dup.shape
 
 
-# In[38]:
 
 
 df_train['last_review'].mode()
 
 
-# In[39]:
 
 
 df_train['last_review'].describe()
 
 
-# In[40]:
 
 
 df_train['reviews_per_month'].describe()
 
 
-# In[41]:
 
 
 #df_train['reviews_per_month']=df_train['reviews_per_month'].apply(np.round)
 
 
-# In[42]:
 
 
 df_train['reviews_per_month'].describe()
 
 
-# In[43]:
 
 
 df_train['last_review']=pd.to_datetime(df_train['last_review'])
 
 
-# In[44]:
 
 
 df_train['name'].fillna(df_train['name'].mode()[0], inplace=True)
@@ -445,7 +400,6 @@ df_train['last_review'].fillna(df_train['last_review'].mean(),inplace=True)
 df_train['reviews_per_month'].fillna(df_train['reviews_per_month'].mean(),inplace=True)
 
 
-# In[45]:
 
 
 df_train["day"] = df_train['last_review'].map(lambda x: x.day)
@@ -453,19 +407,16 @@ df_train["month"] = df_train['last_review'].map(lambda x: x.month)
 df_train["year"] = df_train['last_review'].map(lambda x: x.year)
 
 
-# In[46]:
 
 
 aboutdf(df_train)
 
 
-# In[47]:
 
 
 le = LabelEncoder()
 
 
-# In[48]:
 
 
 df_train['name']=LabelEncoder().fit_transform(df_train['name'])
@@ -474,13 +425,11 @@ df_train['neighbourhood']=LabelEncoder().fit_transform(df_train['neighbourhood']
 df_train['room_type']=LabelEncoder().fit_transform(df_train['room_type'])
 
 
-# In[49]:
 
 
 # sns.pairplot(df_train, kind="reg")
 
 
-# In[50]:
 
 
 
@@ -488,119 +437,102 @@ df_train['room_type']=LabelEncoder().fit_transform(df_train['room_type'])
 #          scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[51]:
 
 
 # sns.regplot(x='id',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[52]:
 
 
 # sns.regplot(x='name',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[53]:
 
 
 # sns.regplot(x='host_id',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[54]:
 
 
 # sns.regplot(x='host_name',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[55]:
 
 
 # sns.regplot(x='neighbourhood',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[56]:
 
 
 # sns.regplot(x='latitude',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[57]:
 
 
 # sns.regplot(x='longitude',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[58]:
 
 
 # sns.regplot(x='room_type',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[59]:
 
 
 sns.regplot(x='minimum_nights',y='price',data=df_train,
             scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[60]:
 
 
 # sns.regplot(x='number_of_reviews',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[61]:
 
 
 # sns.regplot(x='reviews_per_month',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[62]:
 
 
 # sns.regplot(x='calculated_host_listings_count',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[63]:
 
 
 # sns.regplot(x='availability_365',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[64]:
 
 
 # sns.regplot(x='day',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[65]:
 
 
 # sns.regplot(x='month',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[66]:
 
 
 # sns.regplot(x='year',y='price',data=df_train,
 #            scatter_kws={'alpha':0.3},line_kws={'color':'orange'})
 
 
-# In[67]:
 
 
 #X=df_train.drop(columns=['price','last_review','id','host_id'],axis=1)
@@ -608,13 +540,11 @@ X=df_train.drop(columns=['price','last_review'],axis=1)# just check feature sele
 y=df_train['price']
 
 
-# In[68]:
 
 
 X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3,random_state=2)
 
 
-# In[69]:
 
 
 from xgboost import XGBClassifier
@@ -631,13 +561,11 @@ plot_importance(xgb_model)
 plt.show()
 
 
-# In[70]:
 
 
 from sklearn.feature_selection import SelectFromModel
 
 
-# In[71]:
 
 
 selection = SelectFromModel(xgb_model)
@@ -653,13 +581,11 @@ selection_model = XGBClassifier()
 selection_model.fit(select_X_train, y_train)
 
 
-# In[72]:
 
 
 select_X_train
 
 
-# In[73]:
 
 
 y_train_pred=xgb_model.predict(X_train)
@@ -668,7 +594,6 @@ rmse_train=math.sqrt(mse_train)
 print(rmse_train)
 
 
-# In[74]:
 
 
 y_pred = xgb_model.predict(X_test)
@@ -680,13 +605,11 @@ rmse_test=math.sqrt(mse_test)
 print(rmse_test)
 
 
-# In[75]:
 
 
 predictions = selection_model.predict(select_X_test)
 
 
-# In[76]:
 
 
 mse_test1=mean_squared_error(y_test,predictions)
@@ -694,13 +617,11 @@ rmse_test1=math.sqrt(mse_test)
 print(rmse_test1)
 
 
-# In[77]:
 
 
 lgbm =LGBMRegressor()
 
 
-# In[78]:
 
 
 lgbm =LGBMRegressor(random_state=4)
@@ -709,7 +630,6 @@ bpred_train=lgbm.predict(X_train)
 bpred=lgbm.predict(X_test)
 
 
-# In[79]:
 
 
 bmse_train=mean_squared_error(y_train,bpred_train)
@@ -717,7 +637,6 @@ brmse_train=math.sqrt(bmse_train)
 print(brmse_train)
 
 
-# In[80]:
 
 
 bmse_test=mean_squared_error(y_test,bpred)
@@ -725,13 +644,11 @@ brmse_test=math.sqrt(bmse_test)
 print(brmse_test)
 
 
-# In[81]:
 
 
 pip install lazypredict
 
 
-# In[82]:
 
 
 import lazypredict
@@ -742,13 +659,11 @@ reg = LazyRegressor(verbose=0,ignore_warnings=False, custom_metric=None )
 models,predictions = reg.fit(X_train, X_test, y_train, y_test)
 
 
-# In[83]:
 
 
 models,predictions 
 
 
-# In[84]:
 
 
 from sklearn import ensemble
@@ -757,20 +672,17 @@ from sklearn import ensemble
 model_LP = ensemble.ExtraTreesRegressor(n_estimators=100,max_depth=15, n_jobs=-2, min_samples_split=2,min_samples_leaf=2, max_features=0.8,random_state=0)
 
 
-# In[85]:
 
 
 model_LP.fit(X_train,y_train)
 
 
-# In[86]:
 
 
 LP_pred_train=model_LP.predict(X_train)
 LP_pred_test=model_LP.predict(X_test)
 
 
-# In[87]:
 
 
 LP_train=mean_squared_error(y_train,LP_pred_train)
@@ -778,7 +690,6 @@ MLP_train=math.sqrt(LP_train)
 print(MLP_train)
 
 
-# In[88]:
 
 
 LP_test=mean_squared_error(y_test,LP_pred_test)
@@ -786,67 +697,56 @@ MLP_test=math.sqrt(LP_test)
 print(MLP_test)
 
 
-# In[89]:
 
 
 scaler =StandardScaler()
 
 
-# In[90]:
 
 
 aboutdf(X)
 
 
-# In[91]:
 
 
 df_train['availability_365'].describe()
 
 
-# In[92]:
 
 
 X_scaler=scaler.fit_transform(X)
 
 
-# In[93]:
 
 
 X_scaler
 
 
-# In[94]:
 
 
 X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3,random_state=2)
 
 
-# In[95]:
 
 
 reg = linear_model.Ridge(alpha=.5)
 
 
-# In[96]:
 
 
 model=reg.fit(X_train,y_train)
 
 
-# In[97]:
 
 
 pred=model.predict(X_test)
 
 
-# In[98]:
 
 
 pred_train=model.predict(X_train)
 
 
-# In[99]:
 
 
 mse_train=mean_squared_error(y_train,pred_train)
@@ -854,7 +754,6 @@ rmse_train=math.sqrt(mse_train)
 print(rmse_train)
 
 
-# In[100]:
 
 
 mse = mean_squared_error(y_test, pred)
@@ -863,7 +762,6 @@ rmse = math.sqrt(mse)
 print(rmse)
 
 
-# In[101]:
 
 
 from tqdm import tqdm
@@ -871,7 +769,6 @@ import math
 from math import sqrt
 
 
-# In[102]:
 
 
 alpha = [1, 2, 3, 3.5, 4, 4.5, 5, 6, 7] 
@@ -901,7 +798,6 @@ plt.ylabel("Error")
 plt.show()
 
 
-# In[103]:
 
 
 print("Best alpha: ",  alpha[best_alpha])
@@ -917,14 +813,12 @@ ridge_rmsle = sqrt((mse_test))
 print("Cross validation RMSLE: ", ridge_rmsle)
 
 
-# In[104]:
 
 
 from scipy.stats import uniform
 from scipy.stats import randint as sp_randint
 
 
-# In[105]:
 
 
 
@@ -945,7 +839,6 @@ best_params = lgb_random.best_params_
 print(best_params)
 
 
-# In[106]:
 
 
 
@@ -964,7 +857,6 @@ lgb_rmsle = sqrt(mse_te)
 print("Test RMSLE: ", lgb_rmsle)
 
 
-# In[107]:
 
 
 from prettytable import PrettyTable
@@ -981,25 +873,21 @@ x.add_row(["ExtraTreesRegressor","+id,host_id,-standardscalar-fs+tune","82.37541
 print(x)
 
 
-# In[108]:
 
 
 aboutdf(df_validate)
 
 
-# In[109]:
 
 
 df_validate=df_validate.drop(columns=['neighbourhood_group'],axis=1)
 
 
-# In[110]:
 
 
 df_validate['last_review']=pd.to_datetime(df_validate['last_review'])
 
 
-# In[111]:
 
 
 df_validate['name'].fillna(df_validate['name'].mode()[0], inplace=True)
@@ -1008,7 +896,6 @@ df_validate['last_review'].fillna(df_validate['last_review'].mean(),inplace=True
 df_validate['reviews_per_month'].fillna(df_validate['reviews_per_month'].mean(),inplace=True)
 
 
-# In[112]:
 
 
 df_validate["day"] = df_validate['last_review'].map(lambda x: x.day)
@@ -1016,13 +903,11 @@ df_validate["month"] = df_validate['last_review'].map(lambda x: x.month)
 df_validate["year"] = df_validate['last_review'].map(lambda x: x.year)
 
 
-# In[113]:
 
 
 df_validate=df_validate.drop(columns=['last_review'],axis=1)
 
 
-# In[114]:
 
 
 df_validate['name']=LabelEncoder().fit_transform(df_validate['name'])
@@ -1031,50 +916,42 @@ df_validate['neighbourhood']=LabelEncoder().fit_transform(df_validate['neighbour
 df_validate['room_type']=LabelEncoder().fit_transform(df_validate['room_type'])
 
 
-# In[115]:
 
 
 X_val=df_validate
 
 
-# In[116]:
 
 
 X_valscaler=scaler.fit_transform(X_val)
 pred_val=model.predict(X_valscaler)
 
 
-# In[117]:
 
 
 pred_lgbm=model_lgbm.predict(X_val)
 
 
-# In[118]:
 
 
 select_X_val = selection.transform(X_val)
 
 
-# In[119]:
 
 
 pred_xgb=selection_model.predict(select_X_val)
 
 
-# In[120]:
 
 
 bpred_lgbm=lgbm.predict(X_val)
 
 
-# In[121]:
 
 
 pred_lp=model_LP.predict(X_val)
 
 
-# In[122]:
 
 
 output = pd.DataFrame({'Id': df_validate.id,

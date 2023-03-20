@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import tflearn
@@ -29,7 +27,6 @@ from tflearn.layers.core import input_data, dropout, fully_connected
 from tflearn.layers.estimator import regression
 
 
-# In[3]:
 
 
 import cv2
@@ -41,7 +38,6 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 
 
-# In[4]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
@@ -53,7 +49,6 @@ LR = 1e-3
 MODEL_NAME = 'dogs-vs-cats-convnet'
 
 
-# In[5]:
 
 
 def create_label(image_name):
@@ -65,7 +60,6 @@ def create_label(image_name):
         return np.array([0,1])
 
 
-# In[6]:
 
 
 def create_train_data():
@@ -80,7 +74,6 @@ def create_train_data():
     return training_data
 
 
-# In[7]:
 
 
 def create_test_data():
@@ -93,7 +86,6 @@ def create_test_data():
         testing_data.append([np.array(img_data), img_num])
 
 
-# In[8]:
 
 
 # If you have already created the dataset:
@@ -103,14 +95,12 @@ def create_test_data():
     return testing_data
 
 
-# In[9]:
 
 
 train = 'train_data'[:-500]
 test = 'train_data'[-500:]
 
 
-# In[10]:
 
 
 
@@ -118,14 +108,12 @@ X_train = np.array([i[0] for i in train]).reshape(-1, IMG_SIZE, IMG_SIZE, 1)
 y_train = [i[1] for i in train]
 
 
-# In[11]:
 
 
 X_test = np.array([i[0] for i in test]).reshape(-1, IMG_SIZE, IMG_SIZE, 1)
 y_test = [i[1] for i in test]
 
 
-# In[12]:
 
 
 tf.reset_default_graph()

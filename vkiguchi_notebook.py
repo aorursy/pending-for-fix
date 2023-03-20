@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import numpy as np
@@ -12,56 +11,47 @@ from scipy import stats as st
 import os
 
 
-# In[ ]:
 
 
 os.listdir("../input/spamham")
 
 
-# In[ ]:
 
 
 filepath = "../input/spamham/train_data.csv"
 
 
-# In[ ]:
 
 
 bag = pd.read_csv(filepath, sep=r'\s*,\s*', engine='python', na_values='?')
 
 
-# In[ ]:
 
 
 bag.head()
 
 
-# In[ ]:
 
 
 pearson = bag.drop("Id", axis="columns").corr()["ham"].drop('ham')
 
 
-# In[ ]:
 
 
 pearson.plot(kind='bar')
 
 
-# In[ ]:
 
 
 pearson.sort_values()
 
 
-# In[ ]:
 
 
 bfeats = [x for x in pearson.index if abs(pearson[x])>0.16]
 bfeats
 
 
-# In[ ]:
 
 
 pearson = pearson.drop(['capital_run_length_average','capital_run_length_longest', 'capital_run_length_total'])
@@ -73,13 +63,11 @@ for label in pearson.axes[0]:
     #correlation given that the value is non-zero
 
 
-# In[ ]:
 
 
 psons.index
 
 
-# In[ ]:
 
 
 print(psons.ham_self.sort_values())
@@ -88,14 +76,12 @@ print(features)
 print(len(features))
 
 
-# In[ ]:
 
 
 #bag["word_freq_cs_bool"] = bag["word_freq_cs"].transform(bool)
 #bfeats.append("word_freq_cs_bool")
 
 
-# In[ ]:
 
 
 spam = bag.apply(lambda x: x)
@@ -106,20 +92,17 @@ ham = bag.apply(lambda x: x)
 #    spam[label] = bag[label] * spam['spam']
 
 
-# In[ ]:
 
 
 spam = spam[spam['spam']]
 ham = ham[ham['ham']]
 
 
-# In[ ]:
 
 
 spam.head()
 
 
-# In[ ]:
 
 
 distSpam = pd.DataFrame()
@@ -130,13 +113,11 @@ distSpam['theta'] = (distSpam['s']*distSpam['s'])/distSpam['u']
 distSpam
 
 
-# In[ ]:
 
 
 ham.head()
 
 
-# In[ ]:
 
 
 distHam = pd.DataFrame()
@@ -147,7 +128,6 @@ distHam['theta'] = (distHam['s']*distHam['s'])/distHam['u']
 distHam
 
 
-# In[ ]:
 
 
 def _histo(dataHam, dataSpam, n_bins):
@@ -168,7 +148,6 @@ histon.ham_given_n = []
 histon.spam_given_n = []
 
 
-# In[ ]:
 
 
 histo("capital_run_length_total", 100)
@@ -180,7 +159,6 @@ histo("word_freq_re", 50)
 histo("word_freq_table", 50)
 
 
-# In[ ]:
 
 
 diffDistrib = ((distSpam['u']-distHam['u'])/distHam['s'])
@@ -190,7 +168,6 @@ bigDiff = [label for label in bag.columns if abs(diffDist[label])>cutoff and lab
 diffDist = diffDistrib/diffDistrib.apply(abs)
 
 
-# In[ ]:
 
 
 #z = 0 #0.50
@@ -203,7 +180,6 @@ z = 1.645 #0.95
 zlist = [0.9, 0.95, 0.975, 0.99]
 
 
-# In[ ]:
 
 
 #li = 0 #0.5
@@ -218,13 +194,11 @@ llist = [0.855, 0.9, 0.95, 0.99, 0.995]
 #testlist = [st.norm.ppf(0.80), st.norm.ppf(0.825), st.norm.ppf(0.85), st.norm.ppf(0.875), st.norm.ppf(0.9), st.norm.ppf(0.925), st.norm.ppf(0.95), st.norm.ppf(0.975), st.norm.ppf(0.99)]
 
 
-# In[ ]:
 
 
 Xbag = bag.drop(["Id", "ham"], axis='columns')
 
 
-# In[ ]:
 
 
 XbagCapCut = bag.drop(["Id"], axis='columns')
@@ -246,7 +220,6 @@ print(capital_run)
 XbagCapCut = XbagCapCut.drop(["ham"], axis='columns')
 
 
-# In[ ]:
 
 
 #for label in XbagCapCut.drop(capital_run, axis='columns').columns:
@@ -260,26 +233,22 @@ for label in bigDiff:
     XbagCapCut[label+"p_val"] = XbagCapCut[label].transform(lambda x, kHam, thetaHam, kSpam, thetaSpam: 1-st.gamma.cdf(x, kHam, scale=thetaHam**kHam) > st.gamma.cdf(x, kSpam, scale=thetaSpam**kSpam), kHam=distHam['k'][label], thetaHam=distHam['theta'][label], kSpam=distSpam['k'][label], thetaSpam=distSpam['theta'][label])
 
 
-# In[ ]:
 
 
 #XbagCapCut["word_freq_cs_bool"] = bag["word_freq_cs"].transform(bool)
 #bfeats.append("word_freq_cs_bool")
 
 
-# In[ ]:
 
 
 XbagCapCut
 
 
-# In[ ]:
 
 
 Ybag = bag['ham']
 
 
-# In[ ]:
 
 
 from sklearn.neighbors import KNeighborsClassifier
@@ -291,25 +260,21 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.naive_bayes import BernoulliNB
 
 
-# In[ ]:
 
 
 testpath = "../input/spamham/test_features.csv"
 
 
-# In[ ]:
 
 
 testBag = pd.read_csv(testpath, sep=r'\s*,\s*', engine='python', na_values='?')
 
 
-# In[ ]:
 
 
 testBag
 
 
-# In[ ]:
 
 
 XtestBagCapCut = testBag.drop("Id", axis='columns')
@@ -334,19 +299,16 @@ for label in bigDiff:
     XtestBagCapCut[label+"p_val"] = XtestBagCapCut[label].transform(lambda x, kHam, thetaHam, kSpam, thetaSpam: 1-st.gamma.cdf(x, kHam, scale=thetaHam**kHam) > st.gamma.cdf(x, kSpam, scale=thetaSpam**kSpam), kHam=distHam['k'][label], thetaHam=distHam['theta'][label], kSpam=distSpam['k'][label], thetaSpam=distSpam['theta'][label])
 
 
-# In[ ]:
 
 
 #XtestBagCapCut["word_freq_cs_bool"] = XtestBagCapCut["word_freq_cs"].transform(bool)
 
 
-# In[ ]:
 
 
 XtestBagCapCut
 
 
-# In[ ]:
 
 
 def f3(estimador, x, y):
@@ -355,7 +317,6 @@ def f3(estimador, x, y):
 #f3 = (lambda estimator, x, y: fbeta_score(y, estimador.predict(x), 3))
 
 
-# In[ ]:
 
 
 gnb = GaussianNB()
@@ -369,7 +330,6 @@ print(scores.mean())
 #predictBag
 
 
-# In[ ]:
 
 
 #features = bfeats
@@ -384,7 +344,6 @@ print(scores.mean())
 #predictBag
 
 
-# In[ ]:
 
 
 mnnb = MultinomialNB()
@@ -399,7 +358,6 @@ print(scores.mean())
 #predictBag
 
 
-# In[ ]:
 
 
 bnnb = BernoulliNB()
@@ -413,7 +371,6 @@ print(scores.mean())
 #predictBag
 
 
-# In[ ]:
 
 
 #maxscorei = 0
@@ -436,7 +393,6 @@ print(scores.mean())
 #print(maxscore, maxscorej)
 
 
-# In[ ]:
 
 
 bnnb = BernoulliNB()
@@ -479,7 +435,6 @@ print(np.count_nonzero(predictBag2['ham'])/predictBag2['ham'].count())
 print(predictBag2.head()['ham'])
 
 
-# In[ ]:
 
 
 savepath = "bagPredict.csv"
@@ -487,19 +442,16 @@ savepath1 = "bagPredict1.csv"
 savepath2 = "bagPredict2.csv"
 
 
-# In[ ]:
 
 
 predictBag.to_csv(savepath, index=False, columns=['Id', 'ham'])
 
 
-# In[ ]:
 
 
 predictBag1.to_csv(savepath1, index=False, columns=['Id', 'ham'])
 
 
-# In[ ]:
 
 
 predictBag2.to_csv(savepath2, index=False, columns=['Id', 'ham'])

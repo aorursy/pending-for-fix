@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,7 +21,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 import numpy as np # linear algebra
@@ -123,7 +121,6 @@ submission["id"] = submission["id"].apply(lambda x: str(x).split("/")[-1].split(
 submission.to_csv('DogVsCats_submission.csv',index=False)
 
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -321,7 +318,6 @@ test_generator.filenames
 sub.to_csv("submission.csv", index=False)
 
 
-# In[ ]:
 
 
 #데이터가 고화질일수록 성능이 오른다. 고화질=타겟사이즈를 올려주면 더 성능이 오르다. 처음에 하면 안되고 뒤에서 해야한다. (픽셀을 더 늘리고 줄여준다)

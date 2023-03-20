@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -59,7 +58,6 @@ train.head()
     
 
 
-# In[ ]:
 
 
 for c in train.columns.values:
@@ -83,7 +81,6 @@ all_data.head(20)
         
 
 
-# In[ ]:
 
 
 null_cnt = train.isnull().sum().sort_values()
@@ -132,7 +129,6 @@ vals.head()
 
 
 
-# In[ ]:
 
 
 subA=all_data.loc[all_ data['customDimensions'].isin(vals.index.values),'customDimensions']

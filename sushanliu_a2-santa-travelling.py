@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import pandas as pd
@@ -15,7 +14,6 @@ import os
 import time
 
 
-# In[2]:
 
 
 # Loading data - cities.csv
@@ -24,7 +22,6 @@ cities = pd.read_csv('cities.csv')
 cities.head()
 
 
-# In[3]:
 
 
 # Number of cities to visit in row data
@@ -32,7 +29,6 @@ cities.head()
 print("Number of cities to visit are", len(cities))
 
 
-# In[4]:
 
 
 mini_cities = pd.read_csv ('cities.csv')
@@ -45,13 +41,11 @@ Y_value = [mini_cities.values[i][2] for i in range(len(mini_cities))]
 mini_cities.head()
 
 
-# In[5]:
 
 
 print("Number of cities to visit in the sample data are", len(mini_cities))
 
 
-# In[6]:
 
 
 fig = plt.figure(figsize=(7,7))
@@ -64,7 +58,6 @@ plt.scatter(mini_cities['X'],
 plt.show()
 
 
-# In[7]:
 
 
 # Determines if integer is prime number
@@ -81,13 +74,11 @@ def find_prime(n):
     return(primes)
 
 
-# In[8]:
 
 
 prime_cities = find_prime(max(mini_cities.CityId))
 
 
-# In[9]:
 
 
 def pair_distance(x,y):
@@ -96,7 +87,6 @@ def pair_distance(x,y):
     return np.sqrt(x1 + x2)
 
 
-# In[10]:
 
 
 #Distance between two cities
@@ -107,7 +97,6 @@ def pair_distance(x,y):
     return np.sqrt(x1 + x2)
 
 
-# In[11]:
 
 
 #Calculate total distance
@@ -117,7 +106,6 @@ def total_distance(path):
     return np.sum(distance)
 
 
-# In[12]:
 
 
 # The Dumbest path of total distance
@@ -137,7 +125,6 @@ dumbest_path = list(mini_cities.CityId[:].append(pd.Series([0])))
 print('Total distance with the dumbest path is '+ "{:,}".format(total_distance(mini_cities,dumbest_path)))
 
 
-# In[13]:
 
 
 df_path = pd.merge_ordered(pd.DataFrame({'CityId':dumbest_path}),mini_cities,on=['CityId'])
@@ -147,7 +134,6 @@ for i, txt in enumerate(df_path.iloc[0:100,]['CityId']):
     ax.annotate(txt, (df_path.iloc[0:100,]['X'][i], df_path.iloc[0:100,]['Y'][i]),size = 15)
 
 
-# In[14]:
 
 
 sorted_cities = list(mini_cities.iloc[1:,].sort_values(['X','Y'])['CityId'])
@@ -155,7 +141,6 @@ sorted_cities = [0] + sorted_cities + [0]
 print('Total distance with the sorted city path is '+ "{:,}".format(total_distance(mini_cities,sorted_cities)))
 
 
-# In[15]:
 
 
 df_path = pd.DataFrame({'CityId':sorted_cities}).merge(mini_cities,on=['CityId'])
@@ -167,7 +152,6 @@ for i, txt in enumerate(df_path.iloc[0:100,]['CityId']):
    
 
 
-# In[16]:
 
 
 sorty_path=[]
@@ -178,7 +162,6 @@ for x in range(max(mini_cities.CityId)+1):
     City_Y.append(mini_cities['Y'][x])
 
 
-# In[17]:
 
 
 def selectionsort(alist):
@@ -190,13 +173,11 @@ def selectionsort(alist):
                 
 
 
-# In[18]:
 
 
 selectionsort(sorty_path)
 
 
-# In[19]:
 
 
 #create a path for calculating total distance
@@ -206,13 +187,11 @@ for each in range(len(sorty_path)-1):
 sortedy_path.append(0)
 
 
-# In[20]:
 
 
 print('Total distance with the sorted city path is '+ "{:,}".format(total_distance(sortedy_path)))
 
 
-# In[21]:
 
 
 # nearest neighbor algorithm
@@ -230,7 +209,6 @@ for index in range(20,len(nnpath_with_primes)-30):
 print('Total distance with the Nearest Neighbor With Prime Swaps '+  "is {:,}".format(total_distance(df_cities,nnpath_with_primes)))
 
 
-# In[22]:
 
 
 def calDistance(x1, y1, x2, y2):
@@ -244,7 +222,6 @@ for i in range(len(mini_cities)):
     cities.append(edge)
 
 
-# In[23]:
 
 
 visited = []# which will be contain the visited city and also for the path
@@ -262,7 +239,6 @@ visited.append(0)
 cost.append(calDistance(sample.values[0][1],sample.values[0][2],sample.values[position][1],sample.values[position][2]))
 
 
-# In[24]:
 
 
 distance = 0 
@@ -283,13 +259,11 @@ for city in visited: # go through all the city in the list
         step += 1
 
 
-# In[25]:
 
 
 print("using list of dictionary structure to calculate the distance with penalized distance , distance = " + str(distance))
 
 
-# In[26]:
 
 
 def submission():
@@ -298,7 +272,6 @@ def submission():
     df.to_csv('Final.csv', index = False)
 
 
-# In[27]:
 
 
 submission()

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 
@@ -22,7 +21,6 @@ from sklearn.model_selection import train_test_split
 from kaggle_datasets import KaggleDatasets
 
 
-# In[2]:
 
 
 
@@ -57,13 +55,11 @@ GCS_DS_PATH = KaggleDatasets().get_gcs_path()
 AUTO = tf.data.experimental.AUTOTUNE
 
 
-# In[3]:
 
 
 tf.tpu.experimental.initialize_tpu_system(tpu) # Clear TPU Memory
 
 
-# In[ ]:
 
 
 # Configuration
@@ -72,7 +68,6 @@ BATCH_SIZE = 16 * strategy.num_replicas_in_sync
 IMG_SIZE = 700
 
 
-# In[ ]:
 
 
 
@@ -111,7 +106,6 @@ def data_augment(image, label=None):
         return image, label
 
 
-# In[ ]:
 
 
 train_dataset = (
@@ -156,7 +150,6 @@ test_dataset = (
     
 
 
-# In[ ]:
 
 
 
@@ -185,7 +178,6 @@ plt.plot(rng, y)
 print("Learning rate schedule: {:.3g} to {:.3g} to {:.3g}".format(y[0], max(y), y[-1]))
 
 
-# In[ ]:
 
 
 import tensorflow as tf
@@ -210,7 +202,6 @@ with strategy.scope():
     model_effnet.compile(loss="categorical_crossentropy", optimizer= 'adam', metrics=["accuracy"])
 
 
-# In[ ]:
 
 
 STEPS_PER_EPOCH = train_labels.shape[0] // BATCH_SIZE
@@ -224,7 +215,6 @@ history = model_effnet.fit(
 )
 
 
-# In[ ]:
 
 
 sns.lineplot(x = range(0,40), y = history.history['loss'])
@@ -234,7 +224,6 @@ plt.title('Loss evolution')
 plt.show()
 
 
-# In[ ]:
 
 
 sns.lineplot(x = range(0,40), y = history.history['accuracy'])
@@ -244,14 +233,12 @@ plt.title('accuracy evolution')
 plt.show()
 
 
-# In[ ]:
 
 
 
 history.history
 
 
-# In[ ]:
 
 
 predict= model_effnet.predict(test_dataset)
@@ -274,13 +261,11 @@ df = pd.concat([test.image_id, prediction], axis = 1)
 df.to_csv('effi_submission.csv', index = False)
 
 
-# In[ ]:
 
 
 tf.tpu.experimental.initialize_tpu_system(tpu) # Clear TPU Memory
 
 
-# In[ ]:
 
 
 import tensorflow as tf
@@ -300,7 +285,6 @@ with strategy.scope():
     model_xception.compile(loss="categorical_crossentropy", optimizer= 'adam', metrics=["accuracy"])
 
 
-# In[ ]:
 
 
 STEPS_PER_EPOCH = train_labels.shape[0] // BATCH_SIZE
@@ -314,7 +298,6 @@ history = model_xception.fit(
 )
 
 
-# In[ ]:
 
 
 predict= model_xception.predict(test_dataset)
@@ -336,13 +319,11 @@ df_dense = pd.concat([test.image_id, prediction], axis = 1)
 df_dense.to_csv('dense_submission.csv', index = False)
 
 
-# In[ ]:
 
 
 tf.tpu.experimental.initialize_tpu_system(tpu) # Clear TPU Memory
 
 
-# In[ ]:
 
 
 import tensorflow as tf
@@ -362,7 +343,6 @@ with strategy.scope():
     model_resnet.compile(loss="categorical_crossentropy", optimizer= 'adam', metrics=["accuracy"])
 
 
-# In[ ]:
 
 
 STEPS_PER_EPOCH = train_labels.shape[0] // BATCH_SIZE
@@ -376,7 +356,6 @@ history = model_resnet.fit(
 )
 
 
-# In[ ]:
 
 
 predict= model_resnet.predict(test_dataset)
@@ -398,7 +377,6 @@ df_res = pd.concat([test.image_id, prediction], axis = 1)
 df_res.to_csv('res_submission.csv', index = False)
 
 
-# In[ ]:
 
 
 def voting(a,b,c):
@@ -410,7 +388,6 @@ def voting(a,b,c):
         return a
 
 
-# In[ ]:
 
 
 image_id = df['image_id']
@@ -434,7 +411,6 @@ finalsubmission['scab'] = scab
 finalsubmission.to_csv('submission.csv', index = False)
 
 
-# In[ ]:
 
 
 X_train_cv =
@@ -444,7 +420,6 @@ X_train_cv, X_validation_cv, y_train_cv, y_validation_cv = train_test_split
 X_test = 
 
 
-# In[4]:
 
 
 from xgboost import XGBClassifier
@@ -466,7 +441,6 @@ cv = GridSearchCV(estimator = model_stacked,
 cv.fit()
 
 
-# In[ ]:
 
 
 

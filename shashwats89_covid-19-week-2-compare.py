@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,7 +21,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 from datetime import datetime
@@ -47,32 +45,27 @@ from sklearn.metrics import mean_squared_error, r2_score
 from math import sqrt
 
 
-# In[3]:
 
 
 train= pd.read_csv("../input/covid19-global-forecasting-week-2/train.csv")
 test= pd.read_csv("../input/covid19-global-forecasting-week-2/test.csv")
 
 
-# In[4]:
 
 
 train.head()
 
 
-# In[5]:
 
 
 test.head()
 
 
-# In[6]:
 
 
 #print(train.groupby(['Date','Lat']).count().sort_values(by='ConfirmedCases', ascending=False)['ConfirmedCases'])
 
 
-# In[7]:
 
 
 display(train.head(5))
@@ -83,44 +76,37 @@ print("Dates go from day", max(train['Date']), "to day", min(train['Date']), ", 
 print("Countries with Province/State informed: ", train[train['Province_State'].isna()==False]['Country_Region'].unique())
 
 
-# In[8]:
 
 
 print("Countries with Province/State informed: ", train[train['Province_State'].isna()==False]['Province_State'].unique())
 
 
-# In[9]:
 
 
 print(train.groupby(['Date']).mean().sort_values(by='ConfirmedCases', ascending=False)['ConfirmedCases'][[1,2]])
 print(train.groupby('Date').mean().sort_values(by='ConfirmedCases', ascending=False)['ConfirmedCases'][[4,5,6]])
 
 
-# In[10]:
 
 
 print(train.groupby(['Date','Country_Region']).mean().sort_values(by='ConfirmedCases', ascending=False)['ConfirmedCases'])
 
 
-# In[11]:
 
 
 training_data=train.groupby('Date')['ConfirmedCases','Fatalities'].sum().reset_index()
 
 
-# In[12]:
 
 
 training_data=train.groupby('Date')['ConfirmedCases','Fatalities'].sum().reset_index()
 
 
-# In[13]:
 
 
 training_data
 
 
-# In[14]:
 
 
 y_train = train[["ConfirmedCases", "Fatalities"]]
@@ -129,57 +115,48 @@ X_test_Id = test.loc[:, 'ForecastId']
 test = test[["Province_State","Country_Region","Date"]]
 
 
-# In[15]:
 
 
 #print(train_encoded.count())
 print(y_train)
 
 
-# In[16]:
 
 
 #xyz = train.groupby(['Country_Region']).count().sort_values(by='ConfirmedCases', ascending=False)()
 #train.groupby(['Country_Region']).sort_values(by='Date', ascending=False)[:100]
 
 
-# In[17]:
 
 
 #train.groupby(['Country_Region','col2']).count()
 
 y_train.head()
-# In[18]:
 
 
 #train.groupby(['Date','Country_Region'])['count','ConfirmedCases']
 
 
-# In[19]:
 
 
 #train = train.sort_values(by=['Date','Country_Region'], ascending=True)
 
 
-# In[20]:
 
 
 #train[train.groupby(['Date','Country_Region'])'count','ConfirmedCases')]
 
 
-# In[21]:
 
 
 #train['count']=1
 
 
-# In[22]:
 
 
 #train['count'] = train.groupby(['Date','Country_Region'])['ConfirmedCases'].apply()#
 
 
-# In[23]:
 
 
 EMPTY_VAL = "EMPTY_VAL"
@@ -189,7 +166,6 @@ def fillState(state, country):
     return state
 
 
-# In[24]:
 
 
 from sklearn.preprocessing import LabelEncoder
@@ -237,7 +213,6 @@ display(full_df.dtypes)
 display(full_df.head())
 
 
-# In[25]:
 
 
 le = LabelEncoder()
@@ -249,7 +224,6 @@ def CustomLabelEncoder(df):
     return df
 
 
-# In[26]:
 
 
 
@@ -259,55 +233,46 @@ train_encoded = full_df[:index_split]
 test_encoded= full_df[index_split:]
 
 
-# In[27]:
 
 
 train_encoded.count()
 
 
-# In[28]:
 
 
 test_encoded.iloc[250:350,:]
 
 
-# In[29]:
 
 
 train_encoded.tail()
 
 
-# In[30]:
 
 
 test_encoded.head()
 
 
-# In[31]:
 
 
 train.head()
 
 
-# In[32]:
 
 
 full_df_encoded.head(10)
 
 
-# In[33]:
 
 
 train_encoded.info()
 
 
-# In[34]:
 
 
 test_encoded
 
 
-# In[35]:
 
 
 from sklearn.model_selection import train_test_split
@@ -317,13 +282,11 @@ X_train1, X_test1, y_train1, y_test1 = train_test_split(train_encoded, y_train[[
 X_train2, X_test2, y_train2, y_test2 = train_test_split(train_encoded, y_train[['Fatalities']] ,test_size=0.2, random_state=48)
 
 
-# In[36]:
 
 
 y_train1,y_test1,y_train2,y_test2
 
 
-# In[37]:
 
 
 # features that will be used in the model
@@ -331,7 +294,6 @@ y1 = y_train[['ConfirmedCases']]
 y2 = y_train[['Fatalities']]
 
 
-# In[38]:
 
 
 from sklearn.tree import DecisionTreeRegressor  
@@ -339,7 +301,6 @@ regressor = DecisionTreeRegressor(random_state = 48)
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 
-# In[39]:
 
 
 regressor.fit(X_train1,y_train1)
@@ -356,7 +317,6 @@ predict_dt1 = predict_dt1.astype(int)
 predict_dt1
 
 
-# In[40]:
 
 
 regressor.fit(train_encoded, y_train[['ConfirmedCases']])
@@ -373,7 +333,6 @@ predict_dt1 = predict_dt1.astype(int)
 predict_dt1
 
 
-# In[41]:
 
 
 regressor.fit(train_encoded, y_train[['Fatalities']])
@@ -388,13 +347,11 @@ predict_dt2 = predict_dt2.astype(int)
 predict_dt2
 
 
-# In[42]:
 
 
 print(X_test_Id,predict_dt1,predict_dt2)
 
 
-# In[43]:
 
 
 sub = pd.DataFrame({'ForecastId':X_test_Id,'ConfirmedCases': predict_dt1, 'Fatalities': predict_dt2})
@@ -405,13 +362,11 @@ sub.head()
 sub.to_csv('submission.csv', index=False)
 
 
-# In[44]:
 
 
 import lightgbm as lgb
 
 
-# In[45]:
 
 
 SEED = 42
@@ -436,31 +391,26 @@ params = {'num_leaves': 8,
           }
 
 
-# In[46]:
 
 
 y_test1
 
 
-# In[ ]:
 
 
 
 
 
-# In[47]:
 
 
 sub.head()
 
 
-# In[ ]:
 
 
 
 
 
-# In[48]:
 
 
 #subb.ForecastId = subb.ForecastId.astype('int')
@@ -468,13 +418,11 @@ sub.head()
 #sub.to_csv('submission.csv', index=False)
 
 
-# In[49]:
 
 
 xgb = xgboost.XGBRegressor()
 
 
-# In[50]:
 
 
 xgb1=xgb.fit(X_train1,y_train1)
@@ -490,13 +438,11 @@ print(mean_squared_error(y_test1,predictions))
 print(r2_score(y_test1,predictions))
 
 
-# In[51]:
 
 
 xgb1.score(X_test1,y_test1)
 
 
-# In[52]:
 
 
 xgb2=xgb.fit(X_train2,y_train2)
@@ -512,7 +458,6 @@ print(mean_squared_error(y_test2,predictions))
 print(r2_score(y_test2,predictions))
 
 
-# In[53]:
 
 
 rf = RandomForestRegressor()
@@ -530,7 +475,6 @@ print(mean_squared_error(y_test1,predictions))
 print(r2_score(y_test1,predictions))
 
 
-# In[54]:
 
 
 from sklearn.pipeline import Pipeline
@@ -553,14 +497,12 @@ print(mean_squared_error(y_test1,predictions))
 print(r2_score(y_test1,predictions))
 
 
-# In[55]:
 
 
 print("RMSE: %.2f"
       % math.sqrt(np.mean((regr.predict(X_test1) - y_test1) ** 2)))
 
 
-# In[56]:
 
 
 from sklearn.neighbors import KNeighborsClassifier
@@ -580,7 +522,6 @@ print(mean_squared_error(y_test1,predictions))
 print(r2_score(predictions,y_test1))
 
 
-# In[57]:
 
 
 from sklearn.neighbors import KNeighborsClassifier
@@ -600,13 +541,11 @@ print(mean_squared_error(y_test2,predictions))
 print(r2_score(predictions,y_test2))
 
 
-# In[58]:
 
 
 knn.score(X_test2, y_test2)
 
 
-# In[59]:
 
 
 #xgb1=xgb.fit(X_train1,y_train1)
@@ -616,13 +555,11 @@ print(explained_variance_score(predictions1,y_test1))
 print(predictions1)
 
 
-# In[60]:
 
 
 predictions
 
 
-# In[61]:
 
 
 knn.fit(X_train1,y_train1)
@@ -639,7 +576,6 @@ predict_dt1 = predict_dt1.astype(int)
 predict_dt1
 
 
-# In[62]:
 
 
 knn.fit(train_encoded, y_train[['ConfirmedCases']])
@@ -656,7 +592,6 @@ predict_dt1 = predict_dt1.astype(int)
 predict_dt1
 
 
-# In[63]:
 
 
 knn.fit(train_encoded, y_train[['Fatalities']])
@@ -671,13 +606,11 @@ predict_dt2 = predict_dt2.astype(int)
 predict_dt2
 
 
-# In[64]:
 
 
 print(X_test_Id,predict_dt1,predict_dt2)
 
 
-# In[65]:
 
 
 #sub = pd.DataFrame({'ForecastId':X_test_Id,'ConfirmedCases': predict_dt1, 'Fatalities': predict_dt2})
@@ -687,13 +620,11 @@ print(X_test_Id,predict_dt1,predict_dt2)
 #sub.to_csv('submission.csv', index=False)
 
 
-# In[66]:
 
 
 pd.DataFrame(predictions)
 
 
-# In[67]:
 
 
 from sklearn.model_selection import GridSearchCV
@@ -707,27 +638,23 @@ knn_gscv = GridSearchCV(knn2, param_grid, cv=10,n_jobs=-1, verbose=3)
 knn_gscv.fit(X_train1, y_train1.values.ravel())
 
 
-# In[ ]:
 
 
 
 
 
-# In[68]:
 
 
 #check top performing n_neighbors value
 knn_gscv.best_params_
 
 
-# In[69]:
 
 
 #check mean score for the top performing value of n_neighbors
 knn_gscv.best_score_
 
 
-# In[70]:
 
 
 #xgb1=xgb.fit(X_train1,y_train1)
@@ -737,7 +664,6 @@ print(explained_variance_score(predictions1,y_test2))
 print(predictions)
 
 
-# In[71]:
 
 
 from sklearn.neighbors import KNeighborsRegressor
@@ -747,7 +673,6 @@ knn = KNeighborsRegressor()
 knn1 = knn.fit(X_train1,y_train1) 
 
 
-# In[72]:
 
 
 #knn.fit(train_encoded, y_train[['ConfirmedCases']])
@@ -764,19 +689,16 @@ predict_dt1 = predict_dt1.astype(int)
 #predict_dt1
 
 
-# In[73]:
 
 
 knn1.score(X_test1,y_test1)
 
 
-# In[74]:
 
 
 y_test1
 
 
-# In[75]:
 
 
 from sklearn.svm import SVR
@@ -785,7 +707,6 @@ from sklearn.datasets import make_regression
 from numpy import testing
 
 
-# In[76]:
 
 
 ensemble = BaggingRegressor(base_estimator=SVR(),
@@ -794,27 +715,23 @@ ensemble = BaggingRegressor(base_estimator=SVR(),
                                 random_state=0).fit(X_train1, y_train1.values.ravel())
 
 
-# In[77]:
 
 
 svr = SVR()
 svr.fit(X_train1, y_train1.values.ravel())
 
 
-# In[78]:
 
 
 #svr.score(X_test1,y_test1)
 svr.predict(X_test1)
 
 
-# In[79]:
 
 
 y_test1
 
 
-# In[80]:
 
 
 dt = DecisionTreeRegressor()
@@ -822,13 +739,11 @@ dt.fit(X_train1, y_train1.values.ravel())
 dt.score(X_test1,y_test1)
 
 
-# In[81]:
 
 
 ensemble.score(X_test1, y_test1)
 
 
-# In[82]:
 
 
 def test_bootstrap_features():
@@ -846,7 +761,6 @@ def test_bootstrap_features():
     return ensemble
 
 
-# In[83]:
 
 
 for features in ensemble.estimators_features_:
@@ -861,32 +775,27 @@ for features in ensemble.estimators_features_:
         assert_greater(boston.data.shape[1], np.unique(features).shape[0]) 
 
 
-# In[85]:
 
 
 np.testing.assert_array_equal
 
 
-# In[86]:
 
 
 model=test_bootstrap_features()
 
 
-# In[87]:
 
 
 model.get_params
 
 
-# In[88]:
 
 
 Ridge = linear_model.Ridge()
 Ridge.fit(X_train1,y_train1)
 
 
-# In[89]:
 
 
 Ridge.score(X_train1,y_train1)

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,20 +19,17 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 get_ipython().system('pip install -i https://test.pypi.org/simple/ supportlib')
 import supportlib.gettingdata as getdata
 
 
-# In[3]:
 
 
 print(os.listdir('/kaggle/input'))
 
 
-# In[4]:
 
 
 import pandas as pd
@@ -54,13 +50,11 @@ import torchvision.models as models
 df = pd.read_csv('../input/train_v2.csv')
 
 
-# In[5]:
 
 
 df.head(10)
 
 
-# In[6]:
 
 
 tags = df['tags']
@@ -69,7 +63,6 @@ mlb = MultiLabelBinarizer()
 y_train = mlb.fit_transform(tags)
 
 
-# In[7]:
 
 
 im_size = 256
@@ -80,20 +73,17 @@ valid_size = 0.1
 test_size = 0.2
 
 
-# In[8]:
 
 
 import os
 a = os.listdir('../input/train-tif-v2')
 
 
-# In[9]:
 
 
 from fastai.vision import *
 
 
-# In[10]:
 
 
 class Amazon_dataset(Dataset):
@@ -114,7 +104,6 @@ class Amazon_dataset(Dataset):
         return image,label
 
 
-# In[11]:
 
 
 # Data transform
@@ -134,7 +123,6 @@ inv_normalize = transforms.Normalize(
 amazon_data = Amazon_dataset(img_dir,y_train,transform)
 
 
-# In[12]:
 
 
 import numpy as np
@@ -152,7 +140,6 @@ valid_loader = DataLoader(amazon_data, batch_size=batch_size , sampler=valid_sam
 test_loader = DataLoader(amazon_data, batch_size=batch_size , sampler=test_sampler)
 
 
-# In[13]:
 
 
 image,label = amazon_data[0]
@@ -164,26 +151,22 @@ image =  image.transpose(1,2,0)
 random.randint(0,40479)
 
 
-# In[14]:
 
 
 plt.imshow(image)
 
 
-# In[15]:
 
 
 
 
 
-# In[15]:
 
 
 for i in range(12):
     
 
 
-# In[16]:
 
 
 class Classifier(nn.Module):
@@ -201,7 +184,6 @@ class Classifier(nn.Module):
         return x
 
 
-# In[17]:
 
 
 get_ipython().system('pip install torchsummary')
@@ -211,13 +193,11 @@ classifier = Classifier().to(device)
 summary(classifier,(3,256,256))
 
 
-# In[18]:
 
 
 optimizer = optim.Adam(classifier.parameters(), lr=0.001)
 
 
-# In[19]:
 
 
 ## from sklearn.metrics import f1_score
@@ -249,14 +229,12 @@ for i in range(epoch):
     print('Train Epoch: {} \tf1_score: {:.6f}'.format(epoch , f_score))
 
 
-# In[20]:
 
 
 
 fbeta_score(y_true,y_pred)
 
 
-# In[21]:
 
 
 from sklearn.metrics import fbeta_score
@@ -277,7 +255,6 @@ def get_pred(y_pred):
     return y_pred
 
 
-# In[22]:
 
 
 from sklearn import metrics
@@ -316,7 +293,6 @@ def fbeta_score(y_true, y_pred, beta=2, threshold=0.5, eps=1e-9):
         mul(1 + beta2))
 
 
-# In[23]:
 
 
 def get_fscore(y_true,y_pred):

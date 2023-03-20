@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 DATASET_DIR = '/kaggle/input/understanding_cloud_organization/'
@@ -12,7 +11,6 @@ import cv2
 INTERPOLATION = cv2.INTER_CUBIC
 
 
-# In[2]:
 
 
 import numpy as np
@@ -23,7 +21,6 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 from tqdm import tqdm_notebook
 
 
-# In[3]:
 
 
 def mask2rle(img):
@@ -55,13 +52,11 @@ def rle2mask(mask_rle, shape):
     return img.reshape(shape).T
 
 
-# In[4]:
 
 
 df = pd.read_csv(os.path.join(DATASET_DIR, 'train.csv'))
 
 
-# In[5]:
 
 
 for idx, row in df.iterrows():
@@ -74,25 +69,21 @@ for idx, row in df.iterrows():
         df.at[idx, 'EncodedPixels'] = rle
 
 
-# In[6]:
 
 
 df.to_csv('./train.csv', index=False)
 
 
-# In[7]:
 
 
 cp $DATASET_DIR/sample_submission.csv ./
 
 
-# In[8]:
 
 
 get_ipython().system('mkdir /kaggle/train_images')
 
 
-# In[9]:
 
 
 train_images_dir = os.path.join(DATASET_DIR, 'train_images')
@@ -106,13 +97,11 @@ for image_file in tqdm_notebook(image_files):
     cv2.imwrite(dst, img)
 
 
-# In[10]:
 
 
 get_ipython().system('mkdir /kaggle/test_images')
 
 
-# In[11]:
 
 
 test_images_dir = os.path.join(DATASET_DIR, 'test_images')
@@ -126,31 +115,26 @@ for image_file in tqdm_notebook(image_files):
     cv2.imwrite(dst, img)
 
 
-# In[12]:
 
 
 get_ipython().system('apt install zip')
 
 
-# In[13]:
 
 
 cd /kaggle/train_images
 
 
-# In[14]:
 
 
 get_ipython().system('zip -r -m -1 -q /kaggle/working/train_images.zip *')
 
 
-# In[15]:
 
 
 cd /kaggle/test_images
 
 
-# In[16]:
 
 
 get_ipython().system('zip -r -m -1 -q /kaggle/working/test_images.zip *')

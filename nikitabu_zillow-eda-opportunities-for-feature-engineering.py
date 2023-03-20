@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import pandas            as pd;
@@ -12,7 +11,6 @@ import matplotlib.pyplot as plt;
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[2]:
 
 
 names = ['parcelid', 'air_conditioning_type', 'architectural_style', 
@@ -46,41 +44,35 @@ for c, dtype in zip(prop_df.columns, prop_df.dtypes):
 		prop_df[c] = prop_df[c].astype(np.float32)
 
 
-# In[3]:
 
 
 Inspect what the datasets look like. The training set is only about 3% the size of the test set!
 
 
-# In[4]:
 
 
 #print(prop_df.values.shape) # looking at large shapes seems to break Kaggle Kernel's memory constraints
 train_df.head()
 
 
-# In[5]:
 
 
 #print(prop_df.values.shape)
 prop_df.head()
 
 
-# In[6]:
 
 
 #print(sample_df.values.shape)
 sample_df.head()
 
 
-# In[7]:
 
 
 train_df = pd.merge(train_df, prop_df, on='parcelid', how='left')
 train_df.head()
 
 
-# In[8]:
 
 
 sample_df['parcelid'] = sample_df['ParcelId'];
@@ -90,13 +82,11 @@ sample_df = pd.merge(sample_df, prop_df, on='parcelid', how='left')
 sample_df.head()
 
 
-# In[9]:
 
 
 train_df['abs_logerror'] = abs(train_df['logerror'].values)
 
 
-# In[10]:
 
 
 train_df['transaction_month'] = train_df['transactiondate'].dt.month
@@ -110,7 +100,6 @@ plt.ylabel('Number of Occurrences', fontsize=12)
 plt.show()
 
 
-# In[11]:
 
 
 train_df['transaction_day'] = train_df['transactiondate'].dt.day
@@ -124,13 +113,11 @@ plt.ylabel('Number of Occurrences', fontsize=12)
 plt.show()
 
 
-# In[12]:
 
 
 train_df['parcelid'].value_counts().reset_index()['parcelid'].value_counts()
 
 
-# In[13]:
 
 
 missing_df = prop_df.isnull().sum(axis=0).reset_index()
@@ -149,7 +136,6 @@ ax.set_title("Number of missing values in each column")
 plt.show()
 
 
-# In[14]:
 
 
 print('Correlation with Log Error')
@@ -159,7 +145,6 @@ print('Correlation with Abs Log Error')
 print(train_df.corr(method='pearson').drop(['logerror', 'abs_logerror']).sort_values('abs_logerror', ascending=False)['abs_logerror'].head(10))
 
 
-# In[15]:
 
 
 fig  = plt.figure(figsize=(9, 9), dpi=100);
@@ -185,7 +170,6 @@ axes9.set_xlim(0, 30)
 fig.tight_layout();
 
 
-# In[16]:
 
 
 fig  = plt.figure(figsize=(9, 9), dpi=100);
@@ -211,14 +195,12 @@ axes9.set_xlim(0, 30)
 fig.tight_layout();
 
 
-# In[17]:
 
 
 simple_train_df = train_df.copy()
 simple_train_df = simple_train_df.drop(missing_df[missing_df['missing_count'] > 1500000]['column_name'].values, axis=1)
 
 
-# In[18]:
 
 
 print('Correlation with Log Error')
@@ -228,7 +210,6 @@ print('Correlation with Abs Log Error')
 print(simple_train_df.corr(method='pearson').drop(['logerror', 'abs_logerror']).sort_values('abs_logerror', ascending=False)['abs_logerror'].head(10))
 
 
-# In[19]:
 
 
 fig  = plt.figure(figsize=(9, 9), dpi=100);
@@ -252,7 +233,6 @@ sns.regplot(x='tax_assessed_parcel_value',    y='abs_logerror', data=train_df, a
 fig.tight_layout();
 
 
-# In[20]:
 
 
 fig  = plt.figure(figsize=(9, 9), dpi=100);
@@ -274,7 +254,6 @@ axes4.set_xlim(0, 20)
 fig.tight_layout();
 
 
-# In[21]:
 
 
 fig  = plt.figure(figsize=(9, 6), dpi=100);
@@ -290,7 +269,6 @@ sns.regplot(x='transaction_day',   y='abs_logerror', data=train_df, ax=axes4, sc
 fig.tight_layout();
 
 
-# In[22]:
 
 
 feature = 'air_conditioning_type'
@@ -305,7 +283,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[23]:
 
 
 feature = 'architectural_style'
@@ -320,7 +297,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[24]:
 
 
 feature = 'framing_type'
@@ -335,7 +311,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[25]:
 
 
 feature = 'building_quality'
@@ -350,7 +325,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[26]:
 
 
 feature = 'deck_type'
@@ -365,7 +339,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[27]:
 
 
 feature = 'fips'
@@ -380,7 +353,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[28]:
 
 
 feature = 'num_fireplace'
@@ -395,7 +367,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[29]:
 
 
 feature = 'num_fullbath'
@@ -410,7 +381,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[30]:
 
 
 feature = 'num_garagecar'
@@ -425,7 +395,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[31]:
 
 
 feature = 'hashottuborspa'
@@ -440,7 +409,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[32]:
 
 
 feature = 'heating_type'
@@ -455,7 +423,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[33]:
 
 
 feature = 'num_pool'
@@ -470,7 +437,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[34]:
 
 
 feature = 'pooltypeid10'
@@ -485,7 +451,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[35]:
 
 
 feature = 'pooltypeid2'
@@ -500,7 +465,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[36]:
 
 
 feature = 'pooltypeid7'
@@ -515,7 +479,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[37]:
 
 
 print(len(train_df['region_city'].unique()))
@@ -532,7 +495,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[38]:
 
 
 print(len(train_df['region_county'].unique()))
@@ -549,7 +511,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[39]:
 
 
 print(len(train_df['region_neighborhood'].unique()))
@@ -566,7 +527,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[40]:
 
 
 print(len(train_df['region_zipcode'].unique()))
@@ -583,7 +543,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[41]:
 
 
 feature = 'num_room'
@@ -598,7 +557,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[42]:
 
 
 feature = 'story_type'
@@ -613,7 +571,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[43]:
 
 
 feature = 'num_34_bath'
@@ -628,7 +585,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[44]:
 
 
 feature = 'material_type'
@@ -643,7 +599,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[45]:
 
 
 feature = 'num_unit'
@@ -658,7 +613,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[46]:
 
 
 feature = 'num_stories'
@@ -673,7 +627,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[47]:
 
 
 feature = 'flag_fireplace'
@@ -688,7 +641,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[48]:
 
 
 feature = 'tax_assessment_year'
@@ -703,7 +655,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[49]:
 
 
 feature = 'tax_delinquency_flag'
@@ -718,7 +669,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[50]:
 
 
 feature = 'tax_delinquency_year'
@@ -733,7 +683,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[51]:
 
 
 feature = 'property_land_use_code'
@@ -748,7 +697,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[52]:
 
 
 feature = 'property_land_use_type'
@@ -763,7 +711,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[53]:
 
 
 feature = 'property_zoning_desc'
@@ -778,7 +725,6 @@ sns.barplot(x=feature, y='abs_logerror', data=bar_df2, ax=axes4);
 fig.tight_layout()
 
 
-# In[54]:
 
 
 

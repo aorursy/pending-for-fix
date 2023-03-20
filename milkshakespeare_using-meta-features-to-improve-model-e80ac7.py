@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -41,7 +40,6 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 alt.renderers.enable('notebook')
 
 
-# In[2]:
 
 
 import os
@@ -468,7 +466,6 @@ HTML("".join((
 )))
 
 
-# In[3]:
 
 
 file_folder = '../input'
@@ -483,7 +480,6 @@ magnetic_shielding_tensors = pd.read_csv(f'{file_folder}/magnetic_shielding_tens
 dipole_moments = pd.read_csv(f'{file_folder}/dipole_moments.csv')
 
 
-# In[4]:
 
 
 train = pd.merge(train, scalar_coupling_contributions, how = 'left',
@@ -491,7 +487,6 @@ train = pd.merge(train, scalar_coupling_contributions, how = 'left',
                   right_on = ['molecule_name', 'atom_index_0', 'atom_index_1', 'type'])
 
 
-# In[5]:
 
 
 def map_atom_info(df, atom_idx):
@@ -660,7 +655,6 @@ for f in ['atom_0','atom_1', 'type_0', 'type']:
         test[f] = lbl.transform(list(test[f].values))
 
 
-# In[6]:
 
 
 X = train[good_columns].copy()
@@ -669,21 +663,18 @@ y_fc = train['fc']
 X_test = test[good_columns].copy()
 
 
-# In[7]:
 
 
 edge_index_train = train[['molecule_name', 'atom_index_0','atom_index_1']].copy()
 edge_index_test = test[['molecule_name', 'atom_index_0','atom_index_1']].copy()
 
 
-# In[8]:
 
 
 del train, test
 gc.collect()
 
 
-# In[9]:
 
 
 lbl = LabelEncoder()
@@ -699,14 +690,12 @@ n_f_train.to_csv("n_f_train.csv",index = True)
 n_f_test.to_csv("n_f_test.csv",index = True)
 
 
-# In[10]:
 
 
 n_fold = 3
 folds = KFold(n_splits=n_fold, shuffle=True, random_state=11)
 
 
-# In[11]:
 
 
 params = {'num_leaves': 128,
@@ -728,14 +717,12 @@ result_dict_lgb_oof = train_model_regression(X=X, X_test=X_test, y=y_fc, params=
                                                       verbose=500, early_stopping_rounds=200, n_estimators=1500)
 
 
-# In[12]:
 
 
 X['oof_fc'] = result_dict_lgb_oof['oof']
 X_test['oof_fc'] = result_dict_lgb_oof['prediction']
 
 
-# In[13]:
 
 
 X['molecule_name'] = edge_index_train['molecule_name']
@@ -748,13 +735,11 @@ edge_index_train.set_index('molecule_name').to_csv("edge_index_train.csv", index
 edge_index_test.set_index('molecule_name').to_csv("edge_index_test.csv", index = True)
 
 
-# In[14]:
 
 
 y.to_csv("y.csv", index = False)
 
 
-# In[15]:
 
 
 """"

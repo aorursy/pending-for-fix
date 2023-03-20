@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import os
@@ -19,19 +18,16 @@ import matplotlib.pyplot as plt
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[2]:
 
 
 ls ../input/galaxy-zoo-the-galaxy-challenge/44352/
 
 
-# In[3]:
 
 
 DATA_DIR = '../input/galaxy-zoo-the-galaxy-challenge/44352/'
 
 
-# In[4]:
 
 
 test_image_path = glob.glob(os.path.join(DATA_DIR, 'images_test_rev1/*.jpg'))
@@ -40,26 +36,22 @@ test_image_name.sort()
 len(test_image_name)
 
 
-# In[5]:
 
 
 test_image_name[:5]
 
 
-# In[6]:
 
 
 GalaxyID = [name[:-4] for name in test_image_name]
 GalaxyID[:5]
 
 
-# In[7]:
 
 
 pd.Series(GalaxyID).to_csv('galaxy_id_test.csv', header=False)
 
 
-# In[8]:
 
 
 ORIG_SHAPE = (424,424)
@@ -87,7 +79,6 @@ def get_test_images(shape=IMG_SHAPE, crop_size=CROP_SIZE):
 get_ipython().run_line_magic('time', 'X_test = get_test_images()')
 
 
-# In[9]:
 
 
 ds = xr.Dataset({
@@ -95,13 +86,11 @@ ds = xr.Dataset({
 })
 
 
-# In[10]:
 
 
 get_ipython().run_line_magic('time', "ds.to_netcdf('galaxy_test.nc')")
 
 
-# In[11]:
 
 
 ls -lh galaxy_test.nc

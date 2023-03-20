@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,7 +22,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[2]:
 
 
 import seaborn as sns
@@ -38,7 +36,6 @@ import os
 from typing import Dict, List
 
 
-# In[4]:
 
 
 def visualize_one_image(image_files: List[str]) -> None:
@@ -59,7 +56,6 @@ train_image_path = '/kaggle/input/osic-pulmonary-fibrosis-progression/train'
 train_image_files = sorted(glob.glob(os.path.join(train_image_path, '*', '*.dcm')))
 
 
-# In[5]:
 
 
 list_files=glob.glob(os.path.join(train_image_path, '*','*.dcm'))
@@ -68,38 +64,32 @@ df_im['files']=list_files
 df_im['folder_name']=df_im['files'].apply(lambda x: x.split('/')[-2])
 
 
-# In[6]:
 
 
 df_im['folder_name'].value_counts().hist()
 
 
-# In[7]:
 
 
 df_im['folder_name'].value_counts()
 
 
-# In[8]:
 
 
 visualize_one_image(train_image_files)
 
 
-# In[9]:
 
 
 sorted(train_image_files)
 
 
-# In[45]:
 
 
 import gc
 gc.collect()
 
 
-# In[38]:
 
 
 import pydicom
@@ -137,7 +127,6 @@ for index,filenameDCM in tqdm.tqdm(enumerate(lstFilesDCM)):
         continue
 
 
-# In[39]:
 
 
 def extract_dicom_meta_data(filename: str) -> Dict:
@@ -175,7 +164,6 @@ def extract_dicom_meta_data(filename: str) -> Dict:
     return row
 
 
-# In[40]:
 
 
 meta_data_df = []
@@ -186,26 +174,22 @@ for filename in tqdm.tqdm(train_image_files):
         continue
 
 
-# In[43]:
 
 
 296226
 
 
-# In[32]:
 
 
 meta_data_df = pd.DataFrame.from_dict(meta_data_df)
 meta_data_df.head()
 
 
-# In[35]:
 
 
 meta_data_df.to_csv('meta_data.csv',index=False)
 
 
-# In[ ]:
 
 
 Conclusion:

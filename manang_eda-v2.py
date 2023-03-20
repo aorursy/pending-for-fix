@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np # linear algebra
@@ -19,7 +18,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
         print(os.path.join(dirname, filename))
 
 
-# In[2]:
 
 
 base_path = '/kaggle/input/tensorflow2-question-answering/'
@@ -27,7 +25,6 @@ train_file_name = 'simplified-nq-train.jsonl'
 test_file_name = 'simplified-nq-test.jsonl'
 
 
-# In[3]:
 
 
 def read_data(file_name, num_records = sys.maxsize): # = sys.maxsize
@@ -51,49 +48,41 @@ def read_data(file_name, num_records = sys.maxsize): # = sys.maxsize
     return df
 
 
-# In[4]:
 
 
 get_ipython().run_cell_magic('time', '', 'max_records = 10000\ndf_train = read_data(train_file_name, max_records)\ngc.collect()')
 
 
-# In[5]:
 
 
 df_train.head()
 
 
-# In[6]:
 
 
 df_train['question_text'][0]
 
 
-# In[7]:
 
 
 df_train['document_text'][0:3]
 
 
-# In[8]:
 
 
 df_train['long_answer_candidates'][0][54]
 
 
-# In[9]:
 
 
 df_train['document_text'][0]
 
 
-# In[10]:
 
 
 df_train['annotations'][0]
 
 
-# In[11]:
 
 
 df_train['yes_no_answer'] = [item[0]['yes_no_answer'] for item in df_train['annotations']]
@@ -102,13 +91,11 @@ df_train['short_answers'] = [item[0]['short_answers'] for item in df_train['anno
 df_train['annotation_id'] = [item[0]['annotation_id'] for item in df_train['annotations']]
 
 
-# In[12]:
 
 
 df_train['yes_no_answer'].value_counts()
 
 
-# In[13]:
 
 
 #Short answer
@@ -131,7 +118,6 @@ df_train['short_answer_end'] = end_vals
 # del df_train['short_answers'] #TODO
 
 
-# In[14]:
 
 
 #Long answer
@@ -143,43 +129,36 @@ df_train['long_answer_index'] = [item['candidate_index'] for item in df_train['l
 # del df_train['long_answer'] #TODO
 
 
-# In[15]:
 
 
 df_train.head()
 
 
-# In[16]:
 
 
 df_train.isnull().sum()
 
 
-# In[17]:
 
 
 df_train.head()
 
 
-# In[18]:
 
 
 df_train = df_train[['document_text', 'question_text', 'short_answer_start', 'short_answer_end', 'annotation_id']]
 
 
-# In[19]:
 
 
 df_train.head(1)
 
 
-# In[20]:
 
 
 df_train['document_text'][0].split()[1955:1969]
 
 
-# In[21]:
 
 
 ## HOW TO MODEL THE PROBLEM/architectur
@@ -188,7 +167,6 @@ df_train['document_text'][0].split()[1955:1969]
 #[..., 0,          0,        0,            0,        0,   1,         1,        1,     1,    1,        1,          1,     1,      1      , ...]
 
 
-# In[22]:
 
 
 # TEST -> possible problem (s) !
@@ -198,13 +176,11 @@ df_train['document_text'][0].split()[1955:1969]
 # [..., 1,          1,        1,            0,        0,   1,         1,        1,     1,    0,        0,          1,     1,      1      , ...]
 
 
-# In[23]:
 
 
 df_train['document_text'][0].split()
 
 
-# In[24]:
 
 
 #inputs = [['wikipedia', 'dcoument', 'text', '...'], ['question', 'text', '...']]
@@ -212,7 +188,6 @@ inputs = [['wikipedia', 'dcoument', 'text', '...']]
 outputs = [0,       1, 1, '...']
 
 
-# In[25]:
 
 
 # ### This code works for individual samples, now we will try to focus on having the same for the entire dataset
@@ -280,7 +255,6 @@ outputs = [0,       1, 1, '...']
 # # history = model.fit(x_train, y_train, epochs=5)
 
 
-# In[26]:
 
 
 # for all the samples -> continue from here
@@ -291,7 +265,6 @@ short_answer_end = df_train['short_answer_end']
 que_text = df_train['question_text']
 
 
-# In[27]:
 
 
 
@@ -302,7 +275,6 @@ max_len_input = max_len_document + max_len_que
 max_len_input = 1000 ##### TEMP
 
 
-# In[28]:
 
 
 
@@ -320,13 +292,11 @@ for index in short_answer_end.index:
     output_labels.append(output_label)
 
 
-# In[ ]:
 
 
 
 
 
-# In[29]:
 
 
 from keras.preprocessing import text
@@ -338,13 +308,11 @@ def train_tokenizer(train_data):
 tokenizer = train_tokenizer(doc_text[0:min(800, doc_text.shape[0])])
 
 
-# In[30]:
 
 
 doc_text.shape[0]
 
 
-# In[31]:
 
 
 # from keras.preprocessing.sequence import pad_sequences
@@ -370,32 +338,27 @@ doc_text.shape[0]
 # que_text_lst = pad_sequences(que_text_lst, maxlen=max_len_que, dtype=object, padding='post', truncating='post', value='')
 
 
-# In[32]:
 
 
 get_ipython().run_cell_magic('time', '', "\nfrom keras.preprocessing.sequence import pad_sequences\n\ndoc_text_lst = []\n\nfor item in doc_text:\n    doc_text_lst.append(item.split())\n\nque_text_lst = []\n\nfor item in que_text:\n    que_text_lst.append(item.split())\n    \ndoc_text_lst = pad_sequences(doc_text_lst, maxlen=max_len_document, dtype=object, padding='post', truncating='post', value='')\nque_text_lst = pad_sequences(que_text_lst, maxlen=max_len_que, dtype=object, padding='post', truncating='post', value='')")
 
 
-# In[33]:
 
 
 get_ipython().run_cell_magic('time', '', "\ndoc_text_chars = []\nfor i in range(doc_text_lst.shape[0]):\n    tmp = tokenizer.texts_to_sequences(doc_text_lst[i])\n    doc_text_chars.append(pad_sequences(tmp, maxlen=max_len_word, padding='post', truncating='post', value=0))")
 
 
-# In[34]:
 
 
 get_ipython().run_cell_magic('time', '', "que_text_chars = []\nfor i in range(que_text_lst.shape[0]):\n    tmp = tokenizer.texts_to_sequences(que_text_lst[i])\n    que_text_chars.append(pad_sequences(tmp, maxlen=max_len_word, padding='post', truncating='post', value=0))")
 
 
-# In[35]:
 
 
 doc_text_lst = None
 que_text_lst = None
 
 
-# In[36]:
 
 
 x_train = np.array(doc_text_chars)
@@ -411,7 +374,6 @@ x_train = np.array(doc_text_chars)
 # x_train = np.asarray(lst)
 
 
-# In[37]:
 
 
 y_train = []
@@ -421,25 +383,21 @@ y_train = np.asarray(y_train)
 # history = model.fit(x_train, y_train, epochs=5)
 
 
-# In[38]:
 
 
 y_train.shape
 
 
-# In[39]:
 
 
 x_train.shape
 
 
-# In[40]:
 
 
 get_ipython().run_cell_magic('time', '', "\nfrom keras import losses\ndoc_input = keras.Input(shape=(max_len_input, max_len_word), name='doc_text')  #TODO -> make the length of the sequences variable\n\nbody_features = doc_input\n\n# body_features = layers.Reshape((max_len_input, 40))(body_features)\n\n#Embed each character in the text into a 64-dimensional vector\nbody_features = layers.Embedding(50, 10)(body_features)\n\nbody_features = layers.TimeDistributed(layers.LSTM(25))(body_features)\n\nshort_answer = layers.TimeDistributed(layers.Dense(1, activation='sigmoid', name='short_answer'))(body_features)\n# Instantiate an end-to-end model predicting both priority and department\nmodel = keras.Model(inputs=doc_input, outputs=short_answer, name='qa_model')\nmodel.compile(loss= losses.binary_crossentropy\n, optimizer=keras.optimizers.RMSprop(), metrics=['accuracy'])\nmodel.summary()\n\nhistory = model.fit(x_train, y_train, epochs=5, validation_split = 0.2)\n\n# model.summary()")
 
 
-# In[41]:
 
 
 # test_scores = model.evaluate(x_test, y_test, verbose=2)
@@ -447,20 +405,17 @@ get_ipython().run_cell_magic('time', '', "\nfrom keras import losses\ndoc_input 
 # print('Test accuracy:', test_scores[1])
 
 
-# In[42]:
 
 
 x_test = x_train # for now
 test_scores = model.predict(x_test, verbose=2)
 
 
-# In[43]:
 
 
 test_scores
 
 
-# In[44]:
 
 
 for i in test_scores[0]:
@@ -468,7 +423,6 @@ for i in test_scores[0]:
         print(i[0])
 
 
-# In[45]:
 
 
 def get_short_answer(single_output):
@@ -488,13 +442,11 @@ def get_short_answer(single_output):
     return answer_start, answer_end
 
 
-# In[46]:
 
 
 test_scores.shape
 
 
-# In[47]:
 
 
 for item in test_scores:
@@ -502,7 +454,6 @@ for item in test_scores:
     print(answer_start, answer_end)
 
 
-# In[48]:
 
 
 short_answers = []
@@ -513,7 +464,6 @@ for annotation_id in df_test['annotation_id']:
     example_id.append('-' + str(annotation_id) + '_long')
 
 
-# In[49]:
 
 
 -7853356005143141653_short,YES

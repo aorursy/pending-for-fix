@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,13 +19,11 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 ls '../input/aptos2019-blindness-detection/'
 
 
-# In[3]:
 
 
 DATA_DIR = '../input/aptos2019-blindness-detection/'
@@ -40,13 +37,11 @@ print(df_train.head())
 df_test.head()
 
 
-# In[4]:
 
 
 os.listdir(DATA_DIR+'train_images')
 
 
-# In[5]:
 
 
 import numpy as np
@@ -64,7 +59,6 @@ DATA_DIR = '../input/aptos2019-blindness-detection/'
 MODEL_DIR = '../input/'
 
 
-# In[6]:
 
 
 # class that loads the Train/Validation dataset
@@ -112,7 +106,6 @@ class DRDatasetTrain(Dataset):
         return (img_tensor, label)# return the image and label as a dictionary
 
 
-# In[7]:
 
 
 # class that loads the Test dataset
@@ -142,7 +135,6 @@ class DRDatasetTest(Dataset):
         return {'image': img_tensor} # return the image as a dictionary
 
 
-# In[8]:
 
 
 # DataLoader class is used to return data from the dataset in a controlled manner
@@ -153,7 +145,6 @@ trainloader = torch.utils.data.DataLoader(DRDatasetTrain(), batch_size=32, drop_
 testloader = torch.utils.data.DataLoader(DRDatasetTest(), batch_size=32, drop_last=False, shuffle=False)
 
 
-# In[9]:
 
 
 # make an iterator out of trainloader and use next() to get a batch(batch_size) of data
@@ -162,13 +153,11 @@ print(images.shape)
 print(labels)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 

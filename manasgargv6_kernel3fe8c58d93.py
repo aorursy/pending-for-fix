@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,7 +21,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import xgboost as xgb
@@ -31,41 +29,35 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression, BayesianRidge
 
 
-# In[3]:
 
 
 train = pd.read_csv('/kaggle/input/covid19-global-forecasting-week-2/train.csv')
 test = pd.read_csv('/kaggle/input/covid19-global-forecasting-week-2/test.csv')
 
 
-# In[4]:
 
 
 total = train.isnull().sum()
 print(total)
 
 
-# In[5]:
 
 
 k = train[train['Province_State'].isna()]
 print(k)
 
 
-# In[6]:
 
 
 total1 = test.isnull().sum()
 print(total1)
 
 
-# In[ ]:
 
 
 
 
 
-# In[7]:
 
 
 train.insert(6,'Year',"0")
@@ -79,20 +71,17 @@ test.insert(7,'Quarter',"0")
 
 
 
-# In[8]:
 
 
 print(train.columns)
 
 
-# In[9]:
 
 
 train["Date"] = train["Date"].apply(lambda x: datetime.strptime(x,'%Y-%m-%d'))
 test["Date"] = test["Date"].apply(lambda x: datetime.strptime(x,'%Y-%m-%d'))
 
 
-# In[10]:
 
 
 dataset = [train,test]
@@ -104,7 +93,6 @@ for data in dataset:
     data['Quarter'] = data['Date'].dt.quarter
 
 
-# In[11]:
 
 
 train.insert(10,"TS",0)
@@ -115,7 +103,6 @@ train["TS"]  = train["TS"].astype(int)
 print(train['TS'])
 
 
-# In[12]:
 
 
 test["TS"] = test["Date"].apply(lambda x: x.timestamp())
@@ -124,21 +111,18 @@ test["TS"]  = test["TS"].astype(int)
 print(type(test['TS'][1]))
 
 
-# In[13]:
 
 
 print(train.columns)
 print(test.columns)
 
 
-# In[14]:
 
 
 tt = train.groupby(['Country_Region'])['ConfirmedCases'].sum().sort_values(ascending=False)
 #print('njfdjbfjs')
 
 
-# In[15]:
 
 
 import matplotlib.pyplot as plt
@@ -146,26 +130,22 @@ print(type(tt))
 print(tt[:,0])
 
 
-# In[16]:
 
 
 tt.plot(kind='hist')
 
 
-# In[17]:
 
 
 train.groupby(['Country_Region'])['Fatalities'].sum().sort_values(ascending=False)
 
 
-# In[18]:
 
 
 train[train['Province_State'].isna()==True].groupby(['Country_Region']).sum().sort_values(by='ConfirmedCases',ascending=False)
 #train[train['Province/State'].isna()==False]['Country/Region'].unique())
 
 
-# In[19]:
 
 
 map_state = {'US':'United States',
@@ -182,13 +162,11 @@ map_state = {'US':'United States',
             }
 
 
-# In[20]:
 
 
 train.loc[train['Country_Region']=='US',['Country_Region']]='United States'
 
 
-# In[21]:
 
 
 data = [train,test]
@@ -216,7 +194,6 @@ for dataset in data:
 
 
 
-# In[22]:
 
 
 countries = [
@@ -420,7 +397,6 @@ countries = [
 ]
 
 
-# In[23]:
 
 
 from collections import defaultdict 
@@ -444,21 +420,18 @@ for i in countries:
 tu = set(tu)
 
 
-# In[24]:
 
 
 #print(conti)
 print(train.loc[train['Country_Region']=='United States'])
 
 
-# In[25]:
 
 
 print(train.columns)
 print(test.columns)
 
 
-# In[26]:
 
 
 ty=[]
@@ -469,20 +442,17 @@ for i in range(0,len(train)):
 ty = set(ty)
 
 
-# In[27]:
 
 
 print(ty-tu)
 
 
-# In[28]:
 
 
 train.insert(11,'Continent','')
 test.insert(9,'Continent','')
 
 
-# In[29]:
 
 
 
@@ -491,25 +461,21 @@ for dataset in data:
     dataset['Continent'] = dataset['Country_Region'].map(conti)
 
 
-# In[30]:
 
 
 print(train[train['Continent']=="apple"]['Country_Region'].unique())
 
 
-# In[31]:
 
 
 print(test['Continent'].unique())
 
 
-# In[ ]:
 
 
 
 
 
-# In[32]:
 
 
 data = [train,test]
@@ -517,26 +483,22 @@ for dataset in data:
     dataset['Province_State'] = dataset['Province_State'].fillna(dataset['Country_Region'])
 
 
-# In[33]:
 
 
 print(train.isnull().sum())
 
 
-# In[34]:
 
 
 print(train.isnull().sum())
 
 
-# In[35]:
 
 
 print(train.columns)
 print(test.columns)
 
 
-# In[36]:
 
 
 '''X_train = train[['Province_State','Country_Region','Quarter','Year','Month','Day','Quarter','TS']]
@@ -546,13 +508,11 @@ Y_train1 = train[['Fatalities']]
 '''
 
 
-# In[37]:
 
 
 get_ipython().system('pip install pycountry-convert')
 
 
-# In[38]:
 
 
 '''import pycountry_convert as pc
@@ -562,7 +522,6 @@ print(pycountry.countries)
 '''
 
 
-# In[39]:
 
 
 '''
@@ -572,7 +531,6 @@ print(rr)
 '''
 
 
-# In[40]:
 
 
 '''
@@ -586,7 +544,6 @@ for t in dataset:
    '''     
 
 
-# In[41]:
 
 
 X_train = train.iloc[:,[1, 2,11,6,7,8,9,10]].values
@@ -595,13 +552,11 @@ Y_train = train.iloc[:,[4]].values
 Y_train1 = train.iloc[:,[5]].values
 
 
-# In[42]:
 
 
 print(X_train)
 
 
-# In[43]:
 
 
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
@@ -622,13 +577,11 @@ X_train = ct.fit_transform(X_train).toarray()
 X_test = ct.fit_transform(X_test).toarray()
 
 
-# In[44]:
 
 
 print(X_train.shape)
 
 
-# In[45]:
 
 
 from sklearn.tree import DecisionTreeRegressor
@@ -646,7 +599,6 @@ y_pred1= regressor.predict(X_test)
 
 
 
-# In[46]:
 
 
 y_pred = y_pred.astype(int)
@@ -656,7 +608,6 @@ print(y_pred)
 print(y_pred1)
 
 
-# In[47]:
 
 
 for i in range(0,len(y_pred1)):
@@ -664,7 +615,6 @@ for i in range(0,len(y_pred1)):
         print(i," ",y_pred[i]," ",y_pred1[i])
 
 
-# In[48]:
 
 
 '''
@@ -675,7 +625,6 @@ print(acc_random_forest)
 '''
 
 
-# In[49]:
 
 
 import csv
@@ -692,7 +641,6 @@ with open("submission.csv", 'w') as csvfile:
       csvwriter.writerow([test['ForecastId'][i],y_pred[i],y_pred1[i]])
 
 
-# In[50]:
 
 
 '''latest_grouped = train.groupby('Province_State')['ConfirmedCases', 'Fatalities'].sum().reset_index()

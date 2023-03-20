@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 from kaggle.competitions import twosigmanews
@@ -28,13 +26,11 @@ from kaggle.competitions import twosigmanews
 env = twosigmanews.make_env()
 
 
-# In[3]:
 
 
 (market_train_df, news_train_df) = env.get_training_data()
 
 
-# In[4]:
 
 
 # inspired by
@@ -65,19 +61,16 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import StandardScaler
 
 
-# In[5]:
 
 
 print(f'{market_train_df.shape[0]} samples and {market_train_df.shape[1]} features in the training market dataset.')
 
 
-# In[6]:
 
 
 market_train_df.isna().sum()
 
 
-# In[7]:
 
 
 # Chrono sort data
@@ -92,7 +85,6 @@ for i in range(len(column_raw)):
     market_train_fill[column_market[i]] = market_train_fill[column_market[i]].fillna(market_train_fill[column_raw[i]])
 
 
-# In[8]:
 
 
 data = []
@@ -112,13 +104,11 @@ layout = go.Layout(dict(title = "Closing prices of 10 random assets",
 py.iplot(dict(data=data, layout=layout), filename='basic-line')
 
 
-# In[9]:
 
 
 market_train_df['close'].head() 
 
 
-# In[10]:
 
 
 # ako na quint reg - chcel som vidieť ako reaguju lacné a drahšie, teda menšie spoločnosti a top.
@@ -142,20 +132,17 @@ layout = go.Layout(dict(title = "Trends of closing prices by quantiles",
 py.iplot(dict(data=data, layout=layout), filename='basic-line')
 
 
-# In[11]:
 
 
 price_df.head()
 
 
-# In[12]:
 
 
 outliers = market_train_df[(market_train_df['returnsOpenNextMktres10'] > 1) |  (market_train_df['returnsOpenNextMktres10'] < -1)]
 outliers['returnsOpenNextMktres10'].describe()
 
 
-# In[13]:
 
 
 # returnsOpenNextMktres10 data without outliers
@@ -163,7 +150,6 @@ woOutliers = market_train_df[(market_train_df['returnsOpenNextMktres10'] < 1) & 
 woOutliers['returnsOpenNextMktres10'].describe()
 
 
-# In[14]:
 
 
 # Create a trace
@@ -177,7 +163,6 @@ data = [trace1]
 py.iplot(dict(data=data, layout=layout), filename='basic-line')
 
 
-# In[15]:
 
 
 # zaviesť istú metriku, pre detekovanie
@@ -188,7 +173,6 @@ grouped = market_train_df.groupby('time').agg({'price_diff': ['std', 'min']}).re
 print(f"Average standard deviation of price change within a day in {grouped['price_diff']['std'].mean():.4f}.")
 
 
-# In[16]:
 
 
 # Vizualizácia nášho problému
@@ -226,33 +210,28 @@ fig = go.Figure(data=data, layout=layout)
 py.iplot(fig,filename='scatter2010')
 
 
-# In[17]:
 
 
 market_train_df.sort_values('price_diff')[:10]
 
 
-# In[18]:
 
 
 market_train_df['close_to_open'] =  np.abs(market_train_df['close'] / market_train_df['open'])
 
 
-# In[19]:
 
 
 print(f"In {(market_train_df['close_to_open'] >= 1.2).sum()} lines price increased by 20% or more.")
 print(f"In {(market_train_df['close_to_open'] <= 0.8).sum()} lines price decreased by 20% or more.")
 
 
-# In[20]:
 
 
 print(f"In {(market_train_df['close_to_open'] >= 2).sum()} lines price increased by 100% or more.")
 print(f"In {(market_train_df['close_to_open'] <= 0.5).sum()} lines price decreased by 100% or more.")
 
 
-# In[21]:
 
 
 market_train_df['assetName_mean_open'] = market_train_df.groupby('assetName')['open'].transform('mean')
@@ -272,7 +251,6 @@ for i, row in market_train_df.loc[market_train_df['close_to_open'] <= 0.5].iterr
         market_train_df.iloc[i,4] = row['assetName_mean_close']
 
 
-# In[22]:
 
 
 market_train_df['price_diff'] = market_train_df['close'] - market_train_df['open']
@@ -311,7 +289,6 @@ fig = go.Figure(data=data, layout=layout)
 py.iplot(fig,filename='scatter2010')
 
 
-# In[23]:
 
 
 data = []
@@ -335,7 +312,6 @@ layout = go.Layout(dict(title = "Trends of returnsOpenNextMktres10 by quantiles"
 py.iplot(dict(data=data, layout=layout), filename='basic-line')
 
 
-# In[24]:
 
 
 data = []
@@ -357,7 +333,6 @@ layout = go.Layout(dict(title = "Treand of returnsOpenNextMktres10 mean",
 py.iplot(dict(data=data, layout=layout), filename='basic-line')
 
 
-# In[25]:
 
 
 data = []
@@ -381,13 +356,11 @@ layout = go.Layout(dict(title = "Treand of mean values",
 py.iplot(dict(data=data, layout=layout), filename='basic-line')
 
 
-# In[26]:
 
 
 print(f'{news_train_df.shape[0]} samples and {news_train_df.shape[1]} features in the training news dataset.')
 
 
-# In[27]:
 
 
 text = ' '.join(news_train_df['headline'].str.lower().values[-1000000:])
@@ -400,20 +373,17 @@ plt.axis("off")
 plt.show()
 
 
-# In[28]:
 
 
 news_train_df['sentence_word_count'] =  news_train_df['wordCount'] / news_train_df['sentenceCount']
 plt.boxplot(news_train_df['sentence_word_count'][news_train_df['sentence_word_count'] < 40]);
 
 
-# In[29]:
 
 
 provider_count = news_train_df.groupby('provider')['sourceId'].count()
 
 
-# In[30]:
 
 
 provider_sort = provider_count.sort_values(ascending= False)
@@ -425,14 +395,12 @@ plt.gca().invert_yaxis()
 del provider_count
 
 
-# In[31]:
 
 
 asset_name = news_train_df.groupby('assetName')['sourceId'].count()
 print('Total number of assets: ',news_train_df['assetName'].nunique())
 
 
-# In[32]:
 
 
 asset_name = asset_name.sort_values(ascending=False)
@@ -442,7 +410,6 @@ plt.xlabel('Count')
 plt.title('Top 10 assets news')
 
 
-# In[33]:
 
 
 # top mentioned by sentiment
@@ -453,7 +420,6 @@ for i, j in zip([-1, 0, 1], ['negative', 'neutral', 'positive']):
     print('')
 
 
-# In[34]:
 
 
 # Function to remove outliers
@@ -468,7 +434,6 @@ def remove_outliers(data_frame, column_list, low=0.02, high=0.98):
     return temp_frame
 
 
-# In[35]:
 
 
 # Remove outlier
@@ -476,7 +441,6 @@ columns_outlier = ['takeSequence', 'bodySize', 'sentenceCount', 'wordCount', 'se
 news_rmv_outlier = remove_outliers(news_train_df, columns_outlier)
 
 
-# In[36]:
 
 
 # Plot correlation
@@ -487,25 +451,21 @@ sns.heatmap(news_rmv_outlier[columns_corr].astype(float).corr(), linewidths=0.1,
 plt.title('Pair-wise correlation')
 
 
-# In[37]:
 
 
 
 
 
-# In[37]:
 
 
 
 
 
-# In[37]:
 
 
 market_train_df.head()
 
 
-# In[38]:
 
 
 class LinearRegressionGD(object):
@@ -533,19 +493,16 @@ class LinearRegressionGD(object):
         return self.net_input(X)
 
 
-# In[39]:
 
 
 X = market_train_df[]
 
 
-# In[40]:
 
 
 
 
 
-# In[40]:
 
 
 

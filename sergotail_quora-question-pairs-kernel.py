@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,13 +19,11 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 https://github.com/sergotail/technosphere_homeworks/blob/master/DA_Intro/hw_4/hw4_Pronin.ipynb
 
 
-# In[3]:
 
 
 

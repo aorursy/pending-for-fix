@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().run_line_magic('load_ext', 'autoreload')
@@ -10,7 +9,6 @@ get_ipython().run_line_magic('autoreload', '2')
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[2]:
 
 
 
@@ -26,14 +24,12 @@ from sklearn import metrics
 from sklearn.preprocessing import LabelEncoder
 
 
-# In[3]:
 
 
 PATH = "../input"
 get_ipython().system('ls {PATH}')
 
 
-# In[4]:
 
 
 df_raw = pd.read_csv(f'{PATH}/X_train.csv', low_memory=False)
@@ -42,13 +38,11 @@ df_test = pd.read_csv(f'{PATH}/X_test.csv', low_memory=False)
 sub = pd.read_csv(f'{PATH}/sample_submission.csv')
 
 
-# In[5]:
 
 
 df_raw.shape,df_test.shape
 
 
-# In[6]:
 
 
 #https://www.kaggle.com/prashantkikani/help-humanity-by-helping-robots
@@ -82,25 +76,21 @@ def fe(data):
     return df
 
 
-# In[7]:
 
 
 get_ipython().run_cell_magic('time', '', 'df_train = fe(df_raw)\ndf_test = fe(df_test)')
 
 
-# In[8]:
 
 
 df_train.shape, df_test.shape
 
 
-# In[9]:
 
 
 df_train.head()
 
 
-# In[10]:
 
 
 df_train.fillna(0, inplace = True)
@@ -111,14 +101,12 @@ df_test.replace(-np.inf, 0, inplace = True)
 df_test.replace(np.inf, 0, inplace = True)
 
 
-# In[11]:
 
 
 le = LabelEncoder()
 y_raw['surface'] = le.fit_transform(y_raw['surface'])
 
 
-# In[12]:
 
 
 def display_all(df):
@@ -127,7 +115,6 @@ def display_all(df):
             display(df)
 
 
-# In[13]:
 
 
 from sklearn.metrics import confusion_matrix
@@ -135,7 +122,6 @@ from sklearn.metrics import confusion_matrix
 # cm
 
 
-# In[14]:
 
 
 def split_vals(a,n): return a[:n].copy(), a[n:].copy()
@@ -149,19 +135,16 @@ y_train, y_valid = split_vals(y_raw, n_trn)
 X_train.shape, y_train.shape, X_valid.shape,df_train.shape,y_raw.shape
 
 
-# In[15]:
 
 
 X_test = df_test
 
 
-# In[16]:
 
 
 X_train.shape, y_train.shape, X_valid.shape, y_valid.shape,X_test.shape, df_.shape, y.shape
 
 
-# In[17]:
 
 
 def create_download_link(title = "Download CSV file", filename = "data.csv"):  
@@ -170,7 +153,6 @@ def create_download_link(title = "Download CSV file", filename = "data.csv"):
     return HTML(html)
 
 
-# In[18]:
 
 
 #def rmse(x,y): return math.sqrt(((x-y)**2).mean())
@@ -181,7 +163,6 @@ def print_score(m):
     print(res)
 
 
-# In[19]:
 
 
 def k_folds(X, y, X_test, k,n_est,min_leaf,max_feat):
@@ -201,13 +182,11 @@ def k_folds(X, y, X_test, k,n_est,min_leaf,max_feat):
     return y_oof, y_test 
 
 
-# In[20]:
 
 
 y_oof, y_test = k_folds(X_train, y_raw['surface]', X_test, k= 50,n_est=500,min_leaf=1,max_feat='auto')
 
 
-# In[21]:
 
 
 from IPython.display import HTML
@@ -219,13 +198,11 @@ submission.head(10)
 create_download_link(filename='submission1.csv')
 
 
-# In[22]:
 
 
 y_oof, y_test = k_folds(X_train, y_raw['surface'], X_test, k= 50,n_est=500,min_leaf=1,max_feat='sqrt')
 
 
-# In[23]:
 
 
 y_test = np.argmax(y_test, axis=1)
@@ -236,7 +213,6 @@ submission.head(10)
 create_download_link(filename='submission2.csv')
 
 
-# In[24]:
 
 
 def k_folds_gbm(X, y, X_test, k,n_est):
@@ -262,7 +238,6 @@ from xgboost import XGBClassifier
 # print_score(m)
 
 
-# In[25]:
 
 
 y_oof, y_test = k_folds_gbm(X_train, y_raw['surface'], X_test, k= 50,n_est=500)
@@ -271,7 +246,6 @@ y_oof, y_test = k_folds_gbm(X_train, y_raw['surface'], X_test, k= 50,n_est=500)
 # m.score(df,y)
 
 
-# In[26]:
 
 
 y_test = np.argmax(y_test, axis=1)
@@ -282,7 +256,6 @@ submission.head(10)
 create_download_link(filename='submission3.csv')
 
 
-# In[27]:
 
 
 

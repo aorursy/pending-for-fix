@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,13 +19,11 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 pip install --upgrade git+https://github.com/pytorch/text
 
 
-# In[3]:
 
 
 train = pd.read_csv("../input/train.csv")
@@ -36,7 +33,6 @@ test = pd.read_csv("../input/test.csv")
 print(test[:2])
 
 
-# In[4]:
 
 
 ##### Now let's create a wordcloud to get a better understanding of our corpus
@@ -53,27 +49,23 @@ def show_wordcloud(data, title = None):
     plt.show()
 
 
-# In[5]:
 
 
 show_wordcloud(train['review'])
 
 
-# In[6]:
 
 
 from string import punctuation
 print(punctuation)
 
 
-# In[7]:
 
 
 all_text = ''.join([c for c in train if c not in punctuation])
 print ('Number of reviews :', len(train))
 
 
-# In[8]:
 
 
 word_list=[]
@@ -87,7 +79,6 @@ for sentence in list_question:
 word_list=[word for sentence in list(train["review"]) for word in sentence.split()]
 
 
-# In[9]:
 
 
 import re
@@ -97,7 +88,6 @@ from collections import Counter
 frequency=Counter(word_list)
 
 
-# In[10]:
 
 
 import matplotlib.pyplot as plt
@@ -118,7 +108,6 @@ plt.xticks(indexes + width * 0.05, labels)
 plt.show()
 
 
-# In[11]:
 
 
 ### Remove Punctuations and change words to lower case
@@ -130,7 +119,6 @@ def remove_punctuations(text):
 train["review_punctuation_removed"]= train["review"].apply(remove_punctuations)
 
 
-# In[12]:
 
 
 ### Remove StopWords
@@ -144,7 +132,6 @@ def remove_stopwords(text):
 train["review_stopword_removed"]=train["review_punctuation_removed"].apply(remove_stopwords)
 
 
-# In[13]:
 
 
 ### Stemming of Words
@@ -157,7 +144,6 @@ def Stemming(text):
 train["review_stemmed"]=train["review_stopword_removed"].apply(Stemming)
 
 
-# In[14]:
 
 
 ### Recreating the sentence
@@ -168,7 +154,6 @@ def Recreate(text):
 train["modified_sentence"]= train["review_stemmed"].apply(Recreate)
 
 
-# In[15]:
 
 
 def Cleaning(text):
@@ -181,7 +166,6 @@ def Cleaning(text):
     
 
 
-# In[16]:
 
 
 column_name = "Id"
@@ -190,7 +174,6 @@ dummies = pd.get_dummies(df[column_name], prefix = column_name)
 dummies.head()
 
 
-# In[17]:
 
 
 def create_dummies(df, column_name):
@@ -203,14 +186,12 @@ test = create_dummies(test, "Id")
 train.head()
 
 
-# In[18]:
 
 
 from google.cloud import bigquery
 client = bigquery.Client()
 
 
-# In[19]:
 
 
 print(f'Number of training examples: {len(train)}')
@@ -218,14 +199,12 @@ test = pd.read_csv("../input/test.csv")
 print(f'Number of testing examples: {len(test)}')
 
 
-# In[20]:
 
 
 valid = np.split(df, [3000], axis=1)
 print(valid)
 
 
-# In[21]:
 
 
 print(f'Number of training examples: {len(train)}')
@@ -233,7 +212,6 @@ print(f'Number of validation examples: {len(valid)}')
 print(f'Number of testing examples: {len(test)}')
 
 
-# In[22]:
 
 
 import torch
@@ -248,7 +226,6 @@ review = data.Field(tokenize = 'spacy')
 sentiment = data.LabelField(dtype = torch.int)
 
 
-# In[23]:
 
 
 MAX_VOCAB_SIZE = 25_000
@@ -259,19 +236,16 @@ print(f"Unique tokens in review vocabulary: {len(review.vocab)}")
 print(f"Unique tokens in sentiment vocabulary: {len(sentiment.vocab)}")
 
 
-# In[24]:
 
 
 print(review.vocab.freqs.most_common(20))
 
 
-# In[25]:
 
 
 print(sentiment.vocab.stoi)
 
 
-# In[26]:
 
 
 import torch.nn as nn
@@ -279,19 +253,16 @@ import torch.nn.functional as F
 criterion = nn.BCEWithLogitsLoss()
 
 
-# In[27]:
 
 
 pip install --upgrade git+https://github.com/pytorch/text
 
 
-# In[28]:
 
 
 #with CNN
 
 
-# In[29]:
 
 
 import torch
@@ -312,7 +283,6 @@ train_data, test_data = datasets.IMDB.splits(review, sentiment)
 train_data, valid_data = train_data.split(random_state = random.seed(SEED))
 
 
-# In[30]:
 
 
 MAX_VOCAB_SIZE = 25_000
@@ -325,7 +295,6 @@ review.build_vocab(train_data,
 sentiment.build_vocab(train_data)
 
 
-# In[31]:
 
 
 import torch
@@ -339,7 +308,6 @@ train_iterator, valid_iterator, test_iterator = BucketIterator.splits((train_dat
  repeat=False) # we pass repeat=False because we want to wrap this Iterator layer
 
 
-# In[32]:
 
 
 import torch.nn as nn
@@ -404,7 +372,6 @@ class CNN(nn.Module):
         return self.fc(cat)
 
 
-# In[33]:
 
 
 class CNN(nn.Module):
@@ -457,7 +424,6 @@ class CNN(nn.Module):
         return self.fc(cat)
 
 
-# In[34]:
 
 
 INPUT_DIM = len(review.vocab)
@@ -471,7 +437,6 @@ PAD_IDX = review.vocab.stoi[review.pad_token]
 model = CNN(INPUT_DIM, EMBEDDING_DIM, N_FILTERS, FILTER_SIZES, OUTPUT_DIM, DROPOUT, PAD_IDX)
 
 
-# In[35]:
 
 
 def count_parameters(model):
@@ -480,7 +445,6 @@ def count_parameters(model):
 print(f'The model has {count_parameters(model):,} trainable parameters')
 
 
-# In[36]:
 
 
 pretrained_embeddings = review.vocab.vectors
@@ -488,7 +452,6 @@ pretrained_embeddings = review.vocab.vectors
 model.embedding.weight.data.copy_(pretrained_embeddings)
 
 
-# In[37]:
 
 
 
@@ -506,7 +469,6 @@ model.embedding.weight.data[UNK_IDX] = torch.zeros(EMBEDDING_DIM)
 model.embedding.weight.data[PAD_IDX] = torch.zeros(EMBEDDING_DIM)
 
 
-# In[38]:
 
 
 import torch.optim as optim
@@ -519,7 +481,6 @@ model = model.to(device)
 criterion = criterion.to(device)
 
 
-# In[39]:
 
 
 def binary_accuracy(preds, y):
@@ -534,7 +495,6 @@ def binary_accuracy(preds, y):
     return acc
 
 
-# In[40]:
 
 
 def train(model, iterator, optimizer, criterion):
@@ -564,7 +524,6 @@ def train(model, iterator, optimizer, criterion):
     return epoch_loss / len(iterator), epoch_acc / len(iterator)
 
 
-# In[41]:
 
 
 def evaluate(model, iterator, criterion):
@@ -590,7 +549,6 @@ def evaluate(model, iterator, criterion):
     return epoch_loss / len(iterator), epoch_acc / len(iterator)
 
 
-# In[42]:
 
 
 import time
@@ -602,7 +560,6 @@ def epoch_time(start_time, end_time):
     return elapsed_mins, elapsed_secs
 
 
-# In[43]:
 
 
 N_EPOCHS = 5
@@ -629,7 +586,6 @@ for epoch in range(N_EPOCHS):
     print(f'\t Val. Loss: {valid_loss:.3f} |  Val. Acc: {valid_acc*100:.2f}%')
 
 
-# In[44]:
 
 
 
@@ -640,7 +596,6 @@ test_loss, test_acc = evaluate(model, test_iterator, criterion)
 print(f'Test Loss: {test_loss:.3f} | Test Acc: {test_acc*100:.2f}%')
 
 
-# In[45]:
 
 
 import spacy
@@ -658,43 +613,36 @@ def predict_sentiment(model, train, min_len = 5):
     return prediction.item()
 
 
-# In[46]:
 
 
 predict_sentiment(model,"This film is terrible")
 
 
-# In[47]:
 
 
 predict_sentiment(model, "This film is great")
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 

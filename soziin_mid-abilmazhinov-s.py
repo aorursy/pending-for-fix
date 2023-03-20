@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -57,39 +56,33 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 test = pd.read_csv('/kaggle/input/santander-customer-transaction-prediction/test.csv', delimiter=',')
 test.head()
 
 
-# In[3]:
 
 
 train = pd.read_csv('/kaggle/input/santander-customer-transaction-prediction/train.csv', delimiter=',')
 train.head()
 
 
-# In[4]:
 
 
 train.describe()
 
 
-# In[5]:
 
 
 train.corr()
 
 
-# In[6]:
 
 
 sns.countplot(train['target'], palette='Set3')
 
 
-# In[7]:
 
 
 def plot_feature_distribution(df1, df2, label1, label2, features):
@@ -110,7 +103,6 @@ def plot_feature_distribution(df1, df2, label1, label2, features):
     plt.show();
 
 
-# In[8]:
 
 
 plt.figure(figsize=(16,6))
@@ -122,7 +114,6 @@ plt.legend()
 plt.show()
 
 
-# In[9]:
 
 
 plt.figure(figsize=(16,6))
@@ -133,7 +124,6 @@ plt.legend()
 plt.show()
 
 
-# In[10]:
 
 
 plt.figure(figsize=(16,6))
@@ -143,7 +133,6 @@ sns.distplot(test_df[features].std(axis=1),color="red", kde=True,bins=120, label
 plt.legend();plt.show()
 
 
-# In[11]:
 
 
 correlations = train_df[features].corr().abs().unstack().sort_values(kind="quicksort").reset_index()
@@ -152,37 +141,31 @@ correlations.head(10)
 correlations.tail(10)
 
 
-# In[12]:
 
 
 correlations.head(10)
 
 
-# In[13]:
 
 
 get_ipython().run_cell_magic('time', '', 'features = train_df.columns.values[2:202]\nunique_max_train = []\nunique_max_test = []\nfor feature in features:\n    values = train_df[feature].value_counts()\n    unique_max_train.append([feature, values.max(), values.idxmax()])\n    values = test_df[feature].value_counts()\n    unique_max_test.append([feature, values.max(), values.idxmax()])')
 
 
-# In[14]:
 
 
 np.transpose((pd.DataFrame(unique_max_train, columns=['Feature', 'Max duplicates', 'Value'])).            sort_values(by = 'Max duplicates', ascending=False).head(15))
 
 
-# In[15]:
 
 
 get_ipython().run_cell_magic('time', '', "idx = features = train_df.columns.values[2:202]\nfor df in [test_df, train_df]:\n    df['sum'] = df[idx].sum(axis=1)  \n    df['min'] = df[idx].min(axis=1)\n    df['max'] = df[idx].max(axis=1)\n    df['mean'] = df[idx].mean(axis=1)\n    df['std'] = df[idx].std(axis=1)\n    df['skew'] = df[idx].skew(axis=1)\n    df['kurt'] = df[idx].kurtosis(axis=1)\n    df['med'] = df[idx].median(axis=1)")
 
 
-# In[16]:
 
 
 train_df[train_df.columns[202:]].head()
 
 
-# In[17]:
 
 
 def plot_new_feature_distribution(df1, df2, label1, label2, features):
@@ -203,7 +186,6 @@ def plot_new_feature_distribution(df1, df2, label1, label2, features):
     plt.show();
 
 
-# In[18]:
 
 
 t0 = train_df.loc[train_df['target'] == 0]
@@ -212,7 +194,6 @@ features = train_df.columns.values[202:]
 plot_new_feature_distribution(t0, t1, 'target: 0', 'target: 1', features)
 
 
-# In[19]:
 
 
 features = [c for c in train_df.columns if c not in ['ID_code', 'target']]
@@ -225,14 +206,12 @@ for feature in features:
 print('Train and test columns: {} {}'.format(len(train_df.columns), len(test_df.columns)))
 
 
-# In[20]:
 
 
 X, y = train.iloc[:,2:], train.iloc[:,1]
 X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.3, random_state = 123, stratify = y)
 
 
-# In[21]:
 
 
 from sklearn.linear_model import LogisticRegression
@@ -241,14 +220,12 @@ logreg = LogisticRegression()
 logreg.fit(X_train, y_train)
 
 
-# In[22]:
 
 
 logreg=LogisticRegression()
 logreg.fit(X_train,y_train)
 
 
-# In[23]:
 
 
 from sklearn.metrics import confusion_matrix
@@ -258,14 +235,12 @@ confusion_matrix = confusion_matrix(y_test, y_pred)
 print(confusion_matrix)
 
 
-# In[24]:
 
 
 from sklearn.metrics import classification_report
 print(classification_report(y_test, y_pred))
 
 
-# In[25]:
 
 
 from sklearn.metrics import roc_auc_score
@@ -285,7 +260,6 @@ plt.savefig('Log_ROC')
 plt.show()
 
 
-# In[26]:
 
 
 def rmsle(y, y_pred):
@@ -295,7 +269,6 @@ train_pred = logreg.predict(X_train)
 print('RMSLE : {:.4f}'.format(rmsle(y_train, train_pred)))
 
 
-# In[27]:
 
 
 from sklearn.naive_bayes import GaussianNB
@@ -303,19 +276,16 @@ from sklearn.naive_bayes import GaussianNB
 gnb = GaussianNB()
 
 
-# In[28]:
 
 
 gnb.fit(X_train, y_train)
 
 
-# In[29]:
 
 
 y_predit_svc = gnb.predict(X_test)
 
 
-# In[30]:
 
 
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, classification_report, confusion_matrix
@@ -323,37 +293,31 @@ from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_sc
 accuracy_score(y_test, y_predit_svc)
 
 
-# In[31]:
 
 
 confusion_matrix(y_test,y_predit_svc)
 
 
-# In[32]:
 
 
 print(classification_report(y_test, y_predit_svc))
 
 
-# In[33]:
 
 
 y_preds_res = gnb.predict(X)
 
 
-# In[34]:
 
 
 accuracy_score(y, y_preds_res)
 
 
-# In[35]:
 
 
 print(classification_report(y, y_preds_res))
 
 
-# In[36]:
 
 
 submission_nb = pd.DataFrame({
@@ -363,13 +327,11 @@ submission_nb = pd.DataFrame({
 submission_nb.to_csv('naive_baise_submission.csv', index=False)
 
 
-# In[37]:
 
 
 Random Tree
 
 
-# In[38]:
 
 
 from sklearn.tree import DecisionTreeClassifier
@@ -379,31 +341,26 @@ clf = tree.DecisionTreeClassifier(max_depth=10)
 clf = clf.fit(X, y)
 
 
-# In[39]:
 
 
 y_preds = clf.predict(X)
 
 
-# In[40]:
 
 
 accuracy_score(y, y_preds)
 
 
-# In[41]:
 
 
 confusion_matrix(y, y_preds)
 
 
-# In[42]:
 
 
 print(classification_report(y, y_preds))
 
 
-# In[43]:
 
 
 submission_tree = pd.DataFrame({
@@ -413,44 +370,37 @@ submission_tree = pd.DataFrame({
 submission_tree.to_csv('rand_tree_submission.csv', index=False)
 
 
-# In[44]:
 
 
 from sklearn.ensemble import RandomForestClassifier
 
 
-# In[45]:
 
 
 clf = RandomForestClassifier(max_depth=10, random_state=0)
 
 
-# In[46]:
 
 
 clf.fit(X_train, 
         y_train)
 
 
-# In[47]:
 
 
 y_pred = clf.predict(X_test)
 
 
-# In[48]:
 
 
 accuracy_score(y_test, y_pred)
 
 
-# In[49]:
 
 
 print(classification_report(y_test, y_pred))
 
 
-# In[50]:
 
 
 train_id = train['ID_code']
@@ -461,7 +411,6 @@ test_id = test['ID_code']
 X_test = test.drop('ID_code', axis=1, inplace = False)
 
 
-# In[51]:
 
 
 model_xgb = xgb.XGBRegressor(n_estimators=5, max_depth=4, learning_rate=0.5) 

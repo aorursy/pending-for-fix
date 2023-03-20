@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import pandas as pd
@@ -30,13 +28,11 @@ import re
 import string
 
 
-# In[3]:
 
 
 Datasets loading
 
 
-# In[4]:
 
 
 dataframes = {
@@ -48,31 +44,26 @@ dataframes = {
 }
 
 
-# In[5]:
 
 
 print(dataframes["robotics"].iloc[1])
 
 
-# In[6]:
 
 
 dataframes["robotics"]
 
 
-# In[7]:
 
 
 print(dataframes["robotics"].iloc[1])
 
 
-# In[8]:
 
 
 uri_re = r'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))'
 
 
-# In[9]:
 
 
 def stripTagsAndUris(x):
@@ -90,7 +81,6 @@ def stripTagsAndUris(x):
         return ""
 
 
-# In[10]:
 
 
 # This could take a while
@@ -98,13 +88,11 @@ for df in dataframes.values():
     df["content"] = df["content"].map(stripTagsAndUris)
 
 
-# In[11]:
 
 
 print(dataframes["robotics"].iloc[1])
 
 
-# In[12]:
 
 
 def removePunctuation(x):
@@ -116,7 +104,6 @@ def removePunctuation(x):
     return re.sub("[" + string.punctuation+"]", " ", x)
 
 
-# In[13]:
 
 
 for df in dataframes.values():
@@ -124,13 +111,11 @@ for df in dataframes.values():
     df["content"] = df["content"].map(removePunctuation)
 
 
-# In[14]:
 
 
 print(dataframes["robotics"].iloc[1])
 
 
-# In[15]:
 
 
 stops = set(stopwords.words("english"))
@@ -140,7 +125,6 @@ def removeStopwords(x):
     return " ".join(filtered_words)
 
 
-# In[16]:
 
 
 for df in dataframes.values():
@@ -149,19 +133,16 @@ for df in dataframes.values():
     
 
 
-# In[17]:
 
 
 print(dataframes["robotics"].iloc[1])
 
 
-# In[18]:
 
 
 Splitting tags string in a list of tags
 
 
-# In[19]:
 
 
 for df in dataframes.values():
@@ -170,13 +151,11 @@ for df in dataframes.values():
     
 
 
-# In[20]:
 
 
 print(dataframes["robotics"].iloc[1])
 
 
-# In[21]:
 
 
 for name, df in dataframes.items():
@@ -184,37 +163,31 @@ for name, df in dataframes.items():
     df.to_csv(name + "_light.csv", index=False)
 
 
-# In[22]:
 
 
 
 
 
-# In[22]:
 
 
 
 
 
-# In[22]:
 
 
 
 
 
-# In[22]:
 
 
 
 
 
-# In[22]:
 
 
 
 
 
-# In[22]:
 
 
 

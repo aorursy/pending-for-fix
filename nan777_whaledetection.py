@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 INPUT_DIR = '../input'
@@ -59,7 +57,6 @@ def plot_images(imgs, labels, rows=4):
 np.random.seed(0)
 
 
-# In[ ]:
 
 
 data_train = pd.read_csv("../input/train.csv")
@@ -87,7 +84,6 @@ plt.title("Num of categories by images in the training set")
 plt.show()
 
 
-# In[ ]:
 
 
 print(data_train['Id'].value_counts().tail(10).keys())
@@ -131,7 +127,6 @@ plt.title("Image size frequencies (where freq > 1)")
 plt.show()
 
 
-# In[ ]:
 
 
 from keras.preprocessing.image import (
@@ -197,7 +192,6 @@ print(label)
 print(data_train.shape)
 
 
-# In[ ]:
 
 
 import numpy as np
@@ -289,7 +283,6 @@ label_new = np.asarray(label_new)
 print(label_new.shape)
 
 
-# In[ ]:
 
 
 train_img = np.array([ImportImage( img) for img in train_images])
@@ -344,7 +337,6 @@ model.fit(x_train , y_train , batch_size = 128 , epochs = 10 , validation_split=
 print(model.summary())
 
 
-# In[ ]:
 
 
 

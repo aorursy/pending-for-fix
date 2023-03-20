@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import pandas as pd
@@ -16,13 +15,11 @@ from sklearn.pipeline import Pipeline
 import numpy as np
 
 
-# In[2]:
 
 
 data=pd.read_csv('/kaggle/input/bitsf312-lab1/train.csv',index_col=0)
 
 
-# In[3]:
 
 
 data = data.replace({'?': np.nan})
@@ -30,38 +27,32 @@ data = data.fillna(data.mean())
 data.fillna(value = data.mode().loc[0], inplace = True)
 
 
-# In[4]:
 
 
 data.head(20)
 
 
-# In[5]:
 
 
 data = pd.get_dummies(data, columns= ['Size'], prefix = ['Size'])
 data.head(100)
 
 
-# In[6]:
 
 
 data = data.astype('float64')
 
 
-# In[7]:
 
 
 data.dtypes
 
 
-# In[8]:
 
 
 # data = data.fillna(value = data.mean())
 
 
-# In[9]:
 
 
 # from sklearn.preprocessing import StandardScaler
@@ -72,14 +63,12 @@ data.dtypes
 # data_scaled = pd.DataFrame(scaler.fit_transform(data_scaled), columns=data.columns)
 
 
-# In[10]:
 
 
 
 data.head()
 
 
-# In[11]:
 
 
 X = data.drop('Class', axis= 1)
@@ -88,7 +77,6 @@ y=data['Class']
 y.value_counts()
 
 
-# In[12]:
 
 
 # encoder = LabelEncoder()
@@ -113,7 +101,6 @@ y.value_counts()
 # print("Baseline: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
 
 
-# In[13]:
 
 
 encoder = LabelEncoder()
@@ -146,7 +133,6 @@ model.summary()
 # print("Baseline: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
 
 
-# In[14]:
 
 
 test = pd.read_csv('/kaggle/input/bitsf312-lab1/test.csv')
@@ -155,26 +141,22 @@ test = test.fillna(data.mean())
 test.fillna(value = test.mode().loc[0], inplace = True)
 
 
-# In[15]:
 
 
 test.head()
 
 
-# In[16]:
 
 
 test = pd.get_dummies(test, columns= ['Size'], prefix = ['size'])
 
 
-# In[17]:
 
 
 y2 = test['ID']
 test = test.drop(['ID'], axis = 1)
 
 
-# In[18]:
 
 
 
@@ -184,55 +166,46 @@ test = test.drop(['ID'], axis = 1)
 # test_scaled = pd.DataFrame(scaler.fit_transform(test_scaled), columns=test.columns)
 
 
-# In[19]:
 
 
 test.head()
 
 
-# In[ ]:
 
 
 
 
 
-# In[20]:
 
 
 ans = model.predict(test)
 
 
-# In[21]:
 
 
 labels = ans.argmax(-1)
 
 
-# In[22]:
 
 
 len(labels)
 
 
-# In[23]:
 
 
 labels = pd.DataFrame(data = labels, index = y2)
 
 
-# In[24]:
 
 
 labels.head(20)
 
 
-# In[25]:
 
 
 labels.to_csv('nnfl4.csv')
 
 
-# In[26]:
 
 
 from IPython.display import HTML
@@ -242,7 +215,6 @@ import base64def create_download_link(df, title = "Download CSV file", filename 
 return HTML(html)create_download_link(​<submission_DataFrame_name>​)
 
 
-# In[ ]:
 
 
 

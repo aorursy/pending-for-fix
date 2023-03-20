@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().system('pip uninstall -y tensorflow')
 
 
-# In[2]:
 
 
 #!pip install -U tensorflow==1.14.0
@@ -17,13 +15,11 @@ get_ipython().system('pip install -U keras==2.2.4')
 #!pip install tensorflow_probability==0.8.0rc0 --user --upgrade
 
 
-# In[1]:
 
 
 get_ipython().system('cp -r ../input/mask-rcnn/Mask_RCNN-master/* ./')
 
 
-# In[2]:
 
 
 import numpy as np
@@ -49,19 +45,16 @@ import tensorflow as tf
 #import keras
 
 
-# In[3]:
 
 
 print(tf.__version__)
 
 
-# In[4]:
 
 
 tf.test.is_gpu_available()
 
 
-# In[4]:
 
 
 dirname = '../input/rsna-pneumonia-detection-challenge/'
@@ -72,7 +65,6 @@ print(train.describe())
 #print(train.isnull())
 
 
-# In[5]:
 
 
 pneumonia_locations = {}
@@ -95,7 +87,6 @@ train_images.columns = ['filepath']
 train_images['Target'] = target
 
 
-# In[6]:
 
 
 del train
@@ -103,7 +94,6 @@ print(train_images.head())
 len(train_images)
 
 
-# In[7]:
 
 
 X = list(train_images['filepath'])
@@ -114,20 +104,17 @@ train_X = X[l:]
 val_X =X[:l]
 
 
-# In[8]:
 
 
 print(len(train_X))
 print(len(val_X))
 
 
-# In[9]:
 
 
 sns.countplot(train_images.Target)
 
 
-# In[10]:
 
 
 i=0
@@ -138,13 +125,11 @@ for item in pneumonia_locations:
 sns.countplot(ln)
 
 
-# In[11]:
 
 
 get_ipython().run_cell_magic('time', '', "im = (pydicom.dcmread(train_images['filepath'][0]).pixel_array)\nplt.imshow(im)\nplt.show()")
 
 
-# In[12]:
 
 
 fig = plt.figure(figsize = (15,10))
@@ -159,7 +144,6 @@ for i in [0,1]:
     del df
 
 
-# In[13]:
 
 
 f, axarr = plt.subplots(2, 5, figsize=(20, 15))
@@ -179,7 +163,6 @@ for i in range(len(df)):
 plt.show()
 
 
-# In[14]:
 
 
 class PneumoniaConfig(Config):
@@ -207,7 +190,6 @@ config = PneumoniaConfig()
 config.display()
 
 
-# In[15]:
 
 
 class DatasetGenerator(utils.Dataset):
@@ -261,7 +243,6 @@ class DatasetGenerator(utils.Dataset):
         return info['path']
 
 
-# In[16]:
 
 
 train_gen = DatasetGenerator(train_X, pneumonia_locations)
@@ -271,7 +252,6 @@ val_gen = DatasetGenerator(val_X, pneumonia_locations)
 val_gen.prepare()
 
 
-# In[17]:
 
 
 # Load and display random samples
@@ -285,7 +265,6 @@ for image_id in image_ids:
     print(image.shape)
 
 
-# In[18]:
 
 
 # Load random image and mask.
@@ -301,7 +280,6 @@ visualize.display_instances(image, bbox, mask, class_ids,
                             train_gen.class_names)
 
 
-# In[19]:
 
 
 def model_definition():
@@ -321,7 +299,6 @@ def model_definition():
 model = model_definition()
 
 
-# In[20]:
 
 
 from keras.callbacks import (ModelCheckpoint, ReduceLROnPlateau, CSVLogger)
@@ -344,14 +321,12 @@ def callback():
     return cb
 
 
-# In[21]:
 
 
 import warnings 
 warnings.filterwarnings("ignore")
 
 
-# In[22]:
 
 
 CB = callback()
@@ -363,13 +338,11 @@ model.train(train_gen, val_gen,
                 epochs=2, layers='all') 
 
 
-# In[ ]:
 
 
 history = model.keras_model.history.history
 
 
-# In[ ]:
 
 
 CB = callback()
@@ -381,7 +354,6 @@ model.train(train_gen, val_gen,
                 epochs=6, layers='heads') 
 
 
-# In[ ]:
 
 
 class InferenceConfig(PneumoniaConfig):
@@ -396,7 +368,6 @@ model.load_weights(,
                   by_name = True)
 
 
-# In[ ]:
 
 
 test = []
@@ -406,7 +377,6 @@ for dname, _, filenames in os.walk('/kaggle/input/rsna-pneumonia-detection-chall
 print(test[:5])
 
 
-# In[ ]:
 
 
 def predict(fp, filepath='submission.csv', min_conf=0.75):
@@ -458,14 +428,12 @@ def predict(fp, filepath='submission.csv', min_conf=0.75):
             file.write(out_str+"\n")
 
 
-# In[ ]:
 
 
 submission = os.path.join('/kaggle/working', 'submission.csv')
 predict(test, filepath=submission)
 
 
-# In[ ]:
 
 
 submit = pd.read_csv(submission)

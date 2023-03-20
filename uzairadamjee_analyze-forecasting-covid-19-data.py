@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 pip install pmdarima
 
 
-# In[2]:
 
 
 import numpy as np
@@ -26,26 +24,22 @@ warnings.filterwarnings("ignore")
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[3]:
 
 
 train = pd.read_csv('../input/covid19-global-forecasting-week-4/train.csv')
 test = pd.read_csv('../input/covid19-global-forecasting-week-4/test.csv')
 
 
-# In[4]:
 
 
 train.head()
 
 
-# In[5]:
 
 
 test.head()
 
 
-# In[6]:
 
 
 #Changing Date column to datetime
@@ -56,26 +50,22 @@ new_train = train.set_index(['Date'])
 new_test = test.set_index(['Date'])
 
 
-# In[7]:
 
 
 new_train.head()
 
 
-# In[8]:
 
 
 new_train.isnull().sum()
 
 
-# In[9]:
 
 
 new_train[['Province_State']] = new_train[['Province_State']].fillna('')
 new_train.isnull().sum()
 
 
-# In[10]:
 
 
 #dropping forcast id and id columns
@@ -83,7 +73,6 @@ new_test = new_test.drop(["ForecastId"], axis=1)
 new_train = new_train.drop(["Id"], axis=1)
 
 
-# In[11]:
 
 
 # Creating a dataframe with total no of cases for every country
@@ -96,7 +85,6 @@ fig = px.bar(global_confirmiedcases.sort_values('ConfirmedCases',ascending=False
 fig.show()
 
 
-# In[12]:
 
 
 # Creating a dataframe with total no of cases for every country
@@ -109,7 +97,6 @@ fig = px.bar(global_confirmiedcases.sort_values('Fatalities',ascending=False)[:4
 fig.show()
 
 
-# In[13]:
 
 
 formated_gdf = train.groupby(['Date', 'Country_Region'])['ConfirmedCases'].sum()
@@ -126,7 +113,6 @@ fig = px.scatter_geo(formated_gdf, locations="Country_Region", locationmode='cou
 fig.show()
 
 
-# In[14]:
 
 
 formated_gdf = train.groupby(['Date', 'Country_Region'])['Fatalities'].sum()
@@ -143,13 +129,11 @@ fig = px.scatter_geo(formated_gdf, locations="Country_Region", locationmode='cou
 fig.show()
 
 
-# In[15]:
 
 
 new_train.columns
 
 
-# In[16]:
 
 
 countries = new_train['Country_Region'].unique()
@@ -185,27 +169,23 @@ for country in countries:
         
 
 
-# In[17]:
 
 
 #test.loc[test['Country_Region']=='Pakistan']
 
 
-# In[18]:
 
 
 turkey_data = test.loc[test['Country_Region']=='Turkey']
 turkey_data.columns
 
 
-# In[19]:
 
 
 plot_turkey_data = turkey_data.filter(["Date","ConfirmedCases", "Fatalities"])
 plot_turkey_data.head()
 
 
-# In[20]:
 
 
 
@@ -217,7 +197,6 @@ fig.update_yaxes(showticklabels=False)
 fig.show()
 
 
-# In[21]:
 
 
 
@@ -229,7 +208,6 @@ fig.update_yaxes(showticklabels=False)
 fig.show()
 
 
-# In[22]:
 
 
 # download the latest data sets
@@ -238,31 +216,26 @@ global_deaths = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/CO
 global_recovered = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv')
 
 
-# In[23]:
 
 
 global_confirmed_cases.head()
 
 
-# In[24]:
 
 
 global_deaths.head()
 
 
-# In[25]:
 
 
 global_recovered.head()
 
 
-# In[26]:
 
 
 dates = global_confirmed_cases.columns[4:]
 
 
-# In[27]:
 
 
 cc_df = global_confirmed_cases.melt(id_vars=['Province/State', 'Country/Region', 'Lat', 'Long'], 
@@ -270,7 +243,6 @@ cc_df = global_confirmed_cases.melt(id_vars=['Province/State', 'Country/Region',
 print(cc_df.head())
 
 
-# In[28]:
 
 
 # create complete data
@@ -297,14 +269,12 @@ complete_data = pd.merge(left=complete_data, right=recv_df, how='left',
 complete_data.head()
 
 
-# In[29]:
 
 
 # Active cases 
 complete_data['Active'] = complete_data['Confirmed'] - complete_data['Recovered'] - complete_data['Deaths']
 
 
-# In[30]:
 
 
 #check for null/nan values
@@ -312,7 +282,6 @@ complete_data['Active'] = complete_data['Confirmed'] - complete_data['Recovered'
 complete_data.isna().sum()
 
 
-# In[31]:
 
 
 
@@ -323,13 +292,11 @@ complete_data['Active'] = complete_data['Active'].astype('int')
 complete_data.isna().sum()
 
 
-# In[32]:
 
 
 complete_data = complete_data.rename(columns={"Province/State":"State","Country/Region": "Country"})
 
 
-# In[33]:
 
 
 complete_data.loc[complete_data['Country'] == "US", "Country"] = "USA"
@@ -351,7 +318,6 @@ complete_data.loc[complete_data['Country'] == 'Bahamas, The', "Country"] = 'Baha
 complete_data.loc[complete_data['Country'] == 'Gambia, The', "Country"] = 'Gambia'
 
 
-# In[34]:
 
 
 df_date = complete_data.filter(["Date",  "Confirmed", "Deaths", "Recovered"])
@@ -359,7 +325,6 @@ df_date = df_date.groupby(df_date["Date"]).sum()
 df_date.head()
 
 
-# In[35]:
 
 
 plt.figure(figsize=(15,6))
@@ -370,7 +335,6 @@ plt.xticks(rotation=75)
 plt.show()
 
 
-# In[36]:
 
 
 countries_grouped = complete_data.groupby('Country')['Confirmed', 'Deaths', 'Recovered'].sum().reset_index()
@@ -381,7 +345,6 @@ temp = temp[temp['Deaths']>0]
 temp.style.background_gradient(cmap='Pastel1_r')
 
 
-# In[37]:
 
 
 countries = complete_data['Country'].unique()
@@ -403,7 +366,6 @@ for country in countries:
        
 
 
-# In[ ]:
 
 
 

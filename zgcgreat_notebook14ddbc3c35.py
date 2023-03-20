@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 
@@ -21,7 +20,6 @@ for f in os.listdir('../input'):
         print(f.ljust(30) + str(round(os.path.getsize('../input/' + f) / 1000000, 2)) + 'MB')
 
 
-# In[2]:
 
 
 # Clicks 
@@ -29,7 +27,6 @@ df_train = pd.read_csv('../input/clicks_train.csv')
 df_test = pd.read_csv('../input/clicks_test.csv')
 
 
-# In[3]:
 
 
 sizes_train = df_train.groupby('display_id')['ad_id'].count().value_counts()
@@ -45,13 +42,11 @@ plt.xlabel('Number of Ads in display', fontsize=12)
 plt.ylabel('Proportion of set', fontsize=12)
 
 
-# In[4]:
 
 
 sizes_test
 
 
-# In[5]:
 
 
 ad_usage_train = df_train.groupby('ad_id')['ad_id'].count()
@@ -66,7 +61,6 @@ plt.ylabel('log(Count of displays with ad)', fontsize=12)
 plt.show()
 
 
-# In[6]:
 
 
 # Check how many ads in the test set are not in the training set
@@ -74,7 +68,6 @@ ad_prop = len(set(df_test.ad_id.unique()).intersection(df_train.ad_id.unique()))
 print('Proportion of test ads in test that are in training: {}%'.format(round(ad_prop * 100, 2)))
 
 
-# In[7]:
 
 
 # Events
@@ -87,14 +80,12 @@ events = pd.read_csv('../input/events.csv')
 events.head()
 
 
-# In[8]:
 
 
 print('Shape:', events.shape)
 print('Columns:', events.columns.tolist())
 
 
-# In[9]:
 
 
 # 分析Platform
@@ -103,7 +94,6 @@ print(plat)
 print('\nUnique values of platform:', events.platform.unique())
 
 
-# In[10]:
 
 
 events.platform = events.platform.astype(str) # 将str型的'1','2','3'和整型的1,2,3看作一样
@@ -115,7 +105,6 @@ plt.xlabel('Platform', fontsize=12)
 plt.ylabel('Occurence count', fontsize=12)
 
 
-# In[11]:
 
 
 # 分析uuid
@@ -133,7 +122,6 @@ plt.ylabel('log(Count of users)', fontsize=12)
 plt.show()
 
 
-# In[12]:
 
 
 # Categorices

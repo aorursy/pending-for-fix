@@ -1,26 +1,22 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().system('pip install ../input/kerasapplications/keras-team-keras-applications-3b180cb -f ./ --no-index')
 get_ipython().system('pip install ../input/efficientnet/efficientnet-1.1.0/ -f ./ --no-index')
 
 
-# In[17]:
 
 
 conda install -c conda-forge -y gdcm
 
 
-# In[2]:
 
 
 get_ipython().system('pip install segmentation-models-pytorch')
 
 
-# In[4]:
 
 
 import os
@@ -66,7 +62,6 @@ def seed_everything(seed=2020):
 seed_everything(42)
 
 
-# In[5]:
 
 
 config = tf.compat.v1.ConfigProto()
@@ -74,7 +69,6 @@ config.gpu_options.allow_growth = True
 session = tf.compat.v1.Session(config=config)
 
 
-# In[12]:
 
 
 import sys
@@ -85,13 +79,11 @@ sys.path.append('../input/segmentation-models-pytorch/')
 import segmentation_models_pytorch as smp
 
 
-# In[ ]:
 
 
 train = pd.read_csv('../input/osic-pulmonary-fibrosis-progression/train.csv') 
 
 
-# In[ ]:
 
 
 def get_tab(df):
@@ -114,7 +106,6 @@ def get_tab(df):
     return np.array(vector) 
 
 
-# In[ ]:
 
 
 A = {} 
@@ -132,7 +123,6 @@ for i, p in tqdm(enumerate(train.Patient.unique())):
     P.append(p)
 
 
-# In[ ]:
 
 
 def get_img(path):
@@ -140,7 +130,6 @@ def get_img(path):
     return cv2.resize(d.pixel_array / 2**11, (512, 512))
 
 
-# In[ ]:
 
 
 from tensorflow.keras.utils import Sequence
@@ -179,7 +168,6 @@ class IGenerator(Sequence):
         return [x, tab] , a
 
 
-# In[ ]:
 
 
 from tensorflow.keras.layers import (
@@ -222,7 +210,6 @@ models = [build_model(shape=(512, 512, 1), model_class=m) for m in model_classes
 print('Number of models: ' + str(len(models)))
 
 
-# In[ ]:
 
 
 from sklearn.model_selection import train_test_split 
@@ -232,13 +219,11 @@ tr_p, vl_p = train_test_split(P,
                               train_size= 0.8) 
 
 
-# In[ ]:
 
 
 sns.distplot(list(A.values()));
 
 
-# In[ ]:
 
 
 def score(fvc_true, fvc_pred, sigma):
@@ -250,7 +235,6 @@ def score(fvc_true, fvc_pred, sigma):
     return np.mean(metric)
 
 
-# In[ ]:
 
 
 subs = []
@@ -339,13 +323,11 @@ for model in models:
     subs.append(_sub)
 
 
-# In[ ]:
 
 
 mid_df
 
 
-# In[ ]:
 
 
 N = len(subs)
@@ -357,19 +339,16 @@ for i in range(N):
     sub["Confidence"] += subs[0]["Confidence"] * (1/N)
 
 
-# In[ ]:
 
 
 sub[["Patient_Week","FVC","Confidence"]].to_csv("submission_img.csv", index=False)
 
 
-# In[ ]:
 
 
 img_sub = sub[["Patient_Week","FVC","Confidence"]].copy()
 
 
-# In[6]:
 
 
 ROOT = "../input/osic-pulmonary-fibrosis-progression"
@@ -387,7 +366,6 @@ sub =  sub[['Patient','Weeks','Confidence','Patient_Week']]
 sub = sub.merge(chunk.drop('Weeks', axis=1), on="Patient")
 
 
-# In[8]:
 
 
 dicom_root_path = '../input/osic-pulmonary-fibrosis-progression/train/'
@@ -405,7 +383,6 @@ dicom_pd = pd.DataFrame(n_dicom_dict)
 dicom_pd.head()
 
 
-# In[ ]:
 
 
 print(f"min dicom number is {min(dicom_pd['n_dicom'])}\nmax dicom number is {max(dicom_pd['n_dicom'])}")
@@ -414,7 +391,6 @@ plt.hist(dicom_pd['n_dicom'], bins=20)
 plt.title('Number of dicom per patient');
 
 
-# In[ ]:
 
 
 dicom_pd['height'],dicom_pd['width'], dicom_pd['kvp'] = -1,-1, -1
@@ -438,19 +414,16 @@ for Patient_id in Patients_id:
         break
 
 
-# In[ ]:
 
 
 dicom_pd.head()
 
 
-# In[ ]:
 
 
 plt.hist(dicom_pd['PatientPosition'])
 
 
-# In[ ]:
 
 
 reshape_dicom_pd = dicom_pd.loc[(dicom_pd.height!=512) | (dicom_pd.width!=512),:]
@@ -458,7 +431,6 @@ reshape_dicom_pd = reshape_dicom_pd.reset_index(drop=True)
 reshape_dicom_pd.head()
 
 
-# In[ ]:
 
 
 f, ax = plt.subplots(len(reshape_dicom_pd.head()),2, figsize=(15, 18))
@@ -473,7 +445,6 @@ for idx,patient_id in enumerate(reshape_dicom_pd.head()['Patient']):
 plt.show()
 
 
-# In[ ]:
 
 
 crop_id = ['ID00240637202264138860065','ID00122637202216437668965','ID00086637202203494931510',
@@ -483,7 +454,6 @@ reshape_dicom_pd['resize_type'] = 'resize'
 reshape_dicom_pd.loc[reshape_dicom_pd.Patient.isin(crop_id),'resize_type'] = 'crop'
 
 
-# In[ ]:
 
 
 dicom_pd['resize_type'] = 'no'
@@ -492,7 +462,6 @@ for idx,i in enumerate(reshape_dicom_pd['Patient']):
 dicom_pd.head()
 
 
-# In[ ]:
 
 
 train_pd = pd.read_csv('../input/osic-pulmonary-fibrosis-progression/train.csv')
@@ -507,13 +476,11 @@ dicom_pd = pd.merge(dicom_pd, temp_pd, on=['Patient'])
 dicom_pd.head()
 
 
-# In[ ]:
 
 
 dicom_pd[dicom_pd.resize_type!='no'].head()
 
 
-# In[ ]:
 
 
 dicom_pd['ImageType0'] = dicom_pd['ImageType0'].apply(lambda x: 'ORIGINAL' if x not in ['ORIGINAL', 'DERIVED'] else x)
@@ -522,7 +489,6 @@ dicom_pd['ImageType2'] = dicom_pd['ImageType2'].apply(lambda x: 'AXIAL' if x not
 dicom_pd[dicom_pd['Patient']=='ID00421637202311550012437']
 
 
-# In[ ]:
 
 
 import seaborn as sns
@@ -531,27 +497,23 @@ dicom_pd.isna().sum()
 sns.countplot(x ='Manufacture', hue = 'ImageType3', data = dicom_pd)
 
 
-# In[ ]:
 
 
 d = dicom_pd[dicom_pd['Manufacture'].isin(['TOSHIBA', 'GE MEDICAL SYSTEMS'])]
 sns.countplot(x ='Manufacture', hue = 'ImageType3', data = d)
 
 
-# In[ ]:
 
 
 dicom_pd_mf = dicom_pd[dicom_pd['ImageType3'].isna()][['Manufacture', 'ImageType3']]
 
 
-# In[ ]:
 
 
 # dicom_pd.shape
 sns.countplot(x ='Manufacture',  data = dicom_pd_mf)
 
 
-# In[ ]:
 
 
 # dicom_pd_mf.loc[(dicom_pd_mf['Manufacture']=='SIEMENS') & (dicom_pd['ImageType3'].isna()==True), 'ImageType3'] = 'CT_SOM5_SPI'
@@ -561,13 +523,11 @@ sns.countplot(x ='Manufacture',  data = dicom_pd_mf)
 dicom_pd_mf.loc[dicom_pd_mf['Manufacture']=='GE MEDICAL SYSTEMS']
 
 
-# In[ ]:
 
 
 dicom_pd
 
 
-# In[7]:
 
 
 def load_scan(path,resize_type='no'):
@@ -596,7 +556,6 @@ def load_scan(path,resize_type='no'):
     return slices
 
 
-# In[8]:
 
 
 def transform_to_hu(slices):
@@ -628,7 +587,6 @@ def transform_to_hu(slices):
     return np.array(images, dtype=np.int16)
 
 
-# In[9]:
 
 
 def crop_image(img: np.ndarray):
@@ -649,7 +607,6 @@ def preprocess_img(img,resize_type):
     return np.array(img, dtype=np.int64)
 
 
-# In[10]:
 
 
 class Test_Generate(Dataset):
@@ -674,7 +631,6 @@ class Test_Generate(Dataset):
         return len(self.imgs_dicom)
 
 
-# In[13]:
 
 
 device =  torch.device('cuda:0')
@@ -699,7 +655,6 @@ def Unet_mask(model: nn.Module,input_data: DataLoader):
     return outs
 
 
-# In[ ]:
 
 
 f, ax = plt.subplots(4,2, figsize=(14, 14))
@@ -731,7 +686,6 @@ plt.show()
 plt.close()
 
 
-# In[ ]:
 
 
 thresh = [-1000,0]
@@ -769,7 +723,6 @@ for i in range(4):
 plt.show()
 
 
-# In[14]:
 
 
 #def func_volume(patient_scan,patient_mask):
@@ -791,7 +744,6 @@ def caculate_lung_volume(patient_scans,patient_masks):
     return lung_volume*0.001
 
 
-# In[15]:
 
 
 def caculate_histgram_statistical(patient_images,patient_masks,thresh = [-600,0]):
@@ -818,13 +770,11 @@ def caculate_histgram_statistical(patient_images,patient_masks,thresh = [-600,0]
     return statistical_characteristic
 
 
-# In[18]:
 
 
 import gdcm
 
 
-# In[ ]:
 
 
 lung_stat_pd = pd.DataFrame(columns=['Patient','Volume','Mean','Skew','Kurthosis'])
@@ -854,14 +804,12 @@ for i in tqdm(range(len(dicom_pd))):
 lung_stat_pd.head()
 
 
-# In[ ]:
 
 
 dicom_feature = pd.merge(dicom_pd, lung_stat_pd, on=['Patient'])
 dicom_feature.head()
 
 
-# In[ ]:
 
 
 dicom_feature = dicom_feature.drop(['list_dicom', 'height','width','resize_type','n_dicom'], axis=1)
@@ -869,19 +817,16 @@ dicom_feature = dicom_feature.drop(['ImageType3'], axis=1)
 dicom_feature.head(20)
 
 
-# In[ ]:
 
 
 dicom_feature
 
 
-# In[ ]:
 
 
 dicom_feature.to_csv('./CT_feature.csv',index=False)
 
 
-# In[19]:
 
 
 ROOT = "../input/osic-pulmonary-fibrosis-progression"
@@ -895,7 +840,6 @@ sub =  sub[['Patient','Weeks','Confidence','Patient_Week']]
 sub = sub.merge(test_df.drop('Weeks', axis=1), on="Patient")
 
 
-# In[20]:
 
 
 class Inference_Generate(Dataset):
@@ -918,7 +862,6 @@ class Inference_Generate(Dataset):
         return len(self.imgs_dicom)
 
 
-# In[ ]:
 
 
 thresh = [-1000,0]
@@ -954,7 +897,6 @@ for idx,i in enumerate(pd.unique(test_df['Patient'])):
 lung_test_feature.head()
 
 
-# In[ ]:
 
 
 lung_test_feature['ImageType0'] = lung_test_feature['ImageType0'].apply(lambda x: 'ORIGINAL' if x not in ['ORIGINAL', 'DERIVED'] else x)
@@ -962,13 +904,11 @@ lung_test_feature['ImageType1'] = lung_test_feature['ImageType1'].apply(lambda x
 lung_test_feature['ImageType2'] = lung_test_feature['ImageType2'].apply(lambda x: 'AXIAL' if x not in ['AXIAL', 'REFORMATTED', 'OTHER'] else x)
 
 
-# In[ ]:
 
 
 test_df
 
 
-# In[ ]:
 
 
 test_df = test_df.merge(lung_test_feature, on='Patient')
@@ -988,19 +928,16 @@ data = train_df.append([test_df, sub])
 data.head()
 
 
-# In[21]:
 
 
 data = pd.read_csv('../input/final-data/final_data.csv')
 
 
-# In[22]:
 
 
 list(data.columns)
 
 
-# In[ ]:
 
 
 data['min_week'] = data['Weeks']
@@ -1044,13 +981,11 @@ data['kurthosis'] = (data['Kurthosis'] - data['Kurthosis'].min())/(data['Kurthos
 FE += ['age','percent','week', 'BASE','volume','mean','skew','kurthosis']
 
 
-# In[ ]:
 
 
 data.rename(columns={100: 'kvp_100', 110: 'kvp_110', 120: 'kvp_120', 130: 'kvp_130', 135: 'kvp_135', 140: 'kvp_140'}, inplace=True)
 
 
-# In[23]:
 
 
 train_df = data.loc[data.WHERE=='train']
@@ -1058,7 +993,6 @@ test_df = data.loc[data.WHERE=='val']
 sub = data.loc[data.WHERE=='test']
 
 
-# In[24]:
 
 
 FE = ['Male',
@@ -1101,19 +1035,16 @@ FE = ['Male',
      ]
 
 
-# In[ ]:
 
 
 data.to_csv('./final_data.csv',index=False)
 
 
-# In[ ]:
 
 
 # data = pd.read_csv('../input/final-data/final_data.csv')
 
 
-# In[25]:
 
 
 tr = data.loc[data.WHERE=='train']
@@ -1122,13 +1053,11 @@ sub = data.loc[data.WHERE=='test']
 # del data
 
 
-# In[26]:
 
 
 tr.shape, chunk.shape, sub.shape
 
 
-# In[27]:
 
 
 C1, C2 = tf.constant(70, dtype='float32'), tf.constant(1000, dtype="float32")
@@ -1193,7 +1122,6 @@ def make_model(nh):
     return model
 
 
-# In[28]:
 
 
 y = tr['FVC'].values
@@ -1204,7 +1132,6 @@ pe = np.zeros((ze.shape[0], 3))
 pred = np.zeros((z.shape[0], 3))
 
 
-# In[29]:
 
 
 net = make_model(nh)
@@ -1212,20 +1139,17 @@ print(net.summary())
 print(net.count_params())
 
 
-# In[30]:
 
 
 NFOLD = 15 # originally 5
 kf = KFold(n_splits=NFOLD)
 
 
-# In[31]:
 
 
 get_ipython().run_cell_magic('time', '', 'cnt = 0\nEPOCHS = 800\nBATCH_SIZE = 128\nfor tr_idx, val_idx in kf.split(z):\n    cnt += 1\n    print(f"FOLD {cnt}")\n    net = make_model(nh)\n    print("working")\n    net.fit(z[tr_idx], y[tr_idx], batch_size=BATCH_SIZE, epochs=EPOCHS, \n            validation_data=(z[val_idx], y[val_idx]), verbose=0) #\n    print("train", net.evaluate(z[tr_idx], y[tr_idx], verbose=0, batch_size=BATCH_SIZE))\n    print("val", net.evaluate(z[val_idx], y[val_idx], verbose=0, batch_size=BATCH_SIZE))\n    print("predict val...")\n    pred[val_idx] = net.predict(z[val_idx], batch_size=BATCH_SIZE, verbose=0)\n    print(y[val_idx], pred[val_idx])\n    print("predict test...")\n    pe += net.predict(ze, batch_size=BATCH_SIZE, verbose=0) / NFOLD')
 
 
-# In[32]:
 
 
 sigma_opt = mean_absolute_error(y, pred[:, 1])
@@ -1234,7 +1158,6 @@ sigma_mean = np.mean(unc)
 print(sigma_opt, sigma_mean)
 
 
-# In[33]:
 
 
 idxs = np.random.randint(0, y.shape[0], 100)
@@ -1246,13 +1169,11 @@ plt.legend(loc="best")
 plt.show()
 
 
-# In[34]:
 
 
 print(unc.min(), unc.mean(), unc.max(), (unc>=0).mean())
 
 
-# In[35]:
 
 
 plt.hist(unc)
@@ -1260,13 +1181,11 @@ plt.title("uncertainty in prediction")
 plt.show()
 
 
-# In[36]:
 
 
 sub.head()
 
 
-# In[37]:
 
 
 # PREDICTION
@@ -1276,7 +1195,6 @@ subm = sub[['Patient_Week','FVC','Confidence','FVC1','Confidence1']].copy()
 subm.loc[~subm.FVC1.isnull()].head(10)
 
 
-# In[38]:
 
 
 subm.loc[~subm.FVC1.isnull(),'FVC'] = subm.loc[~subm.FVC1.isnull(),'FVC1']
@@ -1286,19 +1204,16 @@ else:
     subm.loc[~subm.FVC1.isnull(),'Confidence'] = subm.loc[~subm.FVC1.isnull(),'Confidence1']
 
 
-# In[39]:
 
 
 subm.head()
 
 
-# In[40]:
 
 
 subm.describe().T
 
 
-# In[41]:
 
 
 otest = pd.read_csv('../input/osic-pulmonary-fibrosis-progression/test.csv')
@@ -1307,19 +1222,16 @@ for i in range(len(otest)):
     subm.loc[subm['Patient_Week']==otest.Patient[i]+'_'+str(otest.Weeks[i]), 'Confidence'] = 0.1
 
 
-# In[42]:
 
 
 subm[["Patient_Week","FVC","Confidence"]].to_csv("submission_regression_0.65_only_pos.csv", index=False)
 
 
-# In[43]:
 
 
 reg_sub = subm[["Patient_Week","FVC","Confidence"]].copy()
 
 
-# In[44]:
 
 
 img_sub = pd.read_csv('../input/img-sub/Submitted_op.csv')
@@ -1327,7 +1239,6 @@ df1 = img_sub.sort_values(by=['Patient_Week'], ascending=True).reset_index(drop=
 df2 = reg_sub.sort_values(by=['Patient_Week'], ascending=True).reset_index(drop=True)
 
 
-# In[47]:
 
 
 df = df1[['Patient_Week']].copy()
@@ -1336,13 +1247,11 @@ df['Confidence'] = 0.26*df1['Confidence'] + 0.74*df2['Confidence']
 df.head()
 
 
-# In[46]:
 
 
 df = pd.read_csv('../input/output/submission.csv')
 
 
-# In[48]:
 
 
 df.to_csv('./sample_submission.csv', index=False)

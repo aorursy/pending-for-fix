@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import pathlib
@@ -15,7 +14,6 @@ import albumentations as A
 from tqdm import tqdm
 
 
-# In[2]:
 
 
 ROOT = Path('/kaggle/input/global-wheat-detection/')
@@ -27,7 +25,6 @@ WORKING_DIR = Path('/kaggle/working/')
 IMG_SIZE = 224
 
 
-# In[3]:
 
 
 def load_dataframe(csv_path: pathlib.PosixPath, image_dir: pathlib.PosixPath) -> pd.DataFrame:
@@ -57,25 +54,21 @@ def fix_out_of_range(bbox: list, max_size: int = 1024) -> list:
     return bbox
 
 
-# In[4]:
 
 
 df = load_dataframe(ROOT / 'train.csv', TRAIN_DIR)
 
 
-# In[5]:
 
 
 df
 
 
-# In[6]:
 
 
 mkdir train
 
 
-# In[7]:
 
 
 transform = A.Compose(
@@ -115,7 +108,6 @@ for idx, row in tqdm(df.iterrows(), total=df.shape[0]):
         list_of_sources.append(row.source)
 
 
-# In[8]:
 
 
 new_data_dict = {
@@ -127,26 +119,22 @@ new_data_dict = {
 }
 
 
-# In[9]:
 
 
 new_df = pd.DataFrame(new_data_dict)
 
 
-# In[10]:
 
 
 new_df.to_csv('train.csv', index=False)
 
 
-# In[11]:
 
 
 get_ipython().system('cp $ROOT/sample_submission.csv ./')
 get_ipython().system('cp -r $ROOT/test ./')
 
 
-# In[12]:
 
 
 get_ipython().system('zip -rm -qq global-wheat-detection.zip train test train.csv sample_submission.csv')

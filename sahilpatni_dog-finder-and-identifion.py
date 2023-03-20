@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 
 
 
-# In[1]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
@@ -29,19 +27,16 @@ from keras.applications.vgg16 import preprocess_input, decode_predictions
 from sklearn.linear_model import LogisticRegression
 
 
-# In[2]:
 
 
 start = dt.datetime.now()
 
 
-# In[3]:
 
 
 ls ../input/keras-pretrained-models/
 
 
-# In[4]:
 
 
 cache_dir = expanduser(join('~', '.keras'))
@@ -52,7 +47,6 @@ if not exists(models_dir):
     makedirs(models_dir)
 
 
-# In[5]:
 
 
 get_ipython().system('cp ../input/keras-pretrained-models/*notop* ~/.keras/models/')
@@ -60,13 +54,11 @@ get_ipython().system('cp ../input/keras-pretrained-models/imagenet_class_index.j
 get_ipython().system('cp ../input/keras-pretrained-models/resnet50* ~/.keras/models/')
 
 
-# In[6]:
 
 
 get_ipython().system('ls ~/.keras/models')
 
 
-# In[7]:
 
 
 
@@ -74,7 +66,6 @@ get_ipython().system('ls ~/.keras/models')
 get_ipython().system('ls ../input/dog-breed-identification')
 
 
-# In[8]:
 
 
 INPUT_SIZE = 224
@@ -87,7 +78,6 @@ print(len(listdir(join(data_dir, 'train'))), len(labels))
 print(len(listdir(join(data_dir, 'test'))), len(sample_submission))
 
 
-# In[9]:
 
 
 def read_img(img_id, train_or_test, size):
@@ -104,7 +94,6 @@ def read_img(img_id, train_or_test, size):
     return img
 
 
-# In[10]:
 
 
 model = ResNet50(weights='imagenet')

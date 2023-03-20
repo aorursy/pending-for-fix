@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np 
@@ -19,58 +18,49 @@ from tqdm import tqdm
 warnings.simplefilter(action = 'ignore')
 
 
-# In[2]:
 
 
 get_ipython().system('ls ../input/*')
 
 
-# In[3]:
 
 
 ls -R ../input/rsnasample/*
 
 
-# In[4]:
 
 
 train_labels = pd.read_csv('../input/rsnasample/stage_1_train.csv')
 train_labels.head()
 
 
-# In[5]:
 
 
 train_labels = train_labels.drop_duplicates()
 train_labels.info()
 
 
-# In[6]:
 
 
 train_labels['ID'].value_counts(sort=True).head(10)
 
 
-# In[7]:
 
 
 train_labels['Label'].plot.hist()
 
 
-# In[8]:
 
 
 pd.DataFrame(train_labels.groupby('Label')['ID'].count())
 
 
-# In[9]:
 
 
 plt.style.use('ggplot')
 plot = train_labels.groupby('Label')     .count()['ID']     .plot(kind='bar', figsize=(10,4), rot=0)
 
 
-# In[10]:
 
 
 def show_dcm_info(dataset):
@@ -94,13 +84,11 @@ def plot_pixel_array(dataset, figsize=(10,10)):
     plt.show()
 
 
-# In[11]:
 
 
 get_ipython().system('ls ../input/rsnasample/stage_1_train_images/stage_1_train_images')
 
 
-# In[12]:
 
 
 root_path = '../input/rsnasample/stage_1_train_images/stage_1_train_images/'
@@ -111,7 +99,6 @@ for r, d, files in os.walk(root_path):
         print(dataset)
 
 
-# In[13]:
 
 
 for r, d, files in os.walk(root_path):

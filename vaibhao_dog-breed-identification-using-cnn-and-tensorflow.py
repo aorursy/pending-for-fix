@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 from glob import glob
@@ -34,7 +32,6 @@ submi = pd.read_csv("../input/sample_submission.csv")
 data = pd.DataFrame([{'path': filepath} for filepath in glob("../input/train/*.jpg")])
 
 
-# In[3]:
 
 
 df = pd.DataFrame()
@@ -43,13 +40,11 @@ df['id'] = pd.DataFrame(data['path'].apply(lambda x : x.split('/')[-1].split('.'
 df['value'] = pd.DataFrame(data['path'].apply(lambda x :plt.imread(str(x))))
 
 
-# In[5]:
 
 
 df.head()
 
 
-# In[4]:
 
 
 #Getting Breed against Dog id
@@ -58,37 +53,31 @@ for i in range(len(df['id'])):
     df['Breed'].iloc[i] =  labels[labels['id']== df['id'].iloc[i]]['breed'].any()
 
 
-# In[7]:
 
 
 df.head()
 
 
-# In[8]:
 
 
 df['value'][0].shape
 
 
-# In[9]:
 
 
 (df['value'][0].flatten().reshape(194,237,3)).shape
 
 
-# In[10]:
 
 
 df['value'] = df['value'].apply(lambda x : x.flatten())
 
 
-# In[13]:
 
 
 df.head()
 
 
-# In[ ]:
 
 
 # Normalising the data diving it with 255
@@ -96,7 +85,6 @@ df.head()
 pixels = df['value'].values/255.0
 
 
-# In[8]:
 
 
 plt.figure(figsize=(14,10))
@@ -109,7 +97,6 @@ for i in range(0,(a*b)):
     plt.title(df['Breed'].iloc[rand_ind[i]])
 
 
-# In[ ]:
 
 
 t=[]
@@ -117,73 +104,61 @@ for i in range(len(df['value'])):
     t.append(df['value'].iloc[i]/255.0)u
 
 
-# In[ ]:
 
 
 #df['value'].values/255.0
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 data.head(7)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 plt.imshow(df['path'][0])
 
 
-# In[ ]:
 
 
 data['id'] = data['path'].apply(lambda x : x.split('/')[-1].split('.')[0]) 
 
 
-# In[ ]:
 
 
 data.head()
 
 
-# In[ ]:
 
 
 

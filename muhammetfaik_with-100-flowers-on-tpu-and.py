@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import math, re, os
@@ -14,7 +13,6 @@ print("Tensorflow version " + tf.__version__)
 AUTO = tf.data.experimental.AUTOTUNE
 
 
-# In[2]:
 
 
 get_ipython().system('wget aibrian.com/checkpoint')
@@ -568,7 +566,6 @@ model.fit(input_data, output_data, validation_data=(input_data, output_data), ba
     print(end - start )
 
 
-# In[3]:
 
 
 # Detect hardware, return appropriate distribution strategy
@@ -588,13 +585,11 @@ else:
 print("REPLICAS: ", strategy.num_replicas_in_sync)
 
 
-# In[4]:
 
 
 GCS_DS_PATH = KaggleDatasets().get_gcs_path() # you can list the bucket with "!gsutil ls $GCS_DS_PATH"
 
 
-# In[5]:
 
 
 IMAGE_SIZE = [512, 512] # at this size, a GPU will run out of memory. Use the TPU
@@ -626,7 +621,6 @@ CLASSES = ['pink primrose',    'hard-leaved pocket orchid', 'canterbury bells', 
            'trumpet creeper',  'blackberry lily',           'common tulip',     'wild rose']                                                                                                                                               # 100 - 102
 
 
-# In[6]:
 
 
 # numpy and matplotlib defaults
@@ -734,7 +728,6 @@ def display_training_curves(training, validation, title, subplot):
     ax.legend(['train', 'valid.'])
 
 
-# In[7]:
 
 
 def decode_image(image_data):
@@ -820,7 +813,6 @@ STEPS_PER_EPOCH = NUM_TRAINING_IMAGES // BATCH_SIZE
 print('Dataset: {} training images, {} validation images, {} unlabeled test images'.format(NUM_TRAINING_IMAGES, NUM_VALIDATION_IMAGES, NUM_TEST_IMAGES))
 
 
-# In[8]:
 
 
 # data dump
@@ -838,7 +830,6 @@ for image, idnum in get_test_dataset().take(3):
 print("Test data IDs:", idnum.numpy().astype('U')) # U=unicode string
 
 
-# In[9]:
 
 
 # Peek at training data
@@ -847,14 +838,12 @@ training_dataset = training_dataset.unbatch().batch(20)
 train_batch = iter(training_dataset)
 
 
-# In[10]:
 
 
 # run this cell again for next set of images
 display_batch_of_images(next(train_batch))
 
 
-# In[11]:
 
 
 # peer at test data
@@ -863,14 +852,12 @@ test_dataset = test_dataset.unbatch().batch(20)
 test_batch = iter(test_dataset)
 
 
-# In[12]:
 
 
 # run this cell again for next set of images
 display_batch_of_images(next(test_batch))
 
 
-# In[13]:
 
 
 with strategy.scope():
@@ -891,7 +878,6 @@ model.compile(
 model.summary()
 
 
-# In[14]:
 
 
 import os
@@ -1416,20 +1402,17 @@ if __name__ == '__main__':
     print(end - start )
 
 
-# In[15]:
 
 
 history = model.fit(get_training_dataset(), steps_per_epoch=STEPS_PER_EPOCH, epochs=EPOCHS, validation_data=get_validation_dataset())
 
 
-# In[16]:
 
 
 display_training_curves(history.history['loss'], history.history['val_loss'], 'loss', 211)
 display_training_curves(history.history['sparse_categorical_accuracy'], history.history['val_sparse_categorical_accuracy'], 'accuracy', 212)
 
 
-# In[17]:
 
 
 
@@ -1965,7 +1948,6 @@ if __name__ == '__main__':
         print(end - start )
 
 
-# In[18]:
 
 
 cmat = confusion_matrix(cm_correct_labels, cm_predictions, labels=range(len(CLASSES)))
@@ -1977,7 +1959,6 @@ display_confusion_matrix(cmat, score, precision, recall)
 print('f1 score: {:.3f}, precision: {:.3f}, recall: {:.3f}'.format(score, precision, recall))
 
 
-# In[19]:
 
 
 test_ds = get_test_dataset(ordered=True) # since we are splitting the dataset and iterating separately on images and ids, order matters.
@@ -1995,7 +1976,6 @@ np.savetxt('submission.csv', np.rec.fromarrays([test_ids, predictions]), fmt=['%
 get_ipython().system('head submission.csv')
 
 
-# In[20]:
 
 
 dataset = get_validation_dataset()
@@ -2003,7 +1983,6 @@ dataset = dataset.unbatch().batch(20)
 batch = iter(dataset)
 
 
-# In[21]:
 
 
 # run this cell again for next set of images

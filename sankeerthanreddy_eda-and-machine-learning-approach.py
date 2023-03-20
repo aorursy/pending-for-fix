@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[34]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,39 +22,33 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[35]:
 
 
 pip install kaggle
 
 
-# In[36]:
 
 
 train = pd.read_csv('../input/mercedes-benz-greener-manufacturing/train.csv.zip')
 test=pd.read_csv("../input/mercedes-benz-greener-manufacturing/test.csv.zip")
 
 
-# In[37]:
 
 
 print("Train shape :", train.shape)
 print("Test shape :" ,test.shape)
 
 
-# In[38]:
 
 
 train.head()
 
 
-# In[39]:
 
 
 import matplotlib.pyplot as plt
 
 
-# In[40]:
 
 
 plt.figure(figsize=(8,6))
@@ -66,55 +59,46 @@ plt.grid()
 plt.show()
 
 
-# In[41]:
 
 
 train["y"].max()
 
 
-# In[42]:
 
 
 train["y"].min()
 
 
-# In[43]:
 
 
 train["y"].mean()
 
 
-# In[44]:
 
 
 print(train.columns)
 
 
-# In[45]:
 
 
 train.describe()
 
 
-# In[46]:
 
 
 import seaborn as sns
 
 
-# In[47]:
 
 
 train['X0'].unique()
 
 
-# In[48]:
 
 
 train.groupby('X0')['ID'].nunique()
 
 
-# In[49]:
 
 
 col_sort_order = np.sort(train['X0'].unique()).tolist()
@@ -127,7 +111,6 @@ plt.grid()
 plt.show()
 
 
-# In[50]:
 
 
 col_sort_order = np.sort(train['X0'].unique()).tolist()
@@ -140,19 +123,16 @@ plt.title("Distb. of y variable with X0")
 plt.show()
 
 
-# In[51]:
 
 
 train['X1'].unique()
 
 
-# In[52]:
 
 
 train.groupby('X1')['ID'].nunique()
 
 
-# In[53]:
 
 
 col_sort_order = np.sort(train['X1'].unique()).tolist()
@@ -165,7 +145,6 @@ plt.grid()
 plt.show()
 
 
-# In[54]:
 
 
 col_sort_order = np.sort(train['X1'].unique()).tolist()
@@ -178,19 +157,16 @@ plt.title("Distb. of y variable with X1")
 plt.show()
 
 
-# In[55]:
 
 
 train['X2'].unique()
 
 
-# In[56]:
 
 
 train.groupby('X2')['ID'].nunique()
 
 
-# In[57]:
 
 
 col_sort_order = np.sort(train['X2'].unique()).tolist()
@@ -203,7 +179,6 @@ plt.grid()
 plt.show()
 
 
-# In[58]:
 
 
 col_sort_order = np.sort(train['X2'].unique()).tolist()
@@ -216,19 +191,16 @@ plt.title("Distb. of y variable with X2")
 plt.show()
 
 
-# In[59]:
 
 
 train['X3'].unique()
 
 
-# In[60]:
 
 
 train.groupby('X3')['ID'].nunique()
 
 
-# In[61]:
 
 
 col_sort_order = np.sort(train['X3'].unique()).tolist()
@@ -241,7 +213,6 @@ plt.grid()
 plt.show()
 
 
-# In[62]:
 
 
 col_sort_order = np.sort(train['X3'].unique()).tolist()
@@ -254,19 +225,16 @@ plt.title("Distb. of y variable with X3")
 plt.show()
 
 
-# In[63]:
 
 
 train['X4'].unique()
 
 
-# In[64]:
 
 
 train.groupby('X4')['ID'].nunique()
 
 
-# In[65]:
 
 
 col_sort_order = np.sort(train['X4'].unique()).tolist()
@@ -279,7 +247,6 @@ plt.grid()
 plt.show()
 
 
-# In[66]:
 
 
 col_sort_order = np.sort(train['X4'].unique()).tolist()
@@ -292,19 +259,16 @@ plt.title("Distb. of y variable with X4")
 plt.show()
 
 
-# In[67]:
 
 
 train['X5'].unique()
 
 
-# In[68]:
 
 
 train.groupby('X5')['ID'].nunique()
 
 
-# In[69]:
 
 
 col_sort_order = np.sort(train['X5'].unique()).tolist()
@@ -317,7 +281,6 @@ plt.grid()
 plt.show()
 
 
-# In[70]:
 
 
 col_sort_order = np.sort(train['X5'].unique()).tolist()
@@ -330,19 +293,16 @@ plt.title("Distb. of y variable with X5")
 plt.show()
 
 
-# In[71]:
 
 
 train['X6'].unique()
 
 
-# In[72]:
 
 
 train.groupby('X6')['ID'].nunique()
 
 
-# In[73]:
 
 
 col_sort_order = np.sort(train['X6'].unique()).tolist()
@@ -355,7 +315,6 @@ plt.grid()
 plt.show()
 
 
-# In[74]:
 
 
 col_sort_order = np.sort(train['X6'].unique()).tolist()
@@ -368,19 +327,16 @@ plt.title("Distb. of y variable with X6")
 plt.show()
 
 
-# In[75]:
 
 
 train['X8'].unique()
 
 
-# In[76]:
 
 
 train.groupby('X8')['ID'].nunique()
 
 
-# In[77]:
 
 
 col_sort_order = np.sort(train['X8'].unique()).tolist()
@@ -393,7 +349,6 @@ plt.grid()
 plt.show()
 
 
-# In[78]:
 
 
 col_sort_order = np.sort(train['X8'].unique()).tolist()
@@ -406,25 +361,21 @@ plt.title("Distb. of y variable with X8")
 plt.show()
 
 
-# In[79]:
 
 
 get_ipython().system(' pip install pycaret')
 
 
-# In[80]:
 
 
 from pycaret.regression import *
 
 
-# In[81]:
 
 
 train.info()
 
 
-# In[82]:
 
 
 reg = setup(data = train, 
@@ -436,86 +387,72 @@ reg = setup(data = train,
              silent = True)
 
 
-# In[83]:
 
 
 compare_models()
 
 
-# In[84]:
 
 
 br=create_model('br')
 
 
-# In[85]:
 
 
 br
 
 
-# In[86]:
 
 
 tuned_dt = tune_model(br)
 
 
-# In[87]:
 
 
 plot_model(br)
 
 
-# In[88]:
 
 
 tuned_br = tune_model(br, optimize = 'R2')
 
 
-# In[89]:
 
 
 tuned_br
 
 
-# In[90]:
 
 
 final_br= finalize_model(tuned_br)
 
 
-# In[91]:
 
 
 save_model(final_br, 'br_saved1126082020')
 
 
-# In[ ]:
 
 
 
 
 
-# In[92]:
 
 
 #sample= pd.read_csv('../input/sample/sample.csv')
 
 
-# In[93]:
 
 
 #predictions = predict_model(tuned_br, data = test)
 #sample['y'] = predictions['Label']
 
 
-# In[94]:
 
 
 #sample.head()
 
 
-# In[ ]:
 
 
 

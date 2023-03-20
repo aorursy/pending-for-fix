@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # Download TorchVision repo to use some files from
@@ -15,13 +14,11 @@ get_ipython().system('cp /kaggle/working/vision/references/detection/engine.py /
 get_ipython().system('cp /kaggle/working/vision/references/detection/coco_utils.py /kaggle/working/')
 
 
-# In[2]:
 
 
 pip install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
 
 
-# In[3]:
 
 
 import torch
@@ -44,14 +41,12 @@ import utils
 import matplotlib.patches as patches
 
 
-# In[4]:
 
 
 DIR = "/kaggle/input/global-wheat-detection/"
 pd_train = pandas.read_csv(DIR+"train.csv")
 
 
-# In[5]:
 
 
 new_bbox = []
@@ -68,7 +63,6 @@ for b in bbox:
     
 
 
-# In[6]:
 
 
 class dictImage():
@@ -98,7 +92,6 @@ class dictImage():
             self.list_data.append(val)
 
 
-# In[7]:
 
 
 data_train = dictImage(DIR, image_id, new_bbox)
@@ -106,13 +99,11 @@ data_train.buildDict()
 data_train.convertToListData()
 
 
-# In[8]:
 
 
 len(data_train.list_data)
 
 
-# In[9]:
 
 
 def get_transform(train):
@@ -128,7 +119,6 @@ transf_train = get_transform(train=True)
 transf_test = get_transform(train=False)
 
 
-# In[10]:
 
 
 class BuildDataset(torch.utils.data.Dataset):
@@ -200,7 +190,6 @@ class BuildDataset(torch.utils.data.Dataset):
         return len(self.list_data)
 
 
-# In[11]:
 
 
 torch.manual_seed(1)
@@ -212,13 +201,11 @@ data_loader = torch.utils.data.DataLoader(
     collate_fn=utils.collate_fn)
 
 
-# In[12]:
 
 
 dataset[0]
 
 
-# In[13]:
 
 
 def get_instance_segmentation_model(num_classes):
@@ -241,7 +228,6 @@ def get_instance_segmentation_model(num_classes):
     return model
 
 
-# In[14]:
 
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
@@ -267,7 +253,6 @@ lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer,
 print("device",device)
 
 
-# In[15]:
 
 
 # let's train it for 10 epochs
@@ -280,7 +265,6 @@ for epoch in range(num_epochs):
     lr_scheduler.step()
 
 
-# In[18]:
 
 
 def showImage(img, boxes, scores):
@@ -303,7 +287,6 @@ def showImage(img, boxes, scores):
     plt.show()
 
 
-# In[19]:
 
 
 model.eval()
@@ -322,7 +305,6 @@ for f in list_test:
     showImage(img, boxes, scores)
 
 
-# In[ ]:
 
 
 

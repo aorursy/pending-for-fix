@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -28,7 +27,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 def load_df(csv_path='../input/train.csv', nrows=None):
@@ -47,25 +45,21 @@ def load_df(csv_path='../input/train.csv', nrows=None):
     return df
 
 
-# In[ ]:
 
 
 get_ipython().run_cell_magic('time', '', 'train_df = load_df()\ntest_df = load_df("../input/test.csv")')
 
 
-# In[ ]:
 
 
 train_df.info()
 
 
-# In[ ]:
 
 
 train_df.head(5)
 
 
-# In[ ]:
 
 
 #target variable
@@ -81,52 +75,44 @@ plt.ylabel('TransactionRevenue', fontsize=12)
 plt.show()
 
 
-# In[ ]:
 
 
 nzt=pd.notnull(train_df['totals.transactionRevenue']).sum() #number of instances with non zero revenue
 nzt
 
 
-# In[ ]:
 
 
 nzu=(gdf["totals.transactionRevenue"]>0).sum() #number of unique customers with non zero revenue
 nzu
 
 
-# In[ ]:
 
 
 train_df.fullVisitorId.nunique() #unique visiters in the train set
 
 
-# In[ ]:
 
 
 test_df.fullVisitorId.nunique() #unique visiters in the train set
 
 
-# In[ ]:
 
 
 len(set(train_df.fullVisitorId.unique()).intersection(set(test_df.fullVisitorId.unique()))) #unique visitors between train and test
 
 
-# In[ ]:
 
 
 const_cols = [c for c in train_df.columns if train_df[c].nunique(dropna=False)==1 ] 
 const_cols #columns with constant values which can be dropped
 
 
-# In[ ]:
 
 
 (set(train_df.columns).difference(set(test_df.columns))) #variable which are not common in both test and train
 
 
-# In[ ]:
 
 
 cols_to_drop = const_cols + ['sessionId'] #drop constant columns
@@ -135,7 +121,6 @@ train_df = train_df.drop(cols_to_drop + ["trafficSource.campaignCode"], axis=1)
 test_df = test_df.drop(cols_to_drop, axis=1)
 
 
-# In[ ]:
 
 
 train_df["totals.transactionRevenue"].fillna(0, inplace=True) #impute 0 in Na's place
@@ -144,7 +129,6 @@ train_id = train_df["fullVisitorId"].values
 test_id = test_df["fullVisitorId"].values
 
 
-# In[ ]:
 
 
 #Label encoder
@@ -169,7 +153,6 @@ for col in cat_cols:
     test_df[col] = lbl.transform(list(test_df[col].values.astype('str')))
 
 
-# In[ ]:
 
 
 #Convert numerical columns into float
@@ -179,19 +162,16 @@ for col in num_cols:
     test_df[col] = test_df[col].astype(float)
 
 
-# In[ ]:
 
 
 train_df['date'].
 
 
-# In[ ]:
 
 
 train_df.info()
 
 
-# In[ ]:
 
 
 import datetime
@@ -206,7 +186,6 @@ val_X = val_df[cat_cols + num_cols]
 test_X = test_df[cat_cols + num_cols]
 
 
-# In[ ]:
 
 
 def run_catbst(train_X, train_y, val_X, val_y, test_X):
@@ -221,20 +200,17 @@ def run_catbst(train_X, train_y, val_X, val_y, test_X):
     return pred_test_y, model ,rms
 
 
-# In[ ]:
 
 
 import catboost as cb
 pred_test, model,rms = run_catbst(dev_X, dev_y, val_X, val_y, test_X)
 
 
-# In[ ]:
 
 
 rms
 
 
-# In[ ]:
 
 
 sub_df = pd.DataFrame({"fullVisitorId":test_id})

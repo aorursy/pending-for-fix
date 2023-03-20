@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[19]:
 
 
 pip install pyspark
 
 
-# In[20]:
 
 
 from pyspark.sql import SparkSession
@@ -29,7 +27,6 @@ rawData = rawData.select(col('FVC').cast('float'), col('Percent').cast('float'),
 rawData.toPandas().head()
 
 
-# In[21]:
 
 
 from pyspark.ml.stat import Summarizer
@@ -44,7 +41,6 @@ summarizer = Summarizer.metrics("mean", "min", "max", "variance")
 stat.select(summarizer.summary(stat.feature)).toPandas()
 
 
-# In[22]:
 
 
 from pyspark.ml.stat import Correlation
@@ -61,7 +57,6 @@ sns.heatmap(df, xticklabels= ['Percent', 'Age', 'FVC', 'Weeks'], yticklabels= ['
 print("From heatmap Age and Percentage is highly positively correlated, Also FVC and Weeks are highly negatively correlated. As Weeks go by FVC keeps on decreasing" )
 
 
-# In[23]:
 
 
 #Function to get dicom data
@@ -73,7 +68,6 @@ def getDicomData(binry):
     return dicom_bytes
 
 
-# In[24]:
 
 
 #Function to get and display plotted contours
@@ -201,13 +195,11 @@ def getLungContours(data, display = False):
        return patient_id, int(week), contours
 
 
-# In[25]:
 
 
 getLungContours('../input/osic-pulmonary-fibrosis-progression/train/ID00007637202177411956430/5.dcm', True)
 
 
-# In[26]:
 
 
 # Calculating total areas and Total average aspect ratios of all contours in a CT Scan.
@@ -253,14 +245,12 @@ def getContourProperties(contours, display = False):
         return float(avg_aspect_ratio), float(percent_ratio), float(total_contour_area), float(len(contours))
 
 
-# In[27]:
 
 
 sample_contour_info = getLungContours('../input/osic-pulmonary-fibrosis-progression/train/ID00007637202177411956430/5.dcm')
 getContourProperties(sample_contour_info[2], True)
 
 
-# In[ ]:
 
 
 # Getting CT Scan image's meta data
@@ -305,7 +295,6 @@ def get_observation_data(data, display = False):
         return observation_data
 
 
-# In[ ]:
 
 
 # Get Meta + contour properties 
@@ -344,7 +333,6 @@ def getMetaAndContour(data, display = False):
         return output
 
 
-# In[ ]:
 
 
 from pydicom import dcmread
@@ -390,14 +378,12 @@ dfWithCols = df_image.select(df_image['_1.Patient'], df_image['_1.Weeks'], df_im
 dfWithCols.write.mode('overwrite').partitionBy('Patient', 'Week').parquet('s3://osis-parquet/CTProps/props')
 
 
-# In[28]:
 
 
 dataframe = spark.read.parquet("../input/parquet/CTProps/final_data")
 dataframe.toPandas()
 
 
-# In[29]:
 
 
 from pyspark.ml.stat import Correlation
@@ -433,7 +419,6 @@ print("4. Number Of Contours is very LESS correlated with FVC, Its value is arou
 print("I think it is better to neglect Number Of contours from analysis")
 
 
-# In[30]:
 
 
 
@@ -443,7 +428,6 @@ effective_dataframe = dataframe.join( dataframe.groupBy("Patient")              
 effective_dataframe.toPandas()
 
 
-# In[31]:
 
 
 

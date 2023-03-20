@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -101,7 +100,6 @@ def gini_xgb_sklearn_api(preds, dtrain):
     return [('gini', gini_score)]
 
 
-# In[2]:
 
 
 # read in files
@@ -117,7 +115,6 @@ Work with features
 credit to:
 Heads or Tails's Steering Wheel of Fortune - Porto Seguro EDA notebook
 Cam Nugent's deep neural network: insurance claims (~0.268)
-# In[3]:
 
 
 # list columns that have missing values
@@ -127,7 +124,6 @@ for col in train.columns:
         print('feature %s has %i missing entries' %(col, null_sum))
 
 
-# In[4]:
 
 
 # olivier's feature selection and 
@@ -172,7 +168,6 @@ feat_olivier_peatle = [
 ]
 
 
-# In[5]:
 
 
 # data preparation for training
@@ -185,14 +180,12 @@ train_x = train.drop(['id', 'target'], axis = 1)
 test_x = test.drop(['id'], axis = 1)#test[feat_olivier_peatle]
 
 
-# In[6]:
 
 
 merged_dat = pd.concat([train_x, test_x], axis = 0)
 print(merged_dat.shape)
 
 
-# In[7]:
 
 
 # add feature "https://www.kaggle.com/headsortails/steering-wheel-of-fortune-porto-seguro-eda"
@@ -207,13 +200,11 @@ diff_df = fltr_df.apply(lambda x: x - fltr_df.iloc[0, :], axis = 1).fillna(0)
 merged_dat['diffbin_calc_'] = diff_df.sum(axis = 1)
 
 
-# In[8]:
 
 
 merged_dat = merged_dat[feat_olivier_peatle + ['nona_calc_', 'sumbin_calc_', 'diffbin_calc_']]
 
 
-# In[9]:
 
 
 #change data to float32
@@ -222,7 +213,6 @@ for c, dtype in zip(merged_dat.columns, merged_dat.dtypes):
         merged_dat[c] = merged_dat[c].astype(np.float32)
 
 
-# In[10]:
 
 
 #one hot encode the categoricals
@@ -235,13 +225,11 @@ for column in cat_features:
     merged_dat.drop([column], axis=1, inplace = True)
 
 
-# In[11]:
 
 
 merged_dat.replace(-1, 0, inplace = True)
 
 
-# In[12]:
 
 
 # normailise the scale of the numericals
@@ -249,14 +237,12 @@ scaler = MinMaxScaler()
 merged_dat = scaler.fit_transform(merged_dat)
 
 
-# In[13]:
 
 
 train_X = merged_dat[:train_x.shape[0]]
 test_X = merged_dat[train_x.shape[0]:]
 
 
-# In[14]:
 
 
 # ------------------------------------------------
@@ -329,7 +315,6 @@ for i, (train_index, valid_index) in enumerate(skf.split(X, y)):
                  )
 
 
-# In[15]:
 
 
 # collate results
@@ -348,14 +333,12 @@ for i in range(0, 5):
     
 
 
-# In[16]:
 
 
 sbmtn_result_df = test['id'].to_frame()
 sbmtn_result_df['target'] = fold_pred_collator.mean(axis = 1)
 
 
-# In[17]:
 
 
 sbmtn_result_df.to_csv('nn_submission.csv', index = False)

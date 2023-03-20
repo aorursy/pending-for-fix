@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import pandas as pd
@@ -17,7 +16,6 @@ from sklearn.cross_validation import StratifiedKFold
 from sklearn.metrics import log_loss
 
 
-# In[2]:
 
 
 datadir = '../input'
@@ -36,7 +34,6 @@ appevents = pd.read_csv(os.path.join(datadir,'app_events.csv'),
 applabels = pd.read_csv(os.path.join(datadir,'app_labels.csv'))
 
 
-# In[3]:
 
 
 ## Feature engineering
@@ -55,7 +52,6 @@ I'm going to one-hot encode everything and sparse matrices will help deal with a
 As preparation I create two columns that show which train or test set row a particular device_id belongs to.
 
 
-# In[4]:
 
 
 gatrain['trainrow'] = np.arange(gatrain.shape[0])
@@ -63,7 +59,6 @@ gatest['testrow'] = np.arange(gatest.shape[0])
 print("hello")
 
 
-# In[5]:
 
 
 brandencoder = LabelEncoder().fit(phone.phone_brand)
@@ -77,7 +72,6 @@ Xte_brand = csr_matrix((np.ones(gatest.shape[0]),
 print('Brand features: train shape {}, test shape {}'.format(Xtr_brand.shape, Xte_brand.shape))
 
 
-# In[6]:
 
 
 m = phone.phone_brand.str.cat(phone.device_model)
@@ -92,7 +86,6 @@ Xte_model = csr_matrix((np.ones(gatest.shape[0]),
 print('Model features: train shape {}, test shape {}'.format(Xtr_model.shape, Xte_model.shape))
 
 
-# In[7]:
 
 
 appencoder = LabelEncoder().fit(appevents.app_id)
@@ -106,7 +99,6 @@ deviceapps = (appevents.merge(events[['device_id']], how='left',left_on='event_i
 deviceapps.head()
 
 
-# In[8]:
 
 
 d = deviceapps.dropna(subset=['trainrow'])
@@ -118,7 +110,6 @@ Xte_app = csr_matrix((np.ones(d.shape[0]), (d.testrow, d.app)),
 print('Apps data: train shape {}, test shape {}'.format(Xtr_app.shape, Xte_app.shape))
 
 
-# In[9]:
 
 
 applabels = applabels.loc[applabels.app_id.isin(appevents.app_id.unique())]
@@ -128,7 +119,6 @@ applabels['label'] = labelencoder.transform(applabels.label_id)
 nlabels = len(labelencoder.classes_)
 
 
-# In[10]:
 
 
 devicelabels = (deviceapps[['device_id','app']]
@@ -140,7 +130,6 @@ devicelabels = (deviceapps[['device_id','app']]
 devicelabels.head()
 
 
-# In[11]:
 
 
 d = devicelabels.dropna(subset=['trainrow'])
@@ -152,7 +141,6 @@ Xte_label = csr_matrix((np.ones(d.shape[0]), (d.testrow, d.label)),
 print('Labels data: train shape {}, test shape {}'.format(Xtr_label.shape, Xte_label.shape))
 
 
-# In[12]:
 
 
 Xtrain = hstack((Xtr_brand, Xtr_model, Xtr_app, Xtr_label), format='csr')
@@ -160,7 +148,6 @@ Xtest =  hstack((Xte_brand, Xte_model, Xte_app, Xte_label), format='csr')
 print('All features: train shape {}, test shape {}'.format(Xtrain.shape, Xtest.shape))
 
 
-# In[13]:
 
 
 targetencoder = LabelEncoder().fit(gatrain.group)
@@ -168,7 +155,6 @@ y = targetencoder.transform(gatrain.group)
 nclasses = len(targetencoder.classes_)
 
 
-# In[14]:
 
 
 def score(clf, random_state = 0):
@@ -186,7 +172,6 @@ def score(clf, random_state = 0):
     return log_loss(y, pred)
 
 
-# In[15]:
 
 
 Cs = np.logspace(-3,0,4)
@@ -196,19 +181,16 @@ for C in Cs:
 plt.semilogx(Cs, res,'-o');
 
 
-# In[16]:
 
 
 score(LogisticRegression(C=0.02))
 
 
-# In[17]:
 
 
 score(LogisticRegression(C=0.02, multi_class='multinomial',solver='lbfgs'))
 
 
-# In[18]:
 
 
 clf = LogisticRegression(C=0.02, multi_class='multinomial',solver='lbfgs')
@@ -217,7 +199,6 @@ pred = pd.DataFrame(clf.predict_proba(Xtest), index = gatest.index, columns=targ
 pred.head()
 
 
-# In[19]:
 
 
 pred.to_csv('logreg_subm.csv',index=True)

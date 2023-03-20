@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 get_ipython().system(' pip install efficientnet_pytorch')
 get_ipython().system(' pip install pytorch_lightning')
 
 
-# In[ ]:
 
 
 import torch
@@ -48,7 +46,6 @@ random_state=47
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-# In[ ]:
 
 
 IMG_SIZE = 224
@@ -64,7 +61,6 @@ else:
 im_dir_train.is_dir()
 
 
-# In[ ]:
 
 
 train_df = pd.read_csv(csv_dir/'train.csv')
@@ -94,7 +90,6 @@ meta_features.remove('anatom_site_general_challenge')
 del train_df['patient_id'];del train_df['anatom_site_general_challenge']
 
 
-# In[ ]:
 
 
 class MelanomaDataset(Dataset):
@@ -136,7 +131,6 @@ class MelanomaDataset(Dataset):
         return len(self.df)
 
 
-# In[ ]:
 
 
 class Microscope(albumentations.ImageOnlyTransform):
@@ -161,7 +155,6 @@ cutout = albumentations.Cutout(num_holes=4, max_h_size=int(IMG_SIZE*0.05),
                       p=0.3)
 
 
-# In[ ]:
 
 
 MEL_DATASET_STATS = {'mean': [0.8016, 0.6186, 0.5849], 'std': [0.0916, 0.1036, 0.1139]}
@@ -195,13 +188,11 @@ test_transform = albumentations.Compose(transforms=[
 ])
 
 
-# In[ ]:
 
 
 # test_transform(False, image=np.ones((412,412, 3)).astype(np.uint8))
 
 
-# In[ ]:
 
 
 # new_im_dim = 300
@@ -224,7 +215,6 @@ test_transform = albumentations.Compose(transforms=[
 # ])
 
 
-# In[ ]:
 
 
 # Functions to create weights for PyTorch RandomSampler - NOT USED
@@ -264,7 +254,6 @@ def generate_weights(df):
     
 
 
-# In[ ]:
 
 
 # To resmple dataframe prior to training. Using this resampled dataset slightly increased performance because all samples
@@ -282,7 +271,6 @@ def resample_df(df, targ_minority_frac=0.30, minority_class=1):
     return df.sample(frac=1).reset_index(drop=True)
 
 
-# In[ ]:
 
 
 from pytorch_lightning.core.lightning import LightningModule
@@ -424,13 +412,11 @@ def predict_model(model, test_loader):
     return preds 
 
 
-# In[ ]:
 
 
 from sklearn.model_selection import StratifiedKFold
 
 
-# In[ ]:
 
 
 import sklearn 
@@ -514,13 +500,11 @@ for train_idx, val_idx in skf.split(np.zeros(len(train_df)), y=np.zeros(len(trai
         break
 
 
-# In[ ]:
 
 
 final_preds = np.array(k_fold_preds).mean(0)
 
 
-# In[ ]:
 
 
 sub = pd.read_csv(csv_dir/'sample_submission.csv')

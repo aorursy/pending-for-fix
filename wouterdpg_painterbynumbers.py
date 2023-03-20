@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[14]:
 
 
 WORKSPACE_PATH = '/kaggle'
@@ -25,19 +24,16 @@ print(
 )
 
 
-# In[2]:
 
 
 cd $WORKSPACE_PATH
 
 
-# In[3]:
 
 
 pip install efficientnet-pytorch
 
 
-# In[6]:
 
 
 from PIL import Image
@@ -60,7 +56,6 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
 
-# In[7]:
 
 
 metadata = pd.read_csv('input/painter-by-numbers/all_data_info.csv')
@@ -73,7 +68,6 @@ metadata['style_cat'] = encoder.fit_transform(metadata['style'].astype(str))
 metadata
 
 
-# In[24]:
 
 
 test_path = 'input/painter-by-numbers/test.zip'
@@ -92,7 +86,6 @@ metadata.query('new_filename == @name')['artist_cat'].values.item()
 img
 
 
-# In[10]:
 
 
 test_path = 'input/painter-by-numbers/test.zip'
@@ -186,7 +179,6 @@ test_loader = torch.utils.data.DataLoader(test_dataset,
                                         shuffle=True)
 
 
-# In[15]:
 
 
 def get_model(name, pretrained, nc):
@@ -211,7 +203,6 @@ def get_model(name, pretrained, nc):
         print(f'Model called {name} not found...')
 
 
-# In[16]:
 
 
 checkpoint_path_full = CHECKPOINT_PATH+EXPERIMENT_NAME+'.pth'
@@ -265,7 +256,6 @@ else:
     accuracy = []
 
 
-# In[ ]:
 
 
 epoch_list = range(epoch+1, epoch + (EPOCHS_PER_SESSION) + 1)
@@ -346,7 +336,6 @@ for e in epoch_list:
 epoch = e
 
 
-# In[21]:
 
 
 score = 0
@@ -367,7 +356,6 @@ test_accuracy = score/len(test_dataset)
 print(score)
 
 
-# In[ ]:
 
 
 

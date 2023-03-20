@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -11,13 +10,11 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import log_loss
 
 
-# In[2]:
 
 
 ls ../input
 
 
-# In[3]:
 
 
 X = pd.read_csv('../input/andrews-new-stuff/train_features.csv')
@@ -26,80 +23,67 @@ y = pd.read_csv('../input/andrews-new-stuff/y.csv')
 submission = pd.read_csv('../input/andrews-new-stuff/submission.csv')
 
 
-# In[4]:
 
 
 X.shape
 
 
-# In[5]:
 
 
 X.head()
 
 
-# In[6]:
 
 
 X_test.head()
 
 
-# In[7]:
 
 
 y.head()
 
 
-# In[8]:
 
 
 submission.head()
 
 
-# In[9]:
 
 
 alldata = pd.concat([X,X_test])
 
 
-# In[10]:
 
 
 ss = StandardScaler()
 alldata[alldata.columns] = ss.fit_transform(alldata[alldata.columns].astype(float))
 
 
-# In[11]:
 
 
 alldata.head()
 
 
-# In[12]:
 
 
 a = np.concatenate([y.target.values,submission.time_to_failure.values])
 
 
-# In[13]:
 
 
 alldata['target']  = a
 
 
-# In[14]:
 
 
 a = pd.qcut(alldata.target,3,labels=[0,1,2])
 
 
-# In[15]:
 
 
 alldata.target = a
 
 
-# In[16]:
 
 
 alldata['target_0'] = (alldata.target==0).astype(int)
@@ -107,19 +91,16 @@ alldata['target_1'] = (alldata.target==1).astype(int)
 alldata['target_2'] = (alldata.target==2).astype(int)
 
 
-# In[17]:
 
 
 alldata.target.unique()
 
 
-# In[18]:
 
 
 del alldata['target']
 
 
-# In[19]:
 
 
 class GP:
@@ -1692,64 +1673,54 @@ class GP:
         return v[v.columns[:n]].sum(axis=1)
 
 
-# In[20]:
 
 
 gp = GP()
 o = gp.GrabPredictions(alldata[:y.shape[0]],513)
 
 
-# In[21]:
 
 
 log_loss(alldata[:y.shape[0]].target_0,o.class_0)
 
 
-# In[22]:
 
 
 log_loss(alldata[:y.shape[0]].target_1,o.class_1)
 
 
-# In[23]:
 
 
 log_loss(alldata[:y.shape[0]].target_2,o.class_2)
 
 
-# In[24]:
 
 
 oof_preds = gp.GrabPredictions(alldata[:y.shape[0]],513).values
 sub_preds = gp.GrabPredictions(alldata[y.shape[0]:],513).values
 
 
-# In[25]:
 
 
 oof_preds[0]
 
 
-# In[26]:
 
 
 params = np.linalg.lstsq(oof_preds, y.target,rcond=-1)[0]
 
 
-# In[27]:
 
 
 params
 
 
-# In[28]:
 
 
 trainpreds = np.dot(oof_preds,params)
 print(mean_absolute_error(y.target,trainpreds))
 
 
-# In[29]:
 
 
 testpreds = np.dot(sub_preds,params)
@@ -1757,7 +1728,6 @@ sub = pd.DataFrame({'seg_id':submission.seg_id, 'time_to_failure':testpreds})
 sub.to_csv('gpcut.csv',index=False)
 
 
-# In[30]:
 
 
 

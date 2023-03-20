@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -15,7 +14,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-# In[2]:
 
 
 # Input data files are available in the "../input/" directory.
@@ -36,13 +34,11 @@ df = pd.merge(train,props,how="left",on="parcelid")
 # Now we have both files merged in the pd object
 
 
-# In[3]:
 
 
 small_df = df[:500]
 
 
-# In[4]:
 
 
 pids = small_df['parcelid']
@@ -51,7 +47,6 @@ df.shape
 small_df.shape
 
 
-# In[5]:
 
 
 plt.figure(figsize=(8,6))
@@ -61,13 +56,11 @@ plt.ylabel('logerror', fontsize=12)
 plt.show()
 
 
-# In[6]:
 
 
 df.logerror.values
 
 
-# In[7]:
 
 
 ***More to come. Stay tuned.!

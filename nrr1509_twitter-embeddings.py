@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import numpy as np 
@@ -57,13 +56,11 @@ from keras.utils.np_utils import to_categorical
 from sklearn.preprocessing import LabelEncoder
 
 
-# In[ ]:
 
 
 os.listdir("../input/")
 
 
-# In[ ]:
 
 
 df = pd.read_csv('../input/twitter-airline-sentiment/Tweets.csv')
@@ -73,7 +70,6 @@ dataset = df[['text', 'airline_sentiment']]
 dataset=dataset.rename(index=str, columns={"airline_sentiment": "target"})
 
 
-# In[ ]:
 
 
 train_df, full_df = train_test_split(dataset, test_size=0.30, random_state=2018)
@@ -114,7 +110,6 @@ y_val_oh = to_categorical(y_val_le)
 y_test_oh = to_categorical(y_test_le)
 
 
-# In[ ]:
 
 
 EMBEDDING_FILE = '../input/quora-insincere-questions-classification/embeddings/glove.840B.300d/glove.840B.300d.txt'
@@ -122,13 +117,11 @@ def get_coefs(word,*arr): return word, np.asarray(arr, dtype='float32')
 embeddings_index = dict(get_coefs(*o.split(" ")) for o in open(EMBEDDING_FILE, encoding='utf8'))
 
 
-# In[ ]:
 
 
 nb_words
 
 
-# In[ ]:
 
 
 all_embs = np.stack(embeddings_index.values())
@@ -145,7 +138,6 @@ for word, i in word_index.items():
         
 
 
-# In[ ]:
 
 
 def build_vocab(texts):
@@ -160,7 +152,6 @@ def build_vocab(texts):
     return vocab
 
 
-# In[ ]:
 
 
 def check_coverage(vocab, embeddings_index):
@@ -184,7 +175,6 @@ def check_coverage(vocab, embeddings_index):
     return unknown_words
 
 
-# In[ ]:
 
 
 import operator
@@ -194,13 +184,11 @@ print("Glove : ")
 oov_glove = check_coverage(vocab, embed_glove)
 
 
-# In[ ]:
 
 
 df['lowered_question'] = df['text'].apply(lambda x: x.lower())
 
 
-# In[ ]:
 
 
 def add_lower(embedding, vocab):
@@ -212,7 +200,6 @@ def add_lower(embedding, vocab):
     print(f"Added {count} words to embedding")
 
 
-# In[ ]:
 
 
 print("Glove : ")
@@ -221,13 +208,11 @@ add_lower(embed_glove, vocab)
 oov_glove = check_coverage(vocab, embed_glove)
 
 
-# In[ ]:
 
 
 contraction_mapping = {"ain't": "is not", "aren't": "are not","can't": "cannot", "'cause": "because", "could've": "could have", "couldn't": "could not", "didn't": "did not",  "doesn't": "does not", "don't": "do not", "hadn't": "had not", "hasn't": "has not", "haven't": "have not", "he'd": "he would","he'll": "he will", "he's": "he is", "how'd": "how did", "how'd'y": "how do you", "how'll": "how will", "how's": "how is",  "I'd": "I would", "I'd've": "I would have", "I'll": "I will", "I'll've": "I will have","I'm": "I am", "I've": "I have", "i'd": "i would", "i'd've": "i would have", "i'll": "i will",  "i'll've": "i will have","i'm": "i am", "i've": "i have", "isn't": "is not", "it'd": "it would", "it'd've": "it would have", "it'll": "it will", "it'll've": "it will have","it's": "it is", "let's": "let us", "ma'am": "madam", "mayn't": "may not", "might've": "might have","mightn't": "might not","mightn't've": "might not have", "must've": "must have", "mustn't": "must not", "mustn't've": "must not have", "needn't": "need not", "needn't've": "need not have","o'clock": "of the clock", "oughtn't": "ought not", "oughtn't've": "ought not have", "shan't": "shall not", "sha'n't": "shall not", "shan't've": "shall not have", "she'd": "she would", "she'd've": "she would have", "she'll": "she will", "she'll've": "she will have", "she's": "she is", "should've": "should have", "shouldn't": "should not", "shouldn't've": "should not have", "so've": "so have","so's": "so as", "this's": "this is","that'd": "that would", "that'd've": "that would have", "that's": "that is", "there'd": "there would", "there'd've": "there would have", "there's": "there is", "here's": "here is","they'd": "they would", "they'd've": "they would have", "they'll": "they will", "they'll've": "they will have", "they're": "they are", "they've": "they have", "to've": "to have", "wasn't": "was not", "we'd": "we would", "we'd've": "we would have", "we'll": "we will", "we'll've": "we will have", "we're": "we are", "we've": "we have", "weren't": "were not", "what'll": "what will", "what'll've": "what will have", "what're": "what are",  "what's": "what is", "what've": "what have", "when's": "when is", "when've": "when have", "where'd": "where did", "where's": "where is", "where've": "where have", "who'll": "who will", "who'll've": "who will have", "who's": "who is", "who've": "who have", "why's": "why is", "why've": "why have", "will've": "will have", "won't": "will not", "won't've": "will not have", "would've": "would have", "wouldn't": "would not", "wouldn't've": "would not have", "y'all": "you all", "y'all'd": "you all would","y'all'd've": "you all would have","y'all're": "you all are","y'all've": "you all have","you'd": "you would", "you'd've": "you would have", "you'll": "you will", "you'll've": "you will have", "you're": "you are", "you've": "you have" }
 
 
-# In[ ]:
 
 
 def known_contractions(embed):
@@ -238,7 +223,6 @@ def known_contractions(embed):
     return known
 
 
-# In[ ]:
 
 
 print("- Known Contractions -")
@@ -246,7 +230,6 @@ print("   Glove :")
 print(known_contractions(embed_glove))
 
 
-# In[ ]:
 
 
 def clean_contractions(text, mapping):
@@ -258,7 +241,6 @@ def clean_contractions(text, mapping):
 df['treated_question'] = df['lowered_question'].apply(lambda x: clean_contractions(x, contraction_mapping))
 
 
-# In[ ]:
 
 
 vocab = build_vocab(df['treated_question'])
@@ -266,7 +248,6 @@ print("Glove : ")
 oov_glove = check_coverage(vocab, embed_glove)
 
 
-# In[ ]:
 
 
 punct = "/-'?!.,#$%\'()*+-/:;<=>@[\\]^_`{|}~" + '""“”’' + '∞θ÷α•à−β∅³π‘₹´°£€\×™√²—–&'
@@ -281,7 +262,6 @@ print("Glove :")
 print(unknown_punct(embed_glove, punct))
 
 
-# In[ ]:
 
 
 punct_mapping = {"‘": "'", "₹": "e", "´": "'", "°": "", "€": "e", "™": "tm", "√": " sqrt ", "×": "x", "²": "2", "—": "-", "–": "-", "’": "'", "_": "-", "`": "'", '“': '"', '”': '"', '“': '"', "£": "e", '∞': 'infinity', 'θ': 'theta', '÷': '/', 'α': 'alpha', '•': '.', 'à': 'a', '−': '-', 'β': 'beta', '∅': '', '³': '3', 'π': 'pi', }
@@ -299,7 +279,6 @@ def clean_special_chars(text, punct, mapping):
     return text
 
 
-# In[ ]:
 
 
 df['treated_question'] = df['treated_question'].apply(lambda x: clean_special_chars(x, punct, punct_mapping))
@@ -308,7 +287,6 @@ print("Glove : ")
 oov_glove = check_coverage(vocab, embed_glove)
 
 
-# In[ ]:
 
 
 mispell_dict = {'colour': 'color', 'centre': 'center', 'favourite': 'favorite', 'travelling': 'traveling', 'counselling': 'counseling', 'theatre': 'theater', 'cancelled': 'canceled', 'labour': 'labor', 'organisation': 'organization', 'wwii': 'world war 2', 'citicise': 'criticize', 'youtu ': 'youtube ', 'Qoura': 'Quora', 'sallary': 'salary', 'Whta': 'What', 'narcisist': 'narcissist', 'howdo': 'how do', 'whatare': 'what are', 'howcan': 'how can', 'howmuch': 'how much', 'howmany': 'how many', 'whydo': 'why do', 'doI': 'do I', 'theBest': 'the best', 'howdoes': 'how does', 'mastrubation': 'masturbation', 'mastrubate': 'masturbate', "mastrubating": 'masturbating', 'pennis': 'penis', 'Etherium': 'Ethereum', 'narcissit': 'narcissist', 'bigdata': 'big data', '2k17': '2017', '2k18': '2018', 'qouta': 'quota', 'exboyfriend': 'ex boyfriend', 'airhostess': 'air hostess', "whst": 'what', 'watsapp': 'whatsapp', 'demonitisation': 'demonetization', 'demonitization': 'demonetization', 'demonetisation': 'demonetization', 'pokémon': 'pokemon'}
@@ -319,7 +297,6 @@ def correct_spelling(x, dic):
 df['treated_question'] = df['treated_question'].apply(lambda x: correct_spelling(x, mispell_dict))
 
 
-# In[ ]:
 
 
 vocab = build_vocab(df['treated_question'])
@@ -327,13 +304,11 @@ print("Glove : ")
 oov_glove = check_coverage(vocab, embed_glove)
 
 
-# In[ ]:
 
 
 datasetclean = df[['treated_question', 'airline_sentiment']]
 
 
-# In[ ]:
 
 
 def remove_mentions(input_text):
@@ -343,7 +318,6 @@ datasetclean.treated_question = df.treated_question.apply(remove_mentions)
 datasetclean.head()
 
 
-# In[ ]:
 
 
 train_df, full_df = train_test_split(datasetclean, test_size=0.30, random_state=2018)
@@ -384,13 +358,11 @@ y_val_oh = to_categorical(y_val_le)
 y_test_oh = to_categorical(y_test_le)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 inp = Input(shape=(maxlen,))
@@ -406,13 +378,11 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 print(model.summary())
 
 
-# In[ ]:
 
 
 x=model.fit(train_X, y_train_oh, batch_size=512, epochs=20, validation_data=(val_X, y_val_oh))
 
 
-# In[ ]:
 
 
 Epoch 1/2
@@ -421,7 +391,6 @@ Epoch 2/2
 10248/10248 [==============================] - 2s 183us/step - loss: 0.6976 - acc: 0.7160 - val_loss: 0.6284 - val_acc: 0.7468
 
 
-# In[ ]:
 
 
 
@@ -433,139 +402,116 @@ model.add(CuDNNLSTM(10, dropout=0.5, return_sequences=True))
 model.add(CuDNNLSTM(10, dropout=0.5))
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 

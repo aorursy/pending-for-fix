@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import xgboost as xgb
@@ -12,14 +11,12 @@ import matplotlib.pyplot as plt
 from kaggle.competitions import twosigmanews
 
 
-# In[ ]:
 
 
 env = twosigmanews.make_env()
 (market_train, _) = env.get_training_data()
 
 
-# In[ ]:
 
 
 drop_list = ['AAI.N',
@@ -1691,7 +1688,6 @@ drop_list = ['AAI.N',
 'LFUS.O']
 
 
-# In[ ]:
 
 
 diff_values_train = ['AOBC.O',
@@ -2041,32 +2037,27 @@ diff_values_train = ['AOBC.O',
 'PRSP.N']
 
 
-# In[ ]:
 
 
 index_list_to_drop = market_train[market_train['assetCode'].isin(drop_list)].index.tolist()
 clean_dataset = market_train.drop(market_train.index[index_list_to_drop])
 
 
-# In[ ]:
 
 
 market_train_df = market_train.copy()
 
 
-# In[ ]:
 
 
 market_train_df['date'] = market_train_df['time'].dt.strftime('%Y-%m-%d')
 
 
-# In[ ]:
 
 
 clean_dataset = market_train_df.copy()
 
 
-# In[ ]:
 
 
 from sklearn import preprocessing
@@ -2081,13 +2072,11 @@ encoder.fit(final_list)
 clean_dataset['assetCode'] = encoder.transform(clean_dataset['assetCode'])
 
 
-# In[ ]:
 
 
 clean_dataset = clean_dataset.loc[clean_dataset['time'] >= '2009-01-01 22:00:00+0000']
 
 
-# In[ ]:
 
 
 best_cols = ['volume', 'close', 'open', 'returnsClosePrevRaw1', 'returnsOpenPrevRaw1',
@@ -2097,7 +2086,6 @@ best_cols = ['volume', 'close', 'open', 'returnsClosePrevRaw1', 'returnsOpenPrev
              'MA_15MA','MA_30MA', 'MA_45MA', 'MA_60MA', 'MA_80MA']
 
 
-# In[ ]:
 
 
 clean_dataset['MA_15MA'] = clean_dataset['close'].rolling(window=15).mean()
@@ -2107,7 +2095,6 @@ clean_dataset['MA_60MA'] = clean_dataset['close'].rolling(window=60).mean()
 clean_dataset['MA_80MA'] = clean_dataset['close'].rolling(window=80).mean()
 
 
-# In[ ]:
 
 
 X_train = clean_dataset[best_cols]
@@ -2115,7 +2102,6 @@ y_train = clean_dataset.returnsOpenNextMktres10 >= 0
 y_train = y_train.values
 
 
-# In[ ]:
 
 
 from sklearn.model_selection import train_test_split
@@ -2123,7 +2109,6 @@ from sklearn.model_selection import train_test_split
 X_train_valid, X_test_valid, y_train_valid, y_test_valid = train_test_split(X_train, y_train, shuffle=False)
 
 
-# In[ ]:
 
 
 no assetCode
@@ -2147,7 +2132,6 @@ score on test:0.5434164007933087
 ===========
 
 
-# In[ ]:
 
 
 min_child_weight =3
@@ -2158,7 +2142,6 @@ score on test:0.5400018681829286
 ===========
 
 
-# In[ ]:
 
 
 from xgboost import XGBClassifier
@@ -2187,7 +2170,6 @@ print("score on test:{}".format(model.score(X_test_valid, y_test_valid)))
 print('===========')
 
 
-# In[ ]:
 
 
 last result
@@ -2198,7 +2180,6 @@ score on test:0.5402126375389803
 ===========
 
 
-# In[ ]:
 
 
 clean data
@@ -2209,7 +2190,6 @@ score on test:0.5404774223218648
 ===========
 
 
-# In[ ]:
 
 
 no data cleaning
@@ -2220,7 +2200,6 @@ score on test:0.5407060294406468
 ===========
 
 
-# In[ ]:
 
 
 99.62418842315674
@@ -2237,7 +2216,6 @@ score on train:0.547716245115429
 score on test:0.5410125491363168
 
 
-# In[ ]:
 
 
 plt.figure(num=None, figsize=(10, 10), dpi=80, facecolor='w', edgecolor='k')
@@ -2246,7 +2224,6 @@ plt.title("XGB Feature Importance")
 plt.xticks(range(len(model.feature_importances_)), X_train.columns, rotation='vertical');
 
 
-# In[ ]:
 
 
 test_dataframe = pd.DataFrame()

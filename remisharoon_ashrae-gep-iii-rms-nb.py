@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -44,7 +43,6 @@ seed = myfavouritenumber
 random.seed(seed)
 
 
-# In[2]:
 
 
 # Original code from https://www.kaggle.com/gemartin/load-data-reduce-memory-usage by @gemartin
@@ -96,7 +94,6 @@ def reduce_mem_usage(df, use_float16=False):
     return df
 
 
-# In[3]:
 
 
 df_train = pd.read_csv(path_train)
@@ -104,25 +101,21 @@ df_train = reduce_mem_usage(df_train, use_float16=True)
 df_train.head()
 
 
-# In[4]:
 
 
 df_train = df_train[df_train['meter_reading'] > 0]
 
 
-# In[5]:
 
 
 df_train.head()
 
 
-# In[6]:
 
 
 sns.distplot(df_train['meter_reading'])
 
 
-# In[7]:
 
 
 building = pd.read_csv(path_building)
@@ -130,7 +123,6 @@ building = reduce_mem_usage(building, use_float16=True)
 building.head()
 
 
-# In[8]:
 
 
 le = LabelEncoder()
@@ -140,13 +132,11 @@ weather_train = reduce_mem_usage(weather_train, use_float16=True)
 building.head()
 
 
-# In[ ]:
 
 
 
 
 ## Merge features with data
-# In[9]:
 
 
 def prepare_data(X, building_data, weather_data, test=False):
@@ -192,32 +182,27 @@ def prepare_data(X, building_data, weather_data, test=False):
         return X, y
 
 
-# In[10]:
 
 
 X_train, y_train = prepare_data(df_train, building, weather_train)
 gc.collect()
 
 
-# In[11]:
 
 
 X_train.head()
 
 
-# In[12]:
 
 
 y_train.head()
 
 
-# In[13]:
 
 
 sns.distplot(y_train)
 
 
-# In[14]:
 
 
 X_half_1 = X_train[:int(X_train.shape[0] / 2)]
@@ -251,7 +236,6 @@ print("Building model with second half and validating on first half:")
 model_half_2 = lgb.train(params, train_set=d_half_2, num_boost_round=1000, valid_sets=watchlist_2, verbose_eval=200, early_stopping_rounds=200)
 
 
-# In[15]:
 
 
 df_fimp_1 = pd.DataFrame()
@@ -272,7 +256,6 @@ plt.title("LightGBM Feature Importance")
 plt.tight_layout()
 
 
-# In[16]:
 
 
 Preparing test data 
@@ -280,7 +263,6 @@ Preparing test data
 Preparing test data with same features as train data.
 
 
-# In[17]:
 
 
 import gc
@@ -305,7 +287,6 @@ weather_test = reduce_mem_usage(weather_test)
 X_test, row_ids = prepare_data(df_test, building, weather_test, test=True)
 
 
-# In[18]:
 
 
 pred = np.expm1(model_half_1.predict(X_test, num_iteration=model_half_1.best_iteration)) / 2
@@ -319,7 +300,6 @@ del model_half_2
 gc.collect()
 
 
-# In[19]:
 
 
 submission = pd.DataFrame({"row_id": row_ids, "meter_reading": np.clip(pred, 0, a_max=None)})

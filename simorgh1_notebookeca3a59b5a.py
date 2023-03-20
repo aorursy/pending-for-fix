@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This R environment comes with all of CRAN preinstalled, as well as many other helpful packages
@@ -20,7 +19,6 @@ print(system("ls ../input"))
 print(1:10)
 
 
-# In[2]:
 
 
 

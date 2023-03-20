@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,13 +19,11 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 ls ../input/smalldata/smalldata/smalldata
 
 
-# In[ ]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
@@ -45,7 +42,6 @@ import seaborn as sns
 import math
 
 
-# In[ ]:
 
 
 import keras
@@ -66,7 +62,6 @@ from keras.models import load_model
 from keras.preprocessing.image import load_img
 
 
-# In[ ]:
 
 
 batch_size = 32
@@ -85,7 +80,6 @@ test_dir='../input/dogscatstest/test1/test1/'
 img_size=150
 
 
-# In[ ]:
 
 
 # Process training data to make it ready for fitting.
@@ -102,7 +96,6 @@ test_generator = test_datagen.flow_from_directory(test_dir,target_size=(img_size
 filename=test_generator.filenames
 
 
-# In[ ]:
 
 
 print ('Creating model...')
@@ -126,7 +119,6 @@ vgg_conv_model.compile(optimizer=SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov
 print ('Model is ready to be fit with training data.')
 
 
-# In[ ]:
 
 
 # Create logs, filepath and checkpoints for the model.
@@ -143,7 +135,6 @@ checkpoint = ModelCheckpoint('vgg_conv_model.h5',monitor='val_loss', verbose=1, 
 callbacks_list = [checkpoint,history,early_stopping]
 
 
-# In[ ]:
 
 
 # Fit the model on batches of 20000 samples of training  data and validate on 5000 samples.
@@ -153,7 +144,6 @@ fitted_vgg_conv_model=vgg_conv_model.fit_generator(train_generator,
     validation_steps=math.ceil(validation_generator.samples/validation_generator.batch_size),callbacks=callbacks_list,verbose=1)
 
 
-# In[ ]:
 
 
 # Plot Val_loss,train_loss and val_acc and train_acc.
@@ -174,7 +164,6 @@ plt.legend()
 plt.show()
 
 
-# In[ ]:
 
 
 # Proces test data to generate predictions on provided test data.
@@ -192,7 +181,6 @@ for i in range(len(predictions)):
         new_preds.append('cat')
 
 
-# In[ ]:
 
 
 # Display predictions with 25 pictures with their labels.
@@ -211,7 +199,6 @@ def display_testdata(testdata,filenames):
     plt.show()
 
 
-# In[ ]:
 
 
 display_testdata(new_preds[7700:7725],filename[7700:7725])

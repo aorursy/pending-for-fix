@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import json
@@ -46,7 +45,6 @@ from math import floor
 from keras import backend
 
 
-# In[10]:
 
 
 def dataretreival(filename1,filename2,filename3):
@@ -209,7 +207,6 @@ def vgg_model(input_shape,class_labels):
     
 
 
-# In[3]:
 
 
 # IF CNN, type="base" & RNN, type="rnn"
@@ -220,7 +217,6 @@ label_size=label_size+1
 print(X_train.shape,X_test.shape,label_size)
 
 
-# In[4]:
 
 
 
@@ -247,7 +243,6 @@ class CosineAnnealingLearningrateschedule(Callback):
         self.lrates.append(lr)
 
 
-# In[11]:
 
 
 import tensorflow.keras as keras
@@ -320,7 +315,6 @@ plt.show()
 '''
 
 
-# In[ ]:
 
 
 import tensorflow.keras as keras
@@ -384,7 +378,6 @@ plt.xlabel('No. epoch')
 plt.show()
 
 
-# In[ ]:
 
 
 
@@ -398,21 +391,18 @@ y_test1=y_test.argmax(axis=1)
 print(y_pred,y_test1)
 
 
-# In[ ]:
 
 
 from sklearn.metrics import confusion_matrix
 array=confusion_matrix(y_test1, y_pred)
 
 
-# In[ ]:
 
 
 from sklearn.metrics import classification_report
 print (classification_report(y_test1, y_pred))
 
 
-# In[ ]:
 
 
 import seaborn as sn
@@ -431,7 +421,6 @@ for k in range(0,91,10):
 
 
 
-# In[ ]:
 
 
 # Laoding & Compiling the model 
@@ -570,13 +559,11 @@ submission.head()
 submission.to_csv('submission.csv', index=False)
 
 
-# In[ ]:
 
 
 submission.shape
 
 
-# In[ ]:
 
 
 

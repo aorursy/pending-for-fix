@@ -1,19 +1,16 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().system('conda install -y -c rdkit rdkit')
 
 
-# In[2]:
 
 
 pip install --pre dgl
 
 
-# In[3]:
 
 
 import pandas as pd
@@ -37,7 +34,6 @@ print(os.listdir("."))
 # Any results you write to the current directory are saved as output.
 
 
-# In[4]:
 
 
 ##
@@ -449,7 +445,6 @@ def xyz2mol(atomicNumList, charge, xyz_coordinates, charged_fragments, quick,
     return new_mol,dMat
 
 
-# In[5]:
 
 
 import os
@@ -457,7 +452,6 @@ get_ipython().run_line_magic('cd', '/kaggle/input/champs-scalar-coupling')
 print(os.listdir("."))
 
 
-# In[6]:
 
 
 import gc
@@ -492,25 +486,21 @@ def mol_from_xyz(filepath, add_hs=True, compute_dist_centre=False):
     return mol, np.array(xyz_coordinates), dMat
 
 
-# In[7]:
 
 
 mol, xyz_coordinates, dMat = mol_from_xyz(xyz_filepath_list[0])
 
 
-# In[8]:
 
 
 from dgl.data.chem import mol_to_bigraph
 
 
-# In[9]:
 
 
 g = mol_to_bigraph(mol)
 
 
-# In[10]:
 
 
 from dgl.data.chem import mol_to_bigraph
@@ -530,7 +520,6 @@ def get_graph(filepath='./', add_hs=True, compute_dist_centre=False):
     return graph_list
 
 
-# In[11]:
 
 
 def get_molecules():
@@ -579,7 +568,6 @@ def get_molecules():
     return mols, mol_ids, mol_feats, xyzs, dist_matrices, graph_dist_matrices
 
 
-# In[12]:
 
 
 from dgl.data.chem import mol_to_bigraph
@@ -630,80 +618,67 @@ def get_molecules(filepath='./', add_hs=True, compute_dist_centre=False):
     return graph_list
 
 
-# In[13]:
 
 
 graph_list = get_molecules()
 
 
-# In[14]:
 
 
 train = pd.read_csv('train.csv')
 
 
-# In[15]:
 
 
 len(train['molecule_name'].unique())
 
 
-# In[16]:
 
 
 'dsgdb9nsd_000001' in train['molecule_name'].unique()
 
 
-# In[17]:
 
 
 train.numpy()
 
 
-# In[18]:
 
 
 graph_list[0]
 
 
-# In[19]:
 
 
 graph_list[0].gdata
 
 
-# In[20]:
 
 
 graph_list[0].ndata['xyz']
 
 
-# In[ ]:
 
 
 
 
 
-# In[21]:
 
 
 from dgl.data.utils import save_graphs
 save_graphs('graph_list.bin', graph_list)
 
 
-# In[22]:
 
 
 len(graph_list)
 
 
-# In[23]:
 
 
 graph_list[0].gdata
 
 
-# In[24]:
 
 
 def map_atom_info(df, atom_idx, struct_df):
@@ -719,7 +694,6 @@ def map_atom_info(df, atom_idx, struct_df):
     return df
 
 
-# In[25]:
 
 
 def add_dist(df, struct_df):
@@ -733,7 +707,6 @@ def add_dist(df, struct_df):
     return df
 
 
-# In[26]:
 
 
 
@@ -744,7 +717,6 @@ def transform_per_atom_group(df, a_idx, col='dist', trans='mean'):
         ['molecule_name', f'atom_index_{a_idx}'])[col].transform(trans)
 
 
-# In[27]:
 
 
 import numpy as np
@@ -933,33 +905,28 @@ class KaggleMolDataset(object):
         return len(self.graphs)
 
 
-# In[28]:
 
 
 dataset = KaggleMolDataset()
 
 
-# In[29]:
 
 
 from dgl.data.chem.utils import smile_to_bigraph
 smile_to_bigraph('[H]C([H])([H])[H]')
 
 
-# In[30]:
 
 
 mol
 
 
-# In[31]:
 
 
 mol = Chem.MolFromSmiles('[H]C([H])([H])[H]')
 mol.GetNumAtoms()
 
 
-# In[32]:
 
 
 f = CanonicalAtomFeaturizer()

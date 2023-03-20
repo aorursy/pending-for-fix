@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -19,7 +18,6 @@ print(os.listdir("../input"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 import matplotlib.pyplot as plt
@@ -29,13 +27,11 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.ensemble import GradientBoostingRegressor
 
 
-# In[3]:
 
 
 train_data = pd.read_csv('../input/train.csv',dtype={'acoustic_data': np.int16, 'time_to_failure': np.float64})
 
 
-# In[4]:
 
 
 # Display the head of the dataframe
@@ -44,21 +40,18 @@ pd.options.display.precision = 10
 train_data.head()
 
 
-# In[5]:
 
 
 # Dimensions of the given training data
 print("Rows: {}, Columns: {}".format(train_data.shape[0],train_data.shape[1]))
 
 
-# In[6]:
 
 
 def features(df):
     
 
 
-# In[7]:
 
 
 # Create segments of 150000 data points as mentioned by the competition organisers.
@@ -91,25 +84,21 @@ for i in tqdm(range(num_segments)):
     y_train.loc[i,'time_to_failure'] = y
 
 
-# In[8]:
 
 
 X_train.head()
 
 
-# In[9]:
 
 
 y_train.head()
 
 
-# In[10]:
 
 
 print("X_train Shape: {}, y_train Shape: {}".format(X_train.shape,y_train.shape))
 
 
-# In[11]:
 
 
 scaler = StandardScaler()
@@ -118,7 +107,6 @@ X_train_scaled = scaler.transform(X_train)
 X_train_scaled
 
 
-# In[12]:
 
 
 model = GradientBoostingRegressor(learning_rate=0.1,n_estimators=200,loss='ls').fit(X_train_scaled,y_train.values.flatten())
@@ -126,13 +114,11 @@ y_predictions = model.predict(X_train_scaled)
 y_predictions
 
 
-# In[13]:
 
 
 mean_absolute_error(y_train.values.flatten(),y_predictions)
 
 
-# In[14]:
 
 
 # Create testing data / handle the testing part
@@ -154,14 +140,12 @@ for seg_id in tqdm(X_test.index):
 X_test
 
 
-# In[15]:
 
 
 X_test_scaled = scaler.transform(X_test)
 X_test_scaled
 
 
-# In[16]:
 
 
 y_test_predictions = model.predict(X_test_scaled)
@@ -169,7 +153,6 @@ submission_files['time_to_failure'] = y_test_predictions
 submission_files.to_csv('submission3.csv')
 
 
-# In[17]:
 
 
 

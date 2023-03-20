@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np 
@@ -29,7 +28,6 @@ pd.set_option('display.max_columns', 100)
 pd.set_option('display.max_rows', 25)
 
 
-# In[2]:
 
 
 t_start = datetime.datetime.now()
@@ -40,7 +38,6 @@ test_df = pd.read_csv('/kaggle/input/sf-crime/test.csv.zip')
 sample_submission = pd.read_csv('/kaggle/input/sf-crime/sampleSubmission.csv.zip')
 
 
-# In[3]:
 
 
 def preprocess(df):
@@ -54,20 +51,17 @@ def preprocess(df):
     return df
 
 
-# In[4]:
 
 
 train_df = preprocess(train_df)
 test_df = preprocess(test_df)
 
 
-# In[5]:
 
 
 train_df.drop_duplicates(inplace=True)
 
 
-# In[6]:
 
 
 drop_cols = ['Dates', 'Descript', 'Resolution', 'Id']
@@ -82,7 +76,6 @@ X = train_df.drop('Category', axis=1)
 X_test = test_df
 
 
-# In[7]:
 
 
 y_cats = train_df['Category']
@@ -95,7 +88,6 @@ for idx, target in enumerate(list(y_cats)):
 y = pd.DataFrame(y, columns = unique_cats)
 
 
-# In[8]:
 
 
 X['train'] = 1
@@ -114,7 +106,6 @@ X_test = combined[combined['train'] == 0]
 X_test.drop(['train'], axis=1, inplace=True)  
 
 
-# In[9]:
 
 
 scaler = StandardScaler()
@@ -122,13 +113,11 @@ X = scaler.fit_transform(X)
 X_test = scaler.transform(X_test)
 
 
-# In[10]:
 
 
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.1, random_state=1)
 
 
-# In[11]:
 
 
 The model developed below is designed to serve as a starting point for further development and tuning. The hyperparameters chosen are mostly arbitrary and I haven't attempted to do any tuning. Here are some hyperparameters we can consider modifying to further refine the model:
@@ -146,7 +135,6 @@ The model developed below is designed to serve as a starting point for further d
 I also want to add cross validation. 
 
 
-# In[12]:
 
 
 def get_model(x_tr, y_tr, x_val, y_val):
@@ -189,50 +177,42 @@ def get_model(x_tr, y_tr, x_val, y_val):
     return model, history.history['loss'][-1]
 
 
-# In[13]:
 
 
 mod, loss = get_model(X_train, y_train, X_val, y_val)
 
 
-# In[14]:
 
 
 loss
 
 
-# In[15]:
 
 
 preds = mod.predict(X_test)
 
 
-# In[16]:
 
 
 sub_df = pd.DataFrame(preds, columns=unique_cats)
 
 
-# In[17]:
 
 
 sub_df.index = sub_df.index.set_names(['Id'])
 sub_df.reset_index(drop=False, inplace=True)
 
 
-# In[18]:
 
 
 sub_df.to_csv('sub_file_area.csv', index=False)
 
 
-# In[19]:
 
 
 t_final = datetime.datetime.now()
 
 
-# In[20]:
 
 
 print('Total Execution Time:  {}'.format(t_final - t_start))

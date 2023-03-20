@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -11,7 +10,6 @@ from gensim.models import KeyedVectors
 import time
 
 
-# In[2]:
 
 
 # capture start time for metrics
@@ -20,7 +18,6 @@ start = time.time()
 pd.options.display.max_columns = None
 
 
-# In[3]:
 
 
 train_df = pd.read_csv('../input/jigsaw-unintended-bias-in-toxicity-classification/train.csv', nrows=1000000)
@@ -28,14 +25,12 @@ train_df = pd.read_csv('../input/jigsaw-unintended-bias-in-toxicity-classificati
 #https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.head.html
 
 
-# In[4]:
 
 
 test_df = pd.read_csv('../input/jigsaw-unintended-bias-in-toxicity-classification/test.csv', nrows=1000000)
 #EXERCISE:Let's use the head function again to see how the test set differs
 
 
-# In[5]:
 
 
 cols_for_pairwise_correlation = ['severe_toxicity', 'obscene', 'identity_attack', 'insult', 'threat', 'asian', 'atheist', 'bisexual', 'black', 'buddhist', 'christian', 'female', 'heterosexual', 'hindu', 'homosexual_gay_or_lesbian', 'intellectual_or_learning_disability', 'jewish', 'latino', 'male', 'muslim', 'other_disability', 'other_gender', 'other_race_or_ethnicity', 'other_religion', 'other_sexual_orientation', 'physical_disability', 'psychiatric_or_mental_illness', 'transgender', 'white', 'funny', 'wow', 'sad', 'likes', 'disagree', 'sexual_explicit', 'identity_annotator_count', 'toxicity_annotator_count']
@@ -52,21 +47,18 @@ correlation_df = pd.DataFrame(pairwise_correlation)
 correlation_df.sort_values(by=['Score'], ascending=False)
 
 
-# In[6]:
 
 
 print("Average comment length:", train_df.comment_text.str.len().mean())
 print("Max comment length:", train_df.comment_text.str.len().max())
 
 
-# In[7]:
 
 
 # Full data set takes a long time to plot 
 train_df['target'].head(10000).plot.kde()
 
 
-# In[8]:
 
 
 # Let's select the data that we're going to use in our experiment
@@ -78,7 +70,6 @@ y_train = train_df['target'].values
 y_aux_train = train_df[['target', 'severe_toxicity', 'obscene', 'identity_attack', 'insult', 'threat']].values
 
 
-# In[9]:
 
 
 # Convert values for most common identity labels to boolean
@@ -92,7 +83,6 @@ for column in IDENTITY_COLUMNS + ['target']:
 #EXERCISE:Use the head function again to see the updated dataframe
 
 
-# In[10]:
 
 
 
@@ -112,7 +102,6 @@ tokenizer = text.Tokenizer(filters=CHARS_TO_REMOVE, lower=False)
 #EXERCISE: display the dictionary of words created by tokenizer
 
 
-# In[11]:
 
 
 #EXERCISE:Use the tokenizer texts_to_sequences method to transform each comment_text to a sequence of integers. Each word in the comment should be replaced 
@@ -120,7 +109,6 @@ tokenizer = text.Tokenizer(filters=CHARS_TO_REMOVE, lower=False)
 x_train = # 
 
 
-# In[12]:
 
 
 #EXERCISE do the same for the test data
@@ -128,7 +116,6 @@ x_train = #
 x_test = # 
 
 
-# In[13]:
 
 
 # We will be processing comment vectors so it's useful to make them the same length.
@@ -139,7 +126,6 @@ x_train = sequence.pad_sequences(x_train, maxlen=MAX_LEN)
 #EXERCISE display the vector above
 
 
-# In[14]:
 
 
 #EXERCISE Call pad_sequences for the test data
@@ -147,7 +133,6 @@ x_test = #
 #EXERCISE display the vector above
 
 
-# In[15]:
 
 
 # We converted comments to vectors of numbers 
@@ -168,13 +153,11 @@ embeddings = KeyedVectors.load('../input/gensim-embeddings-dataset/crawl-300d-2M
 #EXERCISE Use word_vec method to display a word vector for a word 'apple'
 
 
-# In[16]:
 
 
 #EXERCISE What's the length of that vector? Use size property
 
 
-# In[17]:
 
 
 # What is the "distance" between two words?
@@ -188,7 +171,6 @@ print(dist)
 #EXERCISE Try different words and rerun the cell to see their distances
 
 
-# In[18]:
 
 
 # Calculate 'king' - 'man' + 'woman' = ?
@@ -198,7 +180,6 @@ embeddings.most_similar(positive=['woman', 'king'], negative=['man'])
 #EXERCISE try something different embeddings.most_similar(positive=['beans', 'stew', 'Texas'])
 
 
-# In[19]:
 
 
 # What else can we do using embeddings?
@@ -208,20 +189,17 @@ embeddings.doesnt_match("cat mouse rose dog".split())
 #EXERCISE Try differnet set of words and doesnt_match method to check which word doesn't match the rest
 
 
-# In[20]:
 
 
 embeddings.similarity('cat', 'dog')
 
 
-# In[21]:
 
 
 # It indicates similarity of meaning of words not their spelling:
 embeddings.similarity('cat', 'car')
 
 
-# In[22]:
 
 
 # Our model we're be building will require embedding information for the words used in the comments
@@ -248,7 +226,6 @@ embedding_matrix = np.concatenate(
     [build_matrix(tokenizer.word_index, f) for f in EMBEDDING_FILES], axis=-1)
 
 
-# In[23]:
 
 
 # To address the bias aspect we will create a set of weights that will reduce significance of samples containing identity words
@@ -261,7 +238,6 @@ sample_weights += (~train_df['target']) * train_df[IDENTITY_COLUMNS].sum(axis=1)
 sample_weights /= sample_weights.mean()
 
 
-# In[24]:
 
 
 from keras.models import Model
@@ -306,20 +282,17 @@ def build_model(embedding_matrix, num_aux_targets):
     return model
 
 
-# In[25]:
 
 
 #EXCERCISE: Lets call the above method to build our model 
 model = #
 
 
-# In[26]:
 
 
 #EXCERCISE: Use the .summary() function on the model we created above to help see a summary of the different layers in the model
 
 
-# In[27]:
 
 
 from keras.utils import plot_model
@@ -327,7 +300,6 @@ from keras.utils import plot_model
 #EXCERCISE: Use the plot_model function with our model as a parameter for another visual 
 
 
-# In[28]:
 
 
 #this is the number of training samples to put in the model each step
@@ -360,7 +332,6 @@ end = time.time()
 print("Total time taken:", end - start)
 
 
-# In[29]:
 
 
 ##EXCERCISE: Write a for loop to loop over each entry in our predictions and explore our toxicity predictions

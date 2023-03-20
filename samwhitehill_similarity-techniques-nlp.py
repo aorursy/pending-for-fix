@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 '''from sklearn.model_selection import train_test_split
@@ -40,7 +38,6 @@ print (df_train.head(2))
 print (df_test.shape)'''
 
 
-# In[3]:
 
 
 ''''''from collections import Counter
@@ -64,7 +61,6 @@ def eda(df):
 eda(df_train)'''
 
 
-# In[4]:
 
 
 '''import re
@@ -109,7 +105,6 @@ print ("No of words in the dictionary = %s" %len(dictionary.token2id))
 df_test = tokenize_questions(df_test)'''
 
 
-# In[5]:
 
 
 '''def get_vectors(df, dictionary):
@@ -129,7 +124,6 @@ print (q1_csc.shape)
 print (q2_csc.shape)'''
 
 
-# In[6]:
 
 
 '''from sklearn.metrics.pairwise import cosine_similarity as cs
@@ -193,7 +187,6 @@ manhattan_dis = manhattan_dis_array.flatten()
 minkowsk_dis = minkowsk_dis_array.flatten()'''
 
 
-# In[7]:
 
 
 ''''''from sklearn.metrics import log_loss
@@ -231,7 +224,6 @@ logloss = calculate_logloss(y_true, y_pred_mink)
 print ("The calculated log loss value on the test set for minkowski sim is = %f" %logloss)'''
 
 
-# In[8]:
 
 
 '''from sklearn.ensemble import RandomForestRegressor
@@ -250,7 +242,6 @@ svr = SVR()
 svr.fit(X_train,y_train)'''
 
 
-# In[9]:
 
 
 ''''y_rfr_predicted = rfr.predict(X_test)
@@ -263,7 +254,6 @@ print ("The calculated log loss value on the test set using RFR is = %f" %loglos
 print ("The calculated log loss value on the test set using SVR is = %f" %logloss_svr)'''
 
 
-# In[10]:
 
 
 '''

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,7 +21,6 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[4]:
 
 
 data = pd.read_csv("../input/train.csv")
@@ -31,7 +29,6 @@ data.head()
 data_test.head()
 
 
-# In[5]:
 
 
 STOP_WORDS = nltk.corpus.stopwords.words()
@@ -62,14 +59,12 @@ data = clean_dataframe(data)
 data.head(5)
 
 
-# In[6]:
 
 
 data_test = clean_dataframe(data_test)
 data_test.head()
 
 
-# In[ ]:
 
 
 def build_corpus(data):
@@ -86,14 +81,12 @@ corpus = build_corpus(data)
 corpus[0:2]
 
 
-# In[ ]:
 
 
 corpus_test = build_corpus(data_test)
 corpus_test[0:2]
 
 
-# In[ ]:
 
 
 def build_corpus_q(data):
@@ -108,14 +101,12 @@ corpus_q1 = build_corpus_q(data['question1'])
 corpus_q2 = build_corpus_q(data['question2'])
 
 
-# In[ ]:
 
 
 corpus_test_q1 = build_corpus_q(data_test['question1'])
 corpus_test_q2 = build_corpus_q(data_test['question2'])
 
 
-# In[ ]:
 
 
 from gensim.models import word2vec
@@ -128,14 +119,12 @@ model = word2vec.Word2Vec(corpus, size=100, window=20, min_count=200, workers=4)
 model.wv['trump']
 
 
-# In[ ]:
 
 
 model_test = word2vec.Word2Vec(corpus_test, size=100, window=20, min_count=200, workers=4)
 model_test.wv['trump']
 
 
-# In[ ]:
 
 
 def tsne_plot(model):
@@ -168,19 +157,16 @@ def tsne_plot(model):
     plt.show()
 
 
-# In[ ]:
 
 
 tsne_plot(model)
 
 
-# In[ ]:
 
 
 tsne_plot(model_test)
 
 
-# In[ ]:
 
 
 # A more selective model
@@ -188,13 +174,11 @@ model = word2vec.Word2Vec(corpus, size=100, window=20, min_count=1000, workers=4
 tsne_plot(model)
 
 
-# In[ ]:
 
 
 model.most_similar('india')
 
 
-# In[ ]:
 
 
 def get_tsne_vector(model):
@@ -218,19 +202,16 @@ def get_tsne_vector(model):
     return labels, x, y
 
 
-# In[ ]:
 
 
 words, X, Y = get_tsne_vector(model)
 
 
-# In[ ]:
 
 
 words_test, X_test, Y_test = get_tsne_vector(model_test)
 
 
-# In[ ]:
 
 
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -239,14 +220,12 @@ tfidf_q1 = vectorizer.fit_transform(corpus_q1)
 tfidf_q2 = vectorizer.fit_transform(corpus_q2)
 
 
-# In[ ]:
 
 
 tfidf_test_q1 = vectorizer.fit_transform(corpus_test_q1)
 tfidf_test_q2 = vectorizer.fit_transform(corpus_test_q2)
 
 
-# In[ ]:
 
 
 def word2vec_and_tfidf(data,words,X,Y,tfidf_q1,tfidf_q2):
@@ -256,7 +235,6 @@ def word2vec_and_tfidf(data,words,X,Y,tfidf_q1,tfidf_q2):
         
 
 
-# In[ ]:
 
 
 def findVal(ques,words,X,Y,tfidf):

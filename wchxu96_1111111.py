@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -20,7 +19,6 @@ print(check_output(["ls", "../input"]).decode("utf8"))
 # Any results you write to the current directory are saved as output.
 
 
-# In[2]:
 
 
 train = pd.read_csv('../input/train.csv')
@@ -30,7 +28,6 @@ print (test.shape)
 #print (train.head(5))
 
 
-# In[3]:
 
 
 #eader_board = pd.read_csv('../input/leaderboard.csv')
@@ -46,13 +43,11 @@ def detectnan(df):
         
 
 
-# In[4]:
 
 
 train.tail()
 
 
-# In[5]:
 
 
 train.isnull().any()

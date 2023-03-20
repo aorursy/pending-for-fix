@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -22,38 +21,32 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # Any results you write to the current directory are saved as output.
 
 
-# In[ ]:
 
 
 
 
 
-# In[2]:
 
 
 get_ipython().system(' pip uninstall tensorflow -y')
 
 
-# In[ ]:
 
 
 
 
 
-# In[3]:
 
 
 get_ipython().system(' pip install ')
 
 
-# In[4]:
 
 
 import tensorflow as tf
 tf.__version__
 
 
-# In[5]:
 
 
 import sys, os, re, csv, codecs, numpy as np, pandas as pd
@@ -66,7 +59,6 @@ from keras.models import Model
 from keras import initializers, regularizers, constraints, optimizers, layers
 
 
-# In[6]:
 
 
 path = '../input/'
@@ -76,7 +68,6 @@ TRAIN_DATA_FILE=f'{path}{comp}train.csv'
 TEST_DATA_FILE=f'{path}{comp}test.csv'
 
 
-# In[7]:
 
 
 embed_size = 50 # how big is each word vector
@@ -84,7 +75,6 @@ max_features = 20000 # how many unique words to use (i.e num rows in embedding v
 maxlen = 100 # max number of words in a comment to use
 
 
-# In[8]:
 
 
 # 데이터 호출
@@ -95,7 +85,6 @@ test = pd.read_csv("../input/jigsaw-toxic-comment-classification-challenge/test.
 train[train["comment_text"].isna()]
 
 
-# In[9]:
 
 
 # 문장 데이터의 결측치를 "_na_"로 채워넣은 문장 데이터를 list_sentences_train에 저장
@@ -103,7 +92,6 @@ train[train["comment_text"].isna()]
 list_sentences_train = train["comment_text"].fillna("_na_").values
 
 
-# In[10]:
 
 
 # y값 설정 
@@ -112,7 +100,6 @@ y = train[list_classes].values
 list_sentences_test = test["comment_text"].fillna("_na_").values
 
 
-# In[11]:
 
 
 # max_feature(20000) 개수의 유니크한 단어를 갖는 vocab을 만든다
@@ -121,7 +108,6 @@ tokenizer = Tokenizer(num_words=max_features)
 tokenizer.fit_on_texts(list(list_sentences_train))
 
 
-# In[12]:
 
 
 # tokenizer 인스턴스에 만들어진 vocab에 맞추어 text_to_sequences 메서드를 통해 각 문장의 단어를 vocab의 인덱스로 mapping
@@ -129,7 +115,6 @@ tokenizer.fit_on_texts(list(list_sentences_train))
 list_tokenized_train = tokenizer.texts_to_sequences(list_sentences_train)
 
 
-# In[13]:
 
 
 # 그 결과는 다음과 같음
@@ -139,7 +124,6 @@ list_tokenized_train[:1]
 list_tokenized_test = tokenizer.texts_to_sequences(list_sentences_test)
 
 
-# In[14]:
 
 
 # 각 문장마다 token의 갯수가 다르기때문에, 균일한 column의 matrix 형태로 만들어주기 위해 padding을 해줌
@@ -149,7 +133,6 @@ X_t = pad_sequences(list_tokenized_train, maxlen = maxlen)
 X_te = pad_sequences(list_tokenized_test, maxlen = maxlen)
 
 
-# In[15]:
 
 
 # 기학습한 GloVe 모델의 embedding 값을 가져오기
@@ -161,13 +144,11 @@ def get_coefs(word, *arr): return word, np.asarray(arr, dtype='float32')
 embeddings_index = dict(get_coefs(*o.strip().split()) for o in open(EMBEDDING_FILE))
 
 
-# In[16]:
 
 
 embeddings_index
 
 
-# In[17]:
 
 
 # np.stack 함수를 통해 각 임베딩 인덱스의 값을 차곡차곡 쌓아올림
@@ -175,13 +156,11 @@ embeddings_index
 all_embs = np.stack(embeddings_index.values())
 
 
-# In[18]:
 
 
 emb_mean, emb_std = all_embs.mean(), all_embs.std()
 
 
-# In[19]:
 
 
 a = np.array([1, 2, 3,1,1])
@@ -189,26 +168,22 @@ b = np.array([2, 3, 4 ,5 ,6])
 np.stack((a, b), axis=-1)
 
 
-# In[20]:
 
 
 emb_mean, emb_std
 
 
-# In[21]:
 
 
 # 토크나이저의 vocab에 저장된 단어의 index를 word_index에 저장
 word_index = tokenizer.word_index
 
 
-# In[22]:
 
 
 word_index
 
 
-# In[23]:
 
 
 # 단어 vocab의 길이와 내가 지정한 최대 단어수의 갯수 중 더 짧은 것을 nb_words로 취함
@@ -218,19 +193,16 @@ nb_words = min(max_features, len(word_index))
 embedding_matrix = np.random.normal(emb_mean, emb_std, (nb_words, embed_size))
 
 
-# In[24]:
 
 
 embedding_matrix
 
 
-# In[25]:
 
 
 word_index.items()
 
 
-# In[26]:
 
 
 for word, i in word_index.items():
@@ -247,13 +219,11 @@ for word, i in word_index.items():
     if embedding_vector is not None: embedding_matrix[i] = embedding_vector
 
 
-# In[27]:
 
 
 embedding_matrix
 
 
-# In[28]:
 
 
 embedding_matrix.shape
@@ -265,7 +235,6 @@ embedding_matrix.shape
 # 끝
 
 
-# In[29]:
 
 
 inp = Input(shape=(maxlen,))
@@ -279,25 +248,21 @@ model = Model(inputs=inp, outputs=x)
 model.compile(loss='binary_crossentropy', optimizer="adam", metrics=['accuracy'])
 
 
-# In[30]:
 
 
 model.fit(X_t, y, batch_size=32, epochs=2, validation_split=0.1)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[31]:
 
 
 import pandas as pd
@@ -318,7 +283,6 @@ from tensorflow.keras.layers import LeakyReLU,PReLU
 from tensorflow.keras.optimizers import Adam
 
 
-# In[32]:
 
 
 def generate_model(dropout, neuronPct, neuronShrink):
@@ -352,14 +316,12 @@ def generate_model(dropout, neuronPct, neuronShrink):
     return model
 
 
-# In[33]:
 
 
 aa =[np.where(r.sum()>=1 , 1, 0) for r in y]
 index_aa=np.where([np.where(a==1,1,0) for a in aa])
 
 
-# In[34]:
 
 
 to_modify_np = np.zeros(159571)
@@ -370,13 +332,11 @@ for (index, replacement) in zip(indexes, replacements):
     to_modify_np[index] = replacement
 
 
-# In[35]:
 
 
 to_modify=pd.Series(to_modify_np).astype("object")
 
 
-# In[36]:
 
 
 start_time = time.time()
@@ -388,7 +348,6 @@ x_test = X_t[1000:]
 y_test = to_modify[1000:]
 
 
-# In[37]:
 
 
 dropout=0.2
@@ -397,7 +356,6 @@ neuronPct=0.2
 neuronShrink=0.2
 
 
-# In[38]:
 
 
 print(x_train.shape,y_train.shape,x_test.shape,y_test.shape)
@@ -408,65 +366,55 @@ monitor = EarlyStopping(monitor='val_loss', min_delta=1e-3,
 patience=100, verbose=0, mode='auto', restore_best_weights=True)
 
 
-# In[39]:
 
 
 import tensorflow as tf
 tf.__version__
 
 
-# In[40]:
 
 
 import keras
 keras.__version__
 
 
-# In[41]:
 
 
 type(x_train)
 
 
-# In[42]:
 
 
 x_train.shape
 
 
-# In[43]:
 
 
 type(pd.DataFrame(x_train))
 
 
-# In[44]:
 
 
 x_train
 
 
-# In[45]:
 
 
 type(x_train)
 
 
-# In[46]:
 
 
 # Train on the bootstrap sample
 model.fit(x_train,y_train,validation_data=(x_test,npy_test)),callbacks=[monitor],verbose=0,epochs=1)
 
 
-# In[47]:
 
 
 epochs = monitor.stopped_epoch
 epochs_needed.append(epochs)
 
 
-# In[48]:
 
 
 pred = model.predict(x_test)
@@ -499,7 +447,6 @@ time_took = time.time() - start_time
 #print(f"#{num}: score={score:.6f}, mean score={m1:.6f}, stdev={mdev:.6f}, epochs={epochs}, mean epochs={int(m2)}, time={hms_string(time_took)}")
 
 
-# In[49]:
 
 
 def evaluate_network(dropout,lr,neuronPct,neuronShrink):
@@ -577,14 +524,12 @@ print(evaluate_network(
     neuronShrink=0.2))
 
 
-# In[50]:
 
 
 from bayes_opt import BayesianOptimization
 import time
 
 
-# In[51]:
 
 
 # Supress NaN warnings, see: https://stackoverflow.com/questions/34955158/what-might-be-the-cause-of-invalid-value-encountered-in-less-equal-in-numpy

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 import os
@@ -28,25 +27,21 @@ import lightgbm as lgb
 warnings.filterwarnings('ignore')
 
 
-# In[ ]:
 
 
 os.listdir('../input/kernel-for-saving-files')
 
 
-# In[ ]:
 
 
 get_ipython().run_cell_magic('time', '', "train_df = pd.read_pickle('../input/kernel-for-saving-files/train_flat_local_cat_enc.pkl')\ntest_df = pd.read_pickle('../input/kernel-for-saving-files/test_flat_local_cat_enc.pkl')")
 
 
-# In[ ]:
 
 
 train_df.info()
 
 
-# In[ ]:
 
 
 # Extract target values and Ids
@@ -79,7 +74,6 @@ ID_cols = ['date', 'fullVisitorId', 'sessionId', 'visitId']
 target_col = ['totals.transactionRevenue']
 
 
-# In[ ]:
 
 
 train_df['_dayofweek'] = train_df['visitStartTime'].dt.dayofweek
@@ -93,19 +87,16 @@ test_df['_dayofyear'] = test_df['visitStartTime'].dt.dayofyear
 #test_df['_dayofmonth'] = test_df['visitStartTime'].dt.day
 
 
-# In[ ]:
 
 
 get_ipython().run_cell_magic('time', '', "from itertools import combinations\n\nto_interact_cols = ['visitNumber', 'totals.hits', 'totals.pageviews']\n\n#Numeric as float\nfor n in [num_cols + time_cols]:\n    train_df[n] = train_df[n].fillna(0).astype('float')\n    test_df[n] = test_df[n].fillna(0).astype('float')\n    \n\n\ndef numeric_interaction_terms(df, columns):\n    for c in combinations(columns,2):\n        df['{} / {}'.format(c[0], c[1]) ] = df[c[0]] / df[c[1]]\n        df['{} * {}'.format(c[0], c[1]) ] = df[c[0]] * df[c[1]]\n        df['{} - {}'.format(c[0], c[1]) ] = df[c[0]] - df[c[1]]\n    return df\n\n\ntrain_df = numeric_interaction_terms(train_df,to_interact_cols )\ntest_df = numeric_interaction_terms(test_df,to_interact_cols )")
 
 
-# In[ ]:
 
 
 train_df.head()
 
 
-# In[ ]:
 
 
 train_df['totals.transactionRevenue'] = train_df['totals.transactionRevenue'].fillna(0).astype('float')
@@ -126,13 +117,11 @@ print(train_X.shape)
 print(test_X.shape)
 
 
-# In[ ]:
 
 
 train_X.info()
 
 
-# In[ ]:
 
 
 from lightgbm import LGBMRegressor
@@ -155,13 +144,11 @@ gbm = LGBMRegressor(objective = 'regression',
                     )
 
 
-# In[ ]:
 
 
 get_ipython().run_cell_magic('time', '', "#Initilization\nall_K_fold_results = []\nkf = KFold(n_splits=5, shuffle = True)\noof_preds = np.zeros(train_X.shape[0])\nsub_preds = np.zeros(test_X.shape[0])\n\n\nfor dev_index, val_index in kf.split(train_X):\n    X_dev, X_val = train_X.iloc[dev_index], train_X.iloc[val_index]\n    y_dev, y_val = train_y[dev_index], train_y[val_index]\n\n    #Fit the model\n    model = gbm.fit(X_dev,y_dev, eval_set=[(X_val, y_val)],verbose = 100, \n                    eval_metric = 'rmse', early_stopping_rounds = 100) #100\n    \n    #Predict out of fold \n    oof_preds[val_index] = gbm.predict(X_val, num_iteration= model.best_iteration_)\n    \n    oof_preds[oof_preds < 0] = 0\n    \n    #Predict on test set based on current fold model. Average results\n    sub_prediction = gbm.predict(test_X, num_iteration= model.best_iteration_) / kf.n_splits\n    sub_prediction[sub_prediction<0] = 0\n    sub_preds = sub_preds + sub_prediction\n    \n    #Save current fold values\n    fold_results = {'best_iteration_' : model.best_iteration_, \n                   'best_score_' : model.best_score_['valid_0']['rmse'], \n                   'evals_result_': model.evals_result_['valid_0']['rmse'],\n                   'feature_importances_' : model.feature_importances_}\n\n    all_K_fold_results.append(fold_results.copy())\n    \n\nresults = pd.DataFrame(all_K_fold_results)\n\n")
 
 
-# In[ ]:
 
 
 def RMSE_log_sum(pred_val, val_df):
@@ -242,26 +229,22 @@ def visualize_results(results):
     plt.show()
 
 
-# In[ ]:
 
 
 print('Session level CV score: ', np.mean(results.best_score_))
 print('User level CV score: ', RMSE_log_sum(oof_preds, train_df))
 
 
-# In[ ]:
 
 
 results.evals_result_
 
 
-# In[ ]:
 
 
 visualize_results(results)
 
 
-# In[ ]:
 
 
 import graphviz 
@@ -271,7 +254,6 @@ graph = graphviz.Source(dot_data)
 graph 
 
 
-# In[ ]:
 
 
 error_df = pd.DataFrame(data = {'visitStartTime':train_df['visitStartTime'],'fullVisitorId':train_df['sessionId'], 
@@ -286,7 +268,6 @@ error_df['True_is_non_zero'] = error_df['True_log_revenue'] > 0
 error_df.head(100).sort_values('True_log_revenue')
 
 
-# In[ ]:
 
 
 fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize = (20,7))
@@ -309,7 +290,6 @@ ax2.set_title('Distribution of log revenues for sessions with non zero true reve
 plt.show()
 
 
-# In[ ]:
 
 
 sorted_non_zero = error_df[error_df['True_is_non_zero'] == True].sort_values('visitStartTime')
@@ -346,7 +326,6 @@ plt.legend()
 plt.show()
 
 
-# In[ ]:
 
 
 sorted_non_zero = error_df[error_df['True_is_non_zero'] == True].sort_values('visitStartTime')
@@ -374,7 +353,6 @@ plt.legend()
 plt.show()
 
 
-# In[ ]:
 
 
 
@@ -384,25 +362,21 @@ display('Joint distribution of log rev for non zero sessions only')
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 pred_test[pred_test < 0] = 0
@@ -416,13 +390,11 @@ pred_test[pred_test < 0] = 0
     sub_df.to_csv(file_name, index = False)
 
 
-# In[ ]:
 
 
 save_submission(sub_preds, test_df, 'submission.csv')
 
 
-# In[ ]:
 
 
 

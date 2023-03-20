@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 get_ipython().system('pip install -U --pre tensorflow=="2.2.0" # totally unncessary.. but hey no harm in double checking...')
 
 
-# In[2]:
 
 
 import os
@@ -21,13 +19,11 @@ elif not pathlib.Path('models').exists():
     get_ipython().system('git clone --depth 1 https://github.com/tensorflow/models')
 
 
-# In[3]:
 
 
 cd models/research
 
 
-# In[4]:
 
 
 # give it all absolute paths if this doesnt work...
@@ -37,7 +33,6 @@ get_ipython().system('cp object_detection/packages/tf2/setup.py .')
 get_ipython().system('python -m pip install .')
 
 
-# In[5]:
 
 
 import matplotlib
@@ -69,7 +64,6 @@ from object_detection.builders import model_builder
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[6]:
 
 
 def load_image_into_numpy_array(path):
@@ -131,31 +125,26 @@ def plot_detections(image_np,
         plt.imshow(image_np_with_annotations)
 
 
-# In[7]:
 
 
 train_df = pd.read_csv('/kaggle/input/global-wheat-detection/train.csv')
 
 
-# In[8]:
 
 
 train_df['bboxs'] = train_df['bbox'].apply(lambda x: np.fromstring(x[1:-1], sep=','))
 
 
-# In[9]:
 
 
 train_df.head()
 
 
-# In[10]:
 
 
 train_df.width.nunique(),train_df.height.nunique()
 
 
-# In[11]:
 
 
 def xyxy_to_yxyx(a): 
@@ -168,74 +157,62 @@ def xyxy_to_yxyx(a):
     return a.reshape(1,4)
 
 
-# In[12]:
 
 
 train_df['bbox_adj'] = '' 
 
 
-# In[13]:
 
 
 train_df['bbox_adj'] = train_df['bboxs'].map(xyxy_to_yxyx)
 
 
-# In[14]:
 
 
 image_name_and_bboxes = {} # placeholder dict for the images and coressponding bboxes
 
 
-# In[15]:
 
 
 get_ipython().run_cell_magic('time', '', "for i in range(len(train_df)):\n    if train_df.iloc[i]['image_id'] in image_name_and_bboxes.keys():\n        image_name_and_bboxes[train_df.iloc[i]['image_id']] = np.vstack((image_name_and_bboxes[train_df.iloc[i]['image_id']],train_df.iloc[i]['bbox_adj']))\n    else:\n        image_name_and_bboxes[train_df.iloc[i]['image_id']] = train_df.iloc[i]['bbox_adj']")
 
 
-# In[16]:
 
 
 # Hack
 # the setup is geared for few shot object recognition so pick images with few wheat heads
 
 
-# In[17]:
 
 
 val_counts_image_id = pd.DataFrame(train_df['image_id'].value_counts())
 
 
-# In[18]:
 
 
 val_counts_image_id.head()
 
 
-# In[19]:
 
 
 val_counts_image_id['bbox_count'] = val_counts_image_id['image_id'] 
 
 
-# In[20]:
 
 
 val_counts_image_id['image_id']  = val_counts_image_id.index
 
 
-# In[21]:
 
 
 val_counts_image_id.reset_index(drop = True, inplace = True)
 
 
-# In[22]:
 
 
 val_counts_image_id.head() # 
 
 
-# In[23]:
 
 
 cond_1 = val_counts_image_id['bbox_count']==1
@@ -243,25 +220,21 @@ cond_2 = val_counts_image_id['bbox_count']==2
 cond_3 = val_counts_image_id['bbox_count']==3
 
 
-# In[24]:
 
 
 val_counts_image_id['image_id'][cond_1 | cond_2]
 
 
-# In[25]:
 
 
 image_names_list = val_counts_image_id['image_id'][cond_1 | cond_2].tolist()
 
 
-# In[26]:
 
 
 image_names_list # only images with one or 2  or 3 wheat heads higher numbers dont converge well... for now...
 
 
-# In[27]:
 
 
 # Place holders
@@ -274,25 +247,21 @@ train_images_np = []
 list_of_bboxes = []
 
 
-# In[28]:
 
 
 train_df.shape
 
 
-# In[29]:
 
 
 get_ipython().run_cell_magic('time', '', "for i in range(NUM_IMAGES):\n    image_path = os.path.join(train_image_dir, image_names_list[i] + '.jpg')\n    train_images_np.append(load_image_into_numpy_array(image_path))")
 
 
-# In[30]:
 
 
 get_ipython().run_cell_magic('time', '', 'for i in range(NUM_IMAGES):\n    list_of_bboxes.append(image_name_and_bboxes[image_names_list[i]])')
 
 
-# In[31]:
 
 
 # By convention, our non-background classes start counting at 1.  Given
@@ -305,7 +274,6 @@ num_classes = 1
 category_index = {wheat_class_id: {'id': wheat_class_id, 'name': 'wheat'}}
 
 
-# In[32]:
 
 
 # Convert class labels to one-hot; convert everything to tensors.
@@ -333,7 +301,6 @@ for (train_image_np, gt_box_np) in zip(train_images_np, gt_boxes):
 print('Done prepping data.')
 
 
-# In[33]:
 
 
 # Download the checkpoint and put it into models/research/object_detection/test_data/
@@ -343,7 +310,6 @@ get_ipython().system('tar -xf ssd_resnet50_v1_fpn_640x640_coco17_tpu-8.tar.gz')
 get_ipython().system('mv ssd_resnet50_v1_fpn_640x640_coco17_tpu-8/checkpoint /kaggle/working/models/research/object_detection/test_data/')
 
 
-# In[34]:
 
 
 tf.keras.backend.clear_session()
@@ -354,7 +320,6 @@ pipeline_config = '/kaggle/working/models/research/object_detection/configs/tf2/
 checkpoint_path = '/kaggle/working/models/research/object_detection/test_data/checkpoint/ckpt-0'
 
 
-# In[35]:
 
 
 
@@ -394,19 +359,16 @@ _ = detection_model.postprocess(prediction_dict, shapes)
 print('Weights restored!')
 
 
-# In[36]:
 
 
 get_ipython().run_cell_magic('time', '', '\n# Select variables in top layers to fine-tune.\ntrainable_variables = detection_model.trainable_variables\nto_fine_tune = []\nprefixes_to_train = [\n  \'WeightSharedConvolutionalBoxPredictor/WeightSharedConvolutionalBoxHead\',\n  \'WeightSharedConvolutionalBoxPredictor/WeightSharedConvolutionalClassHead\']\nfor var in trainable_variables:\n    if any([var.name.startswith(prefix) for prefix in prefixes_to_train]):\n        to_fine_tune.append(var)\n\n# Set up forward + backward pass for a single train step.\ndef get_model_train_step_function(model, optimizer, vars_to_fine_tune):\n    """Get a tf.function for training step."""\n\n    # Use tf.function for a bit of speed.\n    # Comment out the tf.function decorator if you want the inside of the\n    # function to run eagerly.\n    @tf.function\n    def train_step_fn(image_tensors,\n                    groundtruth_boxes_list,\n                    groundtruth_classes_list):\n        """A single training iteration.\n\n        Args:\n          image_tensors: A list of [1, height, width, 3] Tensor of type tf.float32.\n            Note that the height and width can vary across images, as they are\n            reshaped within this function to be 640x640.\n          groundtruth_boxes_list: A list of Tensors of shape [N_i, 4] with type\n            tf.float32 representing groundtruth boxes for each image in the batch.\n          groundtruth_classes_list: A list of Tensors of shape [N_i, num_classes]\n            with type tf.float32 representing groundtruth boxes for each image in\n            the batch.\n\n        Returns:\n          A scalar tensor representing the total loss for the input batch.\n        """\n        shapes = tf.constant(batch_size * [[640, 640, 3]], dtype=tf.int32)\n        model.provide_groundtruth(\n            groundtruth_boxes_list=groundtruth_boxes_list,\n            groundtruth_classes_list=groundtruth_classes_list)\n        with tf.GradientTape() as tape:\n            preprocessed_images = tf.concat(\n              [detection_model.preprocess(image_tensor)[0]\n               for image_tensor in image_tensors], axis=0)\n            prediction_dict = model.predict(preprocessed_images, shapes)\n            losses_dict = model.loss(prediction_dict, shapes)\n            total_loss = losses_dict[\'Loss/localization_loss\'] + losses_dict[\'Loss/classification_loss\']\n            gradients = tape.gradient(total_loss, vars_to_fine_tune)\n            optimizer.apply_gradients(zip(gradients, vars_to_fine_tune))\n        return total_loss\n\n    return train_step_fn\n\n')
 
 
-# In[37]:
 
 
 get_ipython().run_cell_magic('time', '', "tf.keras.backend.set_learning_phase(True)\n\n# These parameters can be tuned; since our training set has 5 images\n# it doesn't make sense to have a much larger batch size, though we could\n# fit more examples in memory if we wanted to.\nbatch_size = 4\nlearning_rate = 0.001\nnum_batches = 200\n\n# optimizer = tf.keras.optimizers.SGD(learning_rate=learning_rate, momentum=0.9)\noptimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate,  decay=learning_rate / num_batches)\ntrain_step_fn = get_model_train_step_function(\n    detection_model, optimizer, to_fine_tune)\n\n\nprint('Start fine-tuning!', flush=True)\nfor idx in range(num_batches):\n  # Grab keys for a random subset of examples\n  all_keys = list(range(len(train_images_np)))\n  random.shuffle(all_keys)\n  example_keys = all_keys[:batch_size]\n\n  # Note that we do not do data augmentation in this demo.  If you want a\n  # a fun exercise, we recommend experimenting with random horizontal flipping\n  # and random cropping :)\n  gt_boxes_list = [gt_box_tensors[key] for key in example_keys]\n  gt_classes_list = [gt_classes_one_hot_tensors[key] for key in example_keys]\n  image_tensors = [train_image_tensors[key] for key in example_keys]\n\n  # Training step (forward pass + backwards pass)\n  total_loss = train_step_fn(image_tensors, gt_boxes_list, gt_classes_list)\n\n  if idx % 10 == 0:\n    print('batch ' + str(idx) + ' of ' + str(num_batches)\n    + ', loss=' +  str(total_loss.numpy()), flush=True)\n\nprint('Done fine-tuning!')")
 
 
-# In[38]:
 
 
 test_image_dir = '/kaggle/input/global-wheat-detection/test/'
@@ -414,13 +376,11 @@ test_image_dir = '/kaggle/input/global-wheat-detection/test/'
 test_images_np = []
 
 
-# In[39]:
 
 
 os.listdir(test_image_dir)
 
 
-# In[40]:
 
 
 for i in range(1): # test against one
@@ -448,7 +408,6 @@ def detect(input_tensor):
   return detection_model.postprocess(prediction_dict, shapes)
 
 
-# In[41]:
 
 
 # Note that the first frame will trigger tracing of the tf.function, which will
@@ -468,7 +427,6 @@ for i in range(len(test_images_np)):
       category_index, figsize=(15, 20), image_name="inf_348a992bb.jpg")
 
 
-# In[42]:
 
 
 #Import library
@@ -476,7 +434,6 @@ from IPython.display import Image# Load image from local storage
 Image(filename = 'inf_348a992bb.jpg', width = 512, height = 512)
 
 
-# In[ ]:
 
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -31,7 +30,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[2]:
 
 
 import os
@@ -45,7 +43,6 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
 
-# In[3]:
 
 
 from tensorflow.data import Dataset
@@ -61,13 +58,11 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 
-# In[4]:
 
 
 ls ../input/dogs-vs-cats-redux-kernels-edition/
 
 
-# In[5]:
 
 
 zip_ref = zipfile.ZipFile("../input/dogs-vs-cats-redux-kernels-edition/train.zip", "r")
@@ -76,13 +71,11 @@ print(f'{zip_ref.filelist[0].filename} is removed')
 random.shuffle(filelist)
 
 
-# In[6]:
 
 
 len(filelist)
 
 
-# In[7]:
 
 
 count_cats = 0
@@ -111,7 +104,6 @@ for file_path in tqdm(filelist[trainN:]):
             count_dogs += 1
 
 
-# In[8]:
 
 
 get_ipython().system('ls train/cats/ | wc -l')
@@ -120,7 +112,6 @@ get_ipython().system('ls valid/cats/ | wc -l')
 get_ipython().system('ls valid/dogs/ | wc -l')
 
 
-# In[9]:
 
 
 def get_shallow_cnn(input_shape=(28, 28, 1)):
@@ -135,7 +126,6 @@ def get_shallow_cnn(input_shape=(28, 28, 1)):
   return model
 
 
-# In[10]:
 
 
 def get_shallow_cnn_regu(input_shape=(28, 28, 1), decay_rate=1e-3, dropout=0.1):
@@ -153,7 +143,6 @@ def get_shallow_cnn_regu(input_shape=(28, 28, 1), decay_rate=1e-3, dropout=0.1):
     return model
 
 
-# In[11]:
 
 
 def get_shallow2_cnn(input_shape=(28, 28, 1)):
@@ -172,7 +161,6 @@ def get_shallow2_cnn(input_shape=(28, 28, 1)):
     return model
 
 
-# In[12]:
 
 
 def get_shallow2_cnn_regu(input_shape=(28, 28, 1), decay_rate=1e-3, dropout=0.1):
@@ -196,7 +184,6 @@ def get_shallow2_cnn_regu(input_shape=(28, 28, 1), decay_rate=1e-3, dropout=0.1)
     return model
 
 
-# In[13]:
 
 
 batch_size = 32
@@ -207,7 +194,6 @@ image_gen_valid = image_gen.flow_from_directory("valid", target_size=(64, 64),
                                                 batch_size=batch_size, shuffle=True)
 
 
-# In[14]:
 
 
 batch_size = 32
@@ -219,7 +205,6 @@ image_gen_augument_valid = image_gen_augument.flow_from_directory("valid", targe
                                                 batch_size=batch_size, shuffle=True)
 
 
-# In[15]:
 
 
 for image1, image2 in zip(image_gen_train, image_gen_augument_train):
@@ -229,20 +214,17 @@ for image1, image2 in zip(image_gen_train, image_gen_augument_train):
     break
 
 
-# In[16]:
 
 
 steps_per_epoch = image_gen_train.n//batch_size
 validation_steps = image_gen_valid.n//batch_size
 
 
-# In[17]:
 
 
 print(steps_per_epoch, validation_steps)
 
 
-# In[18]:
 
 
 model1 = get_shallow_cnn((64, 64, 3))
@@ -252,7 +234,6 @@ model1.compile(optimizer=tf.keras.optimizers.Adam(),
                       'AUC'])
 
 
-# In[19]:
 
 
 log_dir = "logs/" + datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -263,7 +244,6 @@ history1 = model1.fit(image_gen_train, validation_data=image_gen_valid,
                epochs=10, validation_steps=validation_steps)
 
 
-# In[20]:
 
 
 model1.save("shallow_cnn")
@@ -271,7 +251,6 @@ shutil.make_archive("shallow_cnn", 'zip', "shallow_cnn")
 FileLink('shallow_cnn.zip')
 
 
-# In[21]:
 
 
 train_loss_results = history1.history['loss']
@@ -282,7 +261,6 @@ train_auc_results = history1.history['auc']
 valid_auc_results = history1.history['val_auc']
 
 
-# In[22]:
 
 
 plt.style.use('ggplot')
@@ -312,7 +290,6 @@ axes[2].legend()
 plt.show()
 
 
-# In[23]:
 
 
 model2 = get_shallow_cnn_regu((64, 64, 3), decay_rate=1e-3, dropout=0.1)
@@ -322,7 +299,6 @@ model2.compile(optimizer=tf.keras.optimizers.Adam(),
                       'AUC'])
 
 
-# In[24]:
 
 
 log_dir = "logs/" + datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -333,7 +309,6 @@ history2 = model2.fit(image_gen_train, validation_data=image_gen_valid,
                epochs=30, validation_steps=validation_steps)
 
 
-# In[25]:
 
 
 model2.save("shallow_cnn_reg")
@@ -341,13 +316,11 @@ shutil.make_archive("shallow_cnn_reg", 'zip', "shallow_cnn_reg")
 FileLink('shallow_cnn_reg.zip')
 
 
-# In[26]:
 
 
 get_ipython().system('ls shallow_cnn_reg')
 
 
-# In[27]:
 
 
 train_loss_results = history2.history['loss']
@@ -358,7 +331,6 @@ train_auc_results = history2.history['auc']
 valid_auc_results = history2.history['val_auc']
 
 
-# In[28]:
 
 
 plt.style.use('ggplot')
@@ -388,7 +360,6 @@ axes[2].legend()
 plt.show()
 
 
-# In[29]:
 
 
 model3 = get_shallow2_cnn_regu((64, 64, 3), decay_rate=1e-3, dropout=0.1)
@@ -398,7 +369,6 @@ model3.compile(optimizer=tf.keras.optimizers.Adam(),
                       'AUC'])
 
 
-# In[30]:
 
 
 log_dir = "logs/" + datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -409,7 +379,6 @@ history3 = model3.fit(image_gen_train, validation_data=image_gen_valid,
                epochs=30, validation_steps=validation_steps)
 
 
-# In[31]:
 
 
 model3.save("shallow2_cnn_reg")
@@ -417,7 +386,6 @@ shutil.make_archive("shallow2_cnn_reg", 'zip', "shallow2_cnn_reg")
 FileLink('shallow2_cnn_reg.zip')
 
 
-# In[32]:
 
 
 train_loss_results = history3.history['loss']
@@ -428,7 +396,6 @@ train_auc_results = history3.history['auc']
 valid_auc_results = history3.history['val_auc']
 
 
-# In[33]:
 
 
 plt.style.use('ggplot')
@@ -458,7 +425,6 @@ axes[2].legend()
 plt.show()
 
 
-# In[34]:
 
 
 model4 = get_shallow2_cnn_regu((64, 64, 3), decay_rate=1e-3, dropout=0.1)
@@ -468,7 +434,6 @@ model4.compile(optimizer=tf.keras.optimizers.Adam(),
                       'AUC'])
 
 
-# In[35]:
 
 
 log_dir = "logs/" + datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -479,7 +444,6 @@ history4 = model4.fit(image_gen_augument_train, validation_data=image_gen_augume
                epochs=30, validation_steps=validation_steps)
 
 
-# In[36]:
 
 
 model4.save("shallow2_cnn_reg_aug")
@@ -487,7 +451,6 @@ shutil.make_archive("shallow2_cnn_reg_aug", 'zip', "shallow2_cnn_reg_aug")
 FileLink('shallow2_cnn_reg_aug.zip')
 
 
-# In[37]:
 
 
 train_loss_results = history4.history['loss']
@@ -498,7 +461,6 @@ train_auc_results = history4.history['auc']
 valid_auc_results = history4.history['val_auc']
 
 
-# In[38]:
 
 
 plt.style.use('ggplot')
@@ -528,25 +490,21 @@ axes[2].legend()
 plt.show()
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 

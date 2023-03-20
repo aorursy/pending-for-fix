@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import cv2
@@ -18,7 +17,6 @@ LR = 1e-3
 MODEL_NAME = 'catsdogs-{}-{}.model'.format(LR, '2conv-basic')
 
 
-# In[2]:
 
 
 def label_img(img):
@@ -40,7 +38,6 @@ def create_train_data():
     return training_data
 
 
-# In[3]:
 
 
 def process_test_data():
@@ -55,7 +52,6 @@ def process_test_data():
     return testing_data
 
 
-# In[4]:
 
 
 model.fit({'input: X'}, {'targets: Y'}, n_epoch = 5,
@@ -63,14 +59,12 @@ model.fit({'input: X'}, {'targets: Y'}, n_epoch = 5,
           snapshot_step = 500, show_metric = True, run_id = MODEL_NAME)
 
 
-# In[5]:
 
 
 train_data = create_train_data()
 # train_data = np.load('train_data.npy')
 
 
-# In[6]:
 
 
 import tflearn
@@ -95,7 +89,6 @@ convnet = regression(convnet, optimizer = 'adam', learning_rate = LR, loss = 'ca
 model = tflearn.DNN(convnet, tensorboard_dir='log')
 
 
-# In[7]:
 
 
 if os.path.exists('{}.meta'.format(MODEL_NAME)):
@@ -113,7 +106,6 @@ test_x = np.array([i[0] for i in test]).reshape(-1, IMG_SIZE, IMG_SIZE, 1)
 test_y = [i[1] for i in test]
 
 
-# In[8]:
 
 
 model.fit({'input': X'}, {'targets'': Y}, n_epoch = 5,

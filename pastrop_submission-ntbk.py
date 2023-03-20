@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -23,7 +22,6 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-# In[ ]:
 
 
 from tensorflow import keras
@@ -32,7 +30,6 @@ import tensorflow as tf
 import tensorflow_hub as hub
 
 
-# In[ ]:
 
 
 SEQUENCE_LENGTH = 256
@@ -41,7 +38,6 @@ DATA_PATH =  "../input/jigsaw-multilingual-toxic-comment-classification" # data 
 UPLOADED_DATA = '../input/train-toxic-seqlen256/'
 
 
-# In[ ]:
 
 
 # Detect hardware, return appropriate distribution strategy
@@ -64,7 +60,6 @@ else:
 print("REPLICAS: ", strategy.num_replicas_in_sync)
 
 
-# In[ ]:
 
 
 #df = pd.read_csv('../input/jigsaw-multilingual-toxic-comment-classification/jigsaw-unintended-bias-train-processed-seqlen128.csv',
@@ -73,7 +68,6 @@ df = pd.read_csv('/kaggle/input/toxic-comments-256/jigsaw-toxic-comment-train-pr
 df.head(3)
 
 
-# In[ ]:
 
 
 #simplification of the code for the tf dataset creation - Test Dataset
@@ -82,7 +76,6 @@ test = df.filter(['toxic','input_word_ids','input_mask','segment_ids'])
 test.head(3)
 
 
-# In[ ]:
 
 
 #test.to_csv('test_processed_128.csv', index = False, mode='w')
@@ -90,7 +83,6 @@ test.to_csv('test_processed_128.csv', index = False, mode='w')
 #validate.to_csv('validate_processed_256.csv', index = False, mode='w')
 
 
-# In[ ]:
 
 
 def get_dataset(file_path = '../working/test_processed_128.csv'):
@@ -104,7 +96,6 @@ def get_dataset(file_path = '../working/test_processed_128.csv'):
     return dataset
 
 
-# In[ ]:
 
 
 train_data = get_dataset()
@@ -113,27 +104,23 @@ train_data = train_data.unbatch()
 #validate_data = validate_data.unbatch()
 
 
-# In[ ]:
 
 
 next(iter(train_data))
 
 
-# In[ ]:
 
 
 validation_data = get_dataset('../working/validate_processed_256.csv')
 validation_data = validation_data.unbatch()
 
 
-# In[ ]:
 
 
 train_bias_set = get_dataset('../input/bias-train-filtered-256/jigsaw-unintended-bias-train-filtered-seqlen256.csv')
 train_bias_set = train_bias_set.unbatch()
 
 
-# In[ ]:
 
 
 def parse_string_list_into_ints(strlist):
@@ -147,7 +134,6 @@ def parse_string_list_into_ints(strlist):
     return s
 
 
-# In[ ]:
 
 
 # prototype function to process the dataset for the Bert layer
@@ -157,31 +143,26 @@ def elem_mod(data,label):
     return data,label 
 
 
-# In[ ]:
 
 
 result = train_data.map(lambda x,y:elem_mod(x,y))
 
 
-# In[ ]:
 
 
 next(iter(result))
 
 
-# In[ ]:
 
 
 result_val = validation_data.map(lambda x,y:elem_mod(x,y))
 
 
-# In[ ]:
 
 
 result_bias = train_bias_set.map(lambda x,y:elem_mod(x,y))
 
 
-# In[ ]:
 
 
 def make_dataset_pipeline(dataset, repeat_and_shuffle=True):
@@ -196,26 +177,22 @@ def make_dataset_pipeline(dataset, repeat_and_shuffle=True):
     return cached_dataset
 
 
-# In[ ]:
 
 
 #cached_train_data = make_dataset_pipeline(result)
 train_set = make_dataset_pipeline(result)
 
 
-# In[ ]:
 
 
 cached_train_bias_data = make_dataset_pipeline(result_bias)
 
 
-# In[ ]:
 
 
 next(iter(train_set))
 
 
-# In[ ]:
 
 
 #Building the model (reformat as a function...)
@@ -234,7 +211,6 @@ output = tf.keras.layers.Dense(32, activation='relu')(pooled_output)
 output = tf.keras.layers.Dense(1, activation='sigmoid', name='labels')(output)
 
 
-# In[ ]:
 
 
 # Model
@@ -244,7 +220,6 @@ model = tf.keras.Model(inputs={'input_word_ids': input_word_ids,
                           outputs=output)
 
 
-# In[ ]:
 
 
 #strategy = tf.distribute.MirroredStrategy()
@@ -256,7 +231,6 @@ model.compile(
 model.summary()
 
 
-# In[ ]:
 
 
 # Model for TPU distribution:
@@ -276,7 +250,6 @@ with strategy.scope():
     output = tf.keras.layers.Dense(1, activation='sigmoid', name='labels')(output)
 
 
-# In[ ]:
 
 
 # Train on English Wikipedia comment data.
@@ -287,7 +260,6 @@ history = model.fit(
     epochs=50, verbose=1)
 
 
-# In[ ]:
 
 
 results = model.evaluate(cached_train_data,
@@ -295,7 +267,6 @@ results = model.evaluate(cached_train_data,
 print('\nEnglish loss, AUC before training:', results)
 
 
-# In[ ]:
 
 
 #TPU based model DON'T RUN WITHOUT TPU
