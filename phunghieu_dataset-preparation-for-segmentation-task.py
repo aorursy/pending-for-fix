@@ -302,24 +302,8 @@ for image_file in tqdm_notebook(X_val):
 
 get_ipython().system('apt install zip')
 
-
-
-
-cd ../
-
-
-
-
 get_ipython().system('zip -r -m -1 -q working/train_images.zip train_images')
 get_ipython().system('zip -r -m -1 -q working/val_images.zip val_images')
-
-
-
-
-cd working
-
-
-
 
 y_train = y_train.reshape(-1)
 y_val = y_val.reshape(-1)

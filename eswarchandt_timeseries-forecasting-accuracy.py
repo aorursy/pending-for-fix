@@ -305,9 +305,6 @@ ax[3, 1].set_title('After Wavelet Denoising', fontsize=24)
 
 plt.show()
 
-Here the green graphs represents original sales and red graphs represents denoised sales
-
-
 def average_smoothing(signal, kernel_size=3, stride=1):
     sample = []
     start = 0
@@ -401,14 +398,6 @@ ax[3, 1].set_title('After Wavelet Denoising', fontsize=24)
 
 plt.show()
 
-
-
-
-past_sales = sales_train_val.set_index('id')[d_cols]     .T     .merge(calendar.set_index('d')['date'],
-           left_index=True,
-           right_index=True,
-            validate='1:1') \
-    .set_index('date')
 
 store_list = selling_prices['store_id'].unique()
 means = []

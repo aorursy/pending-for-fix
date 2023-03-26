@@ -105,38 +105,34 @@ biomarker
 
 
 
-fig = go.Figure();
+fig = go.Figure()
 fig.add_trace(go.Scatter(x = biomarker['age_at_enrollment'].head(10),y = biomarker['study_id'],
                     mode='lines+markers',
-                    name='study_id'));
+                    name='study_id'))
 fig.add_trace(go.Scatter(x = biomarker['age_at_enrollment'].head(10),y = biomarker['sex'],
                     mode='lines+markers',
-                    name='sex'));
+                    name='sex'))
 fig.add_trace(go.Scatter(x = biomarker['age_at_enrollment'].head(10),y = biomarker['dm'],
                     mode='lines+markers',
-                    name='dm'));
+                    name='dm'))
 fig.add_trace(go.Scatter(x = biomarker['age_at_enrollment'].head(10),y = biomarker['htn'],
                     mode='lines+markers',
-                    name='htn'));
+                    name='htn'))
 fig.add_trace(go.Scatter(x = biomarker['age_at_enrollment'].head(10),y = biomarker['anemia'],
                     mode='lines+markers',
-                    name='anemia'));
+                    name='anemia'))
 
-fig.update_traces(mode='lines+markers', marker_line_width=2, marker_size=10);
+fig.update_traces(mode='lines+markers', marker_line_width=2, marker_size=10)
 
-fig.update_layout(autosize=False, width=1000,height=700, legend_orientation="h");
+fig.update_layout(autosize=False, width=1000,height=700, legend_orientation="h")
 
-fig.show();
+fig.show()
 
 
 
 
 get_ipython().system('pip install chart_studio')
 
-
-
-
-pip install bubbly
 
 
 

@@ -36,7 +36,7 @@ test.sample(6)
 
 
 
-df = train.fillna('NA').groupby(['Country_Region','Province_State','Date'])['ConfirmedCases'].sum()                           .groupby(['Country_Region','Province_State']).max().sort_values()                           .groupby(['Country_Region']).sum().sort_values(ascending = False)
+df = train.fillna('NA').groupby(['Country_Region','Province_State','Date'])['ConfirmedCases'].sum().groupby(['Country_Region','Province_State']).max().sort_values()                           .groupby(['Country_Region']).sum().sort_values(ascending = False)
 
 top10 = pd.DataFrame(df).head(10)
 top10
@@ -189,9 +189,6 @@ timeCompare(8,'Italy','France')
 timeCompare(6,'Italy','Spain')
 timeCompare(7,'Italy','Germany')
 timeCompare(7,'Italy','US')
-
-From the above graph we can conclude that with 7 days difference, US crossed Italy in Cases
-
 
 timeCompare(8,'US','China')
 timeCompare(6,'US','Spain')
@@ -570,4 +567,3 @@ def arima(ts,test):
 
 train,test=split(tsC)
 pred=arima(train,test)
-

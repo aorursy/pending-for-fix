@@ -106,13 +106,6 @@ json_fp.close()
 get_ipython().system('git clone https://github.com/kamauz/EfficientDet.git')
 
 
-
-
-cd /kaggle/working/EfficientDet/
-
-
-
-
 get_ipython().system('python setup.py build_ext --inplace')
 
 
@@ -297,12 +290,6 @@ model.compile(optimizer=Adam(lr=1e-3), loss={
 
 
 get_ipython().run_cell_magic('time', '', '\nmodel.fit_generator(\n        generator=train_generator,\n        epochs=20\n    )')
-
-
-
-
-cd /kaggle/working/
-
 
 
 

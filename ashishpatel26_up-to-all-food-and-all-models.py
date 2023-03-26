@@ -128,7 +128,6 @@ def pre_processing_(recipe):
     
     wnl = WordNetLemmatizer()
     
-    # 1. lower 함수를 이용하여 대문자를 소문자로 변경
     recipe = [str.lower(ingredient) for ingredient in recipe]
     recipe = [delete_brand_(ingredient) for ingredient in recipe]
     recipe = [delete_state_(ingredient) for ingredient in recipe]
@@ -138,10 +137,7 @@ def pre_processing_(recipe):
 
     return recipe
 
-# 2. 상품명을 제거하는 함수
 def delete_brand_(ingredient):
-
-    # '®'이 있는 브랜드
     ingredient = re.sub("country crock|i can't believe it's not butter!|bertolli|oreo|hellmann's"
                         , '', ingredient)
     ingredient = re.sub("red gold|hidden valley|original ranch|frank's|redhot|lipton", '', ingredient)
@@ -155,15 +151,12 @@ def delete_brand_(ingredient):
                         , '', ingredient)
     ingredient = re.sub("jonshonville", '', ingredient)
 
-    # '™'이 있는 브랜드
     ingredient = re.sub("old el paso|pillsbury|progresso|betty crocker|green giant|hellmannâ€", '', ingredient)
 
-    # 'oscar mayer deli fresh smoked' 브랜드
     ingredient = re.sub("oscar mayer deli fresh smoked", '', ingredient)
 
     return ingredient
 
-# 3. 재료 손질, 상태를 제거하는 함수
 def delete_state_(ingredient):
 
     ingredient = re.sub('frozen|chopped|ground|fresh|powdered', '', ingredient)
@@ -171,7 +164,6 @@ def delete_state_(ingredient):
     ingredient = re.sub('cooked|shredded|cracked|minced|finely', '', ingredient)        
      return ingredient
 
-# 4. 콤마 뒤에 있는 재료손질방법을 제거하는 함수
 def delete_comma_(ingredient):
 
     ingredient = ingredient.split(',')
@@ -179,23 +171,18 @@ def delete_comma_(ingredient):
 
     return ingredient
 
-## 그외 전처리 함수 (숫자제거, 특수문자제거, 원형으로변경)
 def original_(ingredient):
 
-    # 숫자제거
     ingredient = re.sub('[0-9]', '', ingredient)
 
-    # 특수문자 제거
     ingredient = ingredient.replace("oz.", '')
     ingredient = re.sub('[&%()®™/]', '', ingredient)
     ingredient = re.sub('[-.]', '', ingredient)
 
-    # lemmatize를 이용하여 단어를 원형으로 변경
     ingredient = wnl.lemmatize(ingredient)
 
     return ingredient
 
-# 양 끝 공백을 제거하는 함수
 def delete_space_(ingredient):
     ingredient = ingredient.strip()
     return ingredient
@@ -206,42 +193,19 @@ def delete_space_(ingredient):
 df['ingredients'] = df['ingredients'].apply(lambda x : pre_processing_(x))
 
 
-
-
-get_ipython().run_cell_magic('time', '', "### 각 row 마다의 recipe 별 ingredient를 count하기 위한 작업\n\n# 여기서는 ingredient가 각 1개씩 count 될 것이다.\nbag_of_ingredients = [Counter(ingredient) for ingredient in df.ingredients]\n\n# 각 ingredients의 종류별 개수\nsum_of_ingredients = sum(bag_of_ingredients, Counter())\n\n########################################################################################\n\n### sum_of_ingredients를 dataframe에 넣기 위한 작업\n\n# dict -> list -> dataframe\nsum_of_ingredients_dict = dict(sum_of_ingredients)\nsum_of_ingredients_list = list(sum_of_ingredients_dict.items())\n\ningredients_df = pd.DataFrame(sum_of_ingredients_list)\ningredients_df.columns = ['ingredient', 'count']\ningredients_df.tail(2)\n\nprint('전처리 후 ingredient는 총 {}개 입니다.'.format(len(ingredients_df)))")
-
-
-
-
 df['ingredients_train'] = df['ingredients'].apply(','.join)
 
-
-
-
-"""
-TfidfVectorizer : 문서 집합으로부터 단어의 수를 세고, TF-IDF 방식으로 단어의 가중치를 조정한 카운트 행렬을 만든다.
-"""
 
 tfv = TfidfVectorizer()
 X = tfv.fit_transform(df['ingredients_train'].values)
 
 print(list(tfv.vocabulary_.keys())[:10])
 
-
-
-
 print(X.shape)
-
-
-
 
 print(type(X))
 
-
-
-
 print(X[2999])
-# 구조파악하기
 
 
 
@@ -251,24 +215,12 @@ train_target_value = Lec.fit_transform(df['cuisine'].values)
 
 print(train_target_value.shape)
 
-
-
-
 print(train_target_value[:20])
-
-
-
 
 print(Lec.classes_)
 
-
-
-
 X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, train_target_value)
 print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
-
-
-
 
 """ Random Forest Model """
 def RandomForestClassifier_():
@@ -419,15 +371,10 @@ get_ipython().run_cell_magic('time', '', 'Neural_network = Neural_network_()')
 # Feature importance
 pd.Series(xgbr.feature_importances_).plot(kind='bar')
 
-
-
-
-# 1. all_ingredients set에 ingredients들을 담는다.
 all_ingredients = set()
 df['ingredients'].apply(lambda x : [all_ingredients.add(i) for i in list(x)])
 #print(all_ingredients)
 
-# 'ingredient' columns를 새로 만들면서, 각 ingredient가 해당 row의 recipe에 들어 있으면 True, 그렇지 않으면 False를 반환하게 함
 for ingredient in all_ingredients:
     df[ingredient] = df['ingredients'].apply(lambda x : ingredient in x)
     
@@ -444,52 +391,27 @@ get_ipython().run_cell_magic('time', '', "\ncolumn_list = []\nfor col in df.colu
 # Copy
 df_dummy = df.copy()
 
-# 'id'와 'ingredients' columns는 더이상 필요가 없으므로 지운다.
 del df_dummy['id']
 del df_dummy['ingredients']
 
-# 'cuisine' column을 지우기 위해 df_dummy를 copy
 df_features = df_dummy.copy()
 
 del df_features['cuisine']
 df_features.tail(1)
-
-
-
 
 Lec = LabelEncoder()
 train_target_value = Lec.fit_transform(df_dummy['cuisine'].values)
 
 print(train_target_value.shape)
 
-
-
-
 print(train_target_value[:10])
 
-
-
-
 print(Lec.classes_)
-
-
-
 
 X_train, X_test, y_train, y_test = cross_validation.train_test_split(df_features, train_target_value)
 print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
 
-
-
-
-get_ipython().run_cell_magic('time', '', '# fit method를 호출하여 주성분을 찾는다. 주성분은 200개로 한다.\npca = PCA(n_components=200, whiten=True, random_state=0).fit(X_train)\n# transform method를 호출해 데이터를 회전시키고 차원을 축소\nX_train_pca = pca.transform(X_train)\nX_test_pca = pca.transform(X_test)\n\nprint("X_train_pca.shape: {}".format(X_train_pca.shape))')
-
-
-
-
 pca.components_
-
-
-
 
 def Xgboost_():
     xgbr = xgb.XGBClassifier(
@@ -529,33 +451,15 @@ def Neural_network_():
 get_ipython().run_cell_magic('time', '', 'Neural_Network = Neural_network_()')
 
 
-
-
-""" 
-
-logic : df['cuisine']과 df['ingredients']를 리스트 형식으로 만들고 싶지만, 
-        df['ingredients']가 각각 리스트 형식으로 되어있기 때문에 몇가지 작업이 필요하다.
-
-1. df['ingredients'] 즉, 각 recipe 리스트를 하나의 리스트(called ingredient_list)에 넣는다.
-   ingredient_list를 data frame에 넣어준다 (왜? 각 ingredient를 column으로 만들어 주기 위해)
-2. df['cuisine']과 ingredient_list를 column으로 합친다. 그러면 하나의 data frame이 만들어짐
-3. iterrows() 함수를 이용하여 각 row를 list로 만들어 준다.
-
-"""
-
-""" 1번 작업 """
 ingredient_list = []
 
 for elements in df['ingredients']:
     ingredient_list.append(elements)
-    
-## ingredient_list의 각 원소를 리스트 형식
 #ingredient_list
 
 ingredient_df = pd.DataFrame(ingredient_list)
 #ingredient_df
 
-""" 2번 작업 """
 cuisine_list = []
 
 for element in df['cuisine']:
@@ -564,7 +468,6 @@ for element in df['cuisine']:
 ingredient_df.insert(0, "cuisines", cuisine_list)
 #ingredient_df.tail(2)
 
-""" 3번 작업 """
 temp = []
 
 for row in ingredient_df.iterrows():
@@ -572,8 +475,6 @@ for row in ingredient_df.iterrows():
     temp.append(data.tolist())
     
 #temp
-
-""" 예상치 못하게, temp안에 None 값이 들어 간것을 확인했다. None 값을 제거한다. """
 new_temp = []
 
 for list_element in temp:
@@ -581,24 +482,15 @@ for list_element in temp:
     new_temp.append(new_element)
     
 #new_temp[0]
-
-""" word2vec 학습 """
 model = word2vec.Word2Vec(new_temp, workers = 4, 
                          size = 300, min_count = 3, window = 10)
 
 model.init_sims(replace=True)
 
-# 학습이 잘 되었는지 확인
 model.most_similar('korean')
-
-
-
 
 cuisine_dict = dict(df.cuisine.value_counts().items())
 cuisine_list = list(cuisine_dict.keys())
-
-
-
 
 print("Bot: " 
       + "\t" + "I can tell you common ingredients often used in the country." 

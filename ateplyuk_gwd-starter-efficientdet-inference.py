@@ -13,18 +13,6 @@ sys.path.append('/kaggle/input/mod-efficientdet/')
 sys.path.append('/kaggle/input/eff-torch/')
 
 
-
-
-cp -r /kaggle/input/cocoapi/* /tmp
-
-
-
-
-cd /tmp/PythonAPI
-
-
-
-
 get_ipython().system('make')
 
 
@@ -98,14 +86,6 @@ for idx, row in enumerate(test_ids):
 
 test_df = pd.DataFrame(res, columns=['image_id', 'PredictionString'])
 test_df.head()
-
-
-
-
-cd /kaggle/working
-
-
-
 
 test_df.to_csv('submission.csv', index=False)
 

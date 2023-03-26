@@ -215,18 +215,6 @@ print("x")
 
 
 
-# sns.set()
-sns.pairplot(log_df.drop(["transactiondate"], axis=1).sample(2000,
-             hue='Over/Under',
-             diag_kind='kde',
-             markers="+",
-             # kind="reg",
-             size=1.5)
-plt.show()
-
-
-
-
 plt.savefig("seaborn_pairplot.png")
 
 

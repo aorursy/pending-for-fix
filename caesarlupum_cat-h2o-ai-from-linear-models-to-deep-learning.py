@@ -2,12 +2,6 @@
 # coding: utf-8
 
 
-
-conda install gxx_linux-64 gcc_linux-64 swig
-
-
-
-
 import h2o
 h2o.init(ip="localhost", port=54323)
 

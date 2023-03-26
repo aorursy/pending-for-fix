@@ -2,12 +2,6 @@
 # coding: utf-8
 
 
-
-pip install --upgrade scikit-learn
-
-
-
-
 import sklearn
 print(sklearn.__version__)
 

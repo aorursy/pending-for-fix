@@ -76,11 +76,6 @@ df.to_csv('./train.csv', index=False)
 
 
 
-cp $DATASET_DIR/sample_submission.csv ./
-
-
-
-
 get_ipython().system('mkdir /kaggle/train_images')
 
 
@@ -120,22 +115,7 @@ for image_file in tqdm_notebook(image_files):
 get_ipython().system('apt install zip')
 
 
-
-
-cd /kaggle/train_images
-
-
-
-
 get_ipython().system('zip -r -m -1 -q /kaggle/working/train_images.zip *')
-
-
-
-
-cd /kaggle/test_images
-
-
-
 
 get_ipython().system('zip -r -m -1 -q /kaggle/working/test_images.zip *')
 

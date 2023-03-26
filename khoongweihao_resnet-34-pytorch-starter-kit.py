@@ -30,13 +30,6 @@ data2 = pd.read_feather('/kaggle/usr/lib/resize_and_load_with_feather_format_muc
 data3 = pd.read_feather('/kaggle/usr/lib/resize_and_load_with_feather_format_much_faster/train_data_3.feather')
 
 
-
-
-ls /kaggle/usr/lib/resize_and_load_with_feather_format_much_faster/
-
-
-
-
 data_full = pd.concat([data0,data1,data2,data3],ignore_index=True)
 
 
