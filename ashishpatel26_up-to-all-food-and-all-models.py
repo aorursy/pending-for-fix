@@ -145,13 +145,11 @@ def delete_brand_(ingredient):
                         , '', ingredient)
     ingredient = re.sub("sargento|johnsonville|breyers|diamond crystal|taco bell|bacardi", '', ingredient)
     ingredient = re.sub("mccormick|crystal farms|yoplait|mazola|new york style panetini", '', ingredient)
-    ingredient = re.sub("ragu|soy vay|tabasco|truvía|crescent recipe creations|spice islands", '', ingredient)
+    ingredient = re.sub("ragu|soy vay|tabasco|truvia|crescent recipe creations|spice islands", '', ingredient)
     ingredient = re.sub("wish-bone|honeysuckle white|pasta sides|fiesta sides", '', ingredient)
     ingredient = re.sub("veri veri teriyaki|artisan blends|home originals|greek yogurt|original ranch"
                         , '', ingredient)
     ingredient = re.sub("jonshonville", '', ingredient)
-
-    ingredient = re.sub("old el paso|pillsbury|progresso|betty crocker|green giant|hellmannâ€", '', ingredient)
 
     ingredient = re.sub("oscar mayer deli fresh smoked", '', ingredient)
 
@@ -379,11 +377,6 @@ for ingredient in all_ingredients:
     df[ingredient] = df['ingredients'].apply(lambda x : ingredient in x)
     
 len(df.columns)
-
-
-
-
-get_ipython().run_cell_magic('time', '', "\ncolumn_list = []\nfor col in df.columns:\n    column_list.append(col)\n    \ncolumn_list.remove('id')\ncolumn_list.remove('ingredients')\ncolumn_list.remove('cuisine')\n\nlen(column_list)\nprint(column_list[:10])\n\ndf[column_list] = df[column_list].astype(int) # False는 0으로, True는 1로")
 
 
 

@@ -391,12 +391,6 @@ def GrabData():
 
 
 
-
-ls ../input
-
-
-
-
 train, test = GrabData()
 trainlabels = train.result.values
 train.drop('result', inplace=True, axis=1)
@@ -490,12 +484,6 @@ submission.to_csv('submission.csv', index=False)
 
 
 submission.shape
-
-
-
-
-ls ../input
-
 
 
 

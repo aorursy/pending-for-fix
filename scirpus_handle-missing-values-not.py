@@ -1,13 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-
-
-
-
-
-
-
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
@@ -15,12 +8,6 @@ from sklearn.metrics import roc_auc_score, log_loss
 
 import matplotlib.pyplot as plt
 get_ipython().run_line_magic('matplotlib', 'inline')
-
-
-
-
-ls ../input
-
 
 
 

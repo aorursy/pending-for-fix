@@ -136,13 +136,6 @@ def roc_auc_truncated(labels, predictions, tpr_thresholds=(0.2, 0.4, 0.6, 0.8),
     return area
 
 
-
-
-ls ../input/flavours-of-physics-kernels-only
-
-
-
-
 print("Load the train/test/eval data using pandas")
 train = pd.read_csv("../input/flavours-of-physics-kernels-only/training.csv.zip")
 test  = pd.read_csv("../input/flavours-of-physics-kernels-only/test.csv.zip")

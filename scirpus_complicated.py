@@ -12,12 +12,6 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 
 
 
-
-ls ../input
-
-
-
-
 def OrdinalConverter(d):
     a1 = ord(d[:1])-65
     if(a1>26):
@@ -196,13 +190,6 @@ alldata.head()
 
 
 alldata.columns
-
-
-
-
-ordinals
-
-
 
 
 for c in alldata.columns:

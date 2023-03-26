@@ -150,13 +150,6 @@ with torch.no_grad():
         face_extractor(path, save_dir)
 
 
-
-
-cd $TMP_DIR
-
-
-
-
 train_df.to_csv('metadata.csv', index=False)
 
 

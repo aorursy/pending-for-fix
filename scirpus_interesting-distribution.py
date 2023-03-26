@@ -12,12 +12,6 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 
 
 
-
-ls ../input
-
-
-
-
 df_train = pd.read_csv('../input/cat-in-the-dat-ii/train.csv')
 df_train.shape
 

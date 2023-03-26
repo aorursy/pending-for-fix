@@ -14,11 +14,6 @@ from sklearn.preprocessing import LabelEncoder
 
 
 
-ls ../input/
-
-
-
-
 dtypes = {
         'MachineIdentifier':                                    'category',
         'ProductName':                                          'category',

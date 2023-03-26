@@ -65,12 +65,6 @@ df
 
 
 
-
-mkdir train
-
-
-
-
 transform = A.Compose(
     [
         A.Resize(height=IMG_SIZE, width=IMG_SIZE, p=1),

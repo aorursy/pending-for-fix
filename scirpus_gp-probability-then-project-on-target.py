@@ -11,12 +11,6 @@ from sklearn.metrics import log_loss
 
 
 
-
-ls ../input
-
-
-
-
 X = pd.read_csv('../input/andrews-new-stuff/train_features.csv')
 X_test = pd.read_csv('../input/andrews-new-stuff/test_features.csv')
 y = pd.read_csv('../input/andrews-new-stuff/y.csv')
