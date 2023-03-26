@@ -261,283 +261,283 @@ def SVM_():
                  "Test score : {}".format(grid.score(X_test, y_test)))
 
 
-""" KNN Model """
-def KNN_():
+# """ KNN Model """
+# def KNN_():
     
-    knn = KNeighborsClassifier()
+#     knn = KNeighborsClassifier()
     
-    pipe = Pipeline([('classifier', knn)])
-    hyperparameter_space = [{'classifier': [knn],
-                             'classifier__n_neighbors': [15, 20, 25],
-                             'classifier__leaf_size' : [20, 25, 30]}]
-    grid = GridSearchCV(pipe, hyperparameter_space, cv=3)
-    grid.fit(X_train, y_train)
+#     pipe = Pipeline([('classifier', knn)])
+#     hyperparameter_space = [{'classifier': [knn],
+#                              'classifier__n_neighbors': [15, 20, 25],
+#                              'classifier__leaf_size' : [20, 25, 30]}]
+#     grid = GridSearchCV(pipe, hyperparameter_space, cv=3)
+#     grid.fit(X_train, y_train)
         
         
-    cuisine = ['brazilian', 'british', 'cajun_creole', 'chinese', 'filipino', 'french', 'greek',
-               'indian', 'irish', 'italian', 'jamaican', 'japanese', 'korean', 'mexican', 'moroccan',
-               'russian', 'southern_us', 'spanish', 'thai', 'vietnamese']
+#     cuisine = ['brazilian', 'british', 'cajun_creole', 'chinese', 'filipino', 'french', 'greek',
+#                'indian', 'irish', 'italian', 'jamaican', 'japanese', 'korean', 'mexican', 'moroccan',
+#                'russian', 'southern_us', 'spanish', 'thai', 'vietnamese']
 
-    print (classification_report(y_test, knn.predict(X_test), digits=4, target_names=cuisine))
+#     print (classification_report(y_test, knn.predict(X_test), digits=4, target_names=cuisine))
     
-    return print("Best parameters:\n{}\n".format(grid.best_params_), 
-                 "Best score : {}\n".format(grid.best_score_),
-                 "Test score : {}".format(grid.score(X_test, y_test)))
+#     return print("Best parameters:\n{}\n".format(grid.best_params_), 
+#                  "Best score : {}\n".format(grid.best_score_),
+#                  "Test score : {}".format(grid.score(X_test, y_test)))
 
-""" Xgboost Model"""
-def Xgboost_():
-    pipe = Pipeline([('classifier', xgb.XGBClassifier())])
-    hyperparameter_space = [{'classifier': [xgb.XGBClassifier()],
-                             'classifier__max_depth': [3, 4, 5],
-                             'classifier__n_estimators' : [350, 375, 400]}]
-    grid = GridSearchCV(pipe, hyperparameter_space, cv=3)
-    grid.fit(X_train, y_train)
+# """ Xgboost Model"""
+# def Xgboost_():
+#     pipe = Pipeline([('classifier', xgb.XGBClassifier())])
+#     hyperparameter_space = [{'classifier': [xgb.XGBClassifier()],
+#                              'classifier__max_depth': [3, 4, 5],
+#                              'classifier__n_estimators' : [350, 375, 400]}]
+#     grid = GridSearchCV(pipe, hyperparameter_space, cv=3)
+#     grid.fit(X_train, y_train)
     
-    cuisine = ['brazilian', 'british', 'cajun_creole', 'chinese', 'filipino', 'french', 'greek',
-               'indian', 'irish', 'italian', 'jamaican', 'japanese', 'korean', 'mexican', 'moroccan',
-               'russian', 'southern_us', 'spanish', 'thai', 'vietnamese']
+#     cuisine = ['brazilian', 'british', 'cajun_creole', 'chinese', 'filipino', 'french', 'greek',
+#                'indian', 'irish', 'italian', 'jamaican', 'japanese', 'korean', 'mexican', 'moroccan',
+#                'russian', 'southern_us', 'spanish', 'thai', 'vietnamese']
 
-    print (classification_report(y_test, grid.predict(X_test), digits=4, target_names=cuisine))
+#     print (classification_report(y_test, grid.predict(X_test), digits=4, target_names=cuisine))
     
-    return print("Best parameters:\n{}\n".format(grid.best_params_), 
-                 "Best score : {}\n".format(grid.best_score_),
-                 "Test score : {}".format(grid.score(X_test, y_test)))
+#     return print("Best parameters:\n{}\n".format(grid.best_params_), 
+#                  "Best score : {}\n".format(grid.best_score_),
+#                  "Test score : {}".format(grid.score(X_test, y_test)))
 
 
-""" Decision Tree Model """
-def DecisionTree_():
-    pipe = Pipeline([('classifier', DecisionTreeClassifier())])
-    hyperparameter_space = [{'classifier': [DecisionTreeClassifier()],
-                             'classifier__max_depth': [50, 60, 70]}]
-    grid = GridSearchCV(pipe, hyperparameter_space, cv=3)
-    grid.fit(X_train, y_train)
+# """ Decision Tree Model """
+# def DecisionTree_():
+#     pipe = Pipeline([('classifier', DecisionTreeClassifier())])
+#     hyperparameter_space = [{'classifier': [DecisionTreeClassifier()],
+#                              'classifier__max_depth': [50, 60, 70]}]
+#     grid = GridSearchCV(pipe, hyperparameter_space, cv=3)
+#     grid.fit(X_train, y_train)
     
-    cuisine = ['brazilian', 'british', 'cajun_creole', 'chinese', 'filipino', 'french', 'greek',
-               'indian', 'irish', 'italian', 'jamaican', 'japanese', 'korean', 'mexican', 'moroccan',
-               'russian', 'southern_us', 'spanish', 'thai', 'vietnamese']
+#     cuisine = ['brazilian', 'british', 'cajun_creole', 'chinese', 'filipino', 'french', 'greek',
+#                'indian', 'irish', 'italian', 'jamaican', 'japanese', 'korean', 'mexican', 'moroccan',
+#                'russian', 'southern_us', 'spanish', 'thai', 'vietnamese']
 
-    print (classification_report(y_test, grid.predict(X_test), digits=4, target_names=cuisine))
+#     print (classification_report(y_test, grid.predict(X_test), digits=4, target_names=cuisine))
     
-    return print("Best parameters:\n{}\n".format(grid.best_params_), 
-                 "Best score : {}\n".format(grid.best_score_),
-                 "Test score : {}".format(grid.score(X_test, y_test)))
+#     return print("Best parameters:\n{}\n".format(grid.best_params_), 
+#                  "Best score : {}\n".format(grid.best_score_),
+#                  "Test score : {}".format(grid.score(X_test, y_test)))
 
-def Neural_network_():
-    nn = MLPClassifier(hidden_layer_sizes=(400,500,400))
-    nn.fit(X_train, y_train)
+# def Neural_network_():
+#     nn = MLPClassifier(hidden_layer_sizes=(400,500,400))
+#     nn.fit(X_train, y_train)
     
-    cuisine = ['brazilian', 'british', 'cajun_creole', 'chinese', 'filipino', 'french', 'greek',
-               'indian', 'irish', 'italian', 'jamaican', 'japanese', 'korean', 'mexican', 'moroccan',
-               'russian', 'southern_us', 'spanish', 'thai', 'vietnamese']
+#     cuisine = ['brazilian', 'british', 'cajun_creole', 'chinese', 'filipino', 'french', 'greek',
+#                'indian', 'irish', 'italian', 'jamaican', 'japanese', 'korean', 'mexican', 'moroccan',
+#                'russian', 'southern_us', 'spanish', 'thai', 'vietnamese']
 
-    print (classification_report(y_test, nn.predict(X_test), digits=4, target_names=cuisine))
-    return print("Test score : {}".format(nn.score(X_test, y_test)))
-
-
-
-
-get_ipython().run_cell_magic('time', '', 'rf = RandomForestClassifier_()')
+#     print (classification_report(y_test, nn.predict(X_test), digits=4, target_names=cuisine))
+#     return print("Test score : {}".format(nn.score(X_test, y_test)))
 
 
 
 
-get_ipython().run_cell_magic('time', '', 'SVM = SVM_()')
+# get_ipython().run_cell_magic('time', '', 'rf = RandomForestClassifier_()')
 
 
 
 
-get_ipython().run_cell_magic('time', '', 'KNN = KNN_()')
+# get_ipython().run_cell_magic('time', '', 'SVM = SVM_()')
 
 
 
 
-get_ipython().run_cell_magic('time', '', 'Xgboost_()')
+# get_ipython().run_cell_magic('time', '', 'KNN = KNN_()')
 
 
 
 
-get_ipython().run_cell_magic('time', '', 'DecisionTree_()')
+# get_ipython().run_cell_magic('time', '', 'Xgboost_()')
 
 
 
 
-get_ipython().run_cell_magic('time', '', 'Neural_network = Neural_network_()')
+# get_ipython().run_cell_magic('time', '', 'DecisionTree_()')
 
 
 
 
-# Feature importance
-pd.Series(xgbr.feature_importances_).plot(kind='bar')
+# get_ipython().run_cell_magic('time', '', 'Neural_network = Neural_network_()')
 
-all_ingredients = set()
-df['ingredients'].apply(lambda x : [all_ingredients.add(i) for i in list(x)])
-#print(all_ingredients)
 
-for ingredient in all_ingredients:
-    df[ingredient] = df['ingredients'].apply(lambda x : ingredient in x)
+
+
+# # Feature importance
+# pd.Series(xgbr.feature_importances_).plot(kind='bar')
+
+# all_ingredients = set()
+# df['ingredients'].apply(lambda x : [all_ingredients.add(i) for i in list(x)])
+# #print(all_ingredients)
+
+# for ingredient in all_ingredients:
+#     df[ingredient] = df['ingredients'].apply(lambda x : ingredient in x)
     
-len(df.columns)
+# len(df.columns)
 
 
 
 
-# Copy
-df_dummy = df.copy()
+# # Copy
+# df_dummy = df.copy()
 
-del df_dummy['id']
-del df_dummy['ingredients']
+# del df_dummy['id']
+# del df_dummy['ingredients']
 
-df_features = df_dummy.copy()
+# df_features = df_dummy.copy()
 
-del df_features['cuisine']
-df_features.tail(1)
+# del df_features['cuisine']
+# df_features.tail(1)
 
-Lec = LabelEncoder()
-train_target_value = Lec.fit_transform(df_dummy['cuisine'].values)
+# Lec = LabelEncoder()
+# train_target_value = Lec.fit_transform(df_dummy['cuisine'].values)
 
-print(train_target_value.shape)
+# print(train_target_value.shape)
 
-print(train_target_value[:10])
+# print(train_target_value[:10])
 
-print(Lec.classes_)
+# print(Lec.classes_)
 
-X_train, X_test, y_train, y_test = cross_validation.train_test_split(df_features, train_target_value)
-print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+# X_train, X_test, y_train, y_test = cross_validation.train_test_split(df_features, train_target_value)
+# print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
 
-pca.components_
+# pca.components_
 
-def Xgboost_():
-    xgbr = xgb.XGBClassifier(
-        n_estimators = 400,
-        max_depth = 5
-    ).fit(X_train_pca, y_train)
+# def Xgboost_():
+#     xgbr = xgb.XGBClassifier(
+#         n_estimators = 400,
+#         max_depth = 5
+#     ).fit(X_train_pca, y_train)
         
-    cuisine = ['brazilian', 'british', 'cajun_creole', 'chinese', 'filipino', 'french', 'greek',
-               'indian', 'irish', 'italian', 'jamaican', 'japanese', 'korean', 'mexican', 'moroccan',
-               'russian', 'southern_us', 'spanish', 'thai', 'vietnamese']
+#     cuisine = ['brazilian', 'british', 'cajun_creole', 'chinese', 'filipino', 'french', 'greek',
+#                'indian', 'irish', 'italian', 'jamaican', 'japanese', 'korean', 'mexican', 'moroccan',
+#                'russian', 'southern_us', 'spanish', 'thai', 'vietnamese']
 
-    print (classification_report(y_test, xgbr.predict(X_test_pca), digits=4, target_names=cuisine))
-    return print("Test score : {}".format(xgbr.score(X_test_pca, y_test)))
-
-
-
-
-get_ipython().run_cell_magic('time', '', 'Xgboost = Xgboost_()')
+#     print (classification_report(y_test, xgbr.predict(X_test_pca), digits=4, target_names=cuisine))
+#     return print("Test score : {}".format(xgbr.score(X_test_pca, y_test)))
 
 
 
 
-def Neural_network_():
-    nn = MLPClassifier(hidden_layer_sizes=(400,500,400))
-    nn.fit(X_train_pca, y_train)
+# get_ipython().run_cell_magic('time', '', 'Xgboost = Xgboost_()')
+
+
+
+
+# def Neural_network_():
+#     nn = MLPClassifier(hidden_layer_sizes=(400,500,400))
+#     nn.fit(X_train_pca, y_train)
     
-    cuisine = ['brazilian', 'british', 'cajun_creole', 'chinese', 'filipino', 'french', 'greek',
-               'indian', 'irish', 'italian', 'jamaican', 'japanese', 'korean', 'mexican', 'moroccan',
-               'russian', 'southern_us', 'spanish', 'thai', 'vietnamese']
+#     cuisine = ['brazilian', 'british', 'cajun_creole', 'chinese', 'filipino', 'french', 'greek',
+#                'indian', 'irish', 'italian', 'jamaican', 'japanese', 'korean', 'mexican', 'moroccan',
+#                'russian', 'southern_us', 'spanish', 'thai', 'vietnamese']
 
-    print (classification_report(y_test, nn.predict(X_test_pca), digits=4, target_names=cuisine))
-    return print("Test score : {}".format(nn.score(X_test_pca, y_test)))
-
-
+#     print (classification_report(y_test, nn.predict(X_test_pca), digits=4, target_names=cuisine))
+#     return print("Test score : {}".format(nn.score(X_test_pca, y_test)))
 
 
-get_ipython().run_cell_magic('time', '', 'Neural_Network = Neural_network_()')
 
 
-ingredient_list = []
+# get_ipython().run_cell_magic('time', '', 'Neural_Network = Neural_network_()')
 
-for elements in df['ingredients']:
-    ingredient_list.append(elements)
-#ingredient_list
 
-ingredient_df = pd.DataFrame(ingredient_list)
-#ingredient_df
+# ingredient_list = []
 
-cuisine_list = []
+# for elements in df['ingredients']:
+#     ingredient_list.append(elements)
+# #ingredient_list
 
-for element in df['cuisine']:
-    cuisine_list.append(element)
+# ingredient_df = pd.DataFrame(ingredient_list)
+# #ingredient_df
 
-ingredient_df.insert(0, "cuisines", cuisine_list)
-#ingredient_df.tail(2)
+# cuisine_list = []
 
-temp = []
+# for element in df['cuisine']:
+#     cuisine_list.append(element)
 
-for row in ingredient_df.iterrows():
-    index, data = row
-    temp.append(data.tolist())
+# ingredient_df.insert(0, "cuisines", cuisine_list)
+# #ingredient_df.tail(2)
+
+# temp = []
+
+# for row in ingredient_df.iterrows():
+#     index, data = row
+#     temp.append(data.tolist())
     
-#temp
-new_temp = []
+# #temp
+# new_temp = []
 
-for list_element in temp:
-    new_element = [x for x in list_element if x is not None]
-    new_temp.append(new_element)
+# for list_element in temp:
+#     new_element = [x for x in list_element if x is not None]
+#     new_temp.append(new_element)
     
-#new_temp[0]
-model = word2vec.Word2Vec(new_temp, workers = 4, 
-                         size = 300, min_count = 3, window = 10)
+# #new_temp[0]
+# model = word2vec.Word2Vec(new_temp, workers = 4, 
+#                          size = 300, min_count = 3, window = 10)
 
-model.init_sims(replace=True)
+# model.init_sims(replace=True)
 
-model.most_similar('korean')
+# model.most_similar('korean')
 
-cuisine_dict = dict(df.cuisine.value_counts().items())
-cuisine_list = list(cuisine_dict.keys())
+# cuisine_dict = dict(df.cuisine.value_counts().items())
+# cuisine_list = list(cuisine_dict.keys())
 
-print("Bot: " 
-      + "\t" + "I can tell you common ingredients often used in the country." 
-      + "\n" + "\t" + "What kind of cuisine do you want to know?" 
-      + "\n" + "\t" + "Cuisine list is here."
-      + "\n" + "\t" + "====================[CUISINE LISE]===================="
-      + "\n" + "\t" + "italian, mexican, southern_us, indian, chinese"
-      + "\n" + "\t" + "french, cajun_creole, thai, japanese, greek"
-      + "\n" + "\t" + "spanish, korean, vietnamese', moroccan, british"
-      + "\n" + "\t" + "filipino, irish, jamaican, russian, brazilian"
-      + "\n" + "\t" + "======================================================")
+# print("Bot: " 
+#       + "\t" + "I can tell you common ingredients often used in the country." 
+#       + "\n" + "\t" + "What kind of cuisine do you want to know?" 
+#       + "\n" + "\t" + "Cuisine list is here."
+#       + "\n" + "\t" + "====================[CUISINE LISE]===================="
+#       + "\n" + "\t" + "italian, mexican, southern_us, indian, chinese"
+#       + "\n" + "\t" + "french, cajun_creole, thai, japanese, greek"
+#       + "\n" + "\t" + "spanish, korean, vietnamese', moroccan, british"
+#       + "\n" + "\t" + "filipino, irish, jamaican, russian, brazilian"
+#       + "\n" + "\t" + "======================================================")
     
-while True:
+# while True:
 
-    user_question = input("User: " + "\t").strip()
-    user_question_lower = user_question.lower()
+#     user_question = input("User: " + "\t").strip()
+#     user_question_lower = user_question.lower()
     
-    ingredient_list = []
-    for cuisine in cuisine_list:
+#     ingredient_list = []
+#     for cuisine in cuisine_list:
         
-        if cuisine in user_question:
-            for i in model.most_similar(cuisine):
-                if i[0] not in cuisine_list:
-                    ingredient_list.append(i[0])
-            print("Bot: " + "\t" + "commonly used ingredients in {} food are {}".format(cuisine, ingredient_list)
-                          + "\n" + "\t" + "Do you want to know more? yes or no")
+#         if cuisine in user_question:
+#             for i in model.most_similar(cuisine):
+#                 if i[0] not in cuisine_list:
+#                     ingredient_list.append(i[0])
+#             print("Bot: " + "\t" + "commonly used ingredients in {} food are {}".format(cuisine, ingredient_list)
+#                           + "\n" + "\t" + "Do you want to know more? yes or no")
                         
-    if user_question == "":
-        print("Bot: "+ "\t" + "What kind of cuisine do you want to know?"
-                   + "\t" + "I can tell you common ingredients often used in the country." 
-                   + "\n" + "\t" + "What kind of cuisine do you want to know?" 
-                   + "\n" + "\t" + "Cuisine list is here."
-                   + "\n" + "\t" + "====================[CUISINE LISE]===================="
-                   + "\n" + "\t" + "italian, mexican, southern_us, indian, chinese"
-                   + "\n" + "\t" + "french, cajun_creole, thai, japanese, greek"
-                   + "\n" + "\t" + "spanish, korean, vietnamese', moroccan, british"
-                   + "\n" + "\t" + "filipino, irish, jamaican, russian, brazilian"
-                   + "\n" + "\t" + "======================================================")
+#     if user_question == "":
+#         print("Bot: "+ "\t" + "What kind of cuisine do you want to know?"
+#                    + "\t" + "I can tell you common ingredients often used in the country." 
+#                    + "\n" + "\t" + "What kind of cuisine do you want to know?" 
+#                    + "\n" + "\t" + "Cuisine list is here."
+#                    + "\n" + "\t" + "====================[CUISINE LISE]===================="
+#                    + "\n" + "\t" + "italian, mexican, southern_us, indian, chinese"
+#                    + "\n" + "\t" + "french, cajun_creole, thai, japanese, greek"
+#                    + "\n" + "\t" + "spanish, korean, vietnamese', moroccan, british"
+#                    + "\n" + "\t" + "filipino, irish, jamaican, russian, brazilian"
+#                    + "\n" + "\t" + "======================================================")
         
-    elif user_question == "yes":
-        print("Bot: "+ "\t" + "What kind of cuisine do you want to know?"
-                   + "\t" + "I can tell you common ingredients often used in the country." 
-                   + "\n" + "\t" + "What kind of cuisine do you want to know?" 
-                   + "\n" + "\t" + "Cuisine list is here."
-                   + "\n" + "\t" + "====================[CUISINE LISE]===================="
-                   + "\n" + "\t" + "italian, mexican, southern_us, indian, chinese"
-                   + "\n" + "\t" + "french, cajun_creole, thai, japanese, greek"
-                   + "\n" + "\t" + "spanish, korean, vietnamese', moroccan, british"
-                   + "\n" + "\t" + "filipino, irish, jamaican, russian, brazilian"
-                   + "\n" + "\t" + "======================================================")
+#     elif user_question == "yes":
+#         print("Bot: "+ "\t" + "What kind of cuisine do you want to know?"
+#                    + "\t" + "I can tell you common ingredients often used in the country." 
+#                    + "\n" + "\t" + "What kind of cuisine do you want to know?" 
+#                    + "\n" + "\t" + "Cuisine list is here."
+#                    + "\n" + "\t" + "====================[CUISINE LISE]===================="
+#                    + "\n" + "\t" + "italian, mexican, southern_us, indian, chinese"
+#                    + "\n" + "\t" + "french, cajun_creole, thai, japanese, greek"
+#                    + "\n" + "\t" + "spanish, korean, vietnamese', moroccan, british"
+#                    + "\n" + "\t" + "filipino, irish, jamaican, russian, brazilian"
+#                    + "\n" + "\t" + "======================================================")
                         
-    elif user_question == "no":
-        print("Bot: "+ "\t" + "See you again. Bye.")
-        break
+#     elif user_question == "no":
+#         print("Bot: "+ "\t" + "See you again. Bye.")
+#         break
 
 
 
