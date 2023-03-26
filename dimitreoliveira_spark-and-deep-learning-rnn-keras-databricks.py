@@ -242,10 +242,7 @@ class YearQuarterExtractor(Transformer):
 
     def _transform(self, df):
         self.check_input_type(df.schema)
-        return df.withColumn(self.outputCol, F.when((df[self.inputCol] <= 3), 0)
-                               .otherwise(F.when((df[self.inputCol] <= 6), 1)
-                                .otherwise(F.when((df[self.inputCol] <= 9), 2)
-                                 .otherwise(3))))
+        return df.withColumn(self.outputCol, F.when((df[self.inputCol] <= 3), 0))
 
 
 

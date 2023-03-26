@@ -50,9 +50,6 @@ pred_df = pd.read_csv('/kaggle/input/Kannada-MNIST/test.csv')
 train_df = train_df.append(test_df)
 
 
-
-
-MNIST like datatset for Kannada handwritten digits
 print (f'Training set: {train_df.shape}')
 print (f'To be Predicted: {pred_df.shape}')
 

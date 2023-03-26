@@ -174,7 +174,7 @@ def original_(ingredient):
     ingredient = re.sub('[0-9]', '', ingredient)
 
     ingredient = ingredient.replace("oz.", '')
-    ingredient = re.sub('[&%()®™/]', '', ingredient)
+    ingredient = re.sub('[&%()/]', '', ingredient)
     ingredient = re.sub('[-.]', '', ingredient)
 
     ingredient = wnl.lemmatize(ingredient)
